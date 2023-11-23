@@ -21,7 +21,7 @@ const DasBoardHome = () => {
 
         setFilterState(prevState => ({
             ...prevState,
-            [filter]: !prevState[filter] 
+            [filter]: !prevState[filter]
         }));
 
     };
@@ -178,7 +178,7 @@ const DasBoardHome = () => {
                                 <YAxis dataKey="product" type="category" />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="lucro" fill="#8884d8" barSize={20} />
+                                <Bar dataKey="lucro" fill="#3B82F6" barSize={20} />
                                 <Bar dataKey="quantidadeVendida" fill="#82ca9d" barSize={20} />
                             </BarChart>
                         </ResponsiveContainer>

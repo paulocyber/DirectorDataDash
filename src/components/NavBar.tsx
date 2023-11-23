@@ -1,4 +1,6 @@
+// React
 import { FunctionComponent } from "react"
+import { useLocation } from "react-router-dom";
 
 // Tipagem
 interface NavBarProps {
@@ -7,6 +9,9 @@ interface NavBarProps {
 }
 
 const NavBar: FunctionComponent<NavBarProps> = ({ setToggleMenuClosed, toggleMenuClosed }) => {
+    const url = useLocation()
+
+    console.log(url.pathname.substring(1))
     return (
         <div className="p-4 xl:ml-80">
             <nav className="block w-full max-w-full bg-white text-white shadow-none rounded-xl transition-all px-3 py-2 overflow-auto">
@@ -21,11 +26,11 @@ const NavBar: FunctionComponent<NavBarProps> = ({ setToggleMenuClosed, toggleMen
                                     <span className="text-gray-500 text-sm antialiased font-sans font-normal leading-normal mx-2 pointer-events-none select-none">/</span>
                                 </li>
                                 <li className="flex items-center text-blue-900 antialiased font-sans text-sm font-normal leading-normal cursor-pointer transition-colors duration-300 hover:text-blue-500">
-                                    <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">home</p>
+                                    <p className="block antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">{url.pathname.substring(1)}</p>
                                 </li>
                             </ol>
                         </nav>
-                        <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">home</h6>
+                        <h6 className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-gray-900">{url.pathname.substring(1)}</h6>
                     </div>
                     <div className="flex items-center small-screen:flex-col">
                         <div className="mr-auto md:mr-4 md:mt-0 mt-2 md:w-56 small-screen:w-full">

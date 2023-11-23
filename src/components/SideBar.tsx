@@ -1,6 +1,9 @@
-// Componentes
+// React
 import { useState } from "react";
+
+// Componentes
 import NavBar from "./NavBar";
+import { Link, NavLink } from "react-router-dom";
 
 // BiBliotecas
 
@@ -81,9 +84,11 @@ const SideBar = () => {
           <div className="m-4">
             <ul className="mb-4 flex flex-col gap-1 md:h-[600px] small-screen:h-[510px] xl:h-[500px] medium-screen:h-[500px] h-[750px]">
               <li>
-                <a aria-current="page" className="active" href="#">
-                  <button
-                    className="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-gradient-to-tr from-black to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize"
+                <div>
+                  <NavLink
+                    to={"/"}
+                    className={({ isActive }) => (isActive ? "middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-gradient-to-tr from-black to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize" :
+                      "undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalizefined")}
                     type="button"
                   >
                     <svg
@@ -99,13 +104,16 @@ const SideBar = () => {
                     <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                       dashboard
                     </p>
-                  </button>
-                </a>
+                  </NavLink>
+                </div>
               </li>
               <li>
                 <div className="">
-                  <button
-                    className="flex middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
+
+                  <NavLink
+                    to={"/stock"}
+                    className={({ isActive }) => (isActive ? "middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-gradient-to-tr from-black to-blue-400 text-white shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize" :
+                      "undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalizefined")}
                     type="button"
                   >
                     <div className="flex w-full">
@@ -162,11 +170,11 @@ const SideBar = () => {
                         ></path>
                       </svg>
                       <p className="pl-3 block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
-                        Produtos
-                      </p>
+                        Estoque
+                      </p >
                     </div>
 
-                    <div>
+                    {/* <div>
                       <svg
                         width="24px"
                         height="24px"
@@ -184,13 +192,14 @@ const SideBar = () => {
                           stroke-linejoin="round"
                         ></path>
                       </svg>
-                    </div>
-                  </button>
+                    </div> */}
+                  </NavLink>
                 </div>
               </li>
               <li>
                 <a className="" href="#">
                   <button
+
                     className="middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 active:bg-white/30 w-full flex items-center gap-4 px-4 capitalize"
                     type="button"
                   >

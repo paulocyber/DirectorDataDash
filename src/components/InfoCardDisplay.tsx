@@ -5,7 +5,7 @@ const InfoCardDisplay = () => {
     return (
         <div className="md:ml-auto md:mx-0 md:mx-2 px-10 xl:w-[82%] w-full">
             <div className="mt-5 ">
-                <div className="mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+                <div className="mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
                     <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
                         <div className="bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-500/40 shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-6 h-6 text-white">
