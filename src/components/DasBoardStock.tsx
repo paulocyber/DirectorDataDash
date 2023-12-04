@@ -1,56 +1,25 @@
 // Bibliotecas
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts"
-import InfoCardStock from "./InfoCardStock"
+
+// Dados
+import DataStock from './../data/DataStock.json'
+
+// Componente
+import StockTable from "./StockTable";
 
 const DasBoardStock = () => {
-    const stock = [
-        {
-            fabricante: 'Fabricante A',
-            quantidadeEstoque: 100,
-            numeroProdutos: 50,
-            itensEstoqueMinimo: 10,
-            valorEstoque: 5000,
-            localizacao: 'Localização A'
-        },
-        {
-            fabricante: 'Fabricante B',
-            quantidadeEstoque: 150,
-            numeroProdutos: 70,
-            itensEstoqueMinimo: 15,
-            valorEstoque: 9500,
-            localizacao: 'Localização B'
-        },
-        {
-            fabricante: 'Fabricante C',
-            quantidadeEstoque: 120,
-            numeroProdutos: 90,
-            itensEstoqueMinimo: 15,
-            valorEstoque: 9100,
-            localizacao: 'Localização C'
-        },
-        {
-            fabricante: 'Fabricante E',
-            quantidadeEstoque: 190,
-            numeroProdutos: 60,
-            itensEstoqueMinimo: 10,
-            valorEstoque: 7520,
-            localizacao: 'Localização E'
-        },
 
-    ];
     // Maior para o menor 
-    const sortedStockData = [...stock].sort((a, b) => b.valorEstoque - a.valorEstoque);
+    const sortedStockData = [...DataStock.estoque].sort((a, b) => b.valor_estoque - a.valor_estoque);
+    const topTenProducts = sortedStockData.slice(0, 10);
 
     return (
-        <div className="md:ml-auto md:mx-0 px-5 xl:w-[82%] flex">
-            <div className="col-span-12 md:pb-0 mb-5 w-[80%] mr-5">
-                <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 md:w-full">
+        <div className="md:ml-auto md:mx-0 px-5 xl:w-[82%] md:flex">
+            <div className="col-span-12 md:pb-0 mb-5 md:w-full w-[100%] mr-5">
+                <div className="grid gap-3 grid-cols-1 lg:grid-cols-2 md:w-full">
+
                     <div className="bg-white shadow-lg rounded-xl p-5 lg:col-span-1">
-                        <div className="flex items-center justify-between w-full">
-                            <div className="p-1 pb-5">
-                                <h1 className="font-bold text-lg">Valor do Estoque por Fabricante</h1>
-                            </div>
-                        </div>
+                        <h1 className="font-bold text-lg pb-3">Valor do Estoque por Fabricante</h1>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
                                 data={sortedStockData}
@@ -62,135 +31,62 @@ const DasBoardStock = () => {
                                 <YAxis dataKey="fabricante" type="category" />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
+                                <Bar dataKey="valor_estoque" fill="#3B82F6" barSize={20} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
                     <div className="bg-white shadow-lg rounded-xl p-5 lg:col-span-1">
-                        <div className="flex items-center justify-between w-full">
-                            <div className="p-1 pb-5">
-                                <h1 className="font-bold text-lg">Quantidade de estoque por localização</h1>
-                            </div>
-                        </div>
+                        <h1 className="font-bold text-lg pb-3">Quantidade de estoque por localização</h1>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
                                 data={sortedStockData}
                                 layout="vertical"
-                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                margin={{ top: 20, right: 10, left: 20, bottom: 2 }}
                             >
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis type="number" />
-                                <YAxis dataKey="fabricante" type="category" />
+                                <YAxis dataKey="localizacao" type="category" tick={{ fontSize: 16 }} tickFormatter={(value) => {
+                                    const maxLength = 15;
+                                    if (value.length > maxLength) {
+
+                                        return `${value.substring(0, maxLength)}...`;
+                                    }
+                                    return value;
+                                }} />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
+                                <Bar dataKey="quantidade" fill="#3B82F6" barSize={10} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
 
-                    <div className="bg-white shadow-lg rounded-xl p-5 lg:col-span-2">
-                        <div className="flex items-center justify-between w-full">
-                            <div className="p-1 pb-5">
-                                <h1 className="font-bold text-lg">Itens com Estoque Mínimo</h1>
-                            </div>
-                        </div>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart
-                                data={sortedStockData}
-                                layout="vertical"
-                                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis type="number" />
-                                <YAxis dataKey="fabricante" type="category" />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-
+                    <StockTable />
 
                 </div>
-
             </div>
-            <div className="w-2/5 flex bg-white shadow-lg p-5 flex-col">
-                <div className="">
-                    <h1 className="font-bold text-lg">Top 10 Produtos</h1>
+
+            <div className="md:w-2/5 flex bg-white rounded-lg shadow-lg mb-5 p-5 flex-col">
+                <h1 className="font-bold text-lg mb-3">Top 10 Produtos</h1>
+                <div className="w-full h-[500px]">
+                    <ResponsiveContainer width="100%" height={790}>
+                        <BarChart
+                            layout="vertical"
+                            data={topTenProducts}
+                            margin={{ top: 10, right: 10, left: 20, bottom: 5 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis type="number" />
+                            <YAxis dataKey="fabricante" type="category" />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="valor_estoque" fill="#3B82F6" barSize={50} />
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
-
-                <ResponsiveContainer width="100%" height={730}>
-                    <BarChart
-                        data={sortedStockData}
-                        layout="vertical"
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis type="number" />
-                        <YAxis dataKey="fabricante" type="category" />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
-                    </BarChart>
-                </ResponsiveContainer>
-
             </div>
         </div >
 
-
-        // <div className="md:ml-auto md:mx-0 px-5 xl:w-[82%] ">
-        //     <div className="col-span-12 md:pb-0 mb-5">
-        //         <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 md:w-4/5">
-
-        //             <div className="bg-white shadow-lg rounded-xl p-5" id="chartpie">
-
-        //                 <div className='flex items-center justify-between w-full'>
-        //                     <div className='p-1 pb-5'>
-        //                         <h1 className='font-bold text-lg'>Valor do Estoque por Fabricante</h1>
-        //                     </div>
-        //                 </div>
-        //                 <ResponsiveContainer width="100%" height={300}>
-        //                     <BarChart
-        //                         data={sortedStockData}
-        //                         layout="vertical"
-        //                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        //                     >
-        //                         <CartesianGrid strokeDasharray="3 3" />
-        //                         <XAxis type="number" />
-        //                         <YAxis dataKey="fabricante" type="category" />
-        //                         <Tooltip />
-        //                         <Legend />
-        //                         <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
-        //                     </BarChart>
-        //                 </ResponsiveContainer>
-        //             </div>
-
-        //             <div className="bg-white shadow-lg rounded-xl p-5" id="chartpie">
-
-        //                 <div className='flex items-center justify-between w-full'>
-        //                     <div className='p-1 pb-5'>
-        //                         <h1 className='font-bold text-lg'>Valor do Estoque por Fabricante</h1>
-        //                     </div>
-        //                 </div>
-        //                 <ResponsiveContainer width="100%" height={300}>
-        //                     <BarChart
-        //                         data={sortedStockData}
-        //                         layout="vertical"
-        //                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        //                     >
-        //                         <CartesianGrid strokeDasharray="3 3" />
-        //                         <XAxis type="number" />
-        //                         <YAxis dataKey="fabricante" type="category" />
-        //                         <Tooltip />
-        //                         <Legend />
-        //                         <Bar dataKey="valorEstoque" fill="#3B82F6" barSize={20} />
-        //                     </BarChart>
-        //                 </ResponsiveContainer>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
     )
 }
 

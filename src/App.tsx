@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SideBar from './components/SideBar';
 import DashBoard from './page/DashBoard';
 import StockProducts from './page/StockProducts';
+import AlertStock from './components/AlertStock';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/' element={<DashBoard />} />
         <Route path='/stock' element={<StockProducts />} />
       </Routes>
+      <AlertStock />
     </Router>
   );
 }

@@ -7,3 +7,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.react-datepicker__header.react-datepicker__header--custom {
+  background-color: #fff;
+  padding: 1em;
+  /* border-bottom: 1px solid #cecece; */
+  border-bottom: none;
+}
+
+.react-datepicker__month-container {}
+
+/* Arquivo de Estilos CSS */
+.react-datepicker__month-container {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+.react-datepicker {
+  border-radius: 8em;
+}

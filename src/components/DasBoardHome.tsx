@@ -1,30 +1,12 @@
-import React, { useState } from 'react'
+// Bibliotecas
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+// Utils
+import { ToggleFilterBtn } from '../utils/ToggleFilterBtn';
+
 const DasBoardHome = () => {
-    const [filterState, setFilterState] = useState({
-        ProfitFilter: false,
-        ClientsFilter: false,
-        SalesFilter: false
-    })
-
-    const HandfilterState = (filter: 'ProfitFilter' | 'ClientsFilter' | 'SalesFilter') => {
-        const updatesSelectionFilter = {
-            ProfitFilter: false,
-            ClientsFilter: false,
-            SalesFilter: false
-        };
-
-        updatesSelectionFilter[filter] = true;
-
-        console.log(updatesSelectionFilter[filter])
-
-        setFilterState(prevState => ({
-            ...prevState,
-            [filter]: !prevState[filter]
-        }));
-
-    };
+    // Desativa e ativa Dropwdown do filter
+    const { filterState, HandfilterState } = ToggleFilterBtn()
 
     const data = [
         { name: 'Page A', uv: 400, pv: 2400, amt: 2400 },
@@ -129,8 +111,6 @@ const DasBoardHome = () => {
     ];
 
     // console.log(filterState)
-
-    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#FF6663', '#00FF89', '#FF00AA', '#C603FF', '#A9FF03', '#FFF733', '#007BFF', '#FFAD05', '#12FF10'];
 
     return (
         <div className="md:ml-auto md:mx-0 px-5 xl:w-[82%] ">
@@ -274,7 +254,7 @@ const DasBoardHome = () => {
 
                         </div>
 
-                        <ResponsiveContainer width="100%" height={220}>
+                        <ResponsiveContainer width="100%" height={250}>
                             <LineChart
                                 data={dadosVendas}
                                 margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
