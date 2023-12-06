@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <SideBar />
-      <main className="bg-gray-100 flex flex-col w-full h-[100vh] md:overflow-hidden overflow-auto">
+      <main className="bg-gray-100 flex flex-col w-full h-[100vh] lg:overflow-auto xl:overflow-hidden">
         <Routes>
           <Route path='/' element={<DashBoard />} />
           <Route path='/stock' element={<StockProducts />} />
