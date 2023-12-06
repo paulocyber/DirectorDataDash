@@ -11,12 +11,14 @@ function App() {
   return (
     <Router>
       <SideBar />
-      <Routes>
-        <Route path='/' element={<DashBoard />} />
-        <Route path='/stock' element={<StockProducts />} />
-      </Routes>
+      <main className="bg-gray-100 flex flex-col w-full h-[100vh] md:overflow-hidden overflow-auto">
+        <Routes>
+          <Route path='/' element={<DashBoard />} />
+          <Route path='/stock' element={<StockProducts />} />
+        </Routes>
+      </main>
       <AlertStock />
-    </Router>
+    </Router >
   );
 }
 

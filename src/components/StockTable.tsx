@@ -7,17 +7,22 @@ import { formatDate } from './../utils/ApplyMask';
 
 // Atom
 import { useRecoilState } from 'recoil';
-import { TypeFilter } from '../atoms/FilterStateAtom';
+import { FilterValue, LogicOperator, TypeFilter } from '../atoms/FilterStateAtom';
 
 const StockTable = () => {
     const [btnShowColumns, setBtnShowColumns] = useState(false)
+    const [btnCustomFilter, setBtnCustomFilter] = useState(false)
     const [filterType, setFilterType] = useRecoilState(TypeFilter)
+    const [filterValue, setFilterValue] = useRecoilState(FilterValue)
+    const [logicOperator, setLogicOperator] = useRecoilState(LogicOperator)
 
     // Stock Minimo
     const { productsFilters } = FilterLowStocks();
 
     // Desativa e ativa Dropwdown do filter
     const { filterState, HandfilterState } = ToggleFilterBtn()
+
+    console.log("Valor selecionando", filterType)
 
     return (
         <div className="bg-white shadow-lg rounded-xl lg:col-span-2">
@@ -28,7 +33,7 @@ const StockTable = () => {
                 </div>
 
                 <div className="relative mr-5">
-                    <button onClick={() => { HandfilterState("StockLow"); setBtnShowColumns(false) }} id="dropdown-button" className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                    <button onClick={() => { HandfilterState("StockLow"); setBtnShowColumns(false); setBtnCustomFilter(false) }} id="dropdown-button" className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
                         <span className="mr-2 text-sm">Produtos</span>
                         {filterState.StockLow ? (
                             <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
@@ -46,9 +51,10 @@ const StockTable = () => {
                             " absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 md:text-sm text-xs" :
                             "hidden "
                     }>
-                        <button /*onClick={() => SetFilterStock('Filter')}*/ className="w-full px-2 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Filtro</button>
+                        <button onClick={() => { HandfilterState("ProfitFilter"); setBtnCustomFilter(true); }} className="w-full px-2 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Filtro</button>
                         <button onClick={() => { HandfilterState("ProfitFilter"); setBtnShowColumns(true) }} className="px-2 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Mostrar Colunas</button>
                     </div>
+
                     <div className={btnShowColumns ?
                         'absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 w-[280px] flex' :
                         'hidden absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1'
@@ -87,6 +93,61 @@ const StockTable = () => {
 
                         </div>
                     </div>
+
+                    <div className={btnCustomFilter ?
+                        'flex absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 md:w-[520px] w-[210px] flex' :
+                        'hidden absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1'
+                    }>
+                        <div className='w-full md:flex md:flex-row flex-col items-center justify-center'>
+                            <div className='pr-2 pl-2'>
+                                <button onClick={() => setBtnCustomFilter(false)} className='flex rounded-full duration-300 transition-colors py-2 px-2 transform hover:bg-black hover:bg-opacity-25'>
+                                    <svg width="18px" height="18px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M6.75827 17.2426L12.0009 12M17.2435 6.75736L12.0009 12M12.0009 12L6.75827 6.75736M12.0009 12L17.2435 17.2426" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"> </path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className='flex flex-col md:p-2 p-4'>
+                                <p className='font-semibold md:text-sm text-xs'>Colunas</p>
+                                <select
+                                    id="underline_select"
+                                    value={filterType}
+                                    onChange={(e) => setFilterType(e.target.value)}
+                                    className="block py-2.5 px-0 w-full md:text-sm text-xs text-gray-800 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-600 dark:border-gray-700 focus:outline-none focus:border-blue-500 peer"
+                                >
+                                    <option selected>Selecione as colunas</option>
+                                    <option value="US">Produtos</option>
+                                    <option value="CA">Estoque Atual</option>
+                                    <option value="FR">Dia de Recompra</option>
+                                    <option value="DE">Quantidade Recompra</option>
+                                    <option value="DE">Itens Abaixo</option>
+                                </select>
+                            </div>
+
+                            <div className='flex flex-col md:p-2 p-4'>
+                                <p className='font-semibold md:text-sm text-xs'>Operadores</p>
+                                <select
+                                    id="underline_select"
+                                    value={logicOperator}
+                                    onChange={(e) => setLogicOperator(e.target.value)}
+                                    className="block py-2.5 px-0 w-full md:text-sm text-xs text-gray-800 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-600 dark:border-gray-700 focus:outline-none focus:border-blue-500 peer"
+                                >
+                                    <option selected>Selecione operador lógico</option>
+                                    <option value="US">Contém</option>
+                                    <option value="CA">É igual a</option>
+                                    <option value="FR">Começa com</option>
+                                    <option value="DE">Termina com</option>
+                                    <option value="DE">Itens Abaixo</option>
+                                </select>
+                            </div>
+
+                            <div className='flex flex-col md:p-2 p-4'>
+                                <p className='font-semibold text-sm'>valor</p>
+                                <input value={filterValue} onChange={(e) => setFilterValue(e.target.value)} type="search" id="floating_standard" className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <section className="container  mx-auto px-3 font-mono h-[420px]">
@@ -101,7 +162,7 @@ const StockTable = () => {
 
                                             <div className='flex'>
                                                 <span className='flex items-center w-full'>Produtos</span>
-                                                <button onClick={() => setFilterType('ShortByAscProducts')} className="hover:bg-black hover:bg-opacity-25 flex items-center rounded-full duration-300 transition-colors py-2 px-2">
+                                                <button onClick={() => setFilterType('ShortByAscProducts')} className="hover:bg-black hover:bg-opacity-25 flex items-center py-2 px-2">
                                                     <svg width="13px" height="13px" viewBox="0 0 24 24" stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg" color="#fff">
                                                         <path d="M12 21L12 3M12 3L20.5 11.5M12 3L3.5 11.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                                     </svg>

@@ -15,14 +15,13 @@ const SideBar = () => {
   const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
 
   return (
-
     <div className="bg-gray-100">
-      <div className={toggleMenuClosed ? "transition-all ease-in-out duration-300 md:static xl:fixed medium-screen:fixed fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 md:z-0 z-50" : ""}>
+      <div className={toggleMenuClosed ? "transition-all ease-in-out duration-300 md:static xl:fixed medium-screen:fixed fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 md:z-50 z-50" : ""}>
         <aside
           className={
             toggleMenuClosed
-              ? "small-screen:w-60 bg-gradient-to-br from-red-400 to-red-800 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0"
-              : "bg-gradient-to-br from-red-700 to-red-400 -translate-x-80 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0"
+              ? "small-screen:w-60 bg-gradient-to-br from-red-400 to-red-800 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 "
+              : "bg-gradient-to-br from-red-700 to-red-400 -translate-x-80 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] lower-resolution:w-60 w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 "
           }>
           <div className="relative border-b border-white/20">
             <div className="flex items-center justify-center mt-10">

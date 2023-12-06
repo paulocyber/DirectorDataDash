@@ -1,12 +1,37 @@
 // Bibliotecas
 import InventoryIcon from '@mui/icons-material/Inventory';
 
-const InfoCardDisplay = () => {
+// Ultils
+import { TotalProductsinStock } from '../utils/FunctionStock';
+import { formatCurrency, formatValue } from '../utils/ApplyMask';
+
+// Dados
+import DataVendas from './../data/DataVendas.json'
+
+const InfoCardDasboard = () => {
+    // QUANTIDADE ESTOQUE
+    const quantityInStocks = TotalProductsinStock();
+
+    // Total de vendas
+    const totalVendas = () => {
+        const valueTotalVendas = DataVendas.vendas.map(
+            (vendas) => vendas.total_venda
+        )
+        let ValueTotalVendas = 0
+        for (let contador = 0; contador < valueTotalVendas.length; contador++) {
+            ValueTotalVendas += valueTotalVendas[contador]
+        }
+        return ValueTotalVendas
+    }
+
+    const ValueTotalVendas = totalVendas()
+    console.log(ValueTotalVendas)
     return (
         <div className="md:ml-auto md:mx-0 md:mx-2 px-10 xl:w-[82%] w-full">
             <div className="mt-5 ">
                 <div className="mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-                    <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md">
+
+                    <div className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md z-10">
                         <div className="bg-gradient-to-br from-gray-600 to-black mx-4 rounded-xl overflow-hidden text-white shadow-red-500/40 shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-6 h-6 text-white">
                                 <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z"></path>
@@ -31,7 +56,7 @@ const InfoCardDisplay = () => {
                         </div>
                         <div className="p-4 text-right">
                             <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">Estoque</p>
-                            <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">2,300</h4>
+                            <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">{formatValue(quantityInStocks)}</h4>
                         </div>
                         <div className="border-t border-blue-gray-50 p-4">
                             <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
@@ -64,8 +89,8 @@ const InfoCardDisplay = () => {
                             </svg>
                         </div>
                         <div className="p-4 text-right">
-                            <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">Vendas</p>
-                            <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">R$ 103,430</h4>
+                            <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">Total de  Vendas</p>
+                            <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">{formatCurrency(ValueTotalVendas)}</h4>
                         </div>
                         <div className="border-t border-blue-gray-50 p-4">
                             <p className="block antialiased font-sans text-base leading-relaxed font-normal text-blue-gray-600">
@@ -75,9 +100,11 @@ const InfoCardDisplay = () => {
                     </div>
 
                 </div>
+
             </div>
+
         </div>
     )
 }
 
-export default InfoCardDisplay
+export default InfoCardDasboard

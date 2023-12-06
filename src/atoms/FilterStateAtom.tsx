@@ -26,3 +26,24 @@ const TypeFilter = atom({
 })
 
 export { TypeFilter }
+
+const FilterValue = atom({
+    key: "FilterValue",
+    default: ""
+})
+
+export { FilterValue }
+
+const LogicOperator = atom({
+    key: "LogicOperator",
+    default: ""
+})
+
+export { LogicOperator }
+
+const SelectionColumns = atom({
+    key: "SelectionColumns",
+    default: ""
+})
+
+export { SelectionColumns }

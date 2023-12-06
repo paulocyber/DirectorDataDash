@@ -13,7 +13,7 @@ const NavBar: FunctionComponent<NavBarProps> = ({ setToggleMenuClosed, toggleMen
 
     console.log(url.pathname.substring(1))
     return (
-        <div className="p-4 xl:ml-80">
+        <div className="p-4 xl:ml-60 2xl:ml-80">
             <nav className="block w-full max-w-full bg-red-500 text-white shadow-none rounded-xl transition-all px-3 py-2 overflow-auto">
                 <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
                     <div className="capitalize">

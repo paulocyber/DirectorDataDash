@@ -1,18 +1,23 @@
 // Componentes
 import DasBoardHome from "../components/DasBoardHome";
 import FilterDate from "../components/FilterDate";
-import InfoCardDisplay from "../components/InfoCardDisplay"
+import InfoCardDasboard from "../components/InfoCardDisplay";
+
 
 // Bibliotecas
 
+import { useState } from "react";
 
 const DashBoard = () => {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const dateFormated = selectedDate && selectedDate.toLocaleDateString('en-US')
+
     return (
-        <main className="bg-gray-100 flex flex-col w-full h-[100vh] md:overflow-hidden overflow-auto">
-            <InfoCardDisplay />
-            <FilterDate />
-            <DasBoardHome />
-        </main>
+        <>
+            <InfoCardDasboard />
+            <FilterDate selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+            <DasBoardHome dateFormated={dateFormated} />
+        </>
     )
 }
 

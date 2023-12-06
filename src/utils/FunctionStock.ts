@@ -41,7 +41,6 @@ type OrderingOptions = {
 };
 
 export const FilterLowStocks = (): { productsFilters: Product[] } => {
-  const filterStateBtn = useRecoilValue(FilterStateBtnAtom);
   const filterType = useRecoilValue(TypeFilter);
 
   const orderingOptions: OrderingOptions = {
@@ -65,6 +64,7 @@ export const FilterLowStocks = (): { productsFilters: Product[] } => {
 
   const applySort = (data: Product[], type: string): Product[] => {
     if (orderingOptions[type]) {
+      console.log("Tipo", orderingOptions[type]);
       return [...data].sort(orderingOptions[type]);
     } else {
       return data.filter(
