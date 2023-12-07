@@ -19,7 +19,7 @@ const DasBoardStock = () => {
                 <div className="grid gap-3 grid-cols-1 lg:grid-cols-2 md:w-full">
 
                     <div className="bg-white shadow-lg rounded-xl p-5 lg:col-span-1">
-                        <h1 className="font-bold text-lg pb-3">Valor do Estoque por Fabricante</h1>
+                        <h1 className='font-bold md:text-lg text-sm'>Lucro por Produto</h1>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
                                 data={sortedStockData}
@@ -37,7 +37,7 @@ const DasBoardStock = () => {
                     </div>
 
                     <div className="bg-white shadow-lg rounded-xl p-5 lg:col-span-1">
-                        <h1 className="font-bold text-lg pb-3">Quantidade de estoque por localização</h1>
+                        <h1 className='font-bold md:text-lg text-sm'>Lucro por Produto</h1>
                         <ResponsiveContainer width="100%" height={300}>
                             <BarChart
                                 data={sortedStockData}
@@ -67,8 +67,8 @@ const DasBoardStock = () => {
             </div>
 
             <div className="md:w-2/5 flex bg-white rounded-lg shadow-lg mb-5 p-5 flex-col">
-                <h1 className="font-bold text-lg mb-3">Top 10 Produtos</h1>
-                <div className="w-full h-[500px]">
+                <h1 className='font-bold md:text-lg text-sm'>Lucro por Produto</h1>
+                <div className="w-full ">
                     <ResponsiveContainer width="100%" height={790}>
                         <BarChart
                             layout="vertical"
