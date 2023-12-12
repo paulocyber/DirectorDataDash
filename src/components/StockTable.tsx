@@ -24,6 +24,7 @@ const StockTable = () => {
         { id: 5, produtos: 'Produto sdx', quantidade: 100, dia_recompra: '09/01/2024', quantidade_recompra: 30, itens_abaixo_minimo: 150 },
         { id: 6, produtos: 'Produto qw5', quantidade: 130, dia_recompra: '11/01/2024', quantidade_recompra: 40, itens_abaixo_minimo: 180 },
         { id: 7, produtos: 'Produto zxs', quantidade: 160, dia_recompra: '05/06/2023', quantidade_recompra: 90, itens_abaixo_minimo: 240 },
+        { id: 8, produtos: 'Produto axc', quantidade: 180, dia_recompra: '25/06/2023', quantidade_recompra: 40, itens_abaixo_minimo: 60 },
     ]
 
     return (
