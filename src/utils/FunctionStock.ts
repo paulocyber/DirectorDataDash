@@ -34,6 +34,8 @@ type Product = {
   dia_recompra: string;
   quantidade_recompra: number;
   itens_abaixo_minimo: number;
+  valor_estoque: number;
+  valor_recompra: number;
 };
 
 type OrderingOptions = {
@@ -75,4 +77,43 @@ export const FilterLowStocks = (): { productsFilters: Product[] } => {
 
   const productsFilters: Product[] = applySort(DataStock.estoque, filterType);
   return { productsFilters };
+};
+
+type ProfitDetail = {
+  produto: string;
+  lucro: number;
+  quantidade: number;
+  valor_estoque: number;
+  valor_recompra: number;
+  dia_recompra: string;
+  quantidade_recompra: number;
+  itens_abaixo_minimo: number;
+};
+
+export const calculateProfit = (): ProfitDetail[] => {
+  const products = DataStock.estoque;
+
+  const profits: ProfitDetail[] = [];
+
+  for (const product of products) {
+    const lucro =
+      (product.valor_recompra - product.valor_estoque) * product.quantidade;
+
+    const profitDetail: ProfitDetail = {
+      produto: product.produto,
+      lucro,
+      quantidade: product.quantidade,
+      valor_estoque: product.valor_estoque,
+      valor_recompra: product.valor_recompra,
+      dia_recompra: product.dia_recompra,
+      quantidade_recompra: product.quantidade_recompra,
+      itens_abaixo_minimo: product.itens_abaixo_minimo,
+    };
+
+    profits.push(profitDetail);
+  }
+
+  console.log("Profits:", profits);
+
+  return profits;
 };
