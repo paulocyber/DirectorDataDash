@@ -1,0 +1,122 @@
+[
+    {
+        "Dv.Number": "1/526002/4/9",
+        "Customer": "João Silva",
+        "Attendant": "Maria Souza",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T10:00:00",
+        "Dv.Value": 100.50
+    },
+    {
+        "Dv.Number": "1/495113/4/8",
+        "Customer": "Ana Oliveira",
+        "Attendant": "Pedro Santos",
+        "Seller": "Luiza Mendonça",
+        "Date.Attendance": "2024-02-23T11:30:00",
+        "Dv.Value": 150.75
+    },
+    {
+        "Dv.Number": "1/498126/4/",
+        "Customer": "José Pereira",
+        "Attendant": "Carla Mendes",
+        "Seller": "Fernanda Silva",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 200.00
+    },
+    {
+        "Dv.Number": "1/525337/4/3",
+        "Customer": "João Silva",
+        "Attendant": "Carla Mendes",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 75.25
+    },
+    {
+        "Dv.Number": "1/526003/4/9",
+        "Customer": "João Silva",
+        "Attendant": "Maria Souza",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T10:00:00",
+        "Dv.Value": 125.00
+    },
+    {
+        "Dv.Number": "1/495114/4/8",
+        "Customer": "Ana Oliveira",
+        "Attendant": "Pedro Santos",
+        "Seller": "Luiza Mendonça",
+        "Date.Attendance": "2024-02-23T11:30:00",
+        "Dv.Value": 180.50
+    },
+    {
+        "Dv.Number": "1/498127/4/",
+        "Customer": "José Pereira",
+        "Attendant": "Carla Mendes",
+        "Seller": "Fernanda Silva",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 220.75
+    },
+    {
+        "Dv.Number": "1/525338/4/3",
+        "Customer": "João Silva",
+        "Attendant": "Carla Mendes",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 95.00
+    },
+    {
+        "Dv.Number": "1/526004/4/9",
+        "Customer": "João Silva",
+        "Attendant": "Maria Souza",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T10:00:00",
+        "Dv.Value": 130.25
+    },
+    {
+        "Dv.Number": "1/495115/4/8",
+        "Customer": "Ana Oliveira",
+        "Attendant": "Pedro Santos",
+        "Seller": "Luiza Mendonça",
+        "Date.Attendance": "2024-02-23T11:30:00",
+        "Dv.Value": 190.00
+    },
+    {
+        "Dv.Number": "1/498128/4/",
+        "Customer": "José Pereira",
+        "Attendant": "Carla Mendes",
+        "Seller": "Fernanda Silva",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 205.50
+    },
+    {
+        "Dv.Number": "1/525339/4/3",
+        "Customer": "João Silva",
+        "Attendant": "Carla Mendes",
+        "Seller": "José Sales",
+        "Date.Attendance": "2024-02-23T14:45:00",
+        "Dv.Value": 85.75
+    },
+    {
+        "Dv.Number": "1/523466/4/2",
+        "Customer": "Maria Oliveira",
+        "Attendant": "José Almeida",
+        "Seller": "Mariana Santos",
+        "Date.Attendance": "2024-02-23T15:30:00",
+        "Dv.Value": 300.00
+    },
+    {
+        "Dv.Number": "1/524579/4/5",
+        "Customer": "Antônio Santos",
+        "Attendant": "Ana Costa",
+        "Seller": "Carlos Silva",
+        "Date.Attendance": "2024-02-23T16:15:00",
+        "Dv.Value": 250.50
+    },
+    {
+        "Dv.Number": "1/4324579/41/52",
+        "Customer": "Rafael Santos",
+        "Attendant": "Ana Costa",
+        "Seller": "Carlos Silva",
+        "Date.Attendance": "2024-01-23T15:15:00",
+        "Dv.Value": 175.25
+    }
+]

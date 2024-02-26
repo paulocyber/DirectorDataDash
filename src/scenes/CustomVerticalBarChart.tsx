@@ -13,17 +13,18 @@ import {
 // Tipagem;
 interface DataProps {
   data: any[];
-  DescriptionData: String;
-  typeData: String;
-  InformationData: String;
+  DescriptionData: string;
+  typeData: "category";
+  InformationData: string;
 }
 
-const CustomBarChart: React.FC<DataProps> = ({
+const CustomVerticalBarChart: React.FC<DataProps> = ({
   data,
   DescriptionData,
   typeData,
   InformationData,
 }) => {
+
   return (
     <ResponsiveContainer>
       <BarChart
@@ -32,7 +33,7 @@ const CustomBarChart: React.FC<DataProps> = ({
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis type="number" />
+        <XAxis />
         <YAxis dataKey={DescriptionData} type={typeData} />
         <Tooltip />
         <Legend />
@@ -42,4 +43,4 @@ const CustomBarChart: React.FC<DataProps> = ({
   );
 };
 
-export default CustomBarChart;
+export default CustomVerticalBarChart;

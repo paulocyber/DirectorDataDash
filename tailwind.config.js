@@ -10,6 +10,7 @@ module.exports = {
         "small-screen": { max: "385px" },
         "medium-screen": { max: "1051px" },
         "lower-resolution": { max: "1660px" },
+        "screen-sx": { max: "637px" },
       },
     },
   },

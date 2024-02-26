@@ -14,7 +14,7 @@
     },
     {
       "id": 2,
-      "produto": "Produto as",
+      "produto": "Smartphone XYZ",
       "fabricante": "Fabricante Y",
       "quantidade": 80,
       "localizacao": "Corredor B, Prateleira 2",
@@ -24,10 +24,9 @@
       "valor_estoque": 3200,
       "valor_recompra": 1200
     },
-
     {
       "id": 3,
-      "produto": "Produto fg",
+      "produto": "Computador Portátil ABC",
       "fabricante": "Fabricante Z",
       "quantidade": 120,
       "localizacao": "Corredor C, Prateleira 3",
@@ -39,7 +38,7 @@
     },
     {
       "id": 4,
-      "produto": "Produto vb",
+      "produto": "Câmera Digital Pro",
       "fabricante": "Fabricante Q",
       "quantidade": 180,
       "localizacao": "Corredor E, Prateleira 5",
@@ -51,7 +50,7 @@
     },
     {
       "id": 5,
-      "produto": "Produto gr",
+      "produto": "Fones de Ouvido Ultra",
       "fabricante": "Fabricante R",
       "quantidade": 90,
       "localizacao": "Corredor F, Prateleira 6",
@@ -63,7 +62,7 @@
     },
     {
       "id": 6,
-      "produto": "Produto c",
+      "produto": "Tablet Super Rápido",
       "fabricante": "Fabricante S",
       "quantidade": 110,
       "localizacao": "Corredor G, Prateleira 7",
@@ -75,7 +74,7 @@
     },
     {
       "id": 7,
-      "produto": "Produto de",
+      "produto": "Smartwatch Premium",
       "fabricante": "Fabricante T",
       "quantidade": 30,
       "localizacao": "Corredor H, Prateleira 8",
@@ -87,7 +86,7 @@
     },
     {
       "id": 8,
-      "produto": "Produto asdc",
+      "produto": "Drone de Alta Performance",
       "fabricante": "Fabricante U",
       "quantidade": 24,
       "localizacao": "Corredor I, Prateleira 9",
@@ -99,7 +98,7 @@
     },
     {
       "id": 9,
-      "produto": "Produto vfds",
+      "produto": "Console de Jogos NextGen",
       "fabricante": "Fabricante V",
       "quantidade": 50,
       "localizacao": "Corredor J, Prateleira 10",
@@ -111,7 +110,7 @@
     },
     {
       "id": 10,
-      "produto": "Produto aqw",
+      "produto": "Impressora Multifuncional Pro",
       "fabricante": "Fabricante W",
       "quantidade": 120,
       "localizacao": "Corredor K, Prateleira 11",
@@ -123,7 +122,7 @@
     },
     {
       "id": 11,
-      "produto": "Produto sdx",
+      "produto": "Teclado Mecânico RGB",
       "fabricante": "Fabricante Z1",
       "quantidade": 175,
       "localizacao": "Corredor L, Prateleira 12",
@@ -135,7 +134,7 @@
     },
     {
       "id": 12,
-      "produto": "Produto gh",
+      "produto": "Monitor Curvo de Alta Resolução",
       "fabricante": "Fabricante A1",
       "quantidade": 180,
       "localizacao": "Corredor M, Prateleira 13",
@@ -147,7 +146,7 @@
     },
     {
       "id": 13,
-      "produto": "Produto qw5",
+      "produto": "Roteador Wi-Fi Avançado",
       "fabricante": "Fabricante B1",
       "quantidade": 100,
       "localizacao": "Corredor N, Prateleira 14",
@@ -159,7 +158,7 @@
     },
     {
       "id": 14,
-      "produto": "Produto zxs",
+      "produto": "Câmera de Segurança Inteligente",
       "fabricante": "Fabricante C1",
       "quantidade": 130,
       "localizacao": "Corredor O, Prateleira 15",
@@ -171,7 +170,7 @@
     },
     {
       "id": 15,
-      "produto": "Produto pqws",
+      "produto": "Smart Home Hub",
       "fabricante": "Fabricante G1",
       "quantidade": 150,
       "localizacao": "Corredor Q, Prateleira 17",
@@ -183,7 +182,7 @@
     },
     {
       "id": 16,
-      "produto": "Produto cva",
+      "produto": "Óculos de Realidade Virtual",
       "fabricante": "Fabricante H1",
       "quantidade": 50,
       "localizacao": "Corredor R, Prateleira 18",
@@ -195,7 +194,7 @@
     },
     {
       "id": 17,
-      "produto": "Produto xsa",
+      "produto": "Caixa de Som Bluetooth Portátil",
       "fabricante": "Fabricante I1",
       "quantidade": 75,
       "localizacao": "Corredor S, Prateleira 19",
@@ -207,7 +206,7 @@
     },
     {
       "id": 18,
-      "produto": "Produto qws",
+      "produto": "Carregador Wireless",
       "fabricante": "Fabricante J1",
       "quantidade": 40,
       "localizacao": "Corredor T, Prateleira 20",
@@ -219,7 +218,7 @@
     },
     {
       "id": 19,
-      "produto": "Produto as",
+      "produto": "Robô Aspirador de Pó Inteligente",
       "fabricante": "Fabricante N1",
       "quantidade": 60,
       "localizacao": "Corredor X, Prateleira 24",
@@ -231,7 +230,7 @@
     },
     {
       "id": 20,
-      "produto": "Produto vc",
+      "produto": "Monitor Cardíaco Fitness",
       "fabricante": "Fabricante gb",
       "quantidade": 600,
       "localizacao": "Corredor A, Prateleira 50",

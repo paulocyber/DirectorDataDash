@@ -1,24 +1,26 @@
 // Bibliotecas
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Pages
-import SideBar from './components/SideBar';
-import DashBoard from './page/DashBoard';
-import StockProducts from './page/StockProducts';
-import AlertStock from './components/AlertStock';
+import SideBar from "./components/Menu/SideBar";
+import AlertStock from "./components/AlertStock";
+import DashBoardPage from "./page/DashBoardPage";
+import DavsReport from "./page/DavsReport";
 
 function App() {
   return (
     <Router>
       <SideBar />
-      <main className="bg-gray-100 flex flex-col w-full lg:overflow-auto xl:overflow-hidden">
-        <Routes>
-          <Route path='/' element={<DashBoard />} />
-          <Route path='/stock' element={<StockProducts />} />
-        </Routes>
+      <main className="bg-[#edf3fb] flex flex-col w-full lg:overflow-auto xl:overflow-hidden h-screen">
+        <div className="md:ml-auto md:mx-0 xl:w-[82%] md:flex flex-col w-full px-3">
+          <Routes>
+            <Route path="/" element={<DavsReport />} />
+            <Route path="/dashboard" element={<DashBoardPage />} />
+          </Routes>
+        </div>
       </main>
-      <AlertStock />
-    </Router >
+      {/* <AlertStock /> */}
+    </Router>
   );
 }
 

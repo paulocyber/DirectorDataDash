@@ -1,214 +1,317 @@
 // Bibliotecas
-import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-// Dadso
-import DataVendas from './../data/DataVendas.json'
-import dataStock from './../data/DataStock.json'
+// Dados
+import salesData from "./../data/BasesVendas.json";
+import { useEffect, useState } from "react";
 
-// Utils
-import { ToggleFilterBtn } from '../utils/ToggleFilterBtn';
+// Componentes
 
-// React
-import { FunctionComponent } from 'react';
+// Tipagem
+type Pedido = {
+  Data: string;
+  Pedido?: string; // Torna a propriedade Pedido opcional
+  "Código Produto": string;
+  Produto: string;
+  "Qtde. Pedido": number;
+};
 
-// Tipagem 
-interface DashBoardProps {
-    dateFormated: string | null
-}
+type ProdutoVendido = {
+  nome: string;
+  quantidade: number;
+};
 
-const DasBoardHome: FunctionComponent<DashBoardProps> = ({ dateFormated }) => {
-    // Desativa e ativa Dropwdown do filter
-    const { filterState, HandfilterState } = ToggleFilterBtn()
-    console.log(dateFormated)
+const DasBoardHome = () => {
+  const [produtosMaisVendidos, setProdutosMaisVendidos] = useState<
+    ProdutoVendido[]
+  >([]);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const dataSales: Pedido[] = salesData.Pedidos;
 
-    // Vendas
-    const salesBySeller: { [key: string]: number } = {};
-    DataVendas.vendas.forEach((sale: any) => {
-        if (salesBySeller[sale.vendedor]) {
-            salesBySeller[sale.vendedor] += sale.total_venda;
+  useEffect(() => {
+    const calcularProdutosMaisVendidos = () => {
+      const vendasPorProduto: { [codigoProduto: string]: ProdutoVendido } = {};
+
+      dataSales.forEach((pedido) => {
+        const codigoProduto = pedido["Código Produto"];
+
+        if (vendasPorProduto[codigoProduto]) {
+          vendasPorProduto[codigoProduto].quantidade += pedido["Qtde. Pedido"];
         } else {
-            salesBySeller[sale.vendedor] = sale.total_venda;
+          vendasPorProduto[codigoProduto] = {
+            nome: pedido.Produto,
+            quantidade: pedido["Qtde. Pedido"],
+          };
         }
-    });
+      });
 
-    const chartData = Object.keys(salesBySeller).map((seller) => ({
-        vendedor: seller,
-        totalVendas: salesBySeller[seller],
-    }));
+      const produtosOrdenados: ProdutoVendido[] = Object.values(
+        vendasPorProduto
+      ).sort((produtoA, produtoB) => produtoB.quantidade - produtoA.quantidade);
 
+      setProdutosMaisVendidos(produtosOrdenados);
+    };
 
-    // console.log("Lucro por vendas ", dadosLucro)
+    calcularProdutosMaisVendidos();
+  }, []);
 
-    return (
-        <div className="md:ml-auto md:mx-0 px-5 xl:w-[82%] ">
-            <div className="col-span-12 md:pb-0 mb-5">
-                <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+  const handleProductClick = (productName: string) => {
+    const isSelected = selectedProducts.includes(productName);
+    let updatedSelection: string[] = [];
 
-                    <div className="bg-white shadow-lg rounded-xl p-5" id="chartpie">
+    if (isSelected) {
+      updatedSelection = selectedProducts.filter(
+        (item) => item !== productName
+      );
+    } else {
+      updatedSelection = [...selectedProducts, productName];
+    }
 
-                        <div className='flex items-center justify-between w-full'>
-                            <div className='p-1 pb-5'>
-                                <h1 className='font-bold md:text-lg text-sm'>Lucro por Produto</h1>
-                            </div>
+    setSelectedProducts(updatedSelection);
+  };
 
-                            <div className="relative">
-                                <button onClick={() => { HandfilterState("ProfitFilter") }} id="dropdown-button" className="inline-flex justify-center items-center w-full md:px-3 px-2 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-                                    <span className="mr-2 md:text-sm text-xs">Produtos</span>
-                                    {filterState.ProfitFilter ? (
-                                        <svg className='md:w-[20px] md:h-[20px] w-[18px] h-[18px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM16.0303 13.0303L12.5303 16.5303C12.2374 16.8232 11.7626 16.8232 11.4697 16.5303L7.96967 13.0303C7.67678 12.7374 7.67678 12.2626 7.96967 11.9697C8.26256 11.6768 8.73744 11.6768 9.03033 11.9697L11.25 14.1893V8C11.25 7.58579 11.5858 7.25 12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V14.1893L14.9697 11.9697C15.2626 11.6768 15.7374 11.6768 16.0303 11.9697C16.3232 12.2626 16.3232 12.7374 16.0303 13.0303Z" fill="#000000"></path>
-                                        </svg>
-                                    ) : (
-                                        <svg className='md:w-[17px] md:h-[17px] w-[14px] h-[14px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path d="M4.0001 3H20.0002C20.5525 3 21.0002 3.44764 21.0002 3.99987L21.0004 5.58569C21.0005 5.85097 20.8951 6.10538 20.7075 6.29295L14.293 12.7071C14.1055 12.8946 14.0001 13.149 14.0001 13.4142L14.0001 19.7192C14.0001 20.3698 13.3887 20.8472 12.7576 20.6894L10.7576 20.1894C10.3124 20.0781 10.0001 19.6781 10.0001 19.2192L10.0001 13.4142C10.0001 13.149 9.89474 12.8946 9.7072 12.7071L3.29299 6.29289C3.10545 6.10536 3.0001 5.851 3.0001 5.58579V4C3.0001 3.44772 3.44781 3 4.0001 3Z" fill="#000000" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    )
-                                    }
-                                </button>
-                                <div id="dropdown-menu" className={
-                                    filterState.ProfitFilter ?
-                                        "absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 md:text-base text-sm" :
-                                        "hidden"
-                                }>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Produtos</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Lucros</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Quantidades Vendidas</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Data</a>
-                                </div>
-                            </div>
+  const filteredData =
+    selectedProducts.length > 0
+      ? produtosMaisVendidos.filter((item) =>
+          selectedProducts.includes(item.nome)
+        )
+      : produtosMaisVendidos;
 
-                        </div>
-                        {/* <ResponsiveContainer width="100%" height={300}>
-                            <BarChart
-                                data={dadosLucro}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="produto" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="lucro" fill="#3B82F6" />
-                            </BarChart>
-                        </ResponsiveContainer> */}
+  const COLORS = [
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+    "#FF8042",
+    "#AF19FF",
+    "#FF195E",
+    "#19FFB1",
+    "#FF5C19",
+    "#196DFF",
+    "#8A2BE2",
+    "#FF1493",
+    "#00FFFF",
+    "#7FFF00",
+    "#FFD700",
+    "#FFA07A",
+    "#20B2AA",
+    "#FF00FF",
+    "#1E90FF",
+    "#FFFF00",
+  ];
 
+  console.log(produtosMaisVendidos);
 
-                    </div>
-
-                    <div className="bg-white shadow-lg rounded-xl p-5" id="chartpie">
-
-                        <div className='flex items-center justify-between w-full'>
-                            <div className='p-1 pb-5'>
-                                <h1 className='font-bold md:text-lg text-sm'>Estoque</h1>
-                            </div>
-
-                            <div className="relative">
-                                <button onClick={() => HandfilterState("ClientsFilter")} id="dropdown-button" className="inline-flex justify-center items-center w-full md:px-4 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-                                    <span className="mr-2 md:text-sm text-xs">Filtros</span>
-
-                                    {filterState.ClientsFilter ? (
-                                        <svg className='md:w-[20px] md:h-[20px] w-[18px] h-[18px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM16.0303 13.0303L12.5303 16.5303C12.2374 16.8232 11.7626 16.8232 11.4697 16.5303L7.96967 13.0303C7.67678 12.7374 7.67678 12.2626 7.96967 11.9697C8.26256 11.6768 8.73744 11.6768 9.03033 11.9697L11.25 14.1893V8C11.25 7.58579 11.5858 7.25 12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V14.1893L14.9697 11.9697C15.2626 11.6768 15.7374 11.6768 16.0303 11.9697C16.3232 12.2626 16.3232 12.7374 16.0303 13.0303Z" fill="#000000"></path>
-                                        </svg>
-                                    ) : (
-                                        <svg className='md:w-[17px] md:h-[17px] w-[14px] h-[14px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path d="M4.0001 3H20.0002C20.5525 3 21.0002 3.44764 21.0002 3.99987L21.0004 5.58569C21.0005 5.85097 20.8951 6.10538 20.7075 6.29295L14.293 12.7071C14.1055 12.8946 14.0001 13.149 14.0001 13.4142L14.0001 19.7192C14.0001 20.3698 13.3887 20.8472 12.7576 20.6894L10.7576 20.1894C10.3124 20.0781 10.0001 19.6781 10.0001 19.2192L10.0001 13.4142C10.0001 13.149 9.89474 12.8946 9.7072 12.7071L3.29299 6.29289C3.10545 6.10536 3.0001 5.851 3.0001 5.58579V4C3.0001 3.44772 3.44781 3 4.0001 3Z" fill="#000000" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    )
-                                    }
-
-                                </button>
-                                <div id="dropdown-menu" className={
-                                    filterState.ClientsFilter ?
-                                        "absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 md:text-base text-sm" :
-                                        "hidden"
-                                }
-                                >
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Produtos</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Lucros</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Quantidades Vendidas</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Data</a>
-                                </div>
-                            </div>
-
-                        </div>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={dataStock.estoque}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="produto" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="quantidade" fill="#8884d8" />
-                            </BarChart>
-                        </ResponsiveContainer>
-
-
-                    </div>
-                </div>
-
-
+  return (
+    <div className="col-span-12 md:pb-0 mb-[4em] w-full">
+      <div className="grid gap-1 grid-cols-1 lg:grid-cols-1 px-5">
+        <div className="bg-white shadow-lg rounded-xl p-5">
+          <div className="flex items-center justify-between w-full mb-5">
+            <div className="p-1 pb-5">
+              <h1 className="font-bold md:text-lg text-sm">
+                Produtos mais vendidos
+              </h1>
             </div>
-            <div className="col-span-12 mt-5 mb-10">
-                <div className="grid gap-2 grid-cols-1 lg:grid-cols-1">
-                    <div className="bg-white shadow-lg rounded-xl p-5" id="chartpie">
-
-                        <div className='flex items-center justify-between w-full'>
-                            <div className='p-1 pb-5'>
-                                <h1 className='font-bold md:text-lg text-sm'>Vendas</h1>
-                            </div>
-
-                            <div className="relative">
-                                <button onClick={() => HandfilterState("SalesFilter")} id="dropdown-button" className="inline-flex justify-center items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
-                                    <span className="mr-2 md:text-sm text-xs">Filtros</span>
-
-                                    {filterState.SalesFilter ? (
-                                        <svg className='md:w-[20px] md:h-[20px] w-[18px] h-[18px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM16.0303 13.0303L12.5303 16.5303C12.2374 16.8232 11.7626 16.8232 11.4697 16.5303L7.96967 13.0303C7.67678 12.7374 7.67678 12.2626 7.96967 11.9697C8.26256 11.6768 8.73744 11.6768 9.03033 11.9697L11.25 14.1893V8C11.25 7.58579 11.5858 7.25 12 7.25C12.4142 7.25 12.75 7.58579 12.75 8V14.1893L14.9697 11.9697C15.2626 11.6768 15.7374 11.6768 16.0303 11.9697C16.3232 12.2626 16.3232 12.7374 16.0303 13.0303Z" fill="#000000"></path>
-                                        </svg>
-                                    ) : (
-                                        <svg className='md:w-[17px] md:h-[17px] w-[14px] h-[14px]' viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000" stroke-width="1.5">
-                                            <path d="M4.0001 3H20.0002C20.5525 3 21.0002 3.44764 21.0002 3.99987L21.0004 5.58569C21.0005 5.85097 20.8951 6.10538 20.7075 6.29295L14.293 12.7071C14.1055 12.8946 14.0001 13.149 14.0001 13.4142L14.0001 19.7192C14.0001 20.3698 13.3887 20.8472 12.7576 20.6894L10.7576 20.1894C10.3124 20.0781 10.0001 19.6781 10.0001 19.2192L10.0001 13.4142C10.0001 13.149 9.89474 12.8946 9.7072 12.7071L3.29299 6.29289C3.10545 6.10536 3.0001 5.851 3.0001 5.58579V4C3.0001 3.44772 3.44781 3 4.0001 3Z" fill="#000000" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    )
-                                    }
-
-                                </button>
-                                <div id="dropdown-menu" className={
-                                    filterState.SalesFilter ?
-                                        "absolute right-0 z-40 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-1 space-y-1 md:text-base text-sm" :
-                                        "hidden"
-                                }>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Produtos</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Lucros</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Quantidades Vendidas</a>
-                                    <a href="#" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">Data</a>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <ResponsiveContainer width="100%" height={250}>
-                            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="vendedor" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="totalVendas" stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
-
-                    </div>
-                </div>
+            <div className="relative">
+              <button className="inline-flex justify-center items-center w-full md:px-3 px-2 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500">
+                <span className="mr-2 md:text-sm text-xs">Produtos</span>
+                <svg
+                  width="20px"
+                  height="20px"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
+                  <path
+                    d="M3 6H21"
+                    stroke="#000000"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M7 12L17 12"
+                    stroke="#000000"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M11 18L13 18"
+                    stroke="#000000"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </button>
             </div>
-        </div >
-    )
-}
+          </div>
+          <div className="md:flex w-full">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Tooltip
+                  formatter={(value, name, props) => (
+                    <>
+                      <p>Produto: {props.payload.nome}</p>{" "}
+                      <p>Quantidade: {value}</p>
+                    </>
+                  )}
+                />
+                <Pie
+                  data={filteredData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius="100%"
+                  fill="#8884d8"
+                  dataKey="quantidade"
+                >
+                  {produtosMaisVendidos.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
 
-export default DasBoardHome
+            <div className="flex flex-col md:w-1/4 h-[280px] overflow-auto">
+              {produtosMaisVendidos.map((entry, index) => (
+                <div
+                  key={`legend-${index}`}
+                  onClick={() => handleProductClick(entry.nome)}
+                  className="flex items-center"
+                >
+                  <div
+                    className={`h-4 w-4 rounded-full mr-2 ${
+                      selectedProducts.includes(entry.nome)
+                        ? "bg-blue-600"
+                        : "bg-gray-300"
+                    }`}
+                  ></div>
+                  <p style={{ fontSize: "12px" }}>{entry.nome}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="py-10">
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                <div className="flex flex-row  border-x-2 border-gray-300 shadow-sm p-4">
+                  <div className="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-blue-100 text-blue-500">
+                    <svg
+                      className="w-7 h-7"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="100"
+                      height="100"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="8" r="7" />
+                      <polygon points="12 15 17 21 7 21 12 15" />
+                    </svg>
+                  </div>
+                  <div className="flex flex-col flex-grow ml-4">
+                    <div className="text-sm text-gray-700 font-semibold">
+                      Melhor vendedor(a)
+                    </div>
+                    <div className="text-sm text-gray-600 font-semibold">
+                      <strong className="text-green-500">Maria</strong>
+                    </div>
+                    <div className="font-bold text-lg ">120</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                <div className="flex flex-row border-r-2 screen-sx:border-x-2 border-gray-300 p-4">
+                  <div className="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-green-100 text-green-500">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col flex-grow ml-4">
+                    <div className="text-sm text-gray-500">Pedidos</div>
+                    <div className="font-bold text-lg">71</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-12 sm:col-span-6 md:col-span-3 w-full">
+                <div className="flex flex-row  border-r-2 screen-sx:border-x-2 border-gray-300 p-4">
+                  <div className="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-orange-100 text-orange-500">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col flex-grow ml-4">
+                    <div className="text-sm text-gray-500">Novos Clientes</div>
+                    <div className="font-bold text-lg">10</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-12 sm:col-span-6 md:col-span-3">
+                <div className="flex flex-row border-r-2 screen-sx:border-x-2 border-gray-300 rounded p-4">
+                  <div className="flex items-center justify-center flex-shrink-0 h-12 w-12 rounded-xl bg-red-100 text-red-500">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col flex-grow ml-4">
+                    <div className="text-sm text-gray-500">
+                      Venda total desse mês
+                    </div>
+                    <div className="font-bold text-lg">15.220,00</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DasBoardHome;
