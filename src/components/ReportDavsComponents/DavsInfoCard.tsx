@@ -14,7 +14,7 @@ import { valuesDavs } from "../../utils/valuesDavs";
 // Utils
 import { formatCurrency } from "../../utils/ApplyMask";
 
-const InfoCardDavs = () => {
+const DavsInfoCard = () => {
   const { valueDav } = valuesDavs();
 
   return (
@@ -85,4 +85,4 @@ const InfoCardDavs = () => {
   );
 };
 
-export default InfoCardDavs;
+export default DavsInfoCard;

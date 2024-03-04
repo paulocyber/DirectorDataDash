@@ -32,9 +32,6 @@ const SideBar = () => {
       >
         <aside
           className={
-            // toggleMenuClosed
-            //   ? "small-screen:w-60 bg-blue-700 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 "
-            //   : "bg-blue-700 -translate-x-80 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] lower-resolution:w-60 w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 "
             toggleMenuClosed
               ? `small-screen:w-60 ${getColorForRoute()} fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 `
               : `${getColorForRoute()} -translate-x-80 fixed inset-0 z-50 my-2 ml-2 h-[calc(100vh-26px)] lower-resolution:w-60 w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 `

@@ -1,14 +1,14 @@
 import React from "react";
 
 // Componentes
-import InfoCardDavs from "../components/ReportDavsComponents/InfoCardDavs";
-import MainDavs from "../components/ReportDavsComponents/MainDavs";
+import DavsInfoCard from "../components/ReportDavsComponents/DavsInfoCard";
+import DavsMainContent from "../components/ReportDavsComponents/DavsMainContent";
 
 const DavsReport = () => {
   return (
     <>
-      <InfoCardDavs />
-      <MainDavs />
+      <DavsInfoCard />
+      <DavsMainContent />
     </>
   );
 };

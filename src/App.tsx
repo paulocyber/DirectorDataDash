@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <SideBar />
-      <main className="bg-[#edf3fb] flex flex-col w-full lg:overflow-auto xl:overflow-hidden h-screen">
+      <main className="bg-[#edf3fb] flex flex-col w-full overflow-auto h-screen">
         <div className="md:ml-auto md:mx-0 xl:w-[82%] md:flex flex-col w-full px-3">
           <Routes>
             <Route path="/" element={<DavsReport />} />

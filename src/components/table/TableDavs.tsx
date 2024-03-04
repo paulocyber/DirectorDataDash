@@ -17,10 +17,10 @@ interface DavData {
 }
 interface TableDavsProps {
   columns: Column[];
-  dados: DavData[];
+  data: DavData[];
 }
 
-const TableDavs: React.FC<TableDavsProps> = ({ columns, dados }) => {
+const TableDavs: React.FC<TableDavsProps> = ({ columns, data }) => {
   return (
     <div className="flex w-full pb-6 h-[450px] flex-col">
       <div className="px-4 overflow-auto rounded-[24px]">
@@ -39,7 +39,7 @@ const TableDavs: React.FC<TableDavsProps> = ({ columns, dados }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-300 dark:divide-gray-300 text-gray-500 dark:text-gray-800">
-            {dados.map((dav, index) => (
+            {data.map((dav, index) => (
               <tr key={index}>
                 <td className="px-4 py-4 text-sm whitespace-nowrap">
                   <h2 className="text-sm font-medium text-gray-800">

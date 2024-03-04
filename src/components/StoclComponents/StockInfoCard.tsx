@@ -4,7 +4,7 @@ import LocalOffer from "@mui/icons-material/LocalOffer";
 import WarningIcon from "@mui/icons-material/Warning";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 
-const InfoCardStock = () => {
+const StockInfoCard = () => {
   return (
     <div className="flex flex-wrap">
       <div className="mt-2 w-full bg-white lg:w-6/12 xl:w-3/12 px-5 mb-4 ">
@@ -98,4 +98,4 @@ const InfoCardStock = () => {
   );
 };
 
-export default InfoCardStock;
+export default StockInfoCard;

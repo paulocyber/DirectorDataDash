@@ -1,49 +1,48 @@
-import { atom } from "recoil"
+import { atom } from "recoil";
 
 const FilterStateBtnAtom = atom({
-    key: "FilterStateBtnAtom",
-    default: {
-        ProfitFilter: false,
-        ClientsFilter: false,
-        SalesFilter: false,
-        StockLow: false,
-        btnShowColumns: false,
-        // State para coluna
-        ShowProductsColumn: true,
-        ShowInventoryColumn: true,
-        ShowCurrentInventoryColumn: true,
-        ShowDayOfRempurchaseColumn: true,
-        ShowQuantitySoldColumn: true,
-        ShowItemsBelowColumn: true,
-    },
-})
+  key: "FilterStateBtnAtom",
+  default: {
+    ProfitFilter: false,
+    ClientsFilter: false,
+    SalesFilter: false,
+    StockLow: false,
+    btnShowColumns: false,
+    ShowProductsColumn: true,
+    ShowInventoryColumn: true,
+    ShowCurrentInventoryColumn: true,
+    ShowDayOfRempurchaseColumn: true,
+    ShowQuantitySoldColumn: true,
+    ShowItemsBelowColumn: true,
+  },
+});
 
-export { FilterStateBtnAtom }
+export { FilterStateBtnAtom };
 
 const TypeFilter = atom({
-    key: "TypeFilter",
-    default: ""
-})
+  key: "TypeFilter",
+  default: "",
+});
 
-export { TypeFilter }
+export { TypeFilter };
 
 const FilterValue = atom({
-    key: "FilterValue",
-    default: ""
-})
+  key: "FilterValue",
+  default: "",
+});
 
-export { FilterValue }
+export { FilterValue };
 
 const LogicOperator = atom({
-    key: "LogicOperator",
-    default: ""
-})
+  key: "LogicOperator",
+  default: "",
+});
 
-export { LogicOperator }
+export { LogicOperator };
 
 const SelectionColumns = atom({
-    key: "SelectionColumns",
-    default: ""
-})
+  key: "SelectionColumns",
+  default: "",
+});
 
-export { SelectionColumns }
+export { SelectionColumns };

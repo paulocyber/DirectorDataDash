@@ -11,20 +11,19 @@ import {
 } from "recharts";
 
 // Tipagem;
-interface DataProps {
+interface CustomVerticalBarChartProps {
   data: any[];
-  DescriptionData: string;
-  typeData: "category";
-  InformationData: string;
+  descriptionKey: string;
+  valueType: "category";
+  informationKey: string;
 }
 
-const CustomVerticalBarChart: React.FC<DataProps> = ({
+const CustomVerticalBarChart: React.FC<CustomVerticalBarChartProps> = ({
   data,
-  DescriptionData,
-  typeData,
-  InformationData,
+  descriptionKey,
+  valueType,
+  informationKey,
 }) => {
-
   return (
     <ResponsiveContainer>
       <BarChart
@@ -34,10 +33,10 @@ const CustomVerticalBarChart: React.FC<DataProps> = ({
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis />
-        <YAxis dataKey={DescriptionData} type={typeData} />
+        <YAxis dataKey={descriptionKey} type={valueType} />
         <Tooltip />
         <Legend />
-        <Bar dataKey={InformationData} fill="#3B82F6" />
+        <Bar dataKey={informationKey} fill="#3B82F6" />
       </BarChart>
     </ResponsiveContainer>
   );

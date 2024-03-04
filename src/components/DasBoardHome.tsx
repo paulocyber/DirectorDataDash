@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 // Componentes
 
 // Tipagem
-type Pedido = {
+type Requests = {
   Data: string;
   Pedido?: string; // Torna a propriedade Pedido opcional
   "Código Produto": string;
@@ -16,21 +16,22 @@ type Pedido = {
   "Qtde. Pedido": number;
 };
 
-type ProdutoVendido = {
+type bestSellingProduct = {
   nome: string;
   quantidade: number;
 };
 
 const DasBoardHome = () => {
-  const [produtosMaisVendidos, setProdutosMaisVendidos] = useState<
-    ProdutoVendido[]
+  const [topSellingProducts, setTopSellingProducts] = useState<
+    bestSellingProduct[]
   >([]);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
-  const dataSales: Pedido[] = salesData.Pedidos;
+  const dataSales: Requests[] = salesData.Pedidos;
 
   useEffect(() => {
-    const calcularProdutosMaisVendidos = () => {
-      const vendasPorProduto: { [codigoProduto: string]: ProdutoVendido } = {};
+    const calculateBestSellingProducts = () => {
+      const vendasPorProduto: { [codigoProduto: string]: bestSellingProduct } =
+        {};
 
       dataSales.forEach((pedido) => {
         const codigoProduto = pedido["Código Produto"];
@@ -45,14 +46,14 @@ const DasBoardHome = () => {
         }
       });
 
-      const produtosOrdenados: ProdutoVendido[] = Object.values(
+      const orderedProducts: bestSellingProduct[] = Object.values(
         vendasPorProduto
       ).sort((produtoA, produtoB) => produtoB.quantidade - produtoA.quantidade);
 
-      setProdutosMaisVendidos(produtosOrdenados);
+      setTopSellingProducts(orderedProducts);
     };
 
-    calcularProdutosMaisVendidos();
+    calculateBestSellingProducts();
   }, []);
 
   const handleProductClick = (productName: string) => {
@@ -72,10 +73,10 @@ const DasBoardHome = () => {
 
   const filteredData =
     selectedProducts.length > 0
-      ? produtosMaisVendidos.filter((item) =>
+      ? topSellingProducts.filter((item) =>
           selectedProducts.includes(item.nome)
         )
-      : produtosMaisVendidos;
+      : topSellingProducts;
 
   const COLORS = [
     "#0088FE",
@@ -98,8 +99,6 @@ const DasBoardHome = () => {
     "#1E90FF",
     "#FFFF00",
   ];
-
-  console.log(produtosMaisVendidos);
 
   return (
     <div className="col-span-12 md:pb-0 mb-[4em] w-full">
@@ -168,7 +167,7 @@ const DasBoardHome = () => {
                   fill="#8884d8"
                   dataKey="quantidade"
                 >
-                  {produtosMaisVendidos.map((entry, index) => (
+                  {topSellingProducts.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
@@ -179,7 +178,7 @@ const DasBoardHome = () => {
             </ResponsiveContainer>
 
             <div className="flex flex-col md:w-1/4 h-[280px] overflow-auto">
-              {produtosMaisVendidos.map((entry, index) => (
+              {topSellingProducts.map((entry, index) => (
                 <div
                   key={`legend-${index}`}
                   onClick={() => handleProductClick(entry.nome)}

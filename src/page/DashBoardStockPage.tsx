@@ -1,12 +1,12 @@
 // Componentes
-import DasBoardStock from "../components/DasBoardStock";
-import InfoCardStock from "../components/InfoCardStock";
+import StockDashboard from "../components/StoclComponents/StockDashboard";
+import StockInfoCard from "../components/StoclComponents/StockInfoCard";
 
 const DashBoardStockPage = () => {
   return (
     <>
-      <InfoCardStock />
-      <DasBoardStock />
+      <StockInfoCard />
+      <StockDashboard />
     </>
   );
 };
