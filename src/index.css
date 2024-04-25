@@ -8,7 +8,6 @@
   box-sizing: border-box;
 }
 
-/* Scrool */
 /* Largura do Scroll */
 ::-webkit-scrollbar {
   width: 8px;
