@@ -6,7 +6,7 @@ export function ItemsDavDetail({ listDav }: listPorp) {
     console.log("dados: ", listDav)
     return (
         <>
-            {listDav.map((item) => (
+            {listDav?.map((item) => (
                 <div
                     className="bg-white  rounded-xl w-[90%] mx-auto pb-5"
                 >
