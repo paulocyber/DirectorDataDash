@@ -1,5 +1,4 @@
 import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
-import { formatDate } from "@/utils/mask/dataMask";
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
 export function ItemsDavDetail({ listDav }: listPorp) {
