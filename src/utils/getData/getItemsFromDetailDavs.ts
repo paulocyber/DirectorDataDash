@@ -39,7 +39,7 @@ export type listPorp = {
 
 export default function getItemFromDetailDavs({ listDav }: listPorp) {
   let formOfPayment = "";
-  let netValue = "";
+  let netValue = 0;
   let personName = "";
 
   listDav.forEach((items) => {
@@ -59,7 +59,7 @@ export default function getItemFromDetailDavs({ listDav }: listPorp) {
     {
       icon: MdAttachMoney,
       title: "Valor liquid",
-      value: formatCurrency(Number(netValue)),
+      value: formatCurrency(netValue),
     },
     {
       icon: IoIosPeople,

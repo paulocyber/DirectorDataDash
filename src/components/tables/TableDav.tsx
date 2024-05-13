@@ -80,10 +80,7 @@ export function TableDav({ listDav }: listPorp) {
                     <tbody className="bg-white divide-y divide-gray-300 dark:divide-gray-300 text-gray-500 dark:text-gray-800">
                         {listDav.slice(0, limit).map((itemDav, index) => (
                             <tr
-                                className={`cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] ${parseInt(itemDav.ATRASO_RCB) > 0
-                                    ? "text-red-500"
-                                    : "text-gray-800"
-                                    }`}
+                                className={`cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] text-gray-800`}
                                 onClick={() => handleClick(itemDav.ID_ORIGEM)}
                                 key={index}
                             >
@@ -113,7 +110,7 @@ export function TableDav({ listDav }: listPorp) {
                                     {formatCurrency(Number(itemDav.MULTA_RCB.replace(",", ".")))}
                                 </td>
 
-                                <td className=" whitespace-nowrap">
+                                <td className=" whitespace-nowrap text-center">
                                     {itemDav.DATA_VENCIMENTO_RCB.split(' ')[0]}
                                 </td>
                             </tr>

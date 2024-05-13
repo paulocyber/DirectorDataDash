@@ -7,10 +7,6 @@ const nextConfig = {
         source: "/",
         destination: "/davsummaryreport",
       },
-      {
-        source: "/api/:path*", // Configura a rota do proxy para o backend HTTP
-        destination: "http://200.233.186.22:3000/api/:path*", // Especifica o destino do backend
-      },
     ];
   },
 };

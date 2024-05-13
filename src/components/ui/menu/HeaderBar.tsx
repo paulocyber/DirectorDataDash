@@ -38,7 +38,6 @@ export default function HeaderBar({ isOpen }: MenuProps) {
                         <nav className="w-max">
                             <ol className="flex z-50 flex-wrap items-center w-full bg-opacity-60 rounded-md bg-transparent p-0 transition-all">
                                 <li className="flex items-center text-blue-gray-900 antialiased font-sans text-sm font-normal leading-normal cursor-pointer transition-colors duration-300 hover:text-light-blue-500">
-
                                     <p className="block antialiased leading-relaxed text-inherit capitalize font-sans text-sm leading-normal text-white font-normal  transition-all hover:font-bold ">
                                         dashboard
                                     </p>
@@ -54,9 +53,6 @@ export default function HeaderBar({ isOpen }: MenuProps) {
                                     <span className="text-white-500 text-sm antialiased font-sans font-normal leading-normal mx-2 pointer-events-none select-none">
                                         {secondPart && "/"}
                                     </span>
-                                    <p className="block antialiased font-sans text-sm leading-normal text-blue-white-900 font-normal">
-                                        {secondPart}
-                                    </p>
                                 </li>
                             </ol>
                         </nav>
@@ -184,9 +180,6 @@ export default function HeaderBar({ isOpen }: MenuProps) {
                             </button>
 
                             <button
-                                aria-expanded="false"
-                                aria-haspopup="menu"
-                                id=":r2:"
                                 className="relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
                                 type="button"
                             >

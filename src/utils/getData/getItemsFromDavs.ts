@@ -22,7 +22,7 @@ export default function getItemsFromDavs({ listDav }: listPorp) {
   const infoDetaildCard = [
     {
       icon: FaMoneyBillTrendUp,
-      title: "Valor da DAV",
+      title: "Valor Total da DAV",
       value: formatCurrency(value),
     },
     {

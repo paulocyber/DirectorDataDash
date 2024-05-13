@@ -1,5 +1,7 @@
+// React
 import { LabelHTMLAttributes, ReactNode } from "react";
 
+// Tipagem
 interface labelProps extends LabelHTMLAttributes<HTMLLabelElement> {
     children: ReactNode,
 }

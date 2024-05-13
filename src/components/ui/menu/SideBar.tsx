@@ -1,6 +1,5 @@
 // Framework
 import { useRouter } from "next/router";
-import React, { useContext } from "react";
 import Link from "next/link";
 
 // Dados
@@ -17,7 +16,10 @@ import { MotionMenu } from "../animated/motionMenu";
 // Bibliotecas
 import { GrDocumentText } from "react-icons/gr";
 import { IoExitOutline } from "react-icons/io5";
-import { AuthContext, AuthProvider, signOut } from "@/contexts/AuthContext";
+import { AuthContext, signOut } from "@/contexts/AuthContext";
+
+// React
+import React, { useContext } from "react";
 
 // Tipagem
 export interface MenuProps {
@@ -54,7 +56,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
             className={`small-screen:w-60 ${bgColorClass} fixed inset-0 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 ${!showMenu && "-translate-x-80"
                 }`}
         >
-            <div className="relative">
+            <div className="relative ">
                 <div className="flex items-center justify-center mt-10">
                     <AnimatedImg
                         initial={{ opacity: 0, scale: 0.5 }}
@@ -62,7 +64,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         transition={{ duration: 0.5 }}
                         className="pb-2 w-[140px] "
                     >
-                        <Image src={logoPlayCell} alt="logo da PlayCell" />
+                        <Image src={logoPlayCell} alt="logo da PlayCell" priority />
                     </AnimatedImg>
                 </div>
                 <button
@@ -84,14 +86,14 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 d="M6 18L18 6M6 6l12 12"
-                            ></path>
+                            >
+                            </path>
                         </svg>
                     </span>
                 </button>
             </div>
-            <div className="border-b mx-3.5"></div>
-            <div className="m-4">
-                <ul className="mb-4 flex flex-col gap-1 ">
+            <div className="m-4 border-t py-3.5 h-screen">
+                <ul className="mb-4 flex flex-col gap-1">
                     <li>
                         <MotionMenu hoverAnimation={{ scale: 1.0, transition: { duration: 0.3 } }}>
                             <Link href="/" className={router ? "transition duration-150 ease-in-out middle none font-sans font-semibold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-white text-gray-800 shadow-md hover:shadow-lg active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105" : "transition duration-150 ease-in-out undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105"}>
@@ -103,17 +105,17 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         </MotionMenu>
                     </li>
                 </ul>
+            </div>
 
+            <div className="w-full absolute bottom-0 py-2">
                 <ul className="mb-4 flex flex-col gap-1 border-t border-white medium-screen:mt-0 mt-20">
                     <li className="mx-3.5 mt-4 mb-2">
                         <p className="block antialiased font-sans text-sm leading-normal text-white font-black uppercase opacity-90">
                             autenticação
                         </p>
-
-
                     </li>
 
-                    <div className="flex items-center gap-4 py-2 px-2 w-full flex ">
+                    <div className="flex items-center gap-4 py-2 px-2 w-full flex">
                         <div className="rounded-full border-2 object-cover p-2">
                             <svg
                                 width="26px"
@@ -151,8 +153,8 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                                 </p>
 
                             </div>
-                            <button className="flex" onClick={() => signOut()}>
-                                <IoExitOutline className="w-6 h-6 text-white" />
+                            <button className="flex hover:bg-white hover:text-gray-800 text-white p-2 rounded-md" onClick={() => signOut()}>
+                                <IoExitOutline className="w-6 h-6 " />
                             </button>
                         </div>
                     </div>
