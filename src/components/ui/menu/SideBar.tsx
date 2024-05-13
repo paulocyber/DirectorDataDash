@@ -53,7 +53,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
 
     return (
         <aside
-            className={`small-screen:w-60 ${bgColorClass} fixed inset-0 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 ${!showMenu && "-translate-x-80"
+            className={`${bgColorClass} fixed inset-0 my-2 ml-2 h-[calc(100vh-26px)] w-20 2xl:w-80 xl:w-[20%] rounded-xl transition-transform duration-300 xl:translate-x-0 ${!showMenu && "-translate-x-80"
                 }`}
         >
             <div className="relative ">

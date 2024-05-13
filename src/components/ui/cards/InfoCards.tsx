@@ -28,7 +28,7 @@ export default function InfoCards({ data }: data) {
     }
 
     return (
-        <div className="mt-5">
+        <div className="mt-5 px-4">
             <div className={`mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 ${data.length > 3 ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
                 {data.map((info, index) => (
                     <div key={index} className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md md:z-10">

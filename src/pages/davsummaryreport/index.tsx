@@ -104,7 +104,7 @@ export default function DavSummaryReport({ listDav }: listPorp) {
             <SideBar showMenu={toggleMenuClosed} isClose={setToggleMenuClosed} />
             <main className="bg-[#edf3fb] flex flex-col w-full ">
                 <HeaderBar />
-                <div className="md:ml-auto md:mx-0 xl:w-[82%] md:flex flex-col w-full px-3 h-screen">
+                <div className="md:ml-auto md:mx-0 xl:w-[80%] xl:w-[69%] md:flex flex-col w-full h-screen">
                     <InfoCards data={infoDetaildCard} />
                     <Main>
                         <div className="md:flex items-center justify-between w-full ">

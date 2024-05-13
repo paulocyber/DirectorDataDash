@@ -31,7 +31,7 @@ export default function HeaderBar({ isOpen }: MenuProps) {
     const { user } = useContext(AuthContext)
 
     return (
-        <div className="p-4 xl:ml-60 2xl:ml-80 ">
+        <div className="p-4 xl:ml-[19em] 2xl:ml-80">
             <nav className={`block w-full max-w-full ${bgColorClass} text-white shadow-none rounded-xl transition-all px-3 py-2 overflow-auto`}>
                 <div className="flex flex-col-reverse justify-between gap-6 md:flex-row md:items-center">
                     <div className="capitalize">
