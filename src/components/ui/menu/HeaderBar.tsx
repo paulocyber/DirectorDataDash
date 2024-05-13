@@ -6,6 +6,9 @@ import { MenuProps, RouterColors } from "./SideBar";
 
 // Dados
 import routerColors from './../../../data/routerColors.json'
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { truncateString } from "@/utils/mask/stringMask";
 
 export default function HeaderBar({ isOpen }: MenuProps) {
     const router = useRouter();
@@ -25,6 +28,7 @@ export default function HeaderBar({ isOpen }: MenuProps) {
 
     const firstPart = router.pathname.split("/")[1];
     const secondPart = router.pathname.split("/")[2];
+    const { user } = useContext(AuthContext)
 
     return (
         <div className="p-4 xl:ml-60 2xl:ml-80 ">
@@ -133,7 +137,7 @@ export default function HeaderBar({ isOpen }: MenuProps) {
                                             clipRule="evenodd"
                                         ></path>
                                     </svg>
-                                    <p className="font-sans font-bold center text-white">Login</p>
+                                    <p className="font-sans font-bold center text-white">{truncateString(String(user?.username), 5)}</p>
                                 </button>
 
                                 <button

@@ -11,14 +11,17 @@ import { Button } from "@/ui/button/Button";
 // React
 import { FormEvent, useContext, useState } from "react";
 import { canSSRGuest } from "@/utils/canSSRGuest";
+import { CheckBox } from "@/components/ui/checkBox/checkBox";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
 
-  const { signIn } = useContext(AuthContext)
+  const { signIn, loading: loadingUser } = useContext(AuthContext)
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
@@ -53,10 +56,14 @@ export default function Login() {
               <Label htmlFor='user'>Usuario: </Label>
               <Input onChange={(e) => setUsername(e.target.value)} type="text" placeholder="UserName" error={error} />
               <Label htmlFor='passoword'>Password: </Label>
-              <Input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Digite sua Senha" />
+              <Input onChange={(e) => setPassword(e.target.value)} type={showPassword ? "text" : "password"} placeholder="Digite sua Senha" />
+              <div onClick={() => setShowPassword(!showPassword)} className="py-2 flex items-center font-semibold ">
+                <CheckBox className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10 " id="checkbox" />
+                <p className="px-2 text-[11px]">Mostra senha</p>
+              </div>
               <TextError error={error} />
               <div className="flex justify-between items-baseline">
-                <Button type='submit' loading={loading}>{loading ? 'Carregando...' : 'Entrar'}</Button>
+                <Button type='submit' loading={loading} className={`transition duration-400 ${loading ? 'bg-green-500 hover:bg-red-600 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 focus:shadow-sm focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50'}   text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block`}>{loading ? 'Carregando...' : 'Entrar'}</Button>
               </div>
             </form>
           </div>

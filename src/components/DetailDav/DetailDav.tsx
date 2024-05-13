@@ -3,7 +3,7 @@ import { formatDate } from "@/utils/mask/dataMask";
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
 export function ItemsDavDetail({ listDav }: listPorp) {
-    console.log("dados: ", listDav)
+    // console.log("dados: ", listDav)
     return (
         <>
             {listDav?.map((item) => (
@@ -144,19 +144,19 @@ export function ItemsDavDetail({ listDav }: listPorp) {
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Vendedor:
+                                    Status do Recibo:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.VENDEDOR}
+                                    {item.STATUS_RCB}
                                 </p>
                             </div>
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Status do Recibo:
+                                    Data do Lançamento:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.STATUS_RCB}
+                                    {item.DATAHORA_LANCAMENTO_RCB.split(' ')[0]}
                                 </p>
                             </div>
                         </div>
@@ -164,21 +164,14 @@ export function ItemsDavDetail({ listDav }: listPorp) {
                         <div className="border-b w-full my-3"></div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 pb-5">
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Data do Lançamento:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {formatDate(item.DATAHORA_LANCAMENTO_RCB)}
-                                </p>
-                            </div>
+
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
                                     Data do Pagamento:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.DATAHORA_PAGAMENTO_RCB}
+                                    {item.DATAHORA_PAGAMENTO_RCB.split(' ')[0]}
                                 </p>
                             </div>
 
@@ -187,7 +180,7 @@ export function ItemsDavDetail({ listDav }: listPorp) {
                                     Data do Vencimento:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {formatDate(item.DATA_VENCIMENTO_RCB)}
+                                    {item.DATA_VENCIMENTO_RCB.split(' ')[0]}
                                 </p>
                             </div>
 

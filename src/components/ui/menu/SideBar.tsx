@@ -47,6 +47,8 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
         bgColorClass = "bg-[#fa6602]";
     }
 
+    const { user } = useContext(AuthContext)
+
     return (
         <aside
             className={`small-screen:w-60 ${bgColorClass} fixed inset-0 my-2 ml-2 h-[calc(100vh-26px)] w-80 rounded-xl transition-transform duration-300 xl:translate-x-0 ${!showMenu && "-translate-x-80"
@@ -141,11 +143,11 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         </div>
                         <div className="flex items-center justify-between w-full">
                             <div className="flex w-50 flex-col">
-                                <h6 className="block antialiased tracking-normal font-sans text-base font-bold leading-relaxed text-white text-xm pd-2">
-                                    Admin
+                                <h6 className="block antialiased tracking-normal font-sans text-base font-bold capitalize leading-relaxed text-white text-xm pd-2">
+                                    Name:
                                 </h6>
-                                <p className="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white text-xs">
-                                    admin@gmail.com
+                                <p className="block antialiased tracking-normal font-sans text-base  font-semibold capitalize leading-relaxed text-white text-sm">
+                                    {user?.username}
                                 </p>
 
                             </div>

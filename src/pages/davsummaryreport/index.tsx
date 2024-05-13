@@ -11,7 +11,7 @@ import HeaderBar from "@/components/ui/menu/HeaderBar";
 import { Main } from "@/components/ui/mainComponents/main";
 
 // React
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // Api
 import { setupApiClient } from "@/services/api";
@@ -20,6 +20,8 @@ import getItemsFromDavs from "@/utils/getData/getItemsFromDavs";
 // Biblioteca
 import { GoSync } from "react-icons/go";
 import { TableDav } from "@/components/tables/TableDav";
+import { AuthContext } from "@/contexts/AuthContext";
+import { Loading } from "./../../components/ui/loadings/Loading";
 
 // Tipagem
 interface itemDav {
@@ -59,6 +61,14 @@ export default function DavSummaryReport({ listDav }: listPorp) {
     const [animation, setAnimation] = useState<boolean>(false);
 
     const { infoDetaildCard } = getItemsFromDavs({ listDav: itemsDavs })
+
+    const { loading } = useContext(AuthContext)
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    }
 
     return (
         <>

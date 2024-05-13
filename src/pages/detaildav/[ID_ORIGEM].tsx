@@ -20,7 +20,7 @@ import { GoSync } from "react-icons/go";
 import { TableProductDav } from "@/components/tables/TableDetailDav";
 import Link from "next/link";
 import { IoMdArrowBack } from "react-icons/io";
-import { ItemsDavDetail } from "@/components/DetailDav/DetailDav";
+import { ItemsDavDetail } from "@/components/detailDav/DetailDav";
 
 // Tipagem
 interface itemDav {
@@ -84,7 +84,7 @@ export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
     const { ID_ORIGEM } = router.query;
 
     const { infoDetaildCard } = getItemFromDetailDavs({ listDav: itemsDavs })
-    console.log(infoDetaildCard)
+    // console.log(infoDetaildCard)
     return (
         <>
             <Head>

@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* N progress */
+#nprogress .bar {
+  height: 6px !important;
+  background-color: rgb(220, 38, 38) !important;
+}
+
+#nprogress .spinner {
+  display: none !important;
+}
+
+tr.w-px {
+  display: none;
+}

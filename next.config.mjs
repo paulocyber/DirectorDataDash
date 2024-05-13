@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  server: {
+    protocol: "http",
+  },
   async rewrites() {
     return [
       {
