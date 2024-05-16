@@ -24,7 +24,7 @@ export default function InfoCards({ data }: data) {
     if (routeColor === "table") {
         bgColorClass = "bg-[#fa6602]";
     } else {
-        bgColorClass = "bg-[#fa6602]";
+        bgColorClass = "bg-blue-700";
     }
 
     return (

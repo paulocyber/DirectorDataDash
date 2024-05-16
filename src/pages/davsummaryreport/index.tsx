@@ -12,7 +12,7 @@ import { Main } from "@/components/ui/mainComponents/main";
 import { TableDav } from "@/components/tables/TableDav";
 
 // React
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Api
 import { setupApiClient } from "@/services/api";
@@ -21,9 +21,7 @@ import getItemsFromDavs from "@/utils/getData/getItemsFromDavs";
 // Biblioteca
 import { GoSync } from "react-icons/go";
 import { Loading } from "./../../components/ui/loadings/Loading";
-import { parseCookies } from "nookies";
-import axios from "axios";
-import { headers } from "next/headers";
+import { fetchData } from "@/data/fetchData";
 
 // Tipagem
 interface itemDav {
@@ -55,6 +53,7 @@ interface itemDav {
 
 export type listPorp = {
     listDav: itemDav[];
+    query?: string
 }
 
 export default function DavSummaryReport({ listDav }: listPorp) {
@@ -64,32 +63,12 @@ export default function DavSummaryReport({ listDav }: listPorp) {
     const [loading, setLoading] = useState<boolean>(false)
 
     const { infoDetaildCard } = getItemsFromDavs({ listDav: itemsDavs })
+    let query = `select a.id_pss, a.id_frm, a.id_emp, a.id_rcb, a.sigla_emp, a.numero_documento_rcb as n_dav, a.id_origem, a.datahora_lancamento_rcb, a.datahora_pagamento_rcb, a.data_vencimento_rcb, a.atraso_rcb, a.valor_rcb, a.juros_rcb, a.multa_rcb, iif(a.restante_rcb < 0.00,0.00,a.restante_rcb)as restante_rcb, a.restante_sem_juros_rcb, a.valor_pago_rcb, a.nome_pss as nome_pss, a.apelido_pss, a.id_fnc, a.nome_fnc as vendedor, a.status_rcb, a.descricao_frm as forma_pagamento,  a.valor_acrescimos_rci, a.valor_desconto_rci, a.descricao_rcb from v_recebimentos a where a.id_emp in(4,1,2,3,5,6,7,8,9,10,11) and a.status_rcb in('1','4') and a.status_pss = 'A' and coalesce(a.insolvente_rcb,'N') = 'N' and (EXTRACT(YEAR FROM a.data_vencimento_rcb) = EXTRACT(YEAR FROM CURRENT_DATE) and EXTRACT(MONTH FROM a.data_vencimento_rcb) = EXTRACT(MONTH FROM CURRENT_DATE) and EXTRACT(DAY FROM a.data_vencimento_rcb) = EXTRACT(DAY FROM CURRENT_DATE) or EXTRACT(YEAR FROM a.datahora_lancamento_rcb) = EXTRACT(YEAR FROM CURRENT_DATE) and EXTRACT(MONTH FROM a.datahora_lancamento_rcb) = EXTRACT(MONTH FROM CURRENT_DATE) and EXTRACT(DAY FROM a.datahora_lancamento_rcb) = EXTRACT(DAY FROM CURRENT_DATE)) order by a.id_emp, a.data_vencimento_rcb, nome_pss`;
 
-    const fetchItemsDavs = async () => {
+    const fetchItemsDavs = async() => {
         setLoading(true)
-
-        try {
-            const cookies = parseCookies();
-            const token = cookies['@nextauth.token'];
-
-            let query = `select a.id_pss, a.id_frm, a.id_emp, a.id_rcb, a.sigla_emp, a.numero_documento_rcb as n_dav, a.id_origem, a.datahora_lancamento_rcb, a.datahora_pagamento_rcb, a.data_vencimento_rcb, a.atraso_rcb, a.valor_rcb, a.juros_rcb, a.multa_rcb, iif(a.restante_rcb < 0.00,0.00,a.restante_rcb)as restante_rcb, a.restante_sem_juros_rcb, a.valor_pago_rcb, a.nome_pss as nome_pss, a.apelido_pss, a.id_fnc, a.nome_fnc as vendedor, a.status_rcb, a.descricao_frm as forma_pagamento,  a.valor_acrescimos_rci, a.valor_desconto_rci, a.descricao_rcb from v_recebimentos a where a.id_emp in(4,1,2,3,5,6,7,8,9,10,11) and a.status_rcb in('1','4') and a.status_pss = 'A' and coalesce(a.insolvente_rcb,'N') = 'N' and (EXTRACT(YEAR FROM a.data_vencimento_rcb) = EXTRACT(YEAR FROM CURRENT_DATE) and EXTRACT(MONTH FROM a.data_vencimento_rcb) = EXTRACT(MONTH FROM CURRENT_DATE) and EXTRACT(DAY FROM a.data_vencimento_rcb) = EXTRACT(DAY FROM CURRENT_DATE) or EXTRACT(YEAR FROM a.datahora_lancamento_rcb) = EXTRACT(YEAR FROM CURRENT_DATE) and EXTRACT(MONTH FROM a.datahora_lancamento_rcb) = EXTRACT(MONTH FROM CURRENT_DATE) and EXTRACT(DAY FROM a.datahora_lancamento_rcb) = EXTRACT(DAY FROM CURRENT_DATE)) order by a.id_emp, a.data_vencimento_rcb, nome_pss`;
-
-            const resp = await axios.post('https://sistema-suporte-play-uljpe.ondigitalocean.app/v1/find-db-query', {
-                query
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            // console.log("Dados: ", resp.data.returnObject.body)
-
-            setItemsDavs(resp.data.returnObject.body)
-        } catch (err) {
-            console.log("Erro ao buscar dados da API: ", err)
-        } finally {
-            setLoading(false)
-        }
+        await fetchData({query, setData: setItemsDavs})
+        setLoading(false)
     }
 
     const handleRefreshClick = async () => {
@@ -125,7 +104,6 @@ export default function DavSummaryReport({ listDav }: listPorp) {
                         </div>
                         <div className="md:flex w-full">
                             {loading ? <div className="w-full flex items-center justify-center h-[450px]"><Loading /></div> : <TableDav listDav={itemsDavs} />}
-
                         </div>
                     </Main>
                 </div>
@@ -144,7 +122,8 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     // console.log("Dados em array: ", resp.data.returnObject.body)
     return {
         props: {
-            listDav: resp.data.returnObject.body
+            listDav: resp.data.returnObject.body,
+            query: query
         },
     };
 });

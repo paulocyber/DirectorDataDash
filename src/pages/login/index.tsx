@@ -2,17 +2,18 @@
 import Head from "next/head";
 
 // Components
-import { AuthContext } from "@/contexts/AuthContext";
-import { Label } from "@/ui/label/Label";
-import { Input } from "@/ui/input/Input";
-import { TextError } from "@/ui/errorMessage/TextError";
-import { Button } from "@/ui/button/Button";
+import { Label } from "@/components/ui/label/Label";
+import { CheckBox } from "@/components/ui/checkBox/checkBox";
+import { Input } from "@/components/ui/input/input";
+import { TextError } from "@/components/ui/errorMessage/TextError";
+import { Button } from "@/components/ui/button/button";
 
 // React
 import { FormEvent, useContext, useState } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+
+// Rotas
 import { canSSRGuest } from "@/utils/canSSRGuest";
-import { CheckBox } from "@/components/ui/checkBox/checkBox";
-import { toast } from "react-toastify";
 
 export default function Login() {
   const [username, setUsername] = useState<string>('')
@@ -21,7 +22,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
 
-  const { signIn, loading: loadingUser } = useContext(AuthContext)
+  const { signIn } = useContext(AuthContext)
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();

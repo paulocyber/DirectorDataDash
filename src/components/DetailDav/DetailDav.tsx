@@ -2,15 +2,14 @@ import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
 export function ItemsDavDetail({ listDav }: listPorp) {
-    // console.log("dados: ", listDav)
     return (
         <>
-            {listDav?.map((item) => (
-                <div
-                    className="bg-white  rounded-xl w-[90%] mx-auto pb-5"
-                >
-                    <div className="pt-3">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4">
+            <div
+                className="bg-white  rounded-xl w-[90%] mx-auto pb-5"
+            >
+                {listDav?.map((item, index) => (
+                    <div key={index} className="">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 ">
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
                                     Número da DAV:
@@ -162,10 +161,8 @@ export function ItemsDavDetail({ listDav }: listPorp) {
                         </div>
 
                         <div className="border-b w-full my-3"></div>
-                        
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 pb-5">
 
-
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 pb-5 border-b">
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
                                     Data do Pagamento:
@@ -203,8 +200,9 @@ export function ItemsDavDetail({ listDav }: listPorp) {
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
+
         </>
     )
 }

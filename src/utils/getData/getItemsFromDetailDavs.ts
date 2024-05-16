@@ -48,8 +48,6 @@ export default function getItemFromDetailDavs({ listDav }: listPorp) {
     personName = items.NOME_PSS;
   });
 
-  console.log("Valor liquido: ", netValue)
-
   const infoDetaildCard = [
     {
       icon: FaMoneyBillTrendUp,

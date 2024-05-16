@@ -17,7 +17,6 @@ type AuthContextData = {
     isAuthenticated: boolean;
     signIn: (credentials: SignInProps) => Promise<void>;
     signOut: () => void;
-    loading: boolean;
 }
 
 type UserProps = {
@@ -46,7 +45,6 @@ export function signOut() {
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<UserProps>()
-    const [loading, setLoading] = useState<boolean>(false)
     const isAuthenticated = !!user;
 
     useEffect(() => {
@@ -56,7 +54,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (token) {
                 try {
                     const resp = await api.post('/v1/auth/validate', { token: token });
-                    console.log
                     setUser(resp.data.returnObject.body);
                 } catch (err) {
                     console.error("Erro ao validar token:", err);
@@ -69,7 +66,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     async function signIn({ username, password }: SignInProps) {
         // console.log(`UserName: ${username}, Password: ${password}`)
-        setLoading(true)
         try {
             const resp = await api.post('/v1/auth/login', {
                 username,
@@ -91,19 +87,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             api.defaults.headers['Authorization'] = `Bearer ${access_token}`
 
-            toast.success('🚀 Bem vindo!')
+            toast.success('Bem vindo!', {icon: <span>🚀</span>})
 
             Router.push('/')
         } catch (err) {
             toast.error("Erro ao acessar!")
             console.log("Erro: ", err)
-        } finally {
-            setLoading(false)
         }
     }
     // console.log("Usuario: ", user)
     return (
-        <AuthContext.Provider value={{ user: user || { username: '' }, isAuthenticated, signIn, signOut, loading }}>
+        <AuthContext.Provider value={{ user: user || { username: '' }, isAuthenticated, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     )

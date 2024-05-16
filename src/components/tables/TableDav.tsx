@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 // Utils
 import { formatCurrency } from "@/utils/mask/moneyMask";
-import { formatDate } from "@/utils/mask/dataMask";
 
 // Tipagem
 import { listPorp } from "@/pages/davsummaryreport";

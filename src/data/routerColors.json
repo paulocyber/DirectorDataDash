@@ -1,5 +1,6 @@
 {
   "/davsummaryreport": "table",
   "/": "table",
-  "/detaildav": "table"
+  "/detaildav/[ID_ORIGEM]": "table",
+  "/billstopay": "dashboard"
 }

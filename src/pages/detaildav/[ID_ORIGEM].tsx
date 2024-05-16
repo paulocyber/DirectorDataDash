@@ -75,7 +75,6 @@ export type listPorp = {
 
 export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
-    const [animation, setAnimation] = useState<boolean>(false);
     const [itemsDavs, setItemsDavs] = useState(listDav || [])
     const [prodcutsDavs, setProdcutsDavs] = useState(prodcutsDav || [])
 

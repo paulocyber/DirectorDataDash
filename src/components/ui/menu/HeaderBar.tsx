@@ -23,7 +23,7 @@ export default function HeaderBar({ isOpen }: MenuProps) {
     if (routeColor === "table") {
         bgColorClass = "bg-[#fa6602]";
     } else {
-        bgColorClass = "bg-[#fa6602]";
+        bgColorClass = "bg-blue-700";
     }
 
     const firstPart = router.pathname.split("/")[1];

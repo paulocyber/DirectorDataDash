@@ -17,6 +17,7 @@ import { MotionMenu } from "../animated/motionMenu";
 import { GrDocumentText } from "react-icons/gr";
 import { IoExitOutline } from "react-icons/io5";
 import { AuthContext, signOut } from "@/contexts/AuthContext";
+import { GiTakeMyMoney } from "react-icons/gi";
 
 // React
 import React, { useContext } from "react";
@@ -46,7 +47,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
     if (routeColor === "table") {
         bgColorClass = "bg-[#fa6602]";
     } else {
-        bgColorClass = "bg-[#fa6602]";
+        bgColorClass = "bg-blue-700";
     }
 
     const { user } = useContext(AuthContext)
@@ -64,7 +65,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         transition={{ duration: 0.5 }}
                         className="pb-2 w-[140px] "
                     >
-                        <Image src={logoPlayCell} alt="logo da PlayCell" priority />
+                        <Image src={logoPlayCell} alt="logo da PlayCell" priority/>
                     </AnimatedImg>
                 </div>
                 <button
@@ -96,10 +97,21 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                 <ul className="mb-4 flex flex-col gap-1">
                     <li>
                         <MotionMenu hoverAnimation={{ scale: 1.0, transition: { duration: 0.3 } }}>
-                            <Link href="/" className={router ? "transition duration-150 ease-in-out middle none font-sans font-semibold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-white text-gray-800 shadow-md hover:shadow-lg active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105" : "transition duration-150 ease-in-out undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105"}>
+                            <Link href="/" className={router.pathname === '/davsummaryreport' || router.pathname.split('/')[1] === 'detaildav' ? "transition duration-150 ease-in-out middle none font-sans font-semibold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-white text-gray-800 shadow-md hover:shadow-lg active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105" : "transition duration-150 ease-in-out undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105"}>
                                 <GrDocumentText className="w-5 h-5" />
                                 <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
                                     Relatório de DAVs
+                                </p>
+                            </Link>
+                        </MotionMenu>
+                    </li>
+
+                    <li>
+                        <MotionMenu hoverAnimation={{ scale: 1.0, transition: { duration: 0.3 } }}>
+                            <Link href="/billstopay" className={router.pathname === '/billstopay' ? "transition duration-150 ease-in-out middle none font-sans font-semibold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg bg-white text-gray-800 shadow-md hover:shadow-lg active:opacity-[0.85] w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105" : "transition duration-150 ease-in-out undmiddle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-white hover:bg-black/50 w-full flex items-center gap-4 px-4 capitalize transform hover:scale-105"}>
+                                <GiTakeMyMoney className="w-7 h-7" />
+                                <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
+                                    Contas a pagar
                                 </p>
                             </Link>
                         </MotionMenu>
