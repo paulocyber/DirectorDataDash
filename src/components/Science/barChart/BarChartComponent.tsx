@@ -1,5 +1,6 @@
 // Biblioteca
 import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, Tooltip, YAxis } from "recharts";
+import { useRecoilValue } from "recoil";
 
 // Paleta
 import { vibrantPalette } from "@/data/dashBoardColorPalette";
@@ -7,11 +8,15 @@ import { vibrantPalette } from "@/data/dashBoardColorPalette";
 // Componentes
 import renderTooltipContent from "@/components/ui/ToolTip/renderTooltipContent";
 
+// Atom
+import { filterDescription } from "@/atom/FilterDescription";
+
 // Tipagem
 interface barChartProps {
-    data: { description: string; value: number }[];
+    data: { description: string; value: number; color: string }[];
 }
 export function BarChartComponent({ data }: barChartProps) {
+    const palette = useRecoilValue(filterDescription);
     const total = data.reduce((acc, cur) => acc + cur.value, 0);
 
     return (
@@ -20,11 +25,8 @@ export function BarChartComponent({ data }: barChartProps) {
                 <Tooltip cursor={false} content={renderTooltipContent} />
                 <YAxis fill='text-gray-600' allowDataOverflow={true} className='font-bold text-[12px]' />
                 <Bar dataKey="value">
-                    {data.map((_, index) => (
-                        <Cell
-                            key={index}
-                            fill={vibrantPalette[index % vibrantPalette.length]}
-                        />
+                    {data.map((item, index) => (
+                        <Cell key={index} fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
                     ))}
                     <LabelList
                         dataKey="value"

@@ -1,30 +1,23 @@
-// React
-import { useState } from "react";
-
-// Framework
-import { useRouter } from 'next/router';
-
-// Utils
-import { formatCurrency } from "@/utils/mask/moneyMask";
+import { formatCurrency } from "@/utils/mask/moneyMask"
 
 // Tipagem
-import { listPorp } from "@/pages/davsummaryreport";
-import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
+interface itemsPaidAndUnpaidBills {
+    VALOR_PGM: string,
+    CENTRO_CUSTO: string,
+    NOME_PSS: string,
+    STATUS_PGM: string,
+    DATA_VENCIMENTO_PGM: string,
+    DESCRICAO_PGM: string,
+    GRUPO_CENTRO: string,
+    NUMERO_DOCUMENTO_PGM: string,
+    DESCRICAO_FRM: string
+}
 
-export function TableDav({ listDav }: listPorp) {
-    const [limit, setLimit] = useState(0);
+type listPaidAndUnpaidBills = {
+    itemsPaidAndUnpaidBills: itemsPaidAndUnpaidBills[]
+}
 
-    const router = useRouter();
-
-    const handleClick = (ID_ORIGEM: string) => {
-        router.push(`/detaildav/${ID_ORIGEM}`);
-    };
-
-    const fetchMore = () => {
-        if (limit < listDav.length) {
-            setLimit(limit + 10);
-        }
-    };
+export function TableBillsToPay({ itemsPaidAndUnpaidBills }: listPaidAndUnpaidBills) {
 
     return (
         <div className="flex w-full pb-6 h-[450px] flex-col px-5">
@@ -32,93 +25,97 @@ export function TableDav({ listDav }: listPorp) {
                 <table className="min-w-full divide-y ">
                     <thead className="bg-[#fa6602] sticky top-0 z-10">
                         <tr>
-                            
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Número DAV
+                                #
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Cliente
+                                Data
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Vendedor
+                                Valor
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Valor Bruto
+                                Descrição
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Valor Sem Juros
+                                Natureza Do Custo
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Multa
+                                Categoria Da Despesa
                             </th>
                             <th
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Data Vencimento
+                                Centro De Custo
+                            </th>
+                            <th
+                                scope="col"
+                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
+                            >
+                                Forma de Pagamento
                             </th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-300 dark:divide-gray-300 text-gray-500 dark:text-gray-800">
-                        {listDav?.slice(0, limit).map((itemDav, index) => (
+                        {itemsPaidAndUnpaidBills.slice(0, 20).map((itemBillsToPay, index) => (
                             <tr
-                                className={`cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] text-gray-800`}
-                                onClick={() => handleClick(itemDav.ID_ORIGEM)}
+                                className="cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] text-gray-800"
                                 key={index}
                             >
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    <h2 className="font-medium ">{itemDav.ID_ORIGEM}</h2>
+                                    <p className={`p-[0.6em] rounded-full ${itemBillsToPay.STATUS_PGM != "2" ? "bg-blue-500" : "bg-green-500"}`}></p>
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    {itemDav.NOME_PSS}
+                                    <h2 className="font-medium ">{itemBillsToPay.DATA_VENCIMENTO_PGM.split(' ')[0]}</h2>
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    {itemDav.VENDEDOR}
+                                    {formatCurrency(Number(itemBillsToPay.VALOR_PGM.replace(",", ".")))}
                                 </td>
 
-                                <td className="px-4 py-4 whitespace-nowrap">
-                                    {formatCurrency(Number(itemDav.VALOR_RCB.replace(",", ".")))}
+                                <td className="px-4 py-4  whitespace-nowrap">
+                                    {itemBillsToPay.NUMERO_DOCUMENTO_PGM}
                                 </td>
 
-                                <td className="px-4 py-4 whitespace-nowrap">
-                                    {formatCurrency(
-                                        Number(itemDav.RESTANTE_SEM_JUROS_RCB.replace(",", "."))
-                                    )}
+                                <td className="px-4 py-4  whitespace-nowrap">
+                                    {itemBillsToPay.GRUPO_CENTRO}
                                 </td>
 
-                                <td className=" whitespace-nowrap">
-                                    {formatCurrency(Number(itemDav.MULTA_RCB.replace(",", ".")))}
+                                <td className="px-4 py-4  whitespace-nowrap">
+                                    {itemBillsToPay.NOME_PSS}
                                 </td>
 
-                                <td className=" whitespace-nowrap text-center">
-                                    {itemDav.DATA_VENCIMENTO_RCB.split(' ')[0]}
+                                <td className="px-4 py-4  whitespace-nowrap">
+                                    {itemBillsToPay.CENTRO_CUSTO}
+                                </td>
+
+                                <td className="px-4 py-4  whitespace-nowrap">
+                                    {itemBillsToPay.DESCRICAO_FRM}
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {/* Scroll Infinito */}
-                <InfiniteScroll fetchMore={fetchMore} />
             </div>
         </div>
     )

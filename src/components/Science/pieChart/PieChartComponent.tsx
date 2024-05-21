@@ -1,5 +1,6 @@
 // Biblioteca
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector, Text, Tooltip } from "recharts";
+import { useRecoilValue } from "recoil";
 
 // Paleta
 import { vibrantPalette } from "@/data/dashBoardColorPalette";
@@ -7,12 +8,17 @@ import { vibrantPalette } from "@/data/dashBoardColorPalette";
 // Componentes
 import renderTooltipContent from "@/components/ui/ToolTip/renderTooltipContent";
 
+// Atom
+import { filterDescription } from "@/atom/FilterDescription";
+
 // Tipagem
 interface pieChartPro {
-    data: { description: string; value: number }[];
+    data: { description: string; value: number; color: string }[];
 }
 
 export function PieChartComponent({ data }: pieChartPro) {
+    const palette = useRecoilValue(filterDescription);
+
     const renderActiveShape = (props: any) => {
         const RADIAN = Math.PI / 180;
         const {
@@ -29,7 +35,7 @@ export function PieChartComponent({ data }: pieChartPro) {
         const cos = Math.cos(-RADIAN * midAngle);
         const sx = cx + (outerRadius + 10) * cos;
         const sy = cy + (outerRadius + 5) * sin;
-        const mx = cx + (outerRadius + 80) * cos;   
+        const mx = cx + (outerRadius + 80) * cos;
         const my = cy + (outerRadius + 38) * sin;
         const ex = mx + (cos >= 0 ? 1 : -1) * 22;
         const ey = my;
@@ -84,8 +90,8 @@ export function PieChartComponent({ data }: pieChartPro) {
                     dataKey="value"
                     label={renderActiveShape}
                 >
-                    {data.map((_, index) => (
-                        <Cell key={index} fill={vibrantPalette[index % vibrantPalette.length]} />
+                    {data.map((item, index) => (
+                         <Cell key={index}  fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
                     ))}
                 </Pie>
             </PieChart>

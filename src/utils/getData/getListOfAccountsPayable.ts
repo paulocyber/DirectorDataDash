@@ -2,6 +2,8 @@
 import { TbMoneybag } from "react-icons/tb";
 import { CiWarning } from "react-icons/ci";
 import { GiPayMoney } from "react-icons/gi";
+import { useRecoilValue } from "recoil";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 // Utils
 import { formatCurrency } from "../mask/moneyMask";
@@ -9,10 +11,14 @@ import { formatCurrency } from "../mask/moneyMask";
 // Tipagem
 import { BillsToPayProps } from "@/pages/billstopay";
 
+// Atom
+import { itemDescription, filterDescription } from "@/atom/FilterDescription";
+
 export interface costCenterSummary {
   description: string;
   value: number;
   suppliers: string[];
+  color: string;
 }
 
 export default function getListOfAccountsPayable({
@@ -20,21 +26,83 @@ export default function getListOfAccountsPayable({
   listOfUnpaidBills,
   listPaidAndUnpaidBills,
 }: BillsToPayProps) {
-  let ammountNotPaid = 0;
-  let unpaidInvoices = 0;
-  let payedInvoices = 0;
-  let amountPaid = 0;
+  const filter: itemDescription[] = useRecoilValue(filterDescription);
 
-  listOfAccountsPayable.forEach((items) => {
-    amountPaid += Number(items.VALOR_PGM.replace(",", "."));
+  const costCenterMap: Record<string, costCenterSummary> = {};
+
+  listPaidAndUnpaidBills.forEach((data) => {
+    const key = data.CENTRO_CUSTO;
+    const value = Number(data.VALOR_PGM.replace(",", "."));
+
+    if (!costCenterMap[key]) {
+      costCenterMap[key] = {
+        description: key,
+        value: 0,
+        suppliers: [],
+        color:
+          filter.find((filterItem) => filterItem.description === key)?.color ||
+          "",
+      };
+    }
+
+    costCenterMap[key].value += value;
+    if (!costCenterMap[key].suppliers.includes(data.NOME_PSS)) {
+      costCenterMap[key].suppliers.push(data.NOME_PSS);
+    }
   });
 
-  listOfUnpaidBills.forEach((items) => {
-    ammountNotPaid += Number(items.VALOR_PGM.replace(",", "."));
-  });
+  const costCenterSummaries = Object.values(costCenterMap);
 
-  unpaidInvoices = listOfUnpaidBills.length;
-  payedInvoices = listOfAccountsPayable.length;
+  // Filtro
+  const filtered =
+    filter.length > 0
+      ? costCenterSummaries.filter((summary) =>
+          filter.some(
+            (filterItem) => filterItem.description === summary.description
+          )
+        )
+      : costCenterSummaries;
+
+  // Ordenar e selecionar os top 10 filtrados
+  const sortedFiltered = filtered
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10);
+  const topCostCenter = sortedFiltered.map(
+    ({ description, value, suppliers, color }) => ({
+      description,
+      value,
+      suppliers,
+      color,
+    })
+  );
+
+  // Ordenar e selecionar os top 10 sem filtro para topNameCostCenter
+  const topNameCostCenter = costCenterSummaries
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 10)
+    .map(({ description, value }) => ({
+      description,
+      value,
+    }));
+
+  // Cálculos de totais
+  const ammountNotPaid = filtered.reduce((acc, item) => acc + item.value, 0);
+
+  const unpaidInvoices = listOfUnpaidBills.filter((item) =>
+    filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
+  ).length;
+
+  const amountPaid = listOfAccountsPayable
+    .filter((item) =>
+      filtered.some(
+        (filterItem) => filterItem.description === item.CENTRO_CUSTO
+      )
+    )
+    .reduce((acc, item) => acc + Number(item.VALOR_PGM.replace(",", ".")), 0);
+
+  const payedInvoices = listOfAccountsPayable.filter((item) =>
+    filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
+  ).length;
 
   const infoDetailCard = [
     {
@@ -53,37 +121,11 @@ export default function getListOfAccountsPayable({
       value: formatCurrency(amountPaid),
     },
     {
-      icon: GiPayMoney,
+      icon: RiVerifiedBadgeFill,
       title: "Total de boletos em dias",
       value: payedInvoices.toString(),
     },
   ];
 
-  const costCenterSummaries: costCenterSummary[] = [];
-
-  listPaidAndUnpaidBills.forEach((data) => {
-    const existingSummary = costCenterSummaries.find(
-      (item) => item.description === data.CENTRO_CUSTO
-    );
-
-    if (existingSummary) {
-      existingSummary.value += Number(data.VALOR_PGM.replace(",", "."));
-
-      if (!existingSummary.suppliers.includes(data.NOME_PSS)) {
-        existingSummary.suppliers.push(data.NOME_PSS);
-      }
-    } else {
-      costCenterSummaries.push({
-        description: data.CENTRO_CUSTO,
-        value: Number(data.VALOR_PGM.replace(",", ".")),
-        suppliers: [data.NOME_PSS],
-      });
-    }
-  });
-
-  const topCostCenter = costCenterSummaries
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 10);
-
-  return { infoDetailCard, topCostCenter };
+  return { infoDetailCard, topCostCenter, topNameCostCenter };
 }
