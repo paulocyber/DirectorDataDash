@@ -127,7 +127,7 @@ export default function BillsToPay({ listOfAccountsPayable, listOfUnpaidBills, l
                     <Main>
                         <div className="md:flex items-center justify-between w-full ">
                             <div className="pb-5 flex justify-between items-center w-full p-5">
-                                <h1 className="font-bold md:text-lg text-sm">Contas a Pagar</h1>
+                                <h1 className="font-bold md:text-lg text-sm">Contas abertas: </h1>
                                 <div className="flex justify-between items-center">
                                     <div className="px-2">
                                         <button

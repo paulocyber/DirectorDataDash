@@ -1,4 +1,6 @@
+import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
 import { formatCurrency } from "@/utils/mask/moneyMask"
+import { useState } from "react";
 
 // Tipagem
 interface itemsPaidAndUnpaidBills {
@@ -18,6 +20,13 @@ type listPaidAndUnpaidBills = {
 }
 
 export function TableBillsToPay({ itemsPaidAndUnpaidBills }: listPaidAndUnpaidBills) {
+    const [limit, setLimit] = useState(0);
+
+    const fetchMore = () => {
+        if (limit < itemsPaidAndUnpaidBills.length) {
+            setLimit(limit + 10);
+        }
+    };
 
     return (
         <div className="flex w-full pb-6 h-[450px] flex-col px-5">
@@ -76,7 +85,7 @@ export function TableBillsToPay({ itemsPaidAndUnpaidBills }: listPaidAndUnpaidBi
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-300 dark:divide-gray-300 text-gray-500 dark:text-gray-800">
-                        {itemsPaidAndUnpaidBills.slice(0, 20).map((itemBillsToPay, index) => (
+                        {itemsPaidAndUnpaidBills.slice(0, limit).map((itemBillsToPay, index) => (
                             <tr
                                 className="cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] text-gray-800"
                                 key={index}
@@ -116,6 +125,7 @@ export function TableBillsToPay({ itemsPaidAndUnpaidBills }: listPaidAndUnpaidBi
                         ))}
                     </tbody>
                 </table>
+                <InfiniteScroll fetchMore={fetchMore} />
             </div>
         </div>
     )

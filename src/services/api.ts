@@ -17,7 +17,7 @@ export function setupApiClient(ctx?: GetServerSidePropsContext) {
   //   http://200.233.186.22:3000 http://192.168.15.36:3000 http://192.168.15.36:3000 https://sistema-suporte-play-uljpe.ondigitalocean.app
 
   const api = axios.create({
-    baseURL: "http://192.168.15.36:3000",
+    baseURL: "https://sistema-suporte-play-uljpe.ondigitalocean.app",
     headers: {
       Authorization: `Bearer ${cookies["@nextauth.token"]}`,
     },
