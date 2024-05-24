@@ -1,4 +1,7 @@
+// Pages
 import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
+
+// Utils
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
 export function ItemsDavDetail({ listDav }: listPorp) {

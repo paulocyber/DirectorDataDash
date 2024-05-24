@@ -1,5 +1,8 @@
+// Utils
 import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
 import { formatCurrency } from "@/utils/mask/moneyMask"
+
+// React
 import { useState } from "react";
 
 // Tipagem

@@ -4,12 +4,10 @@ import axios, { AxiosError } from "axios";
 
 // Error
 import { AuthTokenError } from "./erros/AuthTokenError";
+
+// Framework
 import { GetServerSidePropsContext } from "next";
 
-// Tipagem
-interface Cookies {
-  "@nextauth.token"?: string;
-}
 
 export function setupApiClient(ctx?: GetServerSidePropsContext) {
   let cookies = parseCookies(ctx);

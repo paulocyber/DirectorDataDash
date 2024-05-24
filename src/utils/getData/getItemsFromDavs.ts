@@ -16,18 +16,18 @@ export default function getItemsFromDavs({ listDav }: listPorp) {
 
   listDav.forEach((items) => {
     value += Number(items.VALOR_RCB.replace(",", "."));
-    saleValue = +Number(items.RESTANTE_SEM_JUROS_RCB.replace(",", "."));
+    saleValue += Number(items.RESTANTE_SEM_JUROS_RCB.replace(",", "."));
   });
 
   const infoDetaildCard = [
     {
       icon: FaMoneyBillTrendUp,
-      title: "Valor Total da DAV",
+      title: "Total de vendas bruto",
       value: formatCurrency(value),
     },
     {
       icon: MdAttachMoney,
-      title: "Total de vendas",
+      title: "Total de vendas liquido",
       value: formatCurrency(saleValue),
     },
     {

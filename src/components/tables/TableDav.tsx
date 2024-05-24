@@ -6,10 +6,10 @@ import { useRouter } from 'next/router';
 
 // Utils
 import { formatCurrency } from "@/utils/mask/moneyMask";
+import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
 
 // Tipagem
 import { listPorp } from "@/pages/davsummaryreport";
-import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
 
 export function TableDav({ listDav }: listPorp) {
     const [limit, setLimit] = useState(0);

@@ -1,13 +1,17 @@
 // Framework
 import { useRouter } from "next/router";
 
-// Tipagem
+// Componentes
 import { MenuProps, RouterColors } from "./SideBar";
 
 // Dados
 import routerColors from './../../../data/routerColors.json'
+
+// React
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
+
+// Utils
 import { truncateString } from "@/utils/mask/stringMask";
 
 export default function HeaderBar({ isOpen }: MenuProps) {

@@ -4,6 +4,7 @@ import { HTMLMotionProps, motion } from "framer-motion";
 // React
 import React from "react";
 
+// Tipagem
 export interface AnimatedProps extends HTMLMotionProps<"div"> {
     initial?: { [key: string]: any };
     animate?: { [key: string]: any };

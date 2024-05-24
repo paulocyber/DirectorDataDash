@@ -1,6 +1,7 @@
 // React
 import { useEffect, useRef } from "react";
 
+// Tipagem
 interface infiniteScrollProps {
     fetchMore: () => void;
 }

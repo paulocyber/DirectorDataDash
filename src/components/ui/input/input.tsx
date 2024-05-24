@@ -1,5 +1,7 @@
-import { InputHTMLAttributes, ReactNode } from "react";
+// React
+import { InputHTMLAttributes } from "react";
 
+// Tipagem
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     error?: string;
 }

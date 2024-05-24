@@ -1,25 +1,28 @@
 // Framework
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Link from "next/link";
 
 // React
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Biblioteca
+import { IoMdArrowBack } from "react-icons/io";
+
+// Rotas
 import { canSSRAuth } from "@/utils/canSSRAuth";
 
 // Api
 import { setupApiClient } from "@/services/api";
 import { AuthTokenError } from "@/services/erros/AuthTokenError";
 import getItemFromDetailDavs from "@/utils/getData/getItemsFromDetailDavs";
+
+// Componentes
 import SideBar from "@/components/ui/menu/SideBar";
 import HeaderBar from "@/components/ui/menu/HeaderBar";
 import InfoCards from "@/components/ui/cards/InfoCards";
 import { Main } from "@/components/ui/mainComponents/main";
-import { GoSync } from "react-icons/go";
 import { TableProductDav } from "@/components/tables/TableDetailDav";
-import Link from "next/link";
-import { IoMdArrowBack } from "react-icons/io";
 import { ItemsDavDetail } from "@/components/DetailDav/DetailDav";
 
 // Tipagem
@@ -83,7 +86,7 @@ export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
     const { ID_ORIGEM } = router.query;
 
     const { infoDetaildCard } = getItemFromDetailDavs({ listDav: itemsDavs })
-    
+
     return (
         <>
             <Head>

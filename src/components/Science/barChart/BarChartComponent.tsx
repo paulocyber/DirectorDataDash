@@ -1,6 +1,5 @@
 // Biblioteca
 import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, Tooltip, YAxis } from "recharts";
-import { useRecoilValue } from "recoil";
 
 // Paleta
 import { vibrantPalette } from "@/data/dashBoardColorPalette";
@@ -8,15 +7,11 @@ import { vibrantPalette } from "@/data/dashBoardColorPalette";
 // Componentes
 import renderTooltipContent from "@/components/ui/ToolTip/renderTooltipContent";
 
-// Atom
-import { filterDescription } from "@/atom/FilterDescription";
-
 // Tipagem
 interface barChartProps {
     data: { description: string; value: number; color: string }[];
 }
 export function BarChartComponent({ data }: barChartProps) {
-    const palette = useRecoilValue(filterDescription);
     const total = data.reduce((acc, cur) => acc + cur.value, 0);
 
     return (

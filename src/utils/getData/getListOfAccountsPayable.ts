@@ -2,7 +2,6 @@
 import { TbMoneybag } from "react-icons/tb";
 import { CiWarning } from "react-icons/ci";
 import { GiPayMoney } from "react-icons/gi";
-import { useRecoilValue } from "recoil";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 // Utils
@@ -14,6 +13,10 @@ import { BillsToPayProps } from "@/pages/billstopay";
 // Atom
 import { itemDescription, filterDescription } from "@/atom/FilterDescription";
 
+// Recoil
+import { useRecoilValue } from "recoil";
+
+// Tipagem
 export interface costCenterSummary {
   description: string;
   value: number;
@@ -98,7 +101,7 @@ export default function getListOfAccountsPayable({
         (filterItem) => filterItem.description === item.CENTRO_CUSTO
       )
     )
-    .reduce((acc, item) => acc + Number(item.VALOR_PGM.replace(",", ".")), 0);
+    .reduce((acc, item) => acc + Number(item.VALOR_PAGO_PGM.replace(",", ".")), 0);
 
   const payedInvoices = listOfAccountsPayable.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
@@ -112,7 +115,7 @@ export default function getListOfAccountsPayable({
     },
     {
       icon: CiWarning,
-      title: "Total de boletos atrasados",
+      title: "Total de boletos em aberto",
       value: unpaidInvoices.toString(),
     },
     {
@@ -122,7 +125,7 @@ export default function getListOfAccountsPayable({
     },
     {
       icon: RiVerifiedBadgeFill,
-      title: "Total de boletos em dias",
+      title: "Total de boletos pagos",
       value: payedInvoices.toString(),
     },
   ];

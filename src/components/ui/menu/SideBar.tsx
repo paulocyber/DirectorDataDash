@@ -1,13 +1,13 @@
 // Framework
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 
 // Dados
 import routerColors from "../../../data/routerColors.json";
 
 // Imagem
 import logoPlayCell from "../../../../public/assets/playcell.png"
-import Image from "next/image";
 
 // Componentes
 import { AnimatedImg } from "../animated/motionImg";
@@ -16,8 +16,10 @@ import { MotionMenu } from "../animated/motionMenu";
 // Bibliotecas
 import { GrDocumentText } from "react-icons/gr";
 import { IoExitOutline } from "react-icons/io5";
-import { AuthContext, signOut } from "@/contexts/AuthContext";
 import { GiTakeMyMoney } from "react-icons/gi";
+
+// Utils
+import { AuthContext, signOut } from "@/contexts/AuthContext";
 
 // React
 import React, { useContext } from "react";

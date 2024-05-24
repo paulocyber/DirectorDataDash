@@ -1,9 +1,13 @@
-// import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
+// Utils
 import { InfiniteScroll } from "@/utils/ScrollInfinity/InfiniteScroll";
 import { formatCurrency } from "@/utils/mask/moneyMask";
+
+// Framework
 import { useRouter } from "next/router";
+// React
 import { useState } from "react";
 
+// Tipagem
 interface productsDav {
     CODIGO_PRD: string,
     DESCRICAO_PRD: string,

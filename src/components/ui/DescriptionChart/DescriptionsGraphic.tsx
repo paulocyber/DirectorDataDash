@@ -1,13 +1,10 @@
 // Paleta
 import { filterDescription } from "@/atom/FilterDescription";
 
-// React
-import { useState } from "react";
-
 // Biblioteca
 import { useRecoilState } from "recoil";
 
-// Atom
+// Dados
 import { vibrantPalette } from "@/data/dashBoardColorPalette";
 
 // Tipagem

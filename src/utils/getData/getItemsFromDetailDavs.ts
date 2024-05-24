@@ -1,9 +1,13 @@
+// Icon
 import { MdAttachMoney } from "react-icons/md";
-import { truncateString } from "../mask/stringMask";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
+
+// Utils
+import { truncateString } from "../mask/stringMask";
 import { formatCurrency } from "./../mask/moneyMask";
 
+// Tipagem
 interface itemDav {
   ID_PSS: string;
   ID_FRM: string;

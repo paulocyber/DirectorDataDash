@@ -1,6 +1,3 @@
-// React
-import { useState } from "react";
-
 // Api
 import { setupApiClient } from "@/services/api";
 

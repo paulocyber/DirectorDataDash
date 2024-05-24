@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button/button";
 
 // React
 import { FormEvent, useContext, useState } from "react";
+
+// Utils
 import { AuthContext } from "@/contexts/AuthContext";
 
 // Rotas

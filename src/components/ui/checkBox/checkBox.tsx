@@ -1,9 +1,6 @@
 // React
 import { InputHTMLAttributes } from "react";
 
-// Biblioteca
-import { SiVerizon } from "react-icons/si";
-
 // Tipagem
 interface CheckBoxProps extends InputHTMLAttributes<HTMLInputElement> { }
 

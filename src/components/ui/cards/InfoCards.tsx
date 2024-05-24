@@ -9,6 +9,7 @@ interface data {
     data: { icon: React.ElementType; title: string; value: string }[];
 }
 
+// Paletas
 import { RouterColors } from "../menu/SideBar";
 
 export default function InfoCards({ data }: data) {

@@ -1,12 +1,17 @@
 // Framwork
 import Head from "next/head";
+import Link from "next/link";
 
 // Componentes
 import SideBar from "@/components/ui/menu/SideBar";
 import HeaderBar from "@/components/ui/menu/HeaderBar";
 import InfoCards from "@/components/ui/cards/InfoCards";
 import { Main } from "@/components/ui/mainComponents/main";
+import { TableBillsToPay } from "@/components/tables/TableBillsToPay";
+
+// Biblioteca
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { GoSync } from "react-icons/go";
 
 // React
 import { useEffect, useState } from "react";
@@ -22,27 +27,48 @@ import { BillsToPayProps } from "..";
 
 // Dados
 import getListOfAccountsPayable from "@/utils/getData/getListOfAccountsPayable";
-import { GoSync } from "react-icons/go";
-import Link from "next/link";
+
+// Recoil
 import { useRecoilState } from "recoil";
+
+// Atom
 import { filterDescription } from "@/atom/FilterDescription";
-import { TableBillsToPay } from "@/components/tables/TableBillsToPay";
+
+// Dados
+import { fetchData } from "@/data/fetchData";
 
 export default function BillsToPayTable({ listOfAccountsPayable, listOfUnpaidBills, listPaidAndUnpaidBills }: BillsToPayProps) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
     const [dataPaid, setDataPaid] = useState(listOfAccountsPayable || [])
     const [dataNotPaid, setDataNotPaid] = useState(listOfUnpaidBills || [])
+    const [loading, setLoading] = useState<boolean>(false)
     const [dataPaidNotPaid, setDataPaidNotPaid] = useState(listPaidAndUnpaidBills || [])
     const [animation, setAnimation] = useState<boolean>(false);
     const [filter, setFilter] = useRecoilState(filterDescription)
-console.log("Dados: ", listPaidAndUnpaidBills)
+
     const { infoDetailCard } = getListOfAccountsPayable({ listOfAccountsPayable: dataPaid, listOfUnpaidBills: dataNotPaid, listPaidAndUnpaidBills: dataPaidNotPaid })
+
+    let queryNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and pgm.data_vencimento_pgm = current_date order by pgm.data_vencimento_pgm, pgm.id_pss"
+    let queryPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE  order by pgm.data_vencimento_pgm, pgm.id_pss"
+    let queryPaidAndNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND (CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE or CAST(pgm.data_vencimento_pgm AS DATE) = CURRENT_DATE) order by pgm.data_vencimento_pgm, pgm.id_pss"
+
+    const fetchItemsBillsToPay = async () => {
+        setLoading(true);
+        await fetchData({ query: queryNotPaid, setData: setDataNotPaid })
+        await fetchData({ query: queryPaid, setData: setDataPaid })
+        await fetchData({ query: queryPaidAndNotPaid, setData: setDataPaidNotPaid })
+        setLoading(false)
+    }
 
     // Limpa Filtro
     useEffect(() => {
         setFilter([]);
     }, []);
 
+    // Refresh
+    const handleRefreshClick = async () => {
+        await fetchItemsBillsToPay();
+    }
 
     return (
         <>
@@ -63,7 +89,7 @@ console.log("Dados: ", listPaidAndUnpaidBills)
                                         <button
                                             onMouseEnter={() => setAnimation(true)}
                                             onMouseLeave={() => setAnimation(false)}
-                                            // onClick={handleRefreshClick}
+                                            onClick={handleRefreshClick}
                                             className="flex hover:scale-[1.03] justify-center items-center w-full md:px-3 px-1 py-1 text-sm font-medium text-white bg-blue-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
                                         >
                                             <span className="mr-2 md:text-sm text-xs">Atualizar</span>
@@ -84,7 +110,7 @@ console.log("Dados: ", listPaidAndUnpaidBills)
 
                         </div>
 
-                        <TableBillsToPay itemsPaidAndUnpaidBills={listPaidAndUnpaidBills}/>
+                        <TableBillsToPay itemsPaidAndUnpaidBills={listPaidAndUnpaidBills} />
                     </Main>
                 </div>
             </main>
