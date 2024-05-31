@@ -27,7 +27,7 @@ export default function InfoCards({ data }: data) {
     } else {
         bgColorClass = "bg-blue-700";
     }
-
+    // const teste = data.map((info) => (console.log(info.title.split(" "))))
     return (
         <div className="mt-5 px-4">
             <div className={`mb-5 grid gap-y-10 gap-x-6 md:grid-cols-2 ${data.length > 3 ? 'xl:grid-cols-4' : 'xl:grid-cols-3'}`}>
@@ -42,7 +42,7 @@ export default function InfoCards({ data }: data) {
                             <p className="block antialiased font-sans md:text-sm text-xs leading-normal font-normal text-blue-gray-600">
                                 {info.title}
                             </p>
-                            <h4 className="block antialiased tracking-normal font-sans md:text-2xl text-xl font-semibold leading-snug text-blue-gray-900">
+                            <h4 className={`block antialiased tracking-normal font-sans md:text-2xl text-xl font-semibold leading-snug ${info.title === "Valor Total de Boletos Vencidos" ? "text-red-500" : "text-blue-gray-600"}`}>
                                 {info.value}
                             </h4>
                         </div>

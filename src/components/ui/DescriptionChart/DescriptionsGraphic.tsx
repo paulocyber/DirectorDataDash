@@ -34,14 +34,14 @@ export function DescriptionsGraphic({ data }: descriptionGraphic) {
     }
 
     return (
-        <div className="p-5">
+        <div className="p-5 z-10">
             <div className="py-4 px-6">
 
                 <div className="flex w-full items-center">
                     {data.map((topCostCenters, index) => (
                         <div key={index} className="flex" onClick={() => handleSelectingCostCenter(topCostCenters.description, index, vibrantPalette[index % vibrantPalette.length])}>
                             <div className="flex items-center">
-                                <p className="relative inline-block h-4 w-4 rounded-full border-2 border-white object-cover object-center hover:z-10 focus:z-10" style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }}></p>
+                                <p className="relative inline-block h-4 w-4 rounded-full border-2 border-white object-cover object-center " style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }}></p>
                             </div>
                             <p className="text-[10.4px] px-2 font-bold cursor-pointer">{topCostCenters.description}</p>
                         </div>

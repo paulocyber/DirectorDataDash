@@ -28,6 +28,7 @@ export default function getListOfAccountsPayable({
   listOfAccountsPayable,
   listOfUnpaidBills,
   listPaidAndUnpaidBills,
+  listExpiredBills,
 }: BillsToPayProps) {
   const filter: itemDescription[] = useRecoilValue(filterDescription);
 
@@ -101,11 +102,20 @@ export default function getListOfAccountsPayable({
         (filterItem) => filterItem.description === item.CENTRO_CUSTO
       )
     )
-    .reduce((acc, item) => acc + Number(item.VALOR_PAGO_PGM.replace(",", ".")), 0);
+    .reduce(
+      (acc, item) => acc + Number(item.VALOR_PAGO_PGM.replace(",", ".")),
+      0
+    );
 
   const payedInvoices = listOfAccountsPayable.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
   ).length;
+
+  const totalExpiredBills = listExpiredBills?.reduce((total, bill) => {
+    return total + Number(bill.RESTANTE_PGM.replace(",", "."));
+  }, 0);
+
+  // console.log("Valor total das contas vencidas:", totalExpiredBills);
 
   const infoDetailCard = [
     {
@@ -115,8 +125,8 @@ export default function getListOfAccountsPayable({
     },
     {
       icon: CiWarning,
-      title: "Total de boletos em aberto",
-      value: unpaidInvoices.toString(),
+      title: "Valor Total de Boletos Vencidos",
+      value: formatCurrency(totalExpiredBills || 0),
     },
     {
       icon: GiPayMoney,

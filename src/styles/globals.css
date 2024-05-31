@@ -15,3 +15,11 @@
 tr.w-px {
   display: none;
 }
+
+.box-content {
+  color: #fff !important;
+}
+
+.text-foreground:hover {
+  background-color: #006fee;
+}
