@@ -117,7 +117,6 @@ export function TableDav({ listDav }: listPorp) {
                         ))}
                     </tbody>
                 </table>
-                {/* Scroll Infinito */}
                 <InfiniteScroll fetchMore={fetchMore} />
             </div>
         </div>

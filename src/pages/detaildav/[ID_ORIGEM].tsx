@@ -24,6 +24,7 @@ import InfoCards from "@/components/ui/cards/InfoCards";
 import { Main } from "@/components/ui/mainComponents/main";
 import { TableProductDav } from "@/components/tables/TableDetailDav";
 import { ItemsDavDetail } from "@/components/DetailDav/DetailDav";
+import { getDavsProducts, getDetailDavs } from "@/utils/queries";
 
 // Tipagem
 interface itemDav {
@@ -72,21 +73,17 @@ interface productsDav {
 }
 
 export type listPorp = {
-    listDav?: itemDav[];
-    prodcutsDav?: productsDav[]
+    davDetailedList?: itemDav[];
+    listProductsOnDav?: productsDav[]
 }
 
-export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
+export default function DetailDav({ davDetailedList, listProductsOnDav }: listPorp) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
-    const [itemsDavs, setItemsDavs] = useState(listDav || [])
-    const [prodcutsDavs, setProdcutsDavs] = useState(prodcutsDav || [])
-
-    const router = useRouter();
-
-    const { ID_ORIGEM } = router.query;
+    const [itemsDavs, setItemsDavs] = useState(davDetailedList || [])
+    const [prodcutsDavs, setProdcutsDavs] = useState(listProductsOnDav || [])
 
     const { infoDetaildCard } = getItemFromDetailDavs({ listDav: itemsDavs })
-
+// console.log("Dados: ", itemsDavs)
     return (
         <>
             <Head>
@@ -110,7 +107,7 @@ export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
                             </div>
                         </div>
                         <div className="md:flex w-full">
-                            <ItemsDavDetail listDav={itemsDavs} />
+                            <ItemsDavDetail davDetailedList={itemsDavs} />
                         </div>
                     </Main>
                     <Main>
@@ -136,45 +133,21 @@ export default function DetailDav({ listDav, prodcutsDav }: listPorp) {
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
-    const { ID_ORIGEM } = ctx.query;
+    const ID_ORIGEM = ctx.query.ID_ORIGEM as string;
 
-    // Primeira query para obter os detalhes do DAV
-    let query1 = `select a.id_pss, a.id_frm, a.id_emp, a.id_rcb, a.sigla_emp, a.numero_documento_rcb as n_dav, a.id_origem, a.datahora_lancamento_rcb, a.datahora_pagamento_rcb, a.data_vencimento_rcb, a.atraso_rcb, a.valor_rcb, a.juros_rcb, a.multa_rcb, iif(a.restante_rcb < 0.00,0.00,a.restante_rcb) as restante_rcb, a.restante_sem_juros_rcb, a.valor_pago_rcb, a.nome_pss as nome_pss, a.apelido_pss, a.id_fnc, a.nome_fnc as vendedor, a.status_rcb, a.descricao_frm as forma_pagamento,  a.valor_acrescimos_rci, a.valor_desconto_rci, a.descricao_rcb from v_recebimentos a where a.id_emp in(4,1,2,3,5,6,7,8,9,10,11) and a.status_rcb in('1','4') and a.status_pss = 'A' and coalesce(a.insolvente_rcb,'N') = 'N' and EXTRACT(YEAR FROM a.data_vencimento_rcb) = EXTRACT(YEAR FROM CURRENT_DATE) and a.ID_ORIGEM = '${ID_ORIGEM}' order by a.id_emp, a.data_vencimento_rcb, nome_pss`;
-
-    // Segunda query para obter os itens do DAV
-    let query2 = `select iif(prv.referencia_prv is null, prd.codigo_prd, prv.codigo_prv) as codigo_prd, prd.descricao_prd, prd.referencia_prd, sdi.qtde_sdi,  sdi.valor_bruto_sdi, sdi.valor_desconto_sdi, sdi.valor_acrescimo_sdi, sdi.valor_liquido_sdi, sdi.perc_desconto_sdi, sdi.status_sdi, alm.descricao_alm, sdi.item_promocao_sdi, sdi.qtde_disponivel_sdi from saidas_itens sdi inner join produtos prd on prd.id_prd = sdi.id_prd inner join empresas emp on emp.id_emp = sdi.id_emp inner join almoxarifados alm on alm.id_alm = sdi.id_alm left join v_funcionarios fnc on fnc.id_pss = sdi.id_pss left join cores crs on crs.id_crs = prd.id_crs left join produtos_variacoes prv on (prv.id_prd = sdi.id_prd and prv.codigo_prv = sdi.codigo_prv and prv.id_prv = sdi.id_prv and sdi.id_gri = prv.id_gri) left join ambientes amb on amb.id_amb = sdi.id_amb left join tabelas_precos tbp on tbp.id_tbp = sdi.id_tbp left join tipos_separacao tsp on tsp.id_tsp = sdi.id_tsp where sdi.id_sds = ${ID_ORIGEM} and prd.tipo_prd in('R', 'S', 'P') and sdi.id_item_sdi > 0 and sdi.produtopai_kit_sdi is false order by id_item_sdi, id_prd_composto, id_sequenciainsumokit_sdi`;
+    const detailDav = getDetailDavs(ID_ORIGEM);
+    const productsContainsInDav = getDavsProducts(ID_ORIGEM)
 
     const api = setupApiClient(ctx);
 
-    try {
-        // Faz a primeira requisição para obter os detalhes do DAV
-        const response1 = await api.post("/v1/find-db-query", { query: query1 });
-
-        // Faz a segunda requisição para obter os itens do DAV
-        const response2 = await api.post("/v1/find-db-query", { query: query2 });
-        // console.log("Dados: ", response2.data.returnObject.body)
-        return {
-            props: {
-                listDav: response1.data.returnObject.body,
-                prodcutsDav: response2.data.returnObject.body
-            }
-        };
-    } catch (error) {
-        if (error instanceof AuthTokenError) {
-            return {
-                redirect: {
-                    destination: '/login',
-                    permanent: false,
-                },
-            };
-        } else {
-            console.error("Erro ao buscar dados:", error);
-            return {
-                redirect: {
-                    destination: '/error-page',
-                    permanent: false,
-                },
-            };
+    const respDetailDav = await api.post("/v1/find-db-query", { query: detailDav });
+    const respProductsContainsInDav = await api.post("/v1/find-db-query", { query: productsContainsInDav });
+    
+    // console.log("Dados: ", respDetailDav.data.returnObject.body)
+    return {
+        props: {
+            davDetailedList: respDetailDav.data.returnObject.body,
+            listProductsOnDav: respProductsContainsInDav.data.returnObject.body
         }
     }
 });

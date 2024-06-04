@@ -4,13 +4,13 @@ import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
 // Utils
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
-export function ItemsDavDetail({ listDav }: listPorp) {
+export function ItemsDavDetail({ davDetailedList }: listPorp) {
     return (
         <>
             <div
                 className="bg-white  rounded-xl w-[90%] mx-auto pb-5"
             >
-                {listDav?.map((item, index) => (
+                {davDetailedList?.map((item, index) => (
                     <div key={index} className="">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 ">
                             <div className="">

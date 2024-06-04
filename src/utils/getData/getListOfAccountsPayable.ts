@@ -25,16 +25,16 @@ export interface costCenterSummary {
 }
 
 export default function getListOfAccountsPayable({
-  listOfAccountsPayable,
-  listOfUnpaidBills,
-  listPaidAndUnpaidBills,
-  listExpiredBills,
+  listBilletPaid,
+  listBilletInOpen,
+  listBilletPaidAndInOpen,
+  listBilletExpired,
 }: BillsToPayProps) {
   const filter: itemDescription[] = useRecoilValue(filterDescription);
 
   const costCenterMap: Record<string, costCenterSummary> = {};
 
-  listPaidAndUnpaidBills.forEach((data) => {
+  listBilletPaidAndInOpen.forEach((data) => {
     const key = data.CENTRO_CUSTO;
     const value = Number(data.VALOR_PGM.replace(",", "."));
 
@@ -92,11 +92,11 @@ export default function getListOfAccountsPayable({
   // Cálculos de totais
   const ammountNotPaid = filtered.reduce((acc, item) => acc + item.value, 0);
 
-  const unpaidInvoices = listOfUnpaidBills.filter((item) =>
+  const unpaidInvoices = listBilletInOpen.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
   ).length;
 
-  const amountPaid = listOfAccountsPayable
+  const amountPaid = listBilletPaid
     .filter((item) =>
       filtered.some(
         (filterItem) => filterItem.description === item.CENTRO_CUSTO
@@ -107,11 +107,11 @@ export default function getListOfAccountsPayable({
       0
     );
 
-  const payedInvoices = listOfAccountsPayable.filter((item) =>
+  const payedInvoices = listBilletPaid.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
   ).length;
 
-  const totalExpiredBills = listExpiredBills?.reduce((total, bill) => {
+  const totalExpiredBills = listBilletExpired?.reduce((total, bill) => {
     return total + Number(bill.RESTANTE_PGM.replace(",", "."));
   }, 0);
 

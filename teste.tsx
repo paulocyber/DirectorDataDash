@@ -36,9 +36,6 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-o
 import { RiFormatClear } from "react-icons/ri";
 import { useRecoilState } from "recoil";
 import { filterDescription } from "@/atom/FilterDescription";
-import { Router } from "next/router";
-import currentDate from "@/utils/getCurrentDate/CurrentDate";
-import { accountsPayableOpenedDaily, accountsPayablePaidDaily, accountsPayablePaidMonthly, accountsPaybleOpenedMonthly, getBillExpiredMonthly, accountsPayablePaidInOpenDaily, accountsPayablePaidInOpenMonthly } from "@/utils/queries";
 
 // Tipagem
 interface BillToPayItem {
@@ -91,61 +88,65 @@ interface ExpiredBillItem {
 }
 
 export type BillsToPayProps = {
-    listBilletPaid: BillToPayItem[],
-    listBilletInOpen: BillToPayItem[],
-    listBilletPaidAndInOpen: PaidAndUnpaidBillItem[],
-    listBilletExpired?: ExpiredBillItem[]
+    listOfAccountsPayable: BillToPayItem[],
+    listOfUnpaidBills: BillToPayItem[],
+    listPaidAndUnpaidBills: PaidAndUnpaidBillItem[],
+    listExpiredBills?: ExpiredBillItem[]
 }
 
-export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
+export default function BillsToPay({ listOfAccountsPayable, listOfUnpaidBills, listPaidAndUnpaidBills, listExpiredBills }: BillsToPayProps) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
+    const [dataPaid, setDataPaid] = useState(listOfAccountsPayable || [])
+    const [dataNotPaid, setDataNotPaid] = useState(listOfUnpaidBills || [])
+    const [dataPaidNotPaid, setDataPaidNotPaid] = useState(listPaidAndUnpaidBills || [])
+    const [dataListExpiredBills, setDataListExpiredBills] = useState(listExpiredBills || [])
     const [loading, setLoading] = useState<boolean>(false)
     const [animation, setAnimation] = useState<boolean>(false);
-    const [dropDown, setDropDown] = useState<boolean>(false)
-
-    // Dados
-    const [billetPaidData, setBilletPaidData] = useState(listBilletPaid || [])
-    const [billetInOpenData, setBilletInOpenData] = useState(listBilletInOpen || [])
-    const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
-    const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
-
-    // Filtro
     const [date, setDate] = React.useState<RangeValue<DateValue>>({
         start: parseDate(new Date().toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
     });
+    const [dropDown, setDropDown] = useState<boolean>(false)
     const [filter, setFilter] = useRecoilState(filterDescription)
 
-    const { infoDetailCard, topCostCenter, topNameCostCenter } = getListOfAccountsPayable({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen: billetPaidInOpenData, listBilletExpired: billetExpiredData })
+    const { infoDetailCard, topCostCenter, topNameCostCenter } = getListOfAccountsPayable({ listOfAccountsPayable: dataPaid, listOfUnpaidBills: dataNotPaid, listPaidAndUnpaidBills: dataPaidNotPaid, listExpiredBills: dataListExpiredBills })
 
-    const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
-    const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
-
-    const billetInOpen = accountsPaybleOpenedMonthly(formatDateInit, formatDateEnd)
-    const paidBills = accountsPayablePaidMonthly(formatDateInit, formatDateEnd)
-    const paidAndUnpaidBills = accountsPayablePaidInOpenMonthly(formatDateInit, formatDateEnd)
 
     const fetchItemsBillsToPay = async () => {
-        const { today, year, month, day } = currentDate()
+        const today = new Date();
         const start = new Date(date.start.year, date.start.month - 1, date.start.day);
         const end = new Date(date.end.year, date.end.month - 1, date.end.day);
 
         const startIsToday = start.toDateString() === today.toDateString();
         const endIsToday = end.toDateString() === today.toDateString();
 
+        const day = today.getDate();
+        const month = today.getMonth() + 1;
+        const year = today.getFullYear();
+
         setLoading(true);
-        await fetchData({ query: billetInOpen, setData: setBilletInOpenData })
-        await fetchData({ query: paidBills, setData: setBilletPaidData })
-        await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
+        const responseNotPaid = await fetch(`/api/bills-to-pay?query=notPaid&start=${start.toISOString()}&end=${end.toISOString()}`);
+        const dataNotPaid = await responseNotPaid.json();
+        setDataNotPaid(dataNotPaid);
 
-        const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
-        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day - 1}`
+        const responsePaid = await fetch(`/api/bills-to-pay?query=paid&start=${start.toISOString()}&end=${end.toISOString()}`);
+        const dataPaid = await responsePaid.json();
+        setDataPaid(dataPaid);
 
-        // let queryForExpiredBills = `select pgm.restante_pgm from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${date.start.year}-${date.start.month}-${date.start.day}' AND '${date.end.year}-${date.end.month}-${date.end.day - 1}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE and pgm.status_pgm = 1 or pgm.status_pgm = 4 order by pgm.data_vencimento_pgm, pgm.id_pss`
-        const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
-        await fetchData({ query: expiredBills, setData: setBilletExpiredData })
-        // console.log("Query: ", expiredBills)
-        setLoading(false)
+        const responsePaidAndNotPaid = await fetch(`/api/bills-to-pay?query=paidAndNotPaid&start=${start.toISOString()}&end=${end.toISOString()}`);
+        const dataPaidAndNotPaid = await responsePaidAndNotPaid.json();
+        setDataPaidNotPaid(dataPaidAndNotPaid);
+
+        if (!startIsToday || !endIsToday) {
+            const responseExpiredBills = await fetch(`/api/bills-to-pay?query=expiredBills&start=${start.toISOString()}&end=${end.toISOString()}`);
+            const dataExpiredBills = await responseExpiredBills.json();
+            setDataListExpiredBills(dataExpiredBills);
+        } else {
+            const responseExpiredBills = await fetch(`/api/bills-to-pay?query=expiredBills&start=${year}-01-01&end=${year}-${month}-${day - 1}`);
+            const dataExpiredBills = await responseExpiredBills.json();
+            setDataListExpiredBills(dataExpiredBills);
+        }
+        setLoading(false);
     }
 
     const handleRefreshClick = async () => {
@@ -194,7 +195,7 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                                             </DropdownTrigger>
                                             <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
                                                 <DropdownItem
-                                                    // onClick={handleRefreshClick}
+                                                    onClick={handleRefreshClick}
                                                     startContent={<GoSync className={animation ? "animate-spin" : ""} />}
                                                     onMouseEnter={() => setAnimation(true)}
                                                     onMouseLeave={() => setAnimation(false)}
@@ -221,10 +222,32 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                                             </DropdownMenu>
                                         </Dropdown>
                                     </div>
+
+                                    {/* <div className="px-2">
+                                        <button
+                                            onMouseEnter={() => setAnimation(true)}
+                                            onMouseLeave={() => setAnimation(false)}
+                                            onClick={handleRefreshClick}
+                                            className="flex hover:scale-[1.03] justify-center items-center w-full md:px-3 px-1 py-1 text-sm font-medium text-white bg-blue-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+                                        >
+                                            <span className="mr-2 md:text-sm text-xs">Atualizar</span>
+                                            <GoSync className={animation ? "animate-spin" : ""} />
+                                        </button>
+                                    </div>
+
+                                    <div className="px-2">
+                                        <Link
+                                            href="/billstopay/table"
+                                            className="flex hover:scale-[1.03] justify-center items-center w-full md:px-4 px-1 py-1 text-sm font-medium text-white bg-blue-700 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+                                        >
+                                            <span className="mr-2 md:text-sm text-xs">Tabela</span>
+                                            <VscTable />
+                                        </Link>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
-                        {loading ?
+                        {!loading ?
                             <div className="p-4 md:w-full flex items-center justify-center h-[400px]">
                                 <Loading />
                             </div>
@@ -238,8 +261,8 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                                         <BarChartComponent data={topCostCenter} />
                                     </div>
                                 </MainScience>
-                            </>}
-
+                            </>
+                            }
                     </Main>
                 </div >
             </main >
@@ -248,30 +271,39 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
-    const apiClient = setupApiClient(ctx)
+    const apiClient = setupApiClient(ctx);
 
-    const { year, month, day } = currentDate()
+    const { start, end } = ctx.query;
 
-    const startIsToday = false
-    const endIsToday = false
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
 
-    const billetInOpen = accountsPayableOpenedDaily()
-    const paidBills = accountsPayablePaidDaily()
-    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
-    const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)
+    const startDate = start || `${year}-${month}-${day}`;
+    const endDate = end || `${year}-${month}-${day}`;
 
-    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpen })
-    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: paidBills })
-    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: paidAndUnpaidBills })
-    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBills })
+    let queryNotPaid = `select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${startDate}' AND '${endDate}' order by pgm.data_vencimento_pgm, pgm.id_pss`;
+
+    let queryPaid = `select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.datahora_pagamento_pgm AS DATE) BETWEEN '${startDate}' AND '${endDate}' order by pgm.data_vencimento_pgm, pgm.id_pss`;
+
+    let queryPaidAndNotPaid = `select pgm.valor_pgm, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.nome_pss from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and (pgm.data_vencimento_pgm between date '${startDate}' and date '${endDate}' or pgm.datahora_pagamento_pgm between date '${startDate}' and date '${endDate}') order by pgm.data_vencimento_pgm, pgm.id_pss`;
+
+    let queryForExpiredBills = `select pgm.restante_pgm from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${startDate}' AND '${endDate}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE and pgm.status_pgm = 1 or pgm.status_pgm = 4 order by pgm.data_vencimento_pgm, pgm.id_pss`;
+
+    const respPaid = await apiClient.post("/v1/find-db-query", { query: queryPaid });
+    const respNotPaid = await apiClient.post("/v1/find-db-query", { query: queryNotPaid });
+    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: queryPaidAndNotPaid });
+    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: queryForExpiredBills });
 
     return {
         props: {
-            listBilletInOpen: respBillsInOpen.data.returnObject.body,
-            listBilletPaid: respBillsInPayed.data.returnObject.body,
-            listBilletPaidAndInOpen: respPaidAndNotPaid.data.returnObject.body,
-            listBilletExpired: respExpiredBills.data.returnObject.body
+            listOfAccountsPayable: respPaid.data.returnObject.body,
+            listOfUnpaidBills: respNotPaid.data.returnObject.body,
+            listPaidAndUnpaidBills: respPaidAndNotPaid.data.returnObject.body,
+            listExpiredBills: respExpiredBills.data.returnObject.body
         },
     };
 });
+
 
