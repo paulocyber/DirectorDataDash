@@ -141,10 +141,8 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
         const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
         const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day - 1}`
 
-        // let queryForExpiredBills = `select pgm.restante_pgm from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${date.start.year}-${date.start.month}-${date.start.day}' AND '${date.end.year}-${date.end.month}-${date.end.day - 1}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE and pgm.status_pgm = 1 or pgm.status_pgm = 4 order by pgm.data_vencimento_pgm, pgm.id_pss`
         const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
         await fetchData({ query: expiredBills, setData: setBilletExpiredData })
-        // console.log("Query: ", expiredBills)
         setLoading(false)
     }
 
@@ -194,7 +192,7 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                                             </DropdownTrigger>
                                             <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
                                                 <DropdownItem
-                                                    // onClick={handleRefreshClick}
+                                                    onClick={handleRefreshClick}
                                                     startContent={<GoSync className={animation ? "animate-spin" : ""} />}
                                                     onMouseEnter={() => setAnimation(true)}
                                                     onMouseLeave={() => setAnimation(false)}

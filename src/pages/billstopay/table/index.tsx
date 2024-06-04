@@ -8,6 +8,7 @@ import HeaderBar from "@/components/ui/menu/HeaderBar";
 import InfoCards from "@/components/ui/cards/InfoCards";
 import { Main } from "@/components/ui/mainComponents/main";
 import { TableBillsToPay } from "@/components/tables/TableBillsToPay";
+import { Loading } from "@/components/ui/loadings/Loading";
 
 // Biblioteca
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -27,6 +28,9 @@ import { BillsToPayProps } from "..";
 
 // Dados
 import getListOfAccountsPayable from "@/utils/getData/getListOfAccountsPayable";
+import { fetchData } from "@/data/fetchData";
+import { accountsPayableOpenedDaily, accountsPayablePaidDaily, accountsPayablePaidInOpenDaily, getBillExpiredMonthly } from "@/utils/queries";
+import currentDate from "@/utils/getCurrentDate/CurrentDate";
 
 // Recoil
 import { useRecoilState } from "recoil";
@@ -34,29 +38,31 @@ import { useRecoilState } from "recoil";
 // Atom
 import { filterDescription } from "@/atom/FilterDescription";
 
-// Dados
-import { fetchData } from "@/data/fetchData";
-
-export default function BillsToPayTable({ listOfAccountsPayable, listOfUnpaidBills, listPaidAndUnpaidBills }: BillsToPayProps) {
-    const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
-    const [dataPaid, setDataPaid] = useState(listOfAccountsPayable || [])
-    const [dataNotPaid, setDataNotPaid] = useState(listOfUnpaidBills || [])
+export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
+    const [toggleMenuClosed, setToggleMenuClosed] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
-    const [dataPaidNotPaid, setDataPaidNotPaid] = useState(listPaidAndUnpaidBills || [])
     const [animation, setAnimation] = useState<boolean>(false);
+
+    // Dados
+    const [billetPaidData, setBilletPaidData] = useState(listBilletPaid || [])
+    const [billetInOpenData, setBilletInOpenData] = useState(listBilletInOpen || [])
+    const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
+    const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
+
+    // Filtros
     const [filter, setFilter] = useRecoilState(filterDescription)
 
-    const { infoDetailCard } = getListOfAccountsPayable({ listOfAccountsPayable: dataPaid, listOfUnpaidBills: dataNotPaid, listPaidAndUnpaidBills: dataPaidNotPaid })
+    const { infoDetailCard } = getListOfAccountsPayable({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen: billetPaidInOpenData, listBilletExpired: billetExpiredData })
 
-    let queryNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and pgm.data_vencimento_pgm = current_date order by pgm.data_vencimento_pgm, pgm.id_pss"
-    let queryPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE  order by pgm.data_vencimento_pgm, pgm.id_pss"
-    let queryPaidAndNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND (CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE or CAST(pgm.data_vencimento_pgm AS DATE) = CURRENT_DATE) order by pgm.data_vencimento_pgm, pgm.id_pss"
+    const billetInOpen = accountsPayableOpenedDaily()
+    const paidBills = accountsPayablePaidDaily()
+    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
 
     const fetchItemsBillsToPay = async () => {
         setLoading(true);
-        await fetchData({ query: queryNotPaid, setData: setDataNotPaid })
-        await fetchData({ query: queryPaid, setData: setDataPaid })
-        await fetchData({ query: queryPaidAndNotPaid, setData: setDataPaidNotPaid })
+        await fetchData({ query: billetInOpen, setData: setBilletInOpenData })
+        await fetchData({ query: paidBills, setData: setBilletPaidData })
+        await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
         setLoading(false)
     }
 
@@ -107,10 +113,13 @@ export default function BillsToPayTable({ listOfAccountsPayable, listOfUnpaidBil
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
-                        <TableBillsToPay itemsPaidAndUnpaidBills={listPaidAndUnpaidBills} />
+                        {loading ?
+                            <div className="p-4 md:w-full flex items-center justify-center h-[400px]">
+                                <Loading />
+                            </div>
+                            :
+                            <TableBillsToPay itemsPaidAndUnpaidBills={billetPaidInOpenData} />}
                     </Main>
                 </div>
             </main>
@@ -121,19 +130,27 @@ export default function BillsToPayTable({ listOfAccountsPayable, listOfUnpaidBil
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx)
 
-    let queryNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and pgm.data_vencimento_pgm = current_date order by pgm.data_vencimento_pgm, pgm.id_pss"
-    let queryPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE  order by pgm.data_vencimento_pgm, pgm.id_pss"
-    let queryPaidAndNotPaid = "select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, pgm.valor_desconto_pgi, pgm.qtde_pagamentos_pgi, pgm.status_pgm, pgm.id_frm, pgm.descricao_frm, pgm.numero_cheque_pgm, pgm.numero_nota_pgm, pgm.conta_ctb, pgm.data_vencimento_pgm, cast(pgm.datahora_lancamento_pgm as date) datahora_lancamento_pgm, cast(pgm.datahora_pagamento_pgm as date) datahora_pagamento_pgm, pgm.apelido_pss, pgm.nome_pss, pgm.cnpj_pss, pgm.sigla_emp, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo, pgm.id_gps||' - '||pgm.nome_gps as grupos_pessoas, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.boleto_recebido_pgm, pgm.id_emp, pgm.descricao_pgm, iif(pgm.contabil_pgm is true, 'SIM', 'NAO') as contabil_pgm  from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND (CAST(pgm.datahora_pagamento_pgm AS DATE) = CURRENT_DATE or CAST(pgm.data_vencimento_pgm AS DATE) = CURRENT_DATE) order by pgm.data_vencimento_pgm, pgm.id_pss"
+    const { year, month, day } = currentDate()
 
-    const respPaid = await apiClient.post("/v1/find-db-query", { query: queryPaid })
-    const respNotPaid = await apiClient.post("/v1/find-db-query", { query: queryNotPaid })
-    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: queryPaidAndNotPaid })
+    const startIsToday = true
+    const endIsToday = true
+
+    const billetInOpen = accountsPayableOpenedDaily()
+    const paidBills = accountsPayablePaidDaily()
+    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
+    const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)
+
+    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpen })
+    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: paidBills })
+    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: paidAndUnpaidBills })
+    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBills })
 
     return {
         props: {
-            listOfAccountsPayable: respPaid.data.returnObject.body,
-            listOfUnpaidBills: respNotPaid.data.returnObject.body,
-            listPaidAndUnpaidBills: respPaidAndNotPaid.data.returnObject.body
-        }
-    }
+            listBilletInOpen: respBillsInOpen.data.returnObject.body,
+            listBilletPaid: respBillsInPayed.data.returnObject.body,
+            listBilletPaidAndInOpen: respPaidAndNotPaid.data.returnObject.body,
+            listBilletExpired: respExpiredBills.data.returnObject.body
+        },
+    };
 });
