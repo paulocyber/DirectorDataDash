@@ -139,7 +139,7 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
         await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
 
         const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
-        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day - 1}`
+        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day}`
 
         const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
         await fetchData({ query: expiredBills, setData: setBilletExpiredData })

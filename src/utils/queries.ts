@@ -108,7 +108,7 @@ export const getBillExpiredMonthly = (
   if (!startIsToday || !endIsToday) {
     expiredBills = `select pgm.restante_pgm from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN 
     '${dateInit}' AND '${dateEnd}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND 
-    CURRENT_DATE and pgm.status_pgm = 1 or pgm.status_pgm = 4 order by pgm.data_vencimento_pgm, pgm.id_pss`
+    CURRENT_DATE and pgm.status_pgm = 1 order by pgm.data_vencimento_pgm, pgm.id_pss`
   } else {
      expiredBills = `select pgm.restante_pgm from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${year}-01-01' 
   AND '${year}-${month}-${
