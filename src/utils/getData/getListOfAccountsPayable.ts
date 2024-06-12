@@ -104,9 +104,7 @@ export default function getListOfAccountsPayable({
 
   console.log("Boletos pagos: ", ammountPaid);
 
-  const payedInvoices = listBilletPaid.filter((item) =>
-    filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
-  ).length;
+  const payedInvoices = listBilletPaid.length
 
   const totalExpiredBills = listBilletExpired?.reduce((total, bill) => {
     return total + Number(bill.RESTANTE_PGM.replace(",", "."));
