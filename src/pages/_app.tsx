@@ -19,17 +19,17 @@ export default function App({ Component, pageProps }: AppProps) {
   // Rotas
   Router.events.on('routeChangeStart', () => {
     nProgress.start()
-    console.log("Começou!")
+    // console.log("Começou!")
   })
 
   Router.events.on('routeChangeComplete', () => {
     nProgress.done()
-    console.log("Completou!")
+    // console.log("Completou!")
   })
 
   Router.events.on('routeChangeError', () => {
     nProgress.done()
-    console.log("Erro!")
+    // console.log("Erro!")
 
   })
 

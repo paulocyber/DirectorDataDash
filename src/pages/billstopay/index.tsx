@@ -139,9 +139,10 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
         await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
 
         const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
-        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day - 1}`
+        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day}`
 
         const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
+        
         await fetchData({ query: expiredBills, setData: setBilletExpiredData })
         setLoading(false)
     }
@@ -159,13 +160,17 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
         fetchItemsBillsToPay();
     }, [date]);
 
+    useEffect(() => {
+        setFilter([]);
+    }, []);
+
     return (
         <>
             <Head>
                 <title>Contas a Pagar</title>
             </Head>
             <SideBar showMenu={toggleMenuClosed} isClose={setToggleMenuClosed} />
-            <main className="bg-[#edf3fb] flex flex-col w-full ">
+            <main onClick={() => setDropDown(false)} className="bg-[#edf3fb] flex flex-col w-full ">
                 <HeaderBar />
                 <div onClick={() => setDropDown(false)} className="md:ml-auto md:mx-0 xl:w-[80%] xl:w-[69%] md:flex flex-col w-full h-screen">
                     <InfoCards data={infoDetailCard} />

@@ -35,7 +35,7 @@ export default function getListOfAccountsPayable({
   const costCenterMap: Record<string, costCenterSummary> = {};
 
   listBilletPaidAndInOpen.forEach((data) => {
-    const key = data.CENTRO_CUSTO;
+    const key = `${data.GRUPO_CENTRO} - ${data.CENTRO_CUSTO}`;
     const value = Number(data.VALOR_PGM.replace(",", "."));
 
     if (!costCenterMap[key]) {
@@ -62,7 +62,9 @@ export default function getListOfAccountsPayable({
     filter.length > 0
       ? costCenterSummaries.filter((summary) =>
           filter.some(
-            (filterItem) => filterItem.description === summary.description
+            ((filterItem) => 
+              summary.description.toLowerCase().includes(filterItem.description.toLowerCase())
+            ) 
           )
         )
       : costCenterSummaries;
@@ -91,7 +93,7 @@ export default function getListOfAccountsPayable({
 
   // Cálculos de totais
   const ammountNotPaid = filtered.reduce((acc, item) => acc + item.value, 0);
-
+  // const totalPaidAndInOpen = filtered.reduce((acc, data) => acc + data.value, 0);
   const unpaidInvoices = listBilletInOpen.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
   ).length;
