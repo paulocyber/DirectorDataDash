@@ -61,10 +61,10 @@ export default function getListOfAccountsPayable({
   const filtered =
     filter.length > 0
       ? costCenterSummaries.filter((summary) =>
-          filter.some(
-            ((filterItem) => 
-              summary.description.toLowerCase().includes(filterItem.description.toLowerCase())
-            ) 
+          filter.some((filterItem) =>
+            summary.description
+              .toLowerCase()
+              .includes(filterItem.description.toLowerCase())
           )
         )
       : costCenterSummaries;
@@ -97,17 +97,12 @@ export default function getListOfAccountsPayable({
   const unpaidInvoices = listBilletInOpen.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
   ).length;
+  // listBilletPaid
+  const ammountPaid = listBilletPaid.reduce((total, bill) => {
+    return total + Number(bill.VALOR_PAGO_PGM.replace(",", "."));
+  }, 0);
 
-  const amountPaid = listBilletPaid
-    .filter((item) =>
-      filtered.some(
-        (filterItem) => filterItem.description === item.CENTRO_CUSTO
-      )
-    )
-    .reduce(
-      (acc, item) => acc + Number(item.VALOR_PAGO_PGM.replace(",", ".")),
-      0
-    );
+  console.log("Boletos pagos: ", ammountPaid);
 
   const payedInvoices = listBilletPaid.filter((item) =>
     filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
@@ -116,8 +111,6 @@ export default function getListOfAccountsPayable({
   const totalExpiredBills = listBilletExpired?.reduce((total, bill) => {
     return total + Number(bill.RESTANTE_PGM.replace(",", "."));
   }, 0);
-
-  // console.log("Valor total das contas vencidas:", totalExpiredBills);
 
   const infoDetailCard = [
     {
@@ -133,7 +126,7 @@ export default function getListOfAccountsPayable({
     {
       icon: GiPayMoney,
       title: "Total de boletos pagos",
-      value: formatCurrency(amountPaid),
+      value: formatCurrency(ammountPaid),
     },
     {
       icon: RiVerifiedBadgeFill,

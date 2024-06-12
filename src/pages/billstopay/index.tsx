@@ -137,12 +137,12 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
         await fetchData({ query: billetInOpen, setData: setBilletInOpenData })
         await fetchData({ query: paidBills, setData: setBilletPaidData })
         await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
-
+// console.log("Query boletos pagos: ", paidBills)
         const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
         const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day}`
 
         const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
-        
+
         await fetchData({ query: expiredBills, setData: setBilletExpiredData })
         setLoading(false)
     }

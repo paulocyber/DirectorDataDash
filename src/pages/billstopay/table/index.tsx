@@ -95,9 +95,12 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
             await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
             await fetchData({ query: paidBills, setData: setBilletPaidData })
 
+            // console.log("Query paga: ", paidBills)
         } else {
             await fetchData({ query: paidBills, setData: setBilletPaidData })
             await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
+
+            // console.log("Query paga: ", paidBills)
         }
         setLoading(false)
     }
