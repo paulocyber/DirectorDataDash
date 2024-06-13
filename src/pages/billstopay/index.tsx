@@ -121,7 +121,10 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
     const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
     const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
-    const billetInOpen = accountsPaybleOpenedMonthly(formatDateInit, formatDateEnd)
+    const { year } = currentDate()
+
+    const billetInOpen = accountsPaybleOpenedMonthly(formatDateInit, formatDateEnd, year)
+
     const paidBills = accountsPayablePaidMonthly(formatDateInit, formatDateEnd)
     const paidAndUnpaidBills = accountsPayablePaidInOpenMonthly(formatDateInit, formatDateEnd)
 
@@ -258,7 +261,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const startIsToday = false
     const endIsToday = false
 
-    const billetInOpen = accountsPayableOpenedDaily()
+    const billetInOpen = accountsPayableOpenedDaily(year)
     const paidBills = accountsPayablePaidDaily()
     const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
     const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)

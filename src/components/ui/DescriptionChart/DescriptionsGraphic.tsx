@@ -43,7 +43,7 @@ export function DescriptionsGraphic({ data }: descriptionGraphic) {
                             <div className="flex items-center">
                                 <p className="relative inline-block h-4 w-4 rounded-full border-2 border-white object-cover object-center " style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }}></p>
                             </div>
-                            <p className="text-[10.4px] px-2 font-bold cursor-pointer">{topCostCenters.description}</p>
+                            <p className="text-[10.4px] px-2 font-bold cursor-pointer">{topCostCenters.description.split("-")[2]} {topCostCenters.description.split("-")[3]}</p>
                         </div>
                     ))}
                 </div>

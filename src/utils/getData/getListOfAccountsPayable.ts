@@ -102,7 +102,7 @@ export default function getListOfAccountsPayable({
     return total + Number(bill.VALOR_PAGO_PGM.replace(",", "."));
   }, 0);
 
-  console.log("Boletos pagos: ", ammountPaid);
+  // console.log("Boletos pagos: ", ammountPaid);
 
   const payedInvoices = listBilletPaid.length
 
@@ -110,11 +110,15 @@ export default function getListOfAccountsPayable({
     return total + Number(bill.RESTANTE_PGM.replace(",", "."));
   }, 0);
 
+const totalAmmountInOpen = listBilletInOpen?.reduce((total, bill) => {
+  return total + Number(bill.VALOR_PGM.replace(",", "."))
+}, 0)
+
   const infoDetailCard = [
     {
       icon: TbMoneybag,
       title: "Valor total em aberto",
-      value: formatCurrency(ammountNotPaid),
+      value: formatCurrency(totalAmmountInOpen),
     },
     {
       icon: CiWarning,

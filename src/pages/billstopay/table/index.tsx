@@ -68,7 +68,9 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
         end: parseDate(new Date().toISOString().split('T')[0]),
     });
 
-    const billetInOpen = accountsPayableOpenedDaily()
+    const { year } = currentDate()
+
+    const billetInOpen = accountsPayableOpenedDaily(year)
     const paidBills = accountsPayablePaidDaily()
     const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
 
@@ -247,7 +249,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const startIsToday = true
     const endIsToday = true
 
-    const billetInOpen = accountsPayableOpenedDaily()
+    const billetInOpen = accountsPayableOpenedDaily(year)
     const paidBills = accountsPayablePaidDaily()
     const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
     const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)
