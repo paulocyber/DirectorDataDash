@@ -146,7 +146,7 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                                             onChange={setDate}
                                         />
                                     </div>
-                                    <Options href="/billstopay" descriptionHref="tabela" dropDown={dropDown} setDropDown={setDropDown} handleRefreshClick={handleRefreshClick} animation={animation} setAnimation={setAnimation} handleClearFilter={handleClearFilter} />
+                                    <Options href="/billstopay" descriptionHref="Voltar" dropDown={dropDown} setDropDown={setDropDown} handleRefreshClick={handleRefreshClick} animation={animation} setAnimation={setAnimation} handleClearFilter={handleClearFilter} />
                                 </div>
                             </div>
                         </div>
