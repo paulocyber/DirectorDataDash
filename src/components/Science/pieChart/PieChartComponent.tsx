@@ -17,8 +17,6 @@ interface pieChartPro {
 }
 
 export function PieChartComponent({ data }: pieChartPro) {
-    const palette = useRecoilValue(filterDescription);
-
     const renderActiveShape = (props: any) => {
         const RADIAN = Math.PI / 180;
         const {
@@ -91,7 +89,7 @@ export function PieChartComponent({ data }: pieChartPro) {
                     label={renderActiveShape}
                 >
                     {data.map((item, index) => (
-                         <Cell key={index}  fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
+                        <Cell key={index} fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
                     ))}
                 </Pie>
             </PieChart>

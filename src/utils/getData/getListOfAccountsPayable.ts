@@ -91,28 +91,20 @@ export default function getListOfAccountsPayable({
       value,
     }));
 
-  // Cálculos de totais
-  const ammountNotPaid = filtered.reduce((acc, item) => acc + item.value, 0);
-  // const totalPaidAndInOpen = filtered.reduce((acc, data) => acc + data.value, 0);
-  const unpaidInvoices = listBilletInOpen.filter((item) =>
-    filtered.some((filterItem) => filterItem.description === item.CENTRO_CUSTO)
-  ).length;
   // listBilletPaid
   const ammountPaid = listBilletPaid.reduce((total, bill) => {
     return total + Number(bill.VALOR_PAGO_PGM.replace(",", "."));
   }, 0);
 
-  // console.log("Boletos pagos: ", ammountPaid);
-
-  const payedInvoices = listBilletPaid.length
+  const payedInvoices = listBilletPaid.length;
 
   const totalExpiredBills = listBilletExpired?.reduce((total, bill) => {
     return total + Number(bill.RESTANTE_PGM.replace(",", "."));
   }, 0);
 
-const totalAmmountInOpen = listBilletInOpen?.reduce((total, bill) => {
-  return total + Number(bill.VALOR_PGM.replace(",", "."))
-}, 0)
+  const totalAmmountInOpen = listBilletInOpen?.reduce((total, bill) => {
+    return total + Number(bill.VALOR_PGM.replace(",", "."));
+  }, 0);
 
   const infoDetailCard = [
     {

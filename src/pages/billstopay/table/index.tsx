@@ -1,6 +1,5 @@
 // Framwork
 import Head from "next/head";
-import Link from "next/link";
 
 // Componentes
 import SideBar from "@/components/ui/menu/SideBar";
@@ -9,17 +8,21 @@ import InfoCards from "@/components/ui/cards/InfoCards";
 import { Main } from "@/components/ui/mainComponents/main";
 import { TableBillsToPay } from "@/components/tables/TableBillsToPay";
 import { Loading } from "@/components/ui/loadings/Loading";
+import { Options } from "@/components/ui/dropDown/Options";
+import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import { Search } from '@/components/ui/input/input';
 
 // Biblioteca
-import { IoMdArrowRoundBack } from "react-icons/io";
-import { GoSync } from "react-icons/go";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger } from "@nextui-org/dropdown";
-import { FaFilter } from "react-icons/fa6";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { RiFormatClear } from "react-icons/ri";
+import { useRecoilState } from "recoil";
+import { DateRangePicker } from "@nextui-org/date-picker";
+import { DateValue, RangeValue } from "@nextui-org/calendar";
+import { parseDate } from '@internationalized/date';
+
+// Dados
+import { fetchData } from "@/data/fetchData";
 
 // React
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Rota
 import { canSSRAuth } from "@/utils/canSSRAuth";
@@ -30,24 +33,12 @@ import { setupApiClient } from "@/services/api";
 // Tipagem
 import { BillsToPayProps } from "..";
 
-// Dados
-import getListOfAccountsPayable from "@/utils/getData/getListOfAccountsPayable";
-import { fetchData } from "@/data/fetchData";
-
 // Utils
-import { accountsPayableOpenedDaily, accountsPayablePaidDaily, accountsPayablePaidInOpenDaily, accountsPayablePaidInOpenMonthly, accountsPayablePaidMonthly, getBillExpiredMonthly } from "@/utils/queries";
 import currentDate from "@/utils/getCurrentDate/CurrentDate";
-
-// Recoil
-import { useRecoilState } from "recoil";
+import getBillsToPay from "@/utils/getData/getBillsToPay";
 
 // Atom
-import { filterDescription } from "@/atom/FilterDescription";
-import InputAutoComplete from "@/components/ui/Autocomplete/InputAutoComplete";
-import { Autocomplete, AutocompleteItem, AutocompleteSection } from "@nextui-org/autocomplete";
-import { DateRangePicker } from "@nextui-org/date-picker";
-import { DateValue, RangeValue } from "@nextui-org/calendar";
-import { parseDate } from '@internationalized/date';
+import { filterDescription, itemDescription } from "@/atom/FilterDescription";
 
 export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState<boolean>(false);
@@ -61,82 +52,71 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
     const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
     const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
 
+    const { today, day, year, month } = currentDate()
+
     // Filtros
-    const [filter, setFilter] = useRecoilState(filterDescription)
+    const [costCenterFilter, setCostCenterFilter] = useRecoilState(filterDescription)
     const [date, setDate] = React.useState<RangeValue<DateValue>>({
-        start: parseDate(new Date().toISOString().split('T')[0]),
+        start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
     });
+    const [searchFilter, setSearchFilter] = useState<string>("")
 
-    const { year } = currentDate()
+    const filteredItems = billetPaidInOpenData.filter((item) => {
+        return (
+            item.DATA_VENCIMENTO_PGM.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.VALOR_PGM.toString().toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.NUMERO_DOCUMENTO_PGM.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.GRUPO_CENTRO.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.NOME_PSS.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.CENTRO_CUSTO.toLowerCase().includes(searchFilter.toLowerCase()) ||
+            item.DESCRICAO_FRM.toLowerCase().includes(searchFilter.toLowerCase())
+        ); 
+    });
 
-    const billetInOpen = accountsPayableOpenedDaily(year)
-    const paidBills = accountsPayablePaidDaily()
-    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
+    const fetchItemsBillsToPays = async (clear?: boolean) => {
+        const dataInit = new Date(date.start.year, date.start.month - 1, date.start.day);
+        const dateEnd = new Date(date.end.year, date.end.month - 1, date.end.day);
 
-    const fetchItemsBillsToPay = async () => {
-        const { today } = currentDate()
+        // Verificar se data e atual
+        const todayDateStarted = dataInit.toDateString() === today.toDateString();
+        const todayDateEnd = dateEnd.toDateString() === today.toDateString();
 
-        setLoading(true);
-        await fetchData({ query: billetInOpen, setData: setBilletInOpenData })
+        const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
+        const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
+        setLoading(true)
 
-        const start = new Date(date.start.year, date.start.month - 1, date.start.day);
-        const end = new Date(date.end.year, date.end.month - 1, date.end.day);
+        // Querys
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day, todayDateStarted, todayDateEnd })
 
-        const startIsToday = start.toDateString() === today.toDateString();
-        const endIsToday = end.toDateString() === today.toDateString();
+        // Puxar dados
+        await fetchData({ query: billetInOpenMonthly, setData: setBilletInOpenData })
+        await fetchData({ query: billetPaidMonthly, setData: setBilletPaidData })
 
-        if (!startIsToday || !endIsToday) {
-            const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
-            const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day}`
-
-            const paidAndUnpaidBills = accountsPayablePaidInOpenMonthly(formatDateInit, formatDateEnd)
-            const paidBills = accountsPayablePaidMonthly(formatDateInit, formatDateEnd)
-
-            await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
-            await fetchData({ query: paidBills, setData: setBilletPaidData })
-
-            // console.log("Query paga: ", paidBills)
+        if (clear) {
+            await fetchData({ query: expiredBillet, setData: setBilletExpiredData })
         } else {
-            await fetchData({ query: paidBills, setData: setBilletPaidData })
-            await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
-
-            // console.log("Query paga: ", paidBills)
+            await fetchData({ query: expiredBilletMonthly, setData: setBilletExpiredData })
         }
+
+        await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidInOpenData })
+
         setLoading(false)
     }
-    const { infoDetailCard } = getListOfAccountsPayable({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen: billetPaidInOpenData, listBilletExpired: billetExpiredData })
-    // console.log("Pagos: ", billetPaidData)
-    // Limpa Filtro
-    useEffect(() => {
-        setFilter([]);
-    }, []);
 
-    useEffect(() => {
-        fetchItemsBillsToPay();
-    }, [date]);
+    const { infoDetailCard } = getBillsToPay({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen, listBilletExpired: billetExpiredData, filteredItems })
 
     // Refresh
     const handleRefreshClick = async () => {
-        await fetchItemsBillsToPay();
+        setDropDown(false)
+        await fetchItemsBillsToPays()
     }
 
-    const accountsPayableFilter = useMemo(() => {
-        return billetPaidInOpenData.filter(data => {
-            const grupoCentro = data.GRUPO_CENTRO?.toLowerCase();
-            const filterDescription = filter[0]?.description?.toLowerCase();
-            return grupoCentro && filterDescription && grupoCentro.startsWith(filterDescription);
-        });
-    }, [billetPaidInOpenData, filter]);
-
-    const uniqueGrupoCentroItems = billetPaidInOpenData.filter((item, index, self) => {
-        return self.findIndex(obj => obj.GRUPO_CENTRO === item.GRUPO_CENTRO) === index;
-    });
-
-    const handleClearFilter = () => {
-        setFilter([])
-        setDate({ start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) })
+    const handleClearFilter = async () => {
+        setDate({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) })
+        setDropDown(false)
+        await fetchItemsBillsToPays(true);
     }
 
     return (
@@ -154,29 +134,9 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                             <div className="pb-5 flex justify-between items-center w-full p-5">
                                 <h1 className="font-bold md:text-lg text-sm">Contas a Pagar</h1>
                                 <div className="flex justify-between items-center">
+
                                     <div className="px-2 flex">
-                                        <Autocomplete
-                                            variant="bordered"
-                                            placeholder="Selecione centro de custo"
-                                            className="w-full"
-                                            scrollShadowProps={{
-                                                isEnabled: false,
-                                            }}
-                                            inputValue={filter[0]?.description || ""}
-                                            onInputChange={(value) => setFilter([{ description: value, color: "", id: 0 }])}
-                                            defaultItems={uniqueGrupoCentroItems}
-                                            aria-label="Centro de Custo"
-                                            isRequired
-                                        >
-                                            <AutocompleteSection
-                                                title="Centro de Custo"
-                                                classNames={{
-                                                    heading: "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small",
-                                                }}
-                                            >
-                                                {uniqueGrupoCentroItems.map((natureOfTheCost, index) => (<AutocompleteItem key={index}>{natureOfTheCost.GRUPO_CENTRO}</AutocompleteItem>))}
-                                            </AutocompleteSection>
-                                        </Autocomplete>
+                                        <Search placeholder="Procurar" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
                                     </div>
                                     <div className="px-2 flex">
                                         <DateRangePicker
@@ -186,45 +146,7 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                                             onChange={setDate}
                                         />
                                     </div>
-                                    <Dropdown classNames={{ base: "top-1", trigger: `hover:bg-blue-700 p-1 rounded-md hover:text-white transition duration-300 ease-in-out ${dropDown ? "bg-blue-700 aria-expanded:opacity-100 text-white" : ""}` }}>
-                                        <DropdownTrigger onClick={() => setDropDown(!dropDown)} >
-                                            <button>
-                                                <BiDotsHorizontalRounded className="text-3xl" />
-                                            </button>
-                                        </DropdownTrigger>
-                                        <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
-                                            <DropdownItem
-                                                startContent={<GoSync className={animation ? "animate-spin" : ""} />}
-                                                onMouseEnter={() => setAnimation(true)}
-                                                onMouseLeave={() => setAnimation(false)}
-                                                onClick={() => { handleRefreshClick(); setDropDown(false) }}
-                                                className="flex justify-center items-center w-full text-sm font-medium py-2"
-                                                textValue="atualizar"
-                                            >
-                                                <span className="mr-2 md:text-sm text-xs">Atualizar</span>
-                                            </DropdownItem>
-
-                                            <DropdownItem
-                                                startContent={<IoMdArrowRoundBack />}
-                                                className="flex justify-center items-center w-full text-sm font-medium py-2 hover:bg-gray-100"
-                                                textValue="filtro"
-                                                onClick={() => setDropDown(false)}
-                                                isReadOnly
-                                            >
-                                                <Link href="/billstopay">
-                                                    <span className="mr-2 md:text-sm text-xs">Voltar</span>
-                                                </Link>
-                                            </DropdownItem>
-                                            <DropdownItem
-                                                startContent={<RiFormatClear />}
-                                                onClick={() => { handleClearFilter(); setDropDown(false) }}
-                                                className="flex justify-center items-center w-full text-sm font-medium py-2"
-                                                textValue="atualizar"
-                                            >
-                                                <span className="mr-2 md:text-sm text-xs">Limpa Filtro</span>
-                                            </DropdownItem>
-                                        </DropdownMenu>
-                                    </Dropdown>
+                                    <Options href="/billstopay" descriptionHref="tabela" dropDown={dropDown} setDropDown={setDropDown} handleRefreshClick={handleRefreshClick} animation={animation} setAnimation={setAnimation} handleClearFilter={handleClearFilter} />
                                 </div>
                             </div>
                         </div>
@@ -233,7 +155,7 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                                 <Loading />
                             </div>
                             :
-                            <TableBillsToPay itemsPaidAndUnpaidBills={filter[0]?.description === undefined ? billetPaidInOpenData : accountsPayableFilter} />}
+                            <TableBillsToPay itemsPaidAndUnpaidBills={filteredItems} />}
                     </Main>
                 </div>
             </main>
@@ -246,18 +168,19 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
 
     const { year, month, day } = currentDate()
 
-    const startIsToday = true
-    const endIsToday = true
+    const dateInit = `${year}/${month}/01`
+    const dateEnd = `${year}/${month}/${day}`
 
-    const billetInOpen = accountsPayableOpenedDaily(year)
-    const paidBills = accountsPayablePaidDaily()
-    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
-    const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)
+    const todayDateStarted = true
+    const todayDateEnd = true
 
-    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpen })
-    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: paidBills })
-    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: paidAndUnpaidBills })
-    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBills })
+    // querys 
+    const { billetInOpenMonthly, billetPaidMonthly, billetPaidAndOpenMonthly, expiredBillet } = billsToPayQueries({ dateInit, dateEnd, year, month, day, todayDateStarted, todayDateEnd })
+
+    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
+    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
+    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
+    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
 
     return {
         props: {

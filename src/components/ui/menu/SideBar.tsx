@@ -67,7 +67,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         transition={{ duration: 0.5 }}
                         className="pb-2 w-[140px] "
                     >
-                        <Image src={logoPlayCell} alt="logo da PlayCell" priority/>
+                        <Image src={logoPlayCell} alt="logo da playcell" priority fetchPriority="high" />
                     </AnimatedImg>
                 </div>
                 <button

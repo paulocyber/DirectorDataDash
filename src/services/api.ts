@@ -31,7 +31,7 @@ export function setupApiClient(ctx?: GetServerSidePropsContext) {
       } else {
         return Promise.reject(new AuthTokenError());
       }
-// a
+
       return Promise.reject(err);
     }
   );

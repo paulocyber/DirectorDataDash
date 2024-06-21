@@ -1,6 +1,5 @@
 // Framework
 import Head from "next/head";
-import Link from "next/link";
 
 // Rota Privada
 import { canSSRAuth } from "@/utils/canSSRAuth";
@@ -14,67 +13,39 @@ import { MainScience } from "@/components/ui/mainComponents/MainScience";
 import { PieChartComponent } from "@/components/Science/pieChart/PieChartComponent";
 import { BarChartComponent } from "@/components/Science/barChart/BarChartComponent";
 import { Loading } from "@/components/ui/loadings/Loading";
+import { Options } from "@/components/ui/dropDown/Options";
 
 // React
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Utils
 import { setupApiClient } from "@/services/api";
+import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import currentDate from "@/utils/getCurrentDate/CurrentDate";
+import getBillsToPay from "@/utils/getData/getBillsToPay";
+import topCostCenter from "@/utils/filters/billsToPay/topCoscenter";
 
 // Dados
-import getListOfAccountsPayable from "@/utils/getData/getListOfAccountsPayable";
 import { fetchData } from "@/data/fetchData";
 
 // Bibliotecas
-import { GoSync } from "react-icons/go";
-import { VscTable } from "react-icons/vsc";
 import { DateRangePicker } from "@nextui-org/date-picker";
 import { DateValue, RangeValue } from "@nextui-org/calendar";
 import { parseDate } from "@internationalized/date";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/dropdown";
-import { RiFormatClear } from "react-icons/ri";
 import { useRecoilState } from "recoil";
+
+// Atom
 import { filterDescription } from "@/atom/FilterDescription";
-import { Router } from "next/router";
-import currentDate from "@/utils/getCurrentDate/CurrentDate";
-import { accountsPayableOpenedDaily, accountsPayablePaidDaily, accountsPayablePaidMonthly, accountsPaybleOpenedMonthly, getBillExpiredMonthly, accountsPayablePaidInOpenDaily, accountsPayablePaidInOpenMonthly } from "@/utils/queries";
 
 // Tipagem
 interface BillToPayItem {
-    SELECIONADO: string,
-    ID_PGM: string,
-    ID_PSS: string,
-    NUMERO_DOCUMENTO_PGM: string,
     VALOR_PGM: string,
-    VALOR_PAGO_PGM: string,
-    RESTANTE_PGM: string,
-    VALOR_ACRESCIMOS_PGI: string,
-    VALOR_DESCONTO_PGI: string,
-    QTDE_PAGAMENTOS_PGI: string,
-    STATUS_PGM: string,
-    ID_FRM: string,
-    DESCRICAO_FRM: string,
-    NUMERO_CHEQUE_PGM: string,
-    NUMERO_NOTA_PGM: string,
-    CONTA_CTB: string,
-    DATA_VENCIMENTO_PGM: string,
-    DATAHORA_LANCAMENTO_PGM: string,
-    DATAHORA_PAGAMENTO_PGM: string,
-    APELIDO_PSS: string,
-    NOME_PSS: string,
-    CNPJ_PSS: string,
-    SIGLA_EMP: string,
     CENTRO_CUSTO: string,
-    GRUPOS_PESSOAS: string,
-    GRUPO_CENTRO: string,
-    BOLETO_RECEBIDO_PGM: string,
-    ID_EMP: string,
-    DESCRICAO_PGM: string,
-    CONTABIL_PGM: string
+    VALOR_PAGO_PGM: string,
+    NOME_PSS: string
 }
 
-interface PaidAndUnpaidBillItem {
+interface BilletPaidAndInOpen {
     VALOR_PGM: string,
     CENTRO_CUSTO: string,
     NOME_PSS: string,
@@ -88,12 +59,13 @@ interface PaidAndUnpaidBillItem {
 
 interface ExpiredBillItem {
     RESTANTE_PGM: string,
+    CENTRO_CUSTO: string,
 }
 
 export type BillsToPayProps = {
     listBilletPaid: BillToPayItem[],
     listBilletInOpen: BillToPayItem[],
-    listBilletPaidAndInOpen: PaidAndUnpaidBillItem[],
+    listBilletPaidAndInOpen: BilletPaidAndInOpen[],
     listBilletExpired?: ExpiredBillItem[]
 }
 
@@ -109,63 +81,66 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
     const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
     const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
 
+    const { today, year, month, day } = currentDate()
+
     // Filtro
     const [date, setDate] = React.useState<RangeValue<DateValue>>({
-        start: parseDate(new Date().toISOString().split('T')[0]),
+        start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
     });
-    const [filter, setFilter] = useRecoilState(filterDescription)
+    const [, setFilter] = useRecoilState(filterDescription)
 
-    const { infoDetailCard, topCostCenter, topNameCostCenter } = getListOfAccountsPayable({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen: billetPaidInOpenData, listBilletExpired: billetExpiredData })
+    const fetchItemsBillsToPays = async (clear?: boolean) => {
+        const dataInit = new Date(date.start.year, date.start.month - 1, date.start.day);
+        const dateEnd = new Date(date.end.year, date.end.month - 1, date.end.day);
 
-    const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
-    const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
+        // Verificar se data e atual
+        const todayDateStarted = dataInit.toDateString() === today.toDateString();
+        const todayDateEnd = dateEnd.toDateString() === today.toDateString();
 
-    const { year } = currentDate()
+        const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
+        const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
-    const billetInOpen = accountsPaybleOpenedMonthly(formatDateInit, formatDateEnd, year)
+        setLoading(true)
 
-    const paidBills = accountsPayablePaidMonthly(formatDateInit, formatDateEnd)
-    const paidAndUnpaidBills = accountsPayablePaidInOpenMonthly(formatDateInit, formatDateEnd)
+        // Querys
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day, todayDateStarted, todayDateEnd })
 
-    const fetchItemsBillsToPay = async () => {
-        const { today, year, month, day } = currentDate()
-        const start = new Date(date.start.year, date.start.month - 1, date.start.day);
-        const end = new Date(date.end.year, date.end.month - 1, date.end.day);
+        // Puxar dados
+        await fetchData({ query: billetInOpenMonthly, setData: setBilletInOpenData })
+        await fetchData({ query: billetPaidMonthly, setData: setBilletPaidData })
+        if (clear) {
+            await fetchData({ query: expiredBillet, setData: setBilletExpiredData })
+        } else {
+            await fetchData({ query: expiredBilletMonthly, setData: setBilletExpiredData })
+        }
 
-        const startIsToday = start.toDateString() === today.toDateString();
-        const endIsToday = end.toDateString() === today.toDateString();
+        await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidInOpenData })
 
-        setLoading(true);
-        await fetchData({ query: billetInOpen, setData: setBilletInOpenData })
-        await fetchData({ query: paidBills, setData: setBilletPaidData })
-        await fetchData({ query: paidAndUnpaidBills, setData: setBilletPaidInOpenData })
-// console.log("Query boletos pagos: ", paidBills)
-        const formatDateInit = `${date.start.year}-${date.start.month}-${date.start.day}`
-        const formatDateEnd = `${date.end.year}-${date.end.month}-${date.end.day}`
-
-        const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday, formatDateInit, formatDateEnd)
-
-        await fetchData({ query: expiredBills, setData: setBilletExpiredData })
         setLoading(false)
     }
 
+    const { infoDetailCard } = getBillsToPay({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen, listBilletExpired: billetExpiredData })
+
+    const { sortedCostCenters, selectCostCenter } = topCostCenter({ listBilletPaidAndInOpen: billetPaidInOpenData })
+
     const handleRefreshClick = async () => {
-        await fetchItemsBillsToPay()
+        setDropDown(false)
+        await fetchItemsBillsToPays()
     }
 
-    const handleClearFilter = () => {
+    const handleClearFilter = async () => {
         setFilter([])
-        setDate({ start: parseDate(new Date().toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) })
+        setDate({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) })
+        setDropDown(false)
+        await fetchItemsBillsToPays(true);
     }
 
-    useEffect(() => {
-        fetchItemsBillsToPay();
-    }, [date]);
 
-    useEffect(() => {
-        setFilter([]);
-    }, []);
+    const handleDateChange = (newDate: RangeValue<DateValue>) => {
+        setDate(newDate);
+        fetchItemsBillsToPays();
+    };
 
     return (
         <>
@@ -181,51 +156,17 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                         <div onClick={() => setDropDown(false)} className="md:flex items-center justify-between w-full ">
                             <div className="pb-5 flex justify-between items-center w-full p-5">
                                 <h1 className="font-bold md:text-lg text-sm">Contas abertas: </h1>
-
                                 <div className="flex justify-between items-center">
                                     <div className="px-2">
                                         <DateRangePicker
                                             aria-label="filtro de data"
                                             classNames={{ inputWrapper: "bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500", base: "text-white", innerWrapper: "py-[0.2em] text-white", segment: "text-white", selectorIcon: "text-center text-white", }}
                                             value={date}
-                                            onChange={setDate}
+                                            onChange={handleDateChange}
                                         />
                                     </div>
                                     <div className="px-2">
-                                        <Dropdown classNames={{ base: "top-1", trigger: `hover:bg-blue-700 p-1 rounded-md hover:text-white transition duration-300 ease-in-out ${dropDown ? "bg-blue-700 aria-expanded:opacity-100 text-white" : ""}` }}>
-                                            <DropdownTrigger onClick={() => setDropDown(!dropDown)} >
-                                                <button>
-                                                    <BiDotsHorizontalRounded className="text-3xl" />
-                                                </button>
-                                            </DropdownTrigger>
-                                            <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
-                                                <DropdownItem
-                                                    onClick={handleRefreshClick}
-                                                    startContent={<GoSync className={animation ? "animate-spin" : ""} />}
-                                                    onMouseEnter={() => setAnimation(true)}
-                                                    onMouseLeave={() => setAnimation(false)}
-                                                    className="flex justify-center items-center w-full text-sm font-medium py-2"
-                                                    textValue="atualizar"
-                                                >
-                                                    <span className="mr-2 md:text-sm text-xs">Atualizar</span>
-                                                </DropdownItem>
-                                                <DropdownItem
-                                                    startContent={<Link href="/billstopay/table"><VscTable /></Link>}
-                                                    className="flex justify-center items-center text-sm font-medium py-2"
-                                                    textValue="tabela"
-                                                >
-                                                    <Link href="/billstopay/table" className="mr-2 md:text-sm text-xs w-full">Tabela</Link>
-                                                </DropdownItem>
-                                                <DropdownItem
-                                                    startContent={<RiFormatClear />}
-                                                    className="flex justify-center items-center w-full text-sm font-medium py-2"
-                                                    onClick={handleClearFilter}
-                                                    textValue="limpa filtro"
-                                                >
-                                                    <span className="mr-2 md:text-sm text-xs">Limpa filtro</span>
-                                                </DropdownItem>
-                                            </DropdownMenu>
-                                        </Dropdown>
+                                        <Options href="/billstopay/table" descriptionHref="tabela" dropDown={dropDown} setDropDown={setDropDown} handleRefreshClick={handleRefreshClick} animation={animation} setAnimation={setAnimation} handleClearFilter={handleClearFilter} />
                                     </div>
                                 </div>
                             </div>
@@ -236,16 +177,16 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
                             </div>
                             :
                             <>
-                                <MainScience data={topNameCostCenter}>
+                                <MainScience data={sortedCostCenters}>
                                     <div className="p-4 md:w-1/2 h-[400px]">
-                                        <PieChartComponent data={topCostCenter} />
+                                        <PieChartComponent data={selectCostCenter} />
                                     </div>
                                     <div className="p-4 md:w-1/2 h-[400px]">
-                                        <BarChartComponent data={topCostCenter} />
+                                        <BarChartComponent data={selectCostCenter} />
                                     </div>
                                 </MainScience>
-                            </>}
-
+                            </>
+                        }
                     </Main>
                 </div >
             </main >
@@ -258,18 +199,18 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
 
     const { year, month, day } = currentDate()
 
-    const startIsToday = false
-    const endIsToday = false
+    const dateInit = `${year}/${month}/01`
+    const dateEnd = `${year}/${month}/${day}`
 
-    const billetInOpen = accountsPayableOpenedDaily(year)
-    const paidBills = accountsPayablePaidDaily()
-    const paidAndUnpaidBills = accountsPayablePaidInOpenDaily()
-    const expiredBills = getBillExpiredMonthly(year, month, day, startIsToday, endIsToday)
+    const todayDateStarted = true
+    const todayDateEnd = true
 
-    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpen })
-    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: paidBills })
-    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: paidAndUnpaidBills })
-    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBills })
+    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month, day, todayDateStarted, todayDateEnd })
+
+    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
+    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
+    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
+    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
 
     return {
         props: {
