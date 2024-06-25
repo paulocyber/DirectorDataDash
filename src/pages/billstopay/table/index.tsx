@@ -13,7 +13,6 @@ import { billsToPayQueries } from "@/utils/queries/billsToPay";
 import { Search } from '@/components/ui/input/input';
 
 // Biblioteca
-import { useRecoilState } from "recoil";
 import { DateRangePicker } from "@nextui-org/date-picker";
 import { DateValue, RangeValue } from "@nextui-org/calendar";
 import { parseDate } from '@internationalized/date';
@@ -22,7 +21,7 @@ import { parseDate } from '@internationalized/date';
 import { fetchData } from "@/data/fetchData";
 
 // React
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Rota
 import { canSSRAuth } from "@/utils/canSSRAuth";
@@ -36,9 +35,6 @@ import { BillsToPayProps } from "..";
 // Utils
 import currentDate from "@/utils/getCurrentDate/CurrentDate";
 import getBillsToPay from "@/utils/getData/getBillsToPay";
-
-// Atom
-import { filterDescription, itemDescription } from "@/atom/FilterDescription";
 
 export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState<boolean>(false);
@@ -55,7 +51,6 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
     const { today, day, year, month } = currentDate()
 
     // Filtros
-    const [costCenterFilter, setCostCenterFilter] = useRecoilState(filterDescription)
     const [date, setDate] = React.useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
@@ -71,7 +66,7 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
             item.NOME_PSS.toLowerCase().includes(searchFilter.toLowerCase()) ||
             item.CENTRO_CUSTO.toLowerCase().includes(searchFilter.toLowerCase()) ||
             item.DESCRICAO_FRM.toLowerCase().includes(searchFilter.toLowerCase())
-        ); 
+        );
     });
 
     const fetchItemsBillsToPays = async (clear?: boolean) => {
@@ -134,7 +129,6 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                             <div className="pb-5 flex justify-between items-center w-full p-5">
                                 <h1 className="font-bold md:text-lg text-sm">Contas a Pagar</h1>
                                 <div className="flex justify-between items-center">
-
                                     <div className="px-2 flex">
                                         <Search placeholder="Procurar" value={searchFilter} onChange={(e) => setSearchFilter(e.target.value)} />
                                     </div>
@@ -155,7 +149,8 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
                                 <Loading />
                             </div>
                             :
-                            <TableBillsToPay itemsPaidAndUnpaidBills={filteredItems} />}
+                            <TableBillsToPay itemsPaidAndUnpaidBills={filteredItems} />
+                        }
                     </Main>
                 </div>
             </main>

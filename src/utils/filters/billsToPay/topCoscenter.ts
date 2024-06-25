@@ -20,7 +20,6 @@ type topCostCenterProps = {
 export default function topCostCenter({
   listBilletPaidAndInOpen,
 }: topCostCenterProps) {
-  // Filtro Hook
   const filterSelection = useRecoilValue(filterDescription);
 
   const parsedData = listBilletPaidAndInOpen.map((item) => ({

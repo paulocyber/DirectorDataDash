@@ -42,7 +42,7 @@ export function TableProductDav({ prodcutsDav }: listPorp) {
             setLimit(limit + 10);
         }
     };
-
+console.log("Promoção? ", prodcutsDav[0].ITEM_PROMOCAO_SDI)
     return (
         <div className="flex w-full pb-6 h-[450px] flex-col px-5">
             <div id="scrollArea" className="overflow-auto rounded-[24px]">
@@ -54,12 +54,6 @@ export function TableProductDav({ prodcutsDav }: listPorp) {
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
                                 Codigo do Produto
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                            >
-                                Almoxarifado
                             </th>
                             <th
                                 scope="col"
@@ -95,18 +89,6 @@ export function TableProductDav({ prodcutsDav }: listPorp) {
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Referencia do Produto
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                            >
-                                Status da Saida
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                            >
                                 Valor do Acrescimo
                             </th>
                             <th
@@ -137,15 +119,11 @@ export function TableProductDav({ prodcutsDav }: listPorp) {
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    {listProduct.DESCRICAO_ALM}
-                                </td>
-
-                                <td className="px-4 py-4  whitespace-nowrap">
                                     {listProduct.DESCRICAO_PRD}
                                 </td>
 
                                 <td className="px-4 py-4 whitespace-nowrap">
-                                    {listProduct.ITEM_PROMOCAO_SDI ? "Sim" : "Não"}
+                                    {listProduct.ITEM_PROMOCAO_SDI ? "Não" : "Sim"}
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
@@ -158,14 +136,6 @@ export function TableProductDav({ prodcutsDav }: listPorp) {
 
                                 <td className="px-4 py-4  whitespace-nowrap">
                                     {listProduct.QTDE_SDI}
-                                </td>
-
-                                <td className="px-4 py-4  whitespace-nowrap">
-                                    {listProduct.REFERENCIA_PRD}
-                                </td>
-
-                                <td className="px-4 py-4  whitespace-nowrap">
-                                    {listProduct.STATUS_SDI}
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">

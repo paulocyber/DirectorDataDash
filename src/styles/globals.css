@@ -4,7 +4,7 @@
 
 /* N progress */
 #nprogress .bar {
-  height: 6px !important;
+  height: 4px !important;
   background-color: rgb(220, 38, 38) !important;
 }
 

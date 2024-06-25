@@ -1,5 +1,7 @@
 // Utils
 import { canSSRAuth } from "@/utils/canSSRAuth"
+import currentDate from "@/utils/getCurrentDate/CurrentDate";
+import getItemsFromDavs from "@/utils/getData/getItemsFromDavs";
 
 // Framework
 import Head from "next/head"
@@ -10,48 +12,39 @@ import InfoCards from "@/components/ui/cards/InfoCards";
 import HeaderBar from "@/components/ui/menu/HeaderBar";
 import { Main } from "@/components/ui/mainComponents/main";
 import { TableDav } from "@/components/tables/TableDav";
+import { Loading } from "./../../components/ui/loadings/Loading";
 
 // React
-import { useState } from "react";
+import React, { useState } from "react";
 
 // Api
 import { setupApiClient } from "@/services/api";
-import getItemsFromDavs from "@/utils/getData/getItemsFromDavs";
 import { fetchData } from "@/data/fetchData";
 
 // Biblioteca
 import { GoSync } from "react-icons/go";
-import { Loading } from "./../../components/ui/loadings/Loading";
+import { DateValue, RangeValue } from "@nextui-org/calendar";
+import { parseDate } from '@internationalized/date';
+import { DateRangePicker } from "@nextui-org/date-picker";
 
 // Query
-import { getDavs } from "@/utils/queries";
+import { davsQueries } from "@/utils/queries/Davs";
 
 // Tipagem
 interface itemDav {
-    ID_EMP: string;
-    ID_RCB: string;
-    SIGLA_EMP: string;
-    N_DAV: string;
-    ID_ORIGEM: string;
-    DATAHORA_LANCAMENTO_RCB: string;
-    DATAHORA_PAGAMENTO_RCB: string;
-    DATA_VENCIMENTO_RCB: string;
-    ATRASO_RCB: string;
-    VALOR_RCB: string;
-    JUROS_RCB: string;
-    MULTA_RCB: string;
-    RESTANTE_RCB: string;
-    RESTANTE_SEM_JUROS_RCB: string;
-    VALOR_PAGO_RCB: string;
-    NOME_PSS: string;
-    APELIDO_PSS: string;
-    ID_FNC: string;
-    VENDEDOR: string;
-    STATUS_RCB: string;
-    FORMA_PAGAMENTO: string;
-    VALOR_ACRESCIMOS_RCI: string;
-    VALOR_DESCONTO_RCI: string;
-    DESCRICAO_RCB: string;
+    ID_SDS: string,
+    EMPRESA: string,
+    DATAHORA_SDS: string,
+    DATAHORA_FINALIZACAO_SDS: string,
+    APELIDO_PSS: string,
+    CLIENTE: string,
+    VENDEDOR: string,
+    ALMOXARIFADO: string,
+    VALOR_BRUTO_SDS: string,
+    VALOR_TROCA_SDS: string,
+    VALOR_LIQUIDO_SDS: string,
+    TIPO_VENDA_SDS: string,
+    STATUS_SDS: string
 }
 
 export type listPorp = {
@@ -67,17 +60,35 @@ export default function DavSummaryReport({ listDav, dav }: listPorp) {
 
     const { infoDetaildCard } = getItemsFromDavs({ listDav: itemsDavs })
 
-    const fetchItemsDavs = async () => {
+    // Filtro
+    const [date, setDate] = React.useState<RangeValue<DateValue>>({
+        start: parseDate(new Date().toISOString().split('T')[0]),
+        end: parseDate(new Date().toISOString().split('T')[0]),
+    });
+
+    const fetchItemDavs = async () => {
         setLoading(true)
-        if (dav !== undefined) {
-            await fetchData({ query: dav, setData: setItemsDavs })
-        }
+
+        const { year, month, day } = currentDate()
+
+        const dataInit = `${date.start.year}/${date.start.month}/${date.start.day}`
+        const dataEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
+
+        const { davFinished } = davsQueries({ dataInit, dataEnd })
+
+        await fetchData({ query: davFinished, setData: setItemsDavs })
+
         setLoading(false)
     }
 
     const handleRefreshClick = async () => {
-        await fetchItemsDavs();
+        await fetchItemDavs();
     }
+
+    const handleDateChange = async (newDate: RangeValue<DateValue>) => {
+        setDate(newDate);
+        await fetchItemDavs();
+    };
 
     return (
         <>
@@ -94,6 +105,15 @@ export default function DavSummaryReport({ listDav, dav }: listPorp) {
                             <div className="pb-5 flex justify-between items-center w-full p-5">
                                 <h1 className="font-bold md:text-lg text-sm">Relatório Diário</h1>
                                 <div className="flex justify-between items-center">
+                                    <div className="px-2">
+                                        {/* <DateRangePicker
+                                            aria-label="filtro de data"
+                                            classNames={{ inputWrapper: "bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500", base: "text-white", innerWrapper: "py-[0.2em] text-white", segment: "text-white", selectorIcon: "text-center text-white", }}
+                                            value={date}
+                                            onChange={handleDateChange}
+                                        /> */}
+                                    </div>
+
                                     <button
                                         onMouseEnter={() => setAnimation(true)}
                                         onMouseLeave={() => setAnimation(false)}
@@ -104,6 +124,7 @@ export default function DavSummaryReport({ listDav, dav }: listPorp) {
                                         <GoSync className={animation ? "animate-spin" : ""} />
                                     </button>
                                 </div>
+
                             </div>
                         </div>
                         <div className="md:flex w-full">
@@ -119,14 +140,18 @@ export default function DavSummaryReport({ listDav, dav }: listPorp) {
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx);
 
-    const dav = getDavs()
+    const { year, month, day } = currentDate()
 
-    const resp = await apiClient.post("/v1/find-db-query", { query: dav });
+    const dataInit = `${year}/${month}/${day}`
+    const dataEnd = `${year}/${month}/${day}`
+
+    const { davFinished } = davsQueries({ dataInit, dataEnd })
+
+    const resp = await apiClient.post("/v1/find-db-query", { query: davFinished });
 
     return {
         props: {
-            listDav: resp.data.returnObject.body,
-            dav
+            listDav: resp.data.returnObject.body
         },
     };
 });

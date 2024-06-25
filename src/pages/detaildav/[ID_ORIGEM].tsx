@@ -25,35 +25,26 @@ import { Main } from "@/components/ui/mainComponents/main";
 import { TableProductDav } from "@/components/tables/TableDetailDav";
 import { ItemsDavDetail } from "@/components/DetailDav/DetailDav";
 import { getDavsProducts, getDetailDavs } from "@/utils/queries";
+import currentDate from "@/utils/getCurrentDate/CurrentDate";
+import { davsQueries } from "@/utils/queries/Davs";
 
 // Tipagem
 interface itemDav {
-    ID_PSS: string,
-    ID_FRM: string,
+    ID_SDS: string,
     ID_EMP: string,
-    ID_RCB: string,
-    SIGLA_EMP: string,
-    N_DAV: string,
-    ID_ORIGEM: string,
-    DATAHORA_LANCAMENTO_RCB: string,
-    DATAHORA_PAGAMENTO_RCB: string,
-    DATA_VENCIMENTO_RCB: string,
-    ATRASO_RCB: string,
-    VALOR_RCB: string,
-    JUROS_RCB: string,
-    MULTA_RCB: string,
-    RESTANTE_RCB: string,
-    RESTANTE_SEM_JUROS_RCB: string,
-    VALOR_PAGO_RCB: string,
-    NOME_PSS: string,
+    EMPRESA: string,
+    DATAHORA_SDS: string,
+    DATAHORA_FINALIZACAO_SDS: string,
     APELIDO_PSS: string,
-    ID_FNC: string,
+    CLIENTE: string,
     VENDEDOR: string,
-    STATUS_RCB: string,
-    FORMA_PAGAMENTO: string,
-    VALOR_ACRESCIMOS_RCI: string,
-    VALOR_DESCONTO_RCI: string,
-    DESCRICAO_RCB: string
+    ALMOXARIFADO: string,
+    VALOR_BRUTO_SDS: string,
+    VALOR_DESCONTO_SDS: string,
+    VALOR_TROCA_SDS: string,
+    VALOR_LIQUIDO_SDS: string,
+    TIPO_VENDA_SDS: string,
+    STATUS_SDS: string
 }
 
 interface productsDav {
@@ -72,18 +63,18 @@ interface productsDav {
     QTDE_DISPONIVEL_SDI: string
 }
 
-export type listPorp = {
-    davDetailedList?: itemDav[];
+export type DetailDavPorp = {
+    listDavFinalized?: itemDav[];
     listProductsOnDav?: productsDav[]
 }
 
-export default function DetailDav({ davDetailedList, listProductsOnDav }: listPorp) {
+export default function DetailDav({ listDavFinalized, listProductsOnDav }: DetailDavPorp) {
     const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
-    const [itemsDavs, setItemsDavs] = useState(davDetailedList || [])
+    const [itemsDavs, setItemsDavs] = useState(listDavFinalized || [])
     const [prodcutsDavs, setProdcutsDavs] = useState(listProductsOnDav || [])
 
-    const { infoDetaildCard } = getItemFromDetailDavs({ listDav: itemsDavs })
-// console.log("Dados: ", itemsDavs)
+    const { infoDetaildCard } = getItemFromDetailDavs({ listDavFinalized: itemsDavs })
+
     return (
         <>
             <Head>
@@ -107,7 +98,7 @@ export default function DetailDav({ davDetailedList, listProductsOnDav }: listPo
                             </div>
                         </div>
                         <div className="md:flex w-full">
-                            <ItemsDavDetail davDetailedList={itemsDavs} />
+                            <ItemsDavDetail listDavFinalized={itemsDavs} />
                         </div>
                     </Main>
                     <Main>
@@ -135,18 +126,22 @@ export default function DetailDav({ davDetailedList, listProductsOnDav }: listPo
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const ID_ORIGEM = ctx.query.ID_ORIGEM as string;
 
-    const detailDav = getDetailDavs(ID_ORIGEM);
+    const { year, month, day } = currentDate()
+
+    const dataInit = `${year}/${month}/${day}`
+    const dataEnd = `${year}/${month}/${day}`
+
+    const { davFinalizationDetail } = davsQueries({ dataInit, dataEnd, id: ID_ORIGEM })
     const productsContainsInDav = getDavsProducts(ID_ORIGEM)
 
     const api = setupApiClient(ctx);
 
-    const respDetailDav = await api.post("/v1/find-db-query", { query: detailDav });
+    const respDetailDav = await api.post("/v1/find-db-query", { query: davFinalizationDetail });
     const respProductsContainsInDav = await api.post("/v1/find-db-query", { query: productsContainsInDav });
-    
-    // console.log("Dados: ", respDetailDav.data.returnObject.body)
+
     return {
         props: {
-            davDetailedList: respDetailDav.data.returnObject.body,
+            listDavFinalized: respDetailDav.data.returnObject.body,
             listProductsOnDav: respProductsContainsInDav.data.returnObject.body
         }
     }

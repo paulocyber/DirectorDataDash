@@ -137,9 +137,9 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
     }
 
 
-    const handleDateChange = (newDate: RangeValue<DateValue>) => {
+    const handleDateChange = async (newDate: RangeValue<DateValue>) => {
         setDate(newDate);
-        fetchItemsBillsToPays();
+        await fetchItemsBillsToPays();
     };
 
     return (

@@ -61,19 +61,7 @@ export function TableDav({ listDav }: listPorp) {
                                 scope="col"
                                 className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
                             >
-                                Valor Sem Juros
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                            >
-                                Multa
-                            </th>
-                            <th
-                                scope="col"
-                                className="px-5 py-3 text-left text-xs font-medium text-white uppercase tracking-wider"
-                            >
-                                Data Vencimento
+                                Data Finalização
                             </th>
                         </tr>
                     </thead>
@@ -81,15 +69,15 @@ export function TableDav({ listDav }: listPorp) {
                         {listDav?.slice(0, limit).map((itemDav, index) => (
                             <tr
                                 className={`cursor-pointer hover:bg-gray-200 text-sm hover:scale-[1.01] text-gray-800`}
-                                onClick={() => handleClick(itemDav.ID_ORIGEM)}
+                                onClick={() => handleClick(itemDav.ID_SDS)}
                                 key={index}
                             >
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    <h2 className="font-medium ">{itemDav.ID_ORIGEM}</h2>
+                                    <h2 className="font-medium ">{itemDav.ID_SDS}</h2>
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
-                                    {itemDav.NOME_PSS}
+                                    {itemDav.CLIENTE}
                                 </td>
 
                                 <td className="px-4 py-4  whitespace-nowrap">
@@ -97,21 +85,11 @@ export function TableDav({ listDav }: listPorp) {
                                 </td>
 
                                 <td className="px-4 py-4 whitespace-nowrap">
-                                    {formatCurrency(Number(itemDav.VALOR_RCB.replace(",", ".")))}
-                                </td>
-
-                                <td className="px-4 py-4 whitespace-nowrap">
-                                    {formatCurrency(
-                                        Number(itemDav.RESTANTE_SEM_JUROS_RCB.replace(",", "."))
-                                    )}
-                                </td>
-
-                                <td className=" whitespace-nowrap">
-                                    {formatCurrency(Number(itemDav.MULTA_RCB.replace(",", ".")))}
+                                    {formatCurrency(Number(itemDav.VALOR_BRUTO_SDS.replace(",", ".")))}
                                 </td>
 
                                 <td className=" whitespace-nowrap text-center">
-                                    {itemDav.DATA_VENCIMENTO_RCB.split(' ')[0]}
+                                    {itemDav.DATAHORA_FINALIZACAO_SDS.split(' ')[0]}
                                 </td>
                             </tr>
                         ))}

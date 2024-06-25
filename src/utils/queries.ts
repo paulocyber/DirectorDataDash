@@ -1,9 +1,9 @@
 export const getDavs = () => {
-  let queryDav = `select a.id_pss,a.id_frm,a.id_emp,a.id_rcb,a.sigla_emp,a.numero_documento_rcb,   a.id_origem,   a.datahora_lancamento_rcb,   a.datahora_pagamento_rcb,   a.data_vencimento_rcb,   a.atraso_rcb,   
-  a.valor_rcb,   a.juros_rcb,   a.multa_rcb,   iif(a.restante_rcb < 0.00,0.00,a.restante_rcb) as restante_rcb,   a.restante_sem_juros_rcb,a.valor_pago_rcb,   a.nome_pss as nome_pss,   a.apelido_pss,  a.id_fnc,    
-  a.nome_fnc as nome_fnc,   a.status_rcb, coalesce(a.conciliado_rcb,'N') as conciliado_rcb,  a.id_frm || ' - ' || a.descricao_frm as forma_pagamento,    a.valor_acrescimos_rci,    a.valor_desconto_rci, 
-  a.descricao_rcb from v_recebimentos a  where  a.id_emp in(4,1,2,3,5,6,7,8,9,10,11) and a.status_rcb in('1','4') and a.status_pss = 'A' and coalesce(a.insolvente_rcb,'N') = 'N'
-   and CAST(a.data_vencimento_rcb AS DATE) = CURRENT_DATE order by a.id_emp,a.data_vencimento_rcb,nome_pss`;
+    let queryDav = `select a.id_pss,a.id_frm,a.id_emp,a.id_rcb,a.sigla_emp,a.numero_documento_rcb,   a.id_origem,   a.datahora_lancamento_rcb,   a.datahora_pagamento_rcb,   a.data_vencimento_rcb,   a.atraso_rcb,   
+    a.valor_rcb,   a.juros_rcb,   a.multa_rcb,   iif(a.restante_rcb < 0.00,0.00,a.restante_rcb) as restante_rcb,   a.restante_sem_juros_rcb,a.valor_pago_rcb,   a.nome_pss as nome_pss,   a.apelido_pss,  a.id_fnc,    
+    a.nome_fnc as nome_fnc,   a.status_rcb, coalesce(a.conciliado_rcb,'N') as conciliado_rcb,  a.id_frm || ' - ' || a.descricao_frm as forma_pagamento,    a.valor_acrescimos_rci,    a.valor_desconto_rci, 
+    a.descricao_rcb from v_recebimentos a  where  a.id_emp in(4,1,2,3,5,6,7,8,9,10,11) and a.status_rcb in('1','4') and a.status_pss = 'A' and coalesce(a.insolvente_rcb,'N') = 'N'
+    and CAST(a.data_vencimento_rcb AS DATE) = CURRENT_DATE order by a.id_emp,a.data_vencimento_rcb,nome_pss`;
 
   return queryDav;
 };

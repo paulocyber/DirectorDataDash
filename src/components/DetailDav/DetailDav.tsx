@@ -1,16 +1,16 @@
 // Pages
-import { listPorp } from "@/pages/detaildav/[ID_ORIGEM]";
+import { DetailDavPorp } from "@/pages/detaildav/[ID_ORIGEM]";
 
 // Utils
 import { formatCurrency } from "@/utils/mask/moneyMask";
 
-export function ItemsDavDetail({ davDetailedList }: listPorp) {
+export function ItemsDavDetail({ listDavFinalized }: DetailDavPorp) {
     return (
         <>
             <div
                 className="bg-white  rounded-xl w-[90%] mx-auto pb-5"
             >
-                {davDetailedList?.map((item, index) => (
+                {listDavFinalized?.map((item, index) => (
                     <div key={index} className="">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 ">
                             <div className="">
@@ -18,7 +18,7 @@ export function ItemsDavDetail({ davDetailedList }: listPorp) {
                                     Número da DAV:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.ID_ORIGEM}
+                                    {item.ID_SDS}
                                 </p>
                             </div>
 
@@ -27,7 +27,7 @@ export function ItemsDavDetail({ davDetailedList }: listPorp) {
                                     Empresa:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.SIGLA_EMP}
+                                    {item.EMPRESA}
                                 </p>
                             </div>
 
@@ -40,23 +40,26 @@ export function ItemsDavDetail({ davDetailedList }: listPorp) {
                                 </p>
                             </div>
 
+
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Descrição do Recibo:
+                                    Tipo de venda:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.DESCRICAO_RCB}
+                                    {item.TIPO_VENDA_SDS}
                                 </p>
                             </div>
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    ID do Recibo:
+                                    Cliente:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {item.ID_RCB}
+                                    {item.CLIENTE}
                                 </p>
                             </div>
+
+
                         </div>
 
                         <div className="border-b w-full my-3"></div>
@@ -64,141 +67,61 @@ export function ItemsDavDetail({ davDetailedList }: listPorp) {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4">
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Valor do Recibo:
+                                    Almoxarifado:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(Number(item.VALOR_RCB.replace(",", ".")))}
+                                    {item.ALMOXARIFADO}
+                                </p>
+                            </div>
+
+
+                            <div className="">
+                                <h2 className="font-bold text-gray-600 text-base uppercase">
+                                    Valor Desconto:
+                                </h2>
+                                <p className="text-gray-600 font-semibold text-sm">
+                                    {formatCurrency(Number(item.VALOR_DESCONTO_SDS.replace(",", ".")))}
                                 </p>
                             </div>
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Juros:
+                                    Data da saída:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(Number(item.JUROS_RCB.replace(",", ".")))}
+                                    {item.DATAHORA_SDS.split(' ')[0]}
                                 </p>
                             </div>
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Multa:
+                                    Data da finalização:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(Number(item.MULTA_RCB.replace(",", ".")))}
+                                    {item.DATAHORA_FINALIZACAO_SDS.split(' ')[0]}
                                 </p>
                             </div>
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Restante do Recibo:
+                                    Status:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(
-                                        Number(item.RESTANTE_RCB.replace(",", "."))
-                                    )}
+                                    {item.STATUS_SDS}
                                 </p>
                             </div>
 
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Restante do Recibo Sem Juros:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(
-                                        Number(item.RESTANTE_SEM_JUROS_RCB.replace(",", "."))
-                                    )}
-                                </p>
-                            </div>
                         </div>
 
                         <div className="border-b w-full my-3"></div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4">
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Valor Pago do Recibo:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {formatCurrency(
-                                        Number(item.VALOR_PAGO_RCB.replace(",", "."))
-                                    )}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Valor do Acrecimo:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.VALOR_ACRESCIMOS_RCI}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Valor do Desconto:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.VALOR_DESCONTO_RCI}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Status do Recibo:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.STATUS_RCB}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Data do Lançamento:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.DATAHORA_LANCAMENTO_RCB.split(' ')[0]}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="border-b w-full my-3"></div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 pb-5 border-b">
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Data do Pagamento:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.DATAHORA_PAGAMENTO_RCB.split(' ')[0]}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Data do Vencimento:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.DATA_VENCIMENTO_RCB.split(' ')[0]}
-                                </p>
-                            </div>
-
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
                                     Vendedor:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
                                     {item.VENDEDOR}
-                                </p>
-                            </div>
-
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Id Financeiro:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.ID_FNC}
                                 </p>
                             </div>
                         </div>

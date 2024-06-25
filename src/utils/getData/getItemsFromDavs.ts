@@ -15,8 +15,8 @@ export default function getItemsFromDavs({ listDav }: listPorp) {
   let customerServed = listDav.length;
 
   listDav.forEach((items) => {
-    value += Number(items.VALOR_RCB.replace(",", "."));
-    saleValue += Number(items.RESTANTE_SEM_JUROS_RCB.replace(",", "."));
+    value += Number(items.VALOR_BRUTO_SDS.replace(",", "."));
+    saleValue += Number(items.VALOR_LIQUIDO_SDS.replace(",", "."));
   });
 
   const infoDetaildCard = [

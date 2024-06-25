@@ -9,58 +9,47 @@ import { formatCurrency } from "./../mask/moneyMask";
 
 // Tipagem
 interface itemDav {
-  ID_PSS: string;
-  ID_FRM: string;
-  ID_EMP: string;
-  ID_RCB: string;
-  SIGLA_EMP: string;
-  N_DAV: string;
-  ID_ORIGEM: string;
-  DATAHORA_LANCAMENTO_RCB: string;
-  DATAHORA_PAGAMENTO_RCB: string;
-  DATA_VENCIMENTO_RCB: string;
-  ATRASO_RCB: string;
-  VALOR_RCB: string;
-  JUROS_RCB: string;
-  MULTA_RCB: string;
-  RESTANTE_RCB: string;
-  RESTANTE_SEM_JUROS_RCB: string;
-  VALOR_PAGO_RCB: string;
-  NOME_PSS: string;
-  APELIDO_PSS: string;
-  ID_FNC: string;
-  VENDEDOR: string;
-  STATUS_RCB: string;
-  FORMA_PAGAMENTO: string;
-  VALOR_ACRESCIMOS_RCI: string;
-  VALOR_DESCONTO_RCI: string;
-  DESCRICAO_RCB: string;
+  ID_SDS: string,
+  ID_EMP: string,
+  EMPRESA: string,
+  DATAHORA_SDS: string,
+  DATAHORA_FINALIZACAO_SDS: string,
+  APELIDO_PSS: string,
+  CLIENTE: string,
+  VENDEDOR: string,
+  ALMOXARIFADO: string,
+  VALOR_BRUTO_SDS: string,
+  VALOR_DESCONTO_SDS: string,
+  VALOR_TROCA_SDS: string,
+  VALOR_LIQUIDO_SDS: string,
+  TIPO_VENDA_SDS: string,
+  STATUS_SDS: string
 }
 
-export type listPorp = {
-  listDav: itemDav[];
+export type GetItemFromDetailDavsProps = {
+  listDavFinalized: itemDav[];
 };
 
-export default function getItemFromDetailDavs({ listDav }: listPorp) {
-  let formOfPayment = "";
+export default function getItemFromDetailDavs({ listDavFinalized }: GetItemFromDetailDavsProps) {
+  let formOfPayment = 0;
   let netValue = 0;
   let personName = "";
 
-  listDav.forEach((items) => {
-    formOfPayment = items.FORMA_PAGAMENTO;
-    netValue += Number(items.VALOR_RCB.replace(",", "."));
-    personName = items.NOME_PSS;
+  listDavFinalized.forEach((items) => {
+    formOfPayment = Number(items.VALOR_BRUTO_SDS.replace(",", ";"));
+    netValue += Number(items.VALOR_LIQUIDO_SDS.replace(",", "."));
+    personName = items.CLIENTE;
   });
 
   const infoDetaildCard = [
     {
       icon: FaMoneyBillTrendUp,
-      title: "Forma de Pagamento",
-      value: formOfPayment,
+      title: "Valor Bruto",
+      value: formatCurrency(formOfPayment),
     },
     {
       icon: MdAttachMoney,
-      title: "Valor liquid",
+      title: "Valor liquido",
       value: formatCurrency(netValue),
     },
     {
