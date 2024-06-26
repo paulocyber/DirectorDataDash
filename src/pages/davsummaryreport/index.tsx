@@ -43,6 +43,7 @@ interface itemDav {
     VALOR_BRUTO_SDS: string,
     VALOR_TROCA_SDS: string,
     VALOR_LIQUIDO_SDS: string,
+    VALOR_LIQUIDO_TOTAL: string,
     TIPO_VENDA_SDS: string,
     STATUS_SDS: string
 }

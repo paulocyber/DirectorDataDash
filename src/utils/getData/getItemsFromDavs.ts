@@ -16,7 +16,7 @@ export default function getItemsFromDavs({ listDav }: listPorp) {
 
   listDav.forEach((items) => {
     value += Number(items.VALOR_BRUTO_SDS.replace(",", "."));
-    saleValue += Number(items.VALOR_LIQUIDO_SDS.replace(",", "."));
+    saleValue += Number(items.VALOR_LIQUIDO_TOTAL.replace(",", "."));
   });
 
   const infoDetaildCard = [
