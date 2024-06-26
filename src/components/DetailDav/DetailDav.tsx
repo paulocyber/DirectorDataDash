@@ -86,6 +86,15 @@ export function ItemsDavDetail({ listDavFinalized }: DetailDavPorp) {
 
                             <div className="">
                                 <h2 className="font-bold text-gray-600 text-base uppercase">
+                                    Valor Trocar:
+                                </h2>
+                                <p className="text-gray-600 font-semibold text-sm">
+                                    {formatCurrency(Number(item.VALOR_TROCA_SDS.replace(",", ".")))}
+                                </p>
+                            </div>
+
+                            <div className="">
+                                <h2 className="font-bold text-gray-600 text-base uppercase">
                                     Data da saída:
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
@@ -102,15 +111,6 @@ export function ItemsDavDetail({ listDavFinalized }: DetailDavPorp) {
                                 </p>
                             </div>
 
-                            <div className="">
-                                <h2 className="font-bold text-gray-600 text-base uppercase">
-                                    Status:
-                                </h2>
-                                <p className="text-gray-600 font-semibold text-sm">
-                                    {item.STATUS_SDS}
-                                </p>
-                            </div>
-
                         </div>
 
                         <div className="border-b w-full my-3"></div>
@@ -122,6 +122,16 @@ export function ItemsDavDetail({ listDavFinalized }: DetailDavPorp) {
                                 </h2>
                                 <p className="text-gray-600 font-semibold text-sm">
                                     {item.VENDEDOR}
+                                </p>
+                            </div>
+
+
+                            <div className="">
+                                <h2 className="font-bold text-gray-600 text-base uppercase">
+                                    Status:
+                                </h2>
+                                <p className="text-gray-600 font-semibold text-sm">
+                                    {item.STATUS_SDS}
                                 </p>
                             </div>
                         </div>
