@@ -199,19 +199,29 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
 
     const { year, month, day } = currentDate()
 
+    let adjustedDay, adjustedMonth;
+    if (day === 1) {
+        const prevMonthDate = new Date(year, month - 1, 0);
+        adjustedDay = prevMonthDate.getDate();
+        adjustedMonth = prevMonthDate.getMonth() + 1; 
+    } else {
+        adjustedDay = day - 1;
+        adjustedMonth = month;
+    }
+
     const dateInit = `${year}/${month}/01`
     const dateEnd = `${year}/${month}/${day}`
 
     const todayDateStarted = true
     const todayDateEnd = true
 
-    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month, day, todayDateStarted, todayDateEnd })
+    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month: adjustedMonth, day: adjustedDay, todayDateStarted, todayDateEnd })
 
     const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
     const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
     const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
     const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
-
+    // console.log(`Dia: ${adjustedDay}/ Mês: ${adjustedMonth}/ Ano: ${year}`)
     return {
         props: {
             listBilletInOpen: respBillsInOpen.data.returnObject.body,
