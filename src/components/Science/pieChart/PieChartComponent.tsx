@@ -1,15 +1,11 @@
 // Biblioteca
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector, Text, Tooltip } from "recharts";
-import { useRecoilValue } from "recoil";
 
 // Paleta
 import { vibrantPalette } from "@/data/dashBoardColorPalette";
 
 // Componentes
 import renderTooltipContent from "@/components/ui/ToolTip/renderTooltipContent";
-
-// Atom
-import { filterDescription } from "@/atom/FilterDescription";
 
 // Tipagem
 interface pieChartPro {

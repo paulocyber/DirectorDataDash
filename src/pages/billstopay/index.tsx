@@ -70,7 +70,7 @@ export type BillsToPayProps = {
 }
 
 export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
-    const [toggleMenuClosed, setToggleMenuClosed] = useState(false);
+    const [toggleMenuClosed, setToggleMenuClosed] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
     const [animation, setAnimation] = useState<boolean>(false);
     const [dropDown, setDropDown] = useState<boolean>(false)
@@ -81,30 +81,23 @@ export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBille
     const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
     const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
 
-    const { today, year, month, day } = currentDate()
+    const { year, month, day } = currentDate()
 
     // Filtro
-    const [date, setDate] = React.useState<RangeValue<DateValue>>({
+    const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
     });
     const [, setFilter] = useRecoilState(filterDescription)
 
     const fetchItemsBillsToPays = async (clear?: boolean) => {
-        const dataInit = new Date(date.start.year, date.start.month - 1, date.start.day);
-        const dateEnd = new Date(date.end.year, date.end.month - 1, date.end.day);
-
-        // Verificar se data e atual
-        const todayDateStarted = dataInit.toDateString() === today.toDateString();
-        const todayDateEnd = dateEnd.toDateString() === today.toDateString();
-
         const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
         const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
         setLoading(true)
 
         // Querys
-        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day, todayDateStarted, todayDateEnd })
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day })
 
         // Puxar dados
         await fetchData({ query: billetInOpenMonthly, setData: setBilletInOpenData })
@@ -203,7 +196,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     if (day === 1) {
         const prevMonthDate = new Date(year, month - 1, 0);
         adjustedDay = prevMonthDate.getDate();
-        adjustedMonth = prevMonthDate.getMonth() + 1; 
+        adjustedMonth = prevMonthDate.getMonth() + 1;
     } else {
         adjustedDay = day - 1;
         adjustedMonth = month;
@@ -212,16 +205,13 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const dateInit = `${year}/${month}/01`
     const dateEnd = `${year}/${month}/${day}`
 
-    const todayDateStarted = true
-    const todayDateEnd = true
-
-    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month: adjustedMonth, day: adjustedDay, todayDateStarted, todayDateEnd })
+    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month: adjustedMonth, day: adjustedDay })
 
     const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
     const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
     const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
     const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
-    // console.log(`Dia: ${adjustedDay}/ Mês: ${adjustedMonth}/ Ano: ${year}`)
+
     return {
         props: {
             listBilletInOpen: respBillsInOpen.data.returnObject.body,

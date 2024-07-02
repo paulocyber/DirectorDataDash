@@ -53,7 +53,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
     }
 
     const { user } = useContext(AuthContext)
-
+    
     return (
         <aside
             className={`${bgColorClass} fixed inset-0 my-2 ml-2 h-[calc(100vh-26px)] w-20 2xl:w-80 xl:w-[20%] rounded-xl transition-transform duration-300 xl:translate-x-0 ${!showMenu && "-translate-x-80"
@@ -67,7 +67,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                         transition={{ duration: 0.5 }}
                         className="pb-2 w-[140px] "
                     >
-                        <Image src={logoPlayCell} alt="logo da playcell" priority fetchPriority="high" />
+                        <Image src={logoPlayCell} alt="logo da playcell" priority={true} fetchPriority="low" />
                     </AnimatedImg>
                 </div>
                 <button
@@ -122,7 +122,7 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
             </div>
 
             <div className="w-full absolute bottom-0 py-2">
-                <ul className="mb-4 flex flex-col gap-1 border-t border-white medium-screen:mt-0 mt-20">
+                <ul className="mb-4 flex flex-col gap-1 border-t py-3.5 m-4 medium-screen:mt-0 mt-20">
                     <li className="mx-3.5 mt-4 mb-2">
                         <p className="block antialiased font-sans text-sm leading-normal text-white font-black uppercase opacity-90">
                             autenticação
@@ -153,7 +153,8 @@ export default function SideBar({ showMenu, isClose }: MenuProps) {
                                     strokeWidth="1.5"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
-                                ></path>
+                                >
+                                </path>
                             </svg>
 
                         </div>

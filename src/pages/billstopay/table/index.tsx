@@ -83,7 +83,7 @@ export default function BillsToPayTable({ listBilletPaid, listBilletInOpen, list
         setLoading(true)
 
         // Querys
-        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day, todayDateStarted, todayDateEnd })
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day })
 
         // Puxar dados
         await fetchData({ query: billetInOpenMonthly, setData: setBilletInOpenData })
@@ -170,7 +170,7 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const todayDateEnd = true
 
     // querys 
-    const { billetInOpenMonthly, billetPaidMonthly, billetPaidAndOpenMonthly, expiredBillet } = billsToPayQueries({ dateInit, dateEnd, year, month, day, todayDateStarted, todayDateEnd })
+    const { billetInOpenMonthly, billetPaidMonthly, billetPaidAndOpenMonthly, expiredBillet } = billsToPayQueries({ dateInit, dateEnd, year, month, day })
 
     const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
     const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })

@@ -2,8 +2,6 @@ interface filterQuery {
   year?: number;
   month?: number;
   day?: number;
-  todayDateStarted?: boolean;
-  todayDateEnd?: boolean;
   dateInit?: string;
   dateEnd?: string;
 }
@@ -12,8 +10,6 @@ export const billsToPayQueries = ({
   year,
   day,
   month,
-  todayDateStarted,
-  todayDateEnd,
   dateInit,
   dateEnd,
 }: filterQuery) => {
@@ -25,9 +21,10 @@ export const billsToPayQueries = ({
   contabil_pgm from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and pgm.data_vencimento_pgm = current_date and pgm.status_pgm = 1 AND EXTRACT(YEAR FROM pgm.DATA_COMPETENCIA_PGM) = ${year} 
   order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
-  let billetInOpenMonthly = `select pgm.valor_pgm, pgm.nome_pss, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND 
-  (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dateInit}' AND '${dateEnd}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) 
-  order by pgm.data_vencimento_pgm, pgm.id_pss`;
+  // pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND 
+
+  let billetInOpenMonthly = `select pgm.valor_pgm, pgm.nome_pss, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dateInit}' AND 
+  '${dateEnd}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
   // Boletos pagos
   let billetPaidDaily = `select 'N' as selecionado, pgm.id_pgm, pgm.id_pss, pgm.numero_documento_pgm, pgm.valor_pgm, coalesce(pgm.valor_pago_pgm,0) valor_pago_pgm, pgm.restante_pgm, pgm.valor_acrescimos_pgi, 
@@ -50,13 +47,11 @@ export const billsToPayQueries = ({
   '${dateEnd}' or pgm.datahora_pagamento_pgm between date '${dateInit}' and date '${dateEnd}') order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
   // Boletos vencidos
-  let expiredBillet = `select pgm.restante_pgm, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND (CAST(pgm.data_vencimento_pgm AS DATE)
-   BETWEEN '${year}-01-01' AND '${year}-${month}-${day}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) order by pgm.data_vencimento_pgm, 
-   pgm.id_pss`;
+  let expiredBillet = `select pgm.restante_pgm, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${year}-01-01' AND 
+  '${year}-${month}-${day}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
-  let expiredBilletMonthly = `select pgm.restante_pgm, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) AND (CAST(pgm.data_vencimento_pgm AS DATE) 
-    BETWEEN '${dateInit}' AND '${dateEnd}' AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) order by pgm.data_vencimento_pgm, 
-    pgm.id_pss`;
+  let expiredBilletMonthly = `select pgm.restante_pgm, pgm.id_cnt||' - '||pgm.descricao_cnt as centro_custo from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dateInit}' AND '${dateEnd}' 
+  AND CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
   return {
     billetInOpenDaily,
