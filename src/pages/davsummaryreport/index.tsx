@@ -148,11 +148,25 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
 
     const { davFinished } = davsQueries({ dataInit, dataEnd })
 
-    const resp = await apiClient.post("/v1/find-db-query", { query: davFinished });
+    try {
+        const resp = await apiClient.post("/v1/find-db-query", { query: davFinished });
 
-    return {
-        props: {
-            listDav: resp.data.returnObject.body
-        },
-    };
+        return {
+            props: {
+                listDav: resp.data.returnObject.body
+            },
+        };
+    } catch (error: any) {
+        if (error.response?.status === 504) {
+            return {
+                redirect: {
+                    destination: '/maintenance',
+                    permanent: false,
+                },
+            };
+        }
+
+        // Handle other errors or rethrow
+        throw error;
+    }
 });
