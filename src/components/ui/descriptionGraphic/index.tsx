@@ -1,5 +1,5 @@
 // Dados
-import { filterDescription } from "@/atom/filterDescription";
+import { filterDescription } from "@/atom/FilterDescription";
 import { vibrantPalette } from "@/data/graphicColorPalette";
 
 // React

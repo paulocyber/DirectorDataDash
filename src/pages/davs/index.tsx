@@ -18,7 +18,7 @@ import { columns } from "@/data/collumnsDav"
 
 // Utils
 import currentDate from "@/utils/CurrentDate";
-import { davsQueries } from "@/utils/queries/davs";
+import { davsQueries } from "@/utils/queries/Davs";
 import { setupApiClient } from "@/service/api";
 import { InfoCardFromDav } from "@/utils/getFromData/infoCard/infoCardFromDav";
 import { formatCurrency } from "@/utils/masks/formatCurrency";

@@ -2,7 +2,7 @@
 import { useRecoilValue } from "recoil";
 
 // Atom
-import { filterDescription } from "@/atom/filterDescription";
+import { filterDescription } from "@/atom/FilterDescription";
 
 // Tipagem
 import { BillsToPayItem } from "@/utils/types/billsToPay";

@@ -10,9 +10,9 @@ import { canSSRAuth } from "@/utils/permissions/canSSRAuth";
 import Link from "next/link";
 
 // Utils
-import { davsQueries } from "@/utils/queries/davs";
+import { davsQueries } from "@/utils/queries/Davs";
 import { setupApiClient } from "@/service/api";
-import { formatCurrency } from '@/utils/masks/formatCurrency';
+import { formatCurrency } from '@/utils/masks/formatCurrency';  
 
 // Biblioteca
 import { IoMdArrowBack } from "react-icons/io";

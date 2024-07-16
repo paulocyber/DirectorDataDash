@@ -10,7 +10,7 @@ import { TotalSum } from "@/utils/totalSum";
 import { formatCurrency } from "@/utils/masks/formatCurrency";
 
 // Atom
-import { filterDescription } from "@/atom/filterDescription";
+import { filterDescription } from "@/atom/FilterDescription";
 
 // Framework - next
 import { useRouter } from "next/router";

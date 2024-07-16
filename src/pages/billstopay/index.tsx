@@ -28,7 +28,7 @@ import { useState } from "react";
 import { useRecoilState } from "recoil";
 
 // Atom
-import { filterDescription } from "@/atom/filterDescription";
+import { filterDescription } from "@/atom/FilterDescription";
 
 // Tipagem
 import { BillsToPayItem, BillsToPayPageProps } from "@/utils/types/billsToPay";

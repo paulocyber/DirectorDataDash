@@ -29,7 +29,7 @@ import { useRecoilState } from "recoil";
 import { CiSearch } from "react-icons/ci";
 
 // Atom
-import { filterDescription } from "@/atom/filterDescription";
+import { filterDescription } from "@/atom/FilterDescription";
 
 // Tipagem
 import { BillsToPayItem, BillsToPayPageProps } from "@/utils/types/billsToPay";
