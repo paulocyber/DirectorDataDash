@@ -1,51 +1,39 @@
-// React
-import { ReactNode, createContext, useEffect, useState } from "react"
-
-// Services
-import { api } from "../services/apiClient";
+// Framework
+import Router from "next/router";
 
 // Biblioteca
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { toast } from "react-toastify";
+import { api } from "@/service/apiClient";
 
-// Framework
-import Router from "next/router";
+// React
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 // Tipagem
-type AuthContextData = {
-    user: UserProps | undefined,
-    isAuthenticated: boolean;
-    signIn: (credentials: SignInProps) => Promise<void>;
-    signOut: () => void;
-}
-
-type UserProps = {
-    username: string;
-}
-
 type SignInProps = {
     username: string;
     password: string;
 }
 
-type AuthProviderProps = {
-    children: ReactNode
+type AuthContextData = {
+    user: string;
+    signIn: (credentials: SignInProps) => Promise<void>;
+    signOut: () => void;
 }
 
-export const AuthContext = createContext({} as AuthContextData)
+export const AuthContext = createContext({} as AuthContextData);
 
 export function signOut() {
     try {
-        destroyCookie(undefined, '@nextauth.token')
-        Router.push("/")
+        destroyCookie(undefined, '@nextauth.token');
+        Router.push("/");
     } catch (err) {
-        console.log('Error ao deslogar', err)
+        console.error("Error ao deslogar: ", err);
     }
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-    const [user, setUser] = useState<UserProps>()
-    const isAuthenticated = !!user;
+export function AuthProvider({ children }: { children: ReactNode }) {
+    const [userName, setUserName] = useState<string>("");
 
     useEffect(() => {
         const { '@nextauth.token': token } = parseCookies();
@@ -54,51 +42,47 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (token) {
                 try {
                     const resp = await api.post('/v1/auth/validate', { token: token });
-                    setUser(resp.data.returnObject.body);
+                    setUserName(resp.data.returnObject.body.username as string);
                 } catch (err) {
                     console.error("Erro ao validar token:", err);
-                    signOut(); // Token não for valido vou deslogar
+                    signOut();
                 }
             }
         }
+
         loadUser();
     }, []);
 
-    async function signIn({ username, password }: SignInProps) {
-        // console.log(`UserName: ${username}, Password: ${password}`)
+    async function signIn({ password, username }: SignInProps) {
         try {
             const resp = await api.post('/v1/auth/login', {
                 username,
                 password
-            })
+            });
 
             const { access_token } = resp.data.returnObject.body;
 
-            // console.log("Token: ", access_token)
-
             setCookie(undefined, '@nextauth.token', access_token, {
-                maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mes
-                path: "/" // Quais caminhos terao acesso ao cookie
-            })
+                maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mês
+                path: "/" // Quais caminhos terão acesso ao cookie
+            });
 
-            setUser({ username: username });
+            setUserName(username);
 
-            // console.log("Token: ", user)
+            api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
 
-            api.defaults.headers['Authorization'] = `Bearer ${access_token}`
+            toast.success('Bem vindo!', { icon: <span>🚀</span> });
 
-            toast.success('Bem vindo!', {icon: <span>🚀</span>})
-
-            Router.push('/')
+            Router.push('/davs');
         } catch (err) {
-            toast.error("Erro ao acessar!")
-            console.log("Erro: ", err)
+            toast.error("Erro ao acessar!");
+            console.log("Error: ", err);
         }
     }
-    // console.log("Usuario: ", user)
+
     return (
-        <AuthContext.Provider value={{ user: user || { username: '' }, isAuthenticated, signIn, signOut }}>
+        <AuthContext.Provider value={{ user: userName, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 }

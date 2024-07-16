@@ -1,0 +1,10 @@
+export const columns = [
+    { name: "#", uid: "foipago" },
+    { name: "data", uid: "data" },
+    { name: "valor", uid: "valor" },
+    { name: "descrição", uid: "descricao" },
+    { name: "natureza do custo", uid: "naturezadocusto" },
+    { name: "categoria da despesa", uid: "categoriadadespesa" },
+    { name: "centro de custo", uid: "centrodecusto" },
+    { name: "forma de pagamento", uid: "formadepagamento" },
+] 

@@ -1,224 +1,142 @@
-// Framework
-import Head from "next/head";
-
-// Rota Privada
-import { canSSRAuth } from "@/utils/canSSRAuth";
+// Framework - Next
+import { canSSRAuth } from "@/utils/permissions/canSSRAuth";
+import { setupApiClient } from "@/service/api";
 
 // Componentes
-import SideBar from "@/components/ui/menu/SideBar";
-import { Main } from "@/components/ui/mainComponents/main";
-import HeaderBar from "@/components/ui/menu/HeaderBar";
-import InfoCards from "@/components/ui/cards/InfoCards";
-import { MainScience } from "@/components/ui/mainComponents/MainScience";
-import { PieChartComponent } from "@/components/Science/pieChart/PieChartComponent";
-import { BarChartComponent } from "@/components/Science/barChart/BarChartComponent";
-import { Loading } from "@/components/ui/loadings/Loading";
-import { Options } from "@/components/ui/dropDown/Options";
-
-// React
-import React, { useState } from "react";
+import Layout from "@/components/ui/layout";
+import Cards from "@/components/ui/cards";
+import Container from "@/components/ui/container";
+import ToolBar from "@/components/ui/toolbar";
+import { Loading } from "@/components/ui/loading";
+import DescriptionGraphic from "@/components/ui/descriptionGraphic";
+import PieChartComponent from "@/components/ui/sciences/pieChart";
+import { BarChartComponent } from "@/components/ui/sciences/BarChart";
 
 // Utils
-import { setupApiClient } from "@/services/api";
 import { billsToPayQueries } from "@/utils/queries/billsToPay";
-import currentDate from "@/utils/getCurrentDate/CurrentDate";
-import getBillsToPay from "@/utils/getData/getBillsToPay";
-import topCostCenter from "@/utils/filters/billsToPay/topCoscenter";
+import currentDate from "@/utils/CurrentDate";
+import { InfoCardFromBillsToPay } from "@/utils/getFromData/infoCard/infoCardFromBillsToPay";
+import { fetchData } from "@/utils/fetchData";
+import { TopCostCenter } from "@/utils/filters/billsToPay/topCostCenter";
+import { handleDateFilter } from "@/utils/filters/dateFilter/handleDateFilter";
+import { handleCleanFilter } from "@/utils/filters/cleanFilter/handleCleanFilter";
 
-// Dados
-import { fetchData } from "@/data/fetchData";
+// React
+import { useState } from "react";
 
-// Bibliotecas
-import { DateRangePicker } from "@nextui-org/date-picker";
-import { DateValue, RangeValue } from "@nextui-org/calendar";
-import { parseDate } from "@internationalized/date";
+// Biblioteca
 import { useRecoilState } from "recoil";
 
 // Atom
-import { filterDescription } from "@/atom/FilterDescription";
+import { filterDescription } from "@/atom/filterDescription";
 
 // Tipagem
-interface BillToPayItem {
-    VALOR_PGM: string,
-    CENTRO_CUSTO: string,
-    VALOR_PAGO_PGM: string,
-    NOME_PSS: string
-}
+import { BillsToPayItem, BillsToPayPageProps } from "@/utils/types/billsToPay";
+import { DateValue, RangeValue } from "@nextui-org/react";
+import { parseDate } from '@internationalized/date';
 
-interface BilletPaidAndInOpen {
-    VALOR_PGM: string,
-    CENTRO_CUSTO: string,
-    NOME_PSS: string,
-    STATUS_PGM: string,
-    DATA_VENCIMENTO_PGM: string,
-    DESCRICAO_PGM: string,
-    GRUPO_CENTRO: string,
-    NUMERO_DOCUMENTO_PGM: string,
-    DESCRICAO_FRM: string
-}
-
-interface ExpiredBillItem {
-    RESTANTE_PGM: string,
-    CENTRO_CUSTO: string,
-}
-
-export type BillsToPayProps = {
-    listBilletPaid: BillToPayItem[],
-    listBilletInOpen: BillToPayItem[],
-    listBilletPaidAndInOpen: BilletPaidAndInOpen[],
-    listBilletExpired?: ExpiredBillItem[]
-}
-
-export default function BillsToPay({ listBilletPaid, listBilletInOpen, listBilletPaidAndInOpen, listBilletExpired }: BillsToPayProps) {
-    const [toggleMenuClosed, setToggleMenuClosed] = useState<boolean>(false);
+export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listBilletExpired, listBilletPaidAndOpen }: BillsToPayPageProps) {
+    const [billetOpen, setBilletOpen] = useState(listBilletInOpen || [])
+    const [billetPaid, setBilletPaid] = useState(listBilletPaid || [])
+    const [billetExpired, setBilletExpired] = useState(listBilletExpired || [])
+    const [billetPaidAndOpen, setBilletPaidAndOpen] = useState(listBilletPaidAndOpen || [])
+    const [, setFilter] = useRecoilState(filterDescription);
     const [loading, setLoading] = useState<boolean>(false)
-    const [animation, setAnimation] = useState<boolean>(false);
-    const [dropDown, setDropDown] = useState<boolean>(false)
 
-    // Dados
-    const [billetPaidData, setBilletPaidData] = useState(listBilletPaid || [])
-    const [billetInOpenData, setBilletInOpenData] = useState(listBilletInOpen || [])
-    const [billetPaidInOpenData, setBilletPaidInOpenData] = useState(listBilletPaidAndInOpen || [])
-    const [billetExpiredData, setBilletExpiredData] = useState(listBilletExpired || [])
+    // Filtros
+    const infoDetailCard = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid })
+    const { selectCostCenter, sortedCostCenters } = TopCostCenter({ billetPaidAndOpen })
 
-    const { year, month, day } = currentDate()
-
-    // Filtro
+    const { year, month, lastDay, adjustedMonth } = currentDate()
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
-    });
-    const [, setFilter] = useRecoilState(filterDescription)
+    })
 
-    const fetchItemsBillsToPays = async (clear?: boolean) => {
-        const formatDateInit = `${date.start.year}/${date.start.month}/${date.start.day}`
-        const formatDateEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
+    const fetchBillsToPayData = async (dataInit?: string, dataEnd?: string, clear?: boolean) => {
+        setLoading(true);
 
-        setLoading(true)
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBilletMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: adjustedMonth, day: lastDay });
 
-        // Querys
-        const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, expiredBilletMonthly, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit: formatDateInit, dateEnd: formatDateEnd, year, month: date.start.month, day })
+        await fetchData({ query: billetInOpenMonthly, setData: setBilletOpen });
+        await fetchData({ query: billetPaidMonthly, setData: setBilletPaid });
 
-        // Puxar dados
-        await fetchData({ query: billetInOpenMonthly, setData: setBilletInOpenData })
-        await fetchData({ query: billetPaidMonthly, setData: setBilletPaidData })
         if (clear) {
-            await fetchData({ query: expiredBillet, setData: setBilletExpiredData })
+            await fetchData({ query: expiredBillet, setData: setBilletExpired });
         } else {
-            await fetchData({ query: expiredBilletMonthly, setData: setBilletExpiredData })
+            await fetchData({ query: expiredBilletMonthly, setData: setBilletExpired });
         }
+        await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidAndOpen });
 
-        await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidInOpenData })
-
-        setLoading(false)
-    }
-
-    const { infoDetailCard } = getBillsToPay({ listBilletPaid: billetPaidData, listBilletInOpen: billetInOpenData, listBilletPaidAndInOpen, listBilletExpired: billetExpiredData })
-
-    const { sortedCostCenters, selectCostCenter } = topCostCenter({ listBilletPaidAndInOpen: billetPaidInOpenData })
-
-    const handleRefreshClick = async () => {
-        setDropDown(false)
-        await fetchItemsBillsToPays()
-    }
-
-    const handleClearFilter = async () => {
-        setFilter([])
-        setDate({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]) })
-        setDropDown(false)
-        await fetchItemsBillsToPays(true);
-    }
-
-
-    const handleDateChange = async (newDate: RangeValue<DateValue>) => {
-        setDate(newDate);
-        await fetchItemsBillsToPays();
+        setLoading(false);
     };
 
+
+    const onDateChange = async (newDate: RangeValue<DateValue>) => {
+        await handleDateFilter(newDate, setDate, fetchBillsToPayData, setFilter);
+    };
+
+    const clearFilter = async () => {
+        await handleCleanFilter(setDate, fetchBillsToPayData, setFilter)
+    }
+
+    const refresh = async () => {
+        const dataInit = `${date.start.year}/${date.start.month}/${date.start.day}`
+        const dataEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
+
+        await fetchBillsToPayData(dataInit, dataEnd, true)
+    }
+
     return (
-        <>
-            <Head>
-                <title>Contas a Pagar</title>
-            </Head>
-            <SideBar showMenu={toggleMenuClosed} isClose={setToggleMenuClosed} />
-            <main onClick={() => setDropDown(false)} className="bg-[#edf3fb] flex flex-col w-full ">
-                <HeaderBar />
-                <div onClick={() => setDropDown(false)} className="md:ml-auto md:mx-0 xl:w-[80%] xl:w-[69%] md:flex flex-col w-full h-screen">
-                    <InfoCards data={infoDetailCard} />
-                    <Main >
-                        <div onClick={() => setDropDown(false)} className="md:flex items-center justify-between w-full ">
-                            <div className="pb-5 flex justify-between items-center w-full p-5">
-                                <h1 className="font-bold md:text-lg text-sm">Contas abertas: </h1>
-                                <div className="flex justify-between items-center">
-                                    <div className="px-2">
-                                        <DateRangePicker
-                                            aria-label="filtro de data"
-                                            classNames={{ inputWrapper: "bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500", base: "text-white", innerWrapper: "py-[0.2em] text-white", segment: "text-white", selectorIcon: "text-center text-white", }}
-                                            value={date}
-                                            onChange={handleDateChange}
-                                        />
-                                    </div>
-                                    <div className="px-2">
-                                        <Options href="/billstopay/table" descriptionHref="tabela" dropDown={dropDown} setDropDown={setDropDown} handleRefreshClick={handleRefreshClick} animation={animation} setAnimation={setAnimation} handleClearFilter={handleClearFilter} />
-                                    </div>
-                                </div>
-                            </div>
+        <Layout description="Contas a pagar">
+            <Cards data={infoDetailCard} />
+            <Container>
+                {loading
+                    ?
+                    <div className="h-[400px] flex items-center justify-center">
+                        <Loading />
+                    </div>
+                    :
+                    <>
+                        <ToolBar title="Contas a pagar" handleRefreshClick={refresh} date={date} handleDateFilter={onDateChange} handleCleanFilter={clearFilter} href="/billstopay/table" descriptionHref="Tebala" />
+                        <div className="flex w-full sm:flex-col flex-col md:flex-col lg:flex-row">
+                            <main className="p-4 lg:w-1/2 lg:w-full h-[400px]">
+                                <PieChartComponent data={selectCostCenter} />
+                            </main>
+                            <main className="p-4 lg:w-1/2 lg:w-full h-[400px]">
+                                <BarChartComponent data={selectCostCenter} />
+                            </main>
                         </div>
-                        {loading ?
-                            <div className="p-4 md:w-full flex items-center justify-center h-[400px]">
-                                <Loading />
-                            </div>
-                            :
-                            <>
-                                <MainScience data={sortedCostCenters}>
-                                    <div className="p-4 md:w-1/2 h-[400px]">
-                                        <PieChartComponent data={selectCostCenter} />
-                                    </div>
-                                    <div className="p-4 md:w-1/2 h-[400px]">
-                                        <BarChartComponent data={selectCostCenter} />
-                                    </div>
-                                </MainScience>
-                            </>
-                        }
-                    </Main>
-                </div >
-            </main >
-        </>
+                        <div className="w-full ">
+                            <DescriptionGraphic data={sortedCostCenters} />
+                        </div>
+                    </>
+                }
+            </Container>
+        </Layout>
     )
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx)
+    const { year, month, day, lastDay, adjustedMonth } = currentDate()
 
-    const { year, month, day } = currentDate()
+    const dataInit = `${year}/${month}/01`
+    const dataEnd = `${year}/${month}/${day}`
 
-    let adjustedDay, adjustedMonth;
-    if (day === 1) {
-        const prevMonthDate = new Date(year, month - 1, 0);
-        adjustedDay = prevMonthDate.getDate();
-        adjustedMonth = prevMonthDate.getMonth() + 1;
-    } else {
-        adjustedDay = day - 1;
-        adjustedMonth = month;
-    }
+    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: adjustedMonth, day: lastDay })
 
-    const dateInit = `${year}/${month}/01`
-    const dateEnd = `${year}/${month}/${day}`
-
-    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dateInit, dateEnd, year, month: adjustedMonth, day: adjustedDay })
-
-    const respBillsInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
-    const respBillsInPayed = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
-    const respPaidAndNotPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
-    const respExpiredBills = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
+    const respBilletInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
+    const respBilletPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
+    const respBilletExpired = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
+    const respBilletPaidAndOpen = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
 
     return {
         props: {
-            listBilletInOpen: respBillsInOpen.data.returnObject.body,
-            listBilletPaid: respBillsInPayed.data.returnObject.body,
-            listBilletPaidAndInOpen: respPaidAndNotPaid.data.returnObject.body,
-            listBilletExpired: respExpiredBills.data.returnObject.body
-        },
-    };
-});
-
+            listBilletInOpen: respBilletInOpen.data.returnObject.body,
+            listBilletPaid: respBilletPaid.data.returnObject.body,
+            listBilletExpired: respBilletExpired.data.returnObject.body,
+            listBilletPaidAndOpen: respBilletPaidAndOpen.data.returnObject.body
+        }
+    }
+})

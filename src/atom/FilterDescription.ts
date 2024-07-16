@@ -3,9 +3,9 @@ import { atom } from "recoil";
 
 // Tipagem
 export interface itemDescription {
-    description: string;
-    color: string;
-    id: number
+  description: string;
+  color: string;
+  id: number;
 }
 
 export const filterDescription = atom<itemDescription[]>({

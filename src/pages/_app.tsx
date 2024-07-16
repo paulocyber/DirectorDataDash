@@ -7,16 +7,18 @@ import 'nprogress/nprogress.css';
 import type { AppProps } from "next/app";
 import { Router } from "next/router";
 
-// Context
-import { AuthContext, AuthProvider } from "@/contexts/AuthContext";
-
 // Biblioteca
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import nProgress from 'nprogress'
 import { RecoilRoot } from "recoil";
 
+// React
+import { AuthProvider } from "@/contexts/AuthContext";
+
+// Componentes
+
 export default function App({ Component, pageProps }: AppProps) {
-  // Rotas
+
   Router.events.on('routeChangeStart', () => {
     nProgress.start()
   })
