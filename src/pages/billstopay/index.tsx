@@ -44,7 +44,7 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
     const [loading, setLoading] = useState<boolean>(false)
 
     // Filtros
-    const infoDetailCard = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid })
+    const {infoDetailCard} = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid })
     const { selectCostCenter, sortedCostCenters } = TopCostCenter({ billetPaidAndOpen })
 
     const { year, month, lastDay, adjustedMonth } = currentDate()
@@ -62,8 +62,10 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
         await fetchData({ query: billetPaidMonthly, setData: setBilletPaid });
 
         if (clear) {
+            console.log("Verdadeiro")
             await fetchData({ query: expiredBillet, setData: setBilletExpired });
         } else {
+            console.log("falso")
             await fetchData({ query: expiredBilletMonthly, setData: setBilletExpired });
         }
         await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidAndOpen });
@@ -84,7 +86,7 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
         const dataInit = `${date.start.year}/${date.start.month}/${date.start.day}`
         const dataEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
-        await fetchBillsToPayData(dataInit, dataEnd, true)
+        await fetchBillsToPayData(dataInit, dataEnd, false)
     }
 
     return (

@@ -17,9 +17,10 @@ import { InfoCardFromBillsToPay } from "@/utils/getFromData/infoCard/infoCardFro
 import { fetchData } from "@/utils/fetchData";
 import { handleDateFilter } from "@/utils/filters/dateFilter/handleDateFilter";
 import { handleCleanFilter } from "@/utils/filters/cleanFilter/handleCleanFilter";
+import billsToPayPDF from "@/reports/billsTopay";
 
 // React
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 // Dados
 import { columns } from "@/data/collumnsBillsToPay"
@@ -85,7 +86,7 @@ export default function BillsToPayPageTable({ listBilletExpired, listBilletInOpe
         const dataInit = `${date.start.year}/${date.start.month}/${date.start.day}`
         const dataEnd = `${date.end.year}/${date.end.month}/${date.end.day}`
 
-        await fetchBillsToPayData(dataInit, dataEnd, true)
+        await fetchBillsToPayData(dataInit, dataEnd, false)
     }
 
     const filterSearch = billetPaidAndOpen.filter((item) => {
@@ -129,52 +130,59 @@ export default function BillsToPayPageTable({ listBilletExpired, listBilletInOpe
         }
     };
 
-    const infoDetailCard = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid, filterSearch })
+    const { total, infoDetailCard, totalAmountExpired, totalAmountInOpen, totalAmountPaid, } = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid, filterSearch })
+
+    // Função para gerar o PDF
+    const generatePDF = () => {
+        billsToPayPDF(billetPaidAndOpen, totalAmountInOpen, totalAmountExpired, totalAmountPaid, total)
+    }
 
     return (
-        <Layout description="Contas a pagar">
-            <Cards data={infoDetailCard} />
-            <Container>
-                {loading
-                    ?
-                    <div className="h-[400px] flex items-center justify-center">
-                        <Loading />
-                    </div>
-                    :
-                    <>
-                        <ToolBar title="Contas a pagar" handleRefreshClick={refresh} date={date} handleDateFilter={onDateChange} handleCleanFilter={clearFilter} href="/billstopay" descriptionHref="Voltar" >
-                            <label
-                                htmlFor="default-search"
-                                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-                            >
-                                Search
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                    <CiSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+        < >
+            <Layout description="Contas a pagar">
+                <Cards data={infoDetailCard} />
+                <Container>
+                    {loading
+                        ?
+                        <div className="h-[400px] flex items-center justify-center">
+                            <Loading />
+                        </div>
+                        :
+                        <>
+                            <ToolBar title="Contas a pagar" generatePDF={generatePDF} handleRefreshClick={refresh} date={date} handleDateFilter={onDateChange} handleCleanFilter={clearFilter} href="/billstopay" descriptionHref="Voltar" >
+                                <label
+                                    htmlFor="default-search"
+                                    className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                                >
+                                    Search
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <CiSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="search"
+                                        value={searchFilter}
+                                        onChange={(e) => setSearchFilter(e.target.value)}
+                                        id="default-search"
+                                        className="block w-full md:p-2 p-1 md:ps-10 ps-10 text-sm text-black-900 border rounded-lg bg-white-50 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
+                                        placeholder="Search Mockups, Logos..."
+                                        required
+                                    />
                                 </div>
-                                <input
-                                    type="search"
-                                    value={searchFilter}
-                                    onChange={(e) => setSearchFilter(e.target.value)}
-                                    id="default-search"
-                                    className="block w-full md:p-2 p-1 md:ps-10 ps-10 text-sm text-black-900 border rounded-lg bg-white-50 dark:bg-white-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black"
-                                    placeholder="Search Mockups, Logos..."
-                                    required
-                                />
-                            </div>
-                        </ToolBar>
+                            </ToolBar>
 
-                        <main className="flex w-full pb-6 h-[450px] flex-col px-5">
-                            <div className="overflow-auto">
-                                <TableGrid collumns={columns} data={filterSearch.slice(0, limit)} renderCell={renderCell} />
-                                <InfiniteScroll fetchMore={fetchMore} />
-                            </div>
-                        </main>
-                    </>
-                }
-            </Container>
-        </Layout>
+                            <main className="flex w-full pb-6 h-[450px] flex-col px-5">
+                                <div className="overflow-auto">
+                                    <TableGrid collumns={columns} data={filterSearch.slice(0, limit)} renderCell={renderCell} />
+                                    <InfiniteScroll fetchMore={fetchMore} />
+                                </div>
+                            </main>
+                        </>
+                    }
+                </Container>
+            </Layout>
+        </>
     )
 }
 

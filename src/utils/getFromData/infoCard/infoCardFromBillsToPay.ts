@@ -95,6 +95,8 @@ export function InfoCardFromBillsToPay({
     ? TotalSum(searchPaidBillets, "VALOR_PAGO_PGM")
     : TotalSum(filteredPaidBillet, "VALOR_PAGO_PGM");
 
+  const total = searchPaidBillets.length.toString();
+
   const infoDetailCard = [
     {
       icon: TbMoneybag,
@@ -114,9 +116,17 @@ export function InfoCardFromBillsToPay({
     {
       icon: RiVerifiedBadgeFill,
       title: "Total de boletos pagos",
-      value: routerTable ? searchPaidBillets.length.toString() : filteredPaidBillet.length.toString(),
+      value: routerTable
+        ? searchPaidBillets.length.toString()
+        : filteredPaidBillet.length.toString(),
     },
   ];
 
-  return infoDetailCard;
+  return {
+    infoDetailCard,
+    totalAmountInOpen,
+    totalAmountExpired,
+    totalAmountPaid,
+    total,
+  };
 }

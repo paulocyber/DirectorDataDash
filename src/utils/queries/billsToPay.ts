@@ -22,7 +22,7 @@ export const billsToPayQueries = ({
 
   let billetPaidAndOpenMonthly = `select pgm.id_pgm as ID_SDS, pgm.status_pgm, pgm.data_vencimento_pgm, pgm.valor_pgm, pgm.numero_documento_pgm, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.nome_pss, pgm.id_cnt||' - '|| pgm.descricao_cnt as centro_custo, 
   pgm.descricao_frm from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and (pgm.data_vencimento_pgm between date '${dataInit}' and date '${dataEnd}' or pgm.datahora_pagamento_pgm between date 
-  '${dataInit}' and date '${dataEnd}') order by pgm.data_vencimento_pgm, pgm.id_pss`;
+  '${dataInit}' and date '${dataEnd}') and pgm.status_pgm in (1, 2) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
   return {
     billetInOpenMonthly,

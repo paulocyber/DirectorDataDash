@@ -5,6 +5,7 @@ import { AiOutlinePieChart } from "react-icons/ai";
 import { VscTable } from "react-icons/vsc";
 import { RiFormatClear } from "react-icons/ri";
 import { GoSync } from "react-icons/go";
+import { ImFilePdf } from "react-icons/im";
 
 // Framework - next
 import { useRouter } from "next/router";
@@ -26,9 +27,10 @@ interface ToolBarProps {
     href?: string;
     descriptionHref?: string;
     children?: ReactNode;
+    generatePDF?: () => void;
 }
 
-export default function ToolBar({ title, handleRefreshClick, date, handleDateFilter, handleCleanFilter, href, descriptionHref, children }: ToolBarProps) {
+export default function ToolBar({ title, handleRefreshClick, date, handleDateFilter, handleCleanFilter, href, descriptionHref, children, generatePDF }: ToolBarProps) {
     const [animation, setAnimation] = useState<boolean>(false)
 
     const dropDown = false
@@ -69,11 +71,12 @@ export default function ToolBar({ title, handleRefreshClick, date, handleDateFil
                                     endContent={<span className="md:text-sm text-xs w-full">Atualizar</span>}
                                 />
                                 <DropdownItem
+                                    id="href"
                                     key="homeback"
                                     startContent={routerTable ? <AiOutlinePieChart className="text-lg" /> : <VscTable className="text-lg" />}
-                                    className={`flex justify-center items-center text-sm font-medium py-2`}
+                                    className={!href ? 'hidden' : `flex justify-center items-center text-sm font-medium py-2`}
                                     textValue="tabela"
-                                    endContent={<Link href={href ? href : ''} className="md:text-sm text-xs w-full">{descriptionHref ? descriptionHref : 'desativado'}</Link>}
+                                    endContent={<Link href={href ? href : ''} className="md:text-sm text-xs w-full">{descriptionHref}</Link>}
                                 />
                                 <DropdownItem
                                     startContent={<RiFormatClear className="text-lg" />}
@@ -81,6 +84,13 @@ export default function ToolBar({ title, handleRefreshClick, date, handleDateFil
                                     onClick={handleCleanFilter}
                                     textValue="limpa filtro"
                                     endContent={<span className="md:text-sm text-xs w-full">Limpa filtro</span>}
+                                />
+                                <DropdownItem
+                                    startContent={<ImFilePdf  className="text-lg" />}
+                                    className={!generatePDF ? "hidden" : "flex justify-center items-center w-full text-sm font-medium py-2"}
+                                    onClick={generatePDF}
+                                    textValue="Gerar PDF"
+                                    endContent={<span className="md:text-sm text-xs w-full">Gerar PDF</span>}
                                 />
                             </DropdownMenu>
                         </Dropdown>
