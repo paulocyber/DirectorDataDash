@@ -63,7 +63,7 @@ export default function BillsToPayPageTable({ listBilletExpired, listBilletInOpe
 
         await fetchData({ query: billetInOpenMonthly, setData: setBilletOpen })
         await fetchData({ query: billetPaidMonthly, setData: setBilletPaid })
-
+console.log("Query: ", billetPaidMonthly)
         if (clear) {
             await fetchData({ query: expiredBillet, setData: setBilletExpired })
         } else {
