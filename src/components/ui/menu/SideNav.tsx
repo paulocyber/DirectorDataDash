@@ -17,6 +17,8 @@ import { motion } from "framer-motion";
 import { GrDocumentText } from "react-icons/gr";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { CiUser } from "react-icons/ci";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { MdPointOfSale } from "react-icons/md";
 
 // Componentes
 import ActiveLink from "./ActiveLink";
@@ -71,7 +73,17 @@ export function SideNav() {
                             <GiTakeMyMoney className="w-7 h-7" />
                         </ActiveLink>
                     </li>
-                </ul>
+                    {/* <li>
+                        <ActiveLink href="/billstoreceive" nameLink="Contas a receber">
+                            <FaMoneyBillTransfer  className="w-6 h-6" />
+                        </ActiveLink>
+                    </li> */}
+                    <li>
+                        <ActiveLink href="/salesbybrand" nameLink="Vendas por marcas">
+                            <MdPointOfSale  className="w-6 h-6" />
+                        </ActiveLink>
+                    </li>
+                </ul>  
             </div>
 
             <div className="w-full absolute bottom-0 ">

@@ -2,13 +2,9 @@
 import { atom } from "recoil";
 
 // Tipagem
-export interface itemDescription {
-  description: string;
-  color: string;
-  id: number;
-}
+import { SelectionDescription } from "@/utils/types/selectionDescription";
 
-export const filterDescription = atom<itemDescription[]>({
+export const filterDescription = atom<SelectionDescription[]>({
   key: "filterDescription", // unique ID (with respect to other atoms/selectors)
   default: [], // default value (aka initial value)
 });

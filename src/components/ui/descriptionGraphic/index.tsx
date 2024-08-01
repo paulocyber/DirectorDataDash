@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 
 // Tipagem
 interface DescriptionGraphicProps {
-    data: { description: string; value: number }[];
+    data: { description: string;  }[];
 }
 
 interface FilterSelection {

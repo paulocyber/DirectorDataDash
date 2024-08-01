@@ -135,8 +135,8 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx)
     const id = ctx.query.id as string;
 
-    const { date } = currentDate()
-    const { davFinalizationDetail, obtainProductsContainedInDav } = davsQueries({ dataInit: date, dataEnd: date, id })
+    const { today } = currentDate()
+    const { davFinalizationDetail, obtainProductsContainedInDav } = davsQueries({ dataInit: today, dataEnd: today, id })
 
     const respDav = await apiClient.post("/v1/find-db-query", { query: davFinalizationDetail })
     const respProductsContainDav = await apiClient.post("/v1/find-db-query", { query: obtainProductsContainedInDav })

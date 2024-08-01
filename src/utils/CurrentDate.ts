@@ -1,20 +1,36 @@
+// Utils
+import { formatDate } from "./masks/formatDate";
+
 export default function currentDate() {
   const today = new Date();
   const day = today.getDate();
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
 
-  const date = `${year}-${month}-${day}`;
-
-  let lastDay, adjustedMonth;
+  let yesterday, monthExpired;
   if (day === 1) {
     const prevMonthDate = new Date(year, month - 1, 0);
-    lastDay = prevMonthDate.getDate();
-    adjustedMonth = prevMonthDate.getMonth() + 1;
+    yesterday = prevMonthDate.getDate();
+    monthExpired = prevMonthDate.getMonth() + 1;
   } else {
-    lastDay = day - 1;
-    adjustedMonth = month;
+    yesterday = day - 1;
+    monthExpired = month;
   }
 
-  return { day, month, year, date, today, adjustedMonth, lastDay };
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+  return {
+    day,
+    month,
+    year,
+    today: formatDate(today),
+    monthExpired,
+    yesterday,
+    startOfWeek: formatDate(startOfWeek),
+    endOfWeek: formatDate(endOfWeek)
+  };
 }

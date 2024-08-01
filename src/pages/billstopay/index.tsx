@@ -31,7 +31,7 @@ import { useRecoilState } from "recoil";
 import { filterDescription } from "@/atom/FilterDescription";
 
 // Tipagem
-import { BillsToPayItem, BillsToPayPageProps } from "@/utils/types/billsToPay";
+import { BillsToPayPageProps } from "@/utils/types/billsToPay";
 import { DateValue, RangeValue } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
 
@@ -44,10 +44,10 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
     const [loading, setLoading] = useState<boolean>(false)
 
     // Filtros
-    const {infoDetailCard} = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid })
+    const { infoDetailCard } = InfoCardFromBillsToPay({ listBilletExpired: billetExpired, listBilletInOpen: billetOpen, listBilletPaid: billetPaid })
     const { selectCostCenter, sortedCostCenters } = TopCostCenter({ billetPaidAndOpen })
 
-    const { year, month, lastDay, adjustedMonth } = currentDate()
+    const { year, month, yesterday, monthExpired } = currentDate()
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
@@ -56,26 +56,22 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
     const fetchBillsToPayData = async (dataInit?: string, dataEnd?: string, clear?: boolean) => {
         setLoading(true);
 
-        const { billetInOpenMonthly, billetPaidMonthly, expiredBilletMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: adjustedMonth, day: lastDay });
+        const { billetInOpenMonthly, billetPaidMonthly, expiredBilletMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: monthExpired, day: yesterday });
 
-        await fetchData({ query: billetInOpenMonthly, setData: setBilletOpen });
-        await fetchData({ query: billetPaidMonthly, setData: setBilletPaid });
+        const queries = [
+            fetchData({ query: billetInOpenMonthly, setData: setBilletOpen }),
+            fetchData({ query: billetPaidMonthly, setData: setBilletPaid }),
+            fetchData({ query: clear ? expiredBillet : expiredBilletMonthly, setData: setBilletExpired }),
+            fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidAndOpen })
+        ];
 
-        if (clear) {
-            console.log("Verdadeiro")
-            await fetchData({ query: expiredBillet, setData: setBilletExpired });
-        } else {
-            console.log("falso")
-            await fetchData({ query: expiredBilletMonthly, setData: setBilletExpired });
-        }
-        await fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidAndOpen });
-
+        await Promise.all(queries);
         setLoading(false);
     };
 
 
-    const onDateChange = async (newDate: RangeValue<DateValue>) => {
-        await handleDateFilter(newDate, setDate, fetchBillsToPayData, setFilter);
+    const onDateChange = async (newDate?: RangeValue<DateValue>) => {
+        newDate && await handleDateFilter(newDate, setDate, fetchBillsToPayData, setFilter);
     };
 
     const clearFilter = async () => {
@@ -121,17 +117,19 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listB
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx)
-    const { year, month, day, lastDay, adjustedMonth } = currentDate()
+    const { year, month, day, yesterday, monthExpired } = currentDate()
 
     const dataInit = `${year}/${month}/01`
     const dataEnd = `${year}/${month}/${day}`
 
-    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: adjustedMonth, day: lastDay })
+    const { billetInOpenMonthly, billetPaidMonthly, expiredBillet, billetPaidAndOpenMonthly } = billsToPayQueries({ dataInit, dataEnd, year, month: monthExpired, day: yesterday })
 
-    const respBilletInOpen = await apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly })
-    const respBilletPaid = await apiClient.post("/v1/find-db-query", { query: billetPaidMonthly })
-    const respBilletExpired = await apiClient.post("/v1/find-db-query", { query: expiredBillet })
-    const respBilletPaidAndOpen = await apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
+    const [respBilletInOpen, respBilletPaid, respBilletExpired, respBilletPaidAndOpen] = await Promise.all([
+        apiClient.post("/v1/find-db-query", { query: billetInOpenMonthly }),
+        apiClient.post("/v1/find-db-query", { query: billetPaidMonthly }),
+        apiClient.post("/v1/find-db-query", { query: expiredBillet }),
+        apiClient.post("/v1/find-db-query", { query: billetPaidAndOpenMonthly })
+    ])
 
     return {
         props: {

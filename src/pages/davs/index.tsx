@@ -13,6 +13,10 @@ import { Loading } from "@/components/ui/loading";
 // React
 import { useState } from "react";
 
+// Biblioteca
+import { DateValue, RangeValue } from "@nextui-org/react";
+import { parseDate } from '@internationalized/date';
+
 // Dados
 import { columns } from "@/data/collumnsDav"
 
@@ -23,15 +27,20 @@ import { setupApiClient } from "@/service/api";
 import { InfoCardFromDav } from "@/utils/getFromData/infoCard/infoCardFromDav";
 import { formatCurrency } from "@/utils/masks/formatCurrency";
 import { InfiniteScroll } from "@/utils/InfiniteScroll";
+import { fetchData } from "@/utils/fetchData";
 
 // Tipagem
 import { ItemsDav } from "@/utils/types/listDav";
-import { fetchData } from "@/utils/fetchData";
 
 export default function DavSummaryPage({ listDav }: { listDav: ItemsDav[] }) {
     const [dav, setDav] = useState(listDav || [])
     const [loading, setLoading] = useState<boolean>(false)
     const [limit, setLimit] = useState(0);
+
+    const [date, setDate] = useState<RangeValue<DateValue>>({
+        start: parseDate(new Date().toISOString().split('T')[0]),
+        end: parseDate(new Date().toISOString().split('T')[0]),
+    })
 
     const infoDetailCard = InfoCardFromDav({ listDav: dav })
 
@@ -57,8 +66,8 @@ export default function DavSummaryPage({ listDav }: { listDav: ItemsDav[] }) {
     const fetchItemDavs = async () => {
         setLoading(true)
 
-        const { date } = currentDate()
-        const { davFinished } = davsQueries({ dataInit: date, dataEnd: date })
+        const { today } = currentDate()
+        const { davFinished } = davsQueries({ dataInit: today, dataEnd: today })
 
         await fetchData({ query: davFinished, setData: setDav })
 
@@ -75,11 +84,12 @@ export default function DavSummaryPage({ listDav }: { listDav: ItemsDav[] }) {
         router.push(`/detaildavs/${ID_ORIGEM}`);
     };
 
+
     return (
         <Layout description="Relatorios dav's">
             <Cards data={infoDetailCard} />
             <Container>
-                <ToolBar title="Contas abertas: " handleRefreshClick={fetchItemDavs} />
+                <ToolBar title="Contas abertas: " handleRefreshClick={fetchItemDavs} date={date}/>
                 <main className="flex w-full pb-6 h-[450px] flex-col px-5">
                     {loading ?
                         <div className="flex w-full justify-center items-center">
@@ -99,9 +109,9 @@ export default function DavSummaryPage({ listDav }: { listDav: ItemsDav[] }) {
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
     const apiClient = setupApiClient(ctx);
-    const { date } = currentDate()
+    const { today } = currentDate()
 
-    const { davFinished } = davsQueries({ dataInit: date, dataEnd: date })
+    const { davFinished } = davsQueries({ dataInit: today, dataEnd: today })
 
     const resp = await apiClient.post("/v1/find-db-query", { query: davFinished })
 
