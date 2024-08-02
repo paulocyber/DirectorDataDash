@@ -38,11 +38,25 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
     const fetchSalesByBrand = async (dataInit?: string, dataEnd?: string) => {
         setLoading(true)
 
-        const salesByBrand = SalesByBrand({ dataInit, dataEnd })
-        const resp = await apiClient.post("/v1/find-db-query", { query: salesByBrand });
-        const result = groupSumByBrand(resp.data.returnObject.body)
+        const playCell = SalesByBrand({ dataInit, dataEnd, emp: '1' })
+        const playCustom = SalesByBrand({ dataInit, dataEnd, emp: '2' })
+        const playUp = SalesByBrand({ dataInit, dataEnd, emp: '3' })
+
+        const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp] = await Promise.all([
+            apiClient.post("/v1/find-db-query", { query: playCell }),
+            apiClient.post("/v1/find-db-query", { query: playCustom }),
+            apiClient.post("/v1/find-db-query", { query: playUp })
+        ]);
+
+        const combinedSalesData = [
+            ...respSalesPlayCell.data.returnObject.body,
+            ...respSalesPlayCustom.data.returnObject.body,
+            ...respSalesPlayUp.data.returnObject.body
+        ];
+
+        const result = groupSumByBrand(combinedSalesData)
         setSalesByBrand(result)
-        
+
         setLoading(false)
     }
 
@@ -66,8 +80,8 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
 
             await fetchSalesByBrand(dateStart, today)
         } else {
-            const dateInit = '2024/01/01'
-            const { today } = currentDate()
+            const { today, year } = currentDate()
+            const dateInit = `${year}/01/01`
 
             await fetchSalesByBrand(dateInit, today)
         }
@@ -107,22 +121,34 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
 }
 
 export const getServerSideProps = canSSRAuth(async (ctx) => {
-    const apiClient = setupApiClient(ctx)
-    const { today } = currentDate()
+    const apiClient = setupApiClient(ctx);
+    const { today } = currentDate();
 
-    const salesByBrand = SalesByBrand({ dataInit: today, dataEnd: today })
-    const stock = Stock()
+    const playCell = SalesByBrand({ dataInit: today, dataEnd: today, emp: '1' });
+    const playCustom = SalesByBrand({ dataInit: today, dataEnd: today, emp: '2' });
+    const playUp = SalesByBrand({ dataInit: today, dataEnd: today, emp: '3' });
+    const stock = Stock();
 
-    const respSales = await apiClient.post("/v1/find-db-query", { query: salesByBrand })
-    const respStock = await apiClient.post("/v1/find-db-query", { query: stock })
+    const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock] = await Promise.all([
+        apiClient.post("/v1/find-db-query", { query: playCell }),
+        apiClient.post("/v1/find-db-query", { query: playCustom }),
+        apiClient.post("/v1/find-db-query", { query: playUp }),
+        apiClient.post("/v1/find-db-query", { query: stock })
+    ]);
 
-    const totalValuePerBrandSale = groupSumByBrand(respSales.data.returnObject.body)
-    const totalStockValuePerBrand = groupSumByStock(respStock.data.returnObject.body)
+    const combinedSalesData = [
+        ...respSalesPlayCell.data.returnObject.body,
+        ...respSalesPlayCustom.data.returnObject.body,
+        ...respSalesPlayUp.data.returnObject.body
+    ];
+
+    const totalValuePerBrandSale = groupSumByBrand(combinedSalesData);
+    const totalStockValuePerBrand = groupSumByStock(respStock.data.returnObject.body);
 
     return {
         props: {
             listSalesByBrand: totalValuePerBrandSale,
             listStockByBrand: totalStockValuePerBrand
         }
-    }
-})
+    };
+});

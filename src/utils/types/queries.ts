@@ -5,4 +5,5 @@ export interface QueryProps {
   year?: number;
   month?: number;
   day?: number;
+  emp?: string;
 }

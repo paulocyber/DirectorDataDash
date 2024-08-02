@@ -24,7 +24,7 @@ export function canSSRAuth<P extends { [key: string]: any }>(
     if (!token) {
       return {
         redirect: {
-          destination: "/login",
+          destination: "/",
           permanent: false,
         },
       };
@@ -38,7 +38,7 @@ export function canSSRAuth<P extends { [key: string]: any }>(
 
         return {
           redirect: {
-            destination: "/login",
+            destination: "/",
             permanent: false,
           },
         };

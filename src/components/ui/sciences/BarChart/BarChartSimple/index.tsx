@@ -18,7 +18,7 @@ interface BarChartProps<T> {
 export function BarChartComponent<T>({ data, mask, keyValue, description }: BarChartProps<T>) {
     return (
         <ResponsiveContainer width="100%">
-            <BarChart data={data} margin={{ top: 10, right: 40, left: 40, bottom: 5 }}>
+            <BarChart data={data} margin={{ top: 15, right: 40, left: 40, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 2" />
                 <XAxis
                     tickFormatter={(description) => truncateString(description, mask)}
