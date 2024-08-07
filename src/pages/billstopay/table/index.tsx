@@ -68,7 +68,7 @@ export default function BillsToPayPageTable({ listBilletExpired, listBilletInOpe
             fetchData({ query: clear ? expiredBillet : expiredBilletMonthly, setData: setBilletExpired }),
             fetchData({ query: billetPaidAndOpenMonthly, setData: setBilletPaidAndOpen })
         ];
-
+        console.log("Query: ", billetPaidAndOpenMonthly)
         await Promise.all(queries);
         setLoading(false);
     };

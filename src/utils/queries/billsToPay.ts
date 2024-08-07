@@ -27,10 +27,18 @@ export const billsToPayQueries = ({
   // pgm.descricao_frm from v_pagamentos pgm  where  pgm.id_emp in(4,1,2,3,5,6,7,8,9,10,11,12,13) and (pgm.data_vencimento_pgm between date '${dataInit}' and date '${dataEnd}' or pgm.datahora_pagamento_pgm between date
   // '${dataInit}' and date '${dataEnd}') and pgm.status_pgm in (1, 2) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
-  let billetPaidAndOpenMonthly = `select pgm.id_pgm as ID_SDS, pgm.status_pgm, pgm.data_vencimento_pgm, pgm.valor_pgm, pgm.numero_documento_pgm, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.nome_pss, 
-  pgm.id_cnt||' - '|| pgm.descricao_cnt as centro_custo, pgm.descricao_frm from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dataInit}' AND '${dataEnd}' AND CAST(pgm.datahora_lancamento_pgm 
-  AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) or pgm.datahora_pagamento_pgm between date '${dataInit}' and date '${dataEnd}' AND pgm.status_pgm in (1, 4, 2) order by pgm.data_vencimento_pgm, pgm.id_pss`;
+  // let billetPaidAndOpenMonthly = `select pgm.id_pgm as ID_SDS, pgm.status_pgm, pgm.data_vencimento_pgm, pgm.valor_pgm, pgm.numero_documento_pgm, pgm.id_grc||' - '||pgm.descricao_grc as grupo_centro, pgm.nome_pss, 
+  // pgm.id_cnt||' - '|| pgm.descricao_cnt as centro_custo, pgm.descricao_frm from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dataInit}' AND '${dataEnd}' AND CAST(pgm.datahora_lancamento_pgm 
+  // AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) or pgm.datahora_pagamento_pgm between date '${dataInit}' and date '${dataEnd}' AND pgm.status_pgm in (1, 4, 2) order by pgm.data_vencimento_pgm, pgm.id_pss`;
 
+
+  let billetPaidAndOpenMonthly = `select pgm.id_pgm AS ID_SDS, pgm.status_pgm, pgm.data_vencimento_pgm, pgm.valor_pgm, pgm.numero_documento_pgm, pgm.id_grc || ' - ' || pgm.descricao_grc AS grupo_centro, pgm.nome_pss,
+   pgm.id_cnt || ' - ' || pgm.descricao_cnt AS centro_custo, pgm.descricao_frm FROM v_pagamentos pgm WHERE ((CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${dataInit}' AND '${dataEnd}' AND CAST(pgm.datahora_lancamento_pgm 
+   AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE AND pgm.status_pgm IN (1, 4)) OR (pgm.datahora_pagamento_pgm BETWEEN DATE '${dataInit}' AND DATE '${dataEnd}' AND pgm.status_pgm = 2)) ORDER BY pgm.data_vencimento_pgm,
+    pgm.id_pss`;
+
+
+  
   return {
     billetInOpenMonthly,
     billetPaidMonthly,
