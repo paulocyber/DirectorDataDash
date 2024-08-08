@@ -17,8 +17,8 @@ import { motion } from "framer-motion";
 import { GrDocumentText } from "react-icons/gr";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { CiUser } from "react-icons/ci";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { MdPointOfSale } from "react-icons/md";
+import { AiOutlineProduct } from "react-icons/ai";
 
 // Componentes
 import ActiveLink from "./ActiveLink";
@@ -27,6 +27,8 @@ import { IoExitOutline } from "react-icons/io5";
 
 // Tipagem
 import { RouterColors } from "@/utils/types/routerColors";
+import { FaTable } from "react-icons/fa6";
+import { TiChartPieOutline } from "react-icons/ti";
 
 export function SideNav() {
     const [showMenu, setShowMenu] = useState<boolean>(false)
@@ -43,7 +45,7 @@ export function SideNav() {
     } else {
         bgColorClass = "bg-blue-700";
     }
-
+    console.log("Rotas: ", router.pathname)
     const { user } = useContext(AuthContext)
 
     return (
@@ -65,12 +67,12 @@ export function SideNav() {
                 <ul className="mb-4 flex flex-col gap-2">
                     <li>
                         <ActiveLink href="/davs" nameLink="Relatório de DAVs">
-                            <GrDocumentText className="w-5 h-5" />
+                            <FaTable className="w-5 h-5" />
                         </ActiveLink>
                     </li>
                     <li>
                         <ActiveLink href="/billstopay" nameLink="Contas a pagar">
-                            <GiTakeMyMoney className="w-7 h-7" />
+                            {router.pathname === '/billstopay/table' ? <FaTable className="w-5 h-5" /> : <TiChartPieOutline className="w-7 h-7" />}
                         </ActiveLink>
                     </li>
                     {/* <li>
@@ -80,10 +82,15 @@ export function SideNav() {
                     </li> */}
                     <li>
                         <ActiveLink href="/salesbybrand" nameLink="Vendas por marcas">
-                            <MdPointOfSale  className="w-6 h-6" />
+                            <TiChartPieOutline className="w-6 h-6" />
                         </ActiveLink>
                     </li>
-                </ul>  
+                    <li>
+                        <ActiveLink href="/salesbygroup" nameLink="Vendas por grupo">
+                            <TiChartPieOutline className="w-6 h-6" />
+                        </ActiveLink>
+                    </li>
+                </ul>
             </div>
 
             <div className="w-full absolute bottom-0 ">

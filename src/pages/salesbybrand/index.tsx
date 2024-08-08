@@ -11,6 +11,9 @@ import { groupSumByBrand } from "@/utils/filters/salesByBrand/groupSumByBrand"
 import currentDate from "@/utils/CurrentDate"
 import { formatCurrency } from './../../utils/masks/formatCurrency';
 
+// Dados
+import { vibrantPalette } from './../../data/graphicColorPalette';
+
 // Bibliotecas
 import { DateValue, RangeValue } from "@nextui-org/react"
 
@@ -41,11 +44,13 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
         const playCell = SalesByBrand({ dataInit, dataEnd, emp: '1' })
         const playCustom = SalesByBrand({ dataInit, dataEnd, emp: '2' })
         const playUp = SalesByBrand({ dataInit, dataEnd, emp: '3' })
+        const { stockByBrand } = Stock();
 
-        const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp] = await Promise.all([
+        const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock] = await Promise.all([
             apiClient.post("/v1/find-db-query", { query: playCell }),
             apiClient.post("/v1/find-db-query", { query: playCustom }),
-            apiClient.post("/v1/find-db-query", { query: playUp })
+            apiClient.post("/v1/find-db-query", { query: playUp }),
+            apiClient.post("/v1/find-db-query", { query: stockByBrand })
         ]);
 
         const combinedSalesData = [
@@ -54,8 +59,10 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
             ...respSalesPlayUp.data.returnObject.body
         ];
 
-        const result = groupSumByBrand(combinedSalesData)
-        setSalesByBrand(result)
+        const resultSales = groupSumByBrand(combinedSalesData)
+        const resultStock = groupSumByStock(respStock.data.returnObject.body);
+        setSalesByBrand(resultSales)
+        setStockByBrand(resultStock)
 
         setLoading(false)
     }
@@ -90,7 +97,7 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
     return (
         <Layout description="Vendas por marcas">
             <Container>
-                <ToolBar title="Vendas por marcas" handleRefreshClick={refresh} formOfPayment={true} handleDateFilter={onDateChange} />
+                <ToolBar title="Estoque por marcas" handleRefreshClick={refresh} formOfPayment={true} handleDateFilter={onDateChange} />
                 <main className="flex w-full h-[540px] flex-col px-5">
                     {loading
                         ?
@@ -102,10 +109,14 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
                             <BarChartComponent data={salesByBrand} mask={18} keyValue="value" description="brand" />
 
                             <div className="w-full flex px-6 ">
-                                {stockByBrand.map((stock) => (
-                                    <div className="flex mx-2 items-center px-1 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                {stockByBrand.map((stock, index) => (
+                                    <div key={index} className="flex mx-2 items-center px-1 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                                         <div className="mx-5">
-                                            <div className="text-gray-500 font-semibold text-sm">Preço de custo - {stock.brand}:</div>
+                                            <div className="flex items-center">
+                                                <p style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }} className="rounded-full p-1 "></p>
+
+                                                <div className="text-gray-500 font-semibold text-sm pl-2">Estoque total em valor:</div>
+                                            </div>
                                             <h4 className="text-2xl font-bold text-gray-700 text-xs">{formatCurrency(stock.value)}</h4>
                                         </div>
                                     </div>
@@ -127,13 +138,13 @@ export const getServerSideProps = canSSRAuth(async (ctx) => {
     const playCell = SalesByBrand({ dataInit: today, dataEnd: today, emp: '1' });
     const playCustom = SalesByBrand({ dataInit: today, dataEnd: today, emp: '2' });
     const playUp = SalesByBrand({ dataInit: today, dataEnd: today, emp: '3' });
-    const stock = Stock();
+    const { stockByBrand } = Stock();
 
     const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock] = await Promise.all([
         apiClient.post("/v1/find-db-query", { query: playCell }),
         apiClient.post("/v1/find-db-query", { query: playCustom }),
         apiClient.post("/v1/find-db-query", { query: playUp }),
-        apiClient.post("/v1/find-db-query", { query: stock })
+        apiClient.post("/v1/find-db-query", { query: stockByBrand })
     ]);
 
     const combinedSalesData = [
