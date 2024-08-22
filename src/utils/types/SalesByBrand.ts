@@ -11,3 +11,8 @@ export type SalesByBrand = {
   QUANTIDADE_ALMOX: string;
   PRECO_CUSTO: string;
 };
+
+export type SalesByBrandType = {
+  brand: string;
+  value: number;
+}

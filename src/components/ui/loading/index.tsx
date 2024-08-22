@@ -1,11 +1,8 @@
-// Biblioteca
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
-export function Loading() {
+export default function Loading() {
     return (
-        <div className='flex flex-col items-center justify-center '>
-            <AiOutlineLoading3Quarters className="animate-spin w-8 h-8 my-2" />
-            <p className="ml-2 text-sm">Carregando...</p>
+        <div className="flex flex-col items-center">
+            <div className="loader"></div>
+            <p className="text-[13px]">Carregando...</p>
         </div>
     )
 }

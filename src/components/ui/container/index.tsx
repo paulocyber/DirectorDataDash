@@ -1,7 +1,14 @@
 // React
 import { ReactNode } from "react";
 
-export default function Container({ children }: { children: ReactNode }) {
+// Componente
+
+// Tipagem
+interface ContainerProps {
+    children: ReactNode;
+}
+
+export default function Container({ children }: ContainerProps) {
     return (
         <div className="pb-5">
             <div className="px-4 lg:px-8">

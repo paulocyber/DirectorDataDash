@@ -1,5 +1,5 @@
 // Biblioteca
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
+import { TableBody, TableCell, TableColumn, TableHeader, TableRow, Table as TB } from "@nextui-org/react";
 
 // React
 import { MutableRefObject, RefObject } from "react";
@@ -10,7 +10,7 @@ type ItemsCollumns = {
     uid: string;
 }
 
-interface TableGrid<T> {
+interface TableProps<T> {
     collumns: ItemsCollumns[];
     data: T[];
     detail?: (value: string) => void;
@@ -18,10 +18,9 @@ interface TableGrid<T> {
     ref?: RefObject<HTMLTableElement> | MutableRefObject<HTMLTableElement | null>
 }
 
-export default function TableGrid<T>({ collumns, data, renderCell, detail, ref }: TableGrid<T>) {
-
+export default function Table<T>({ collumns, data, renderCell, detail, ref }: TableProps<T>) {
     return (
-        <Table id="content" isHeaderSticky removeWrapper isStriped={true} classNames={{ th: "bg-[#fa6602] text-white", table: "", thead: "", tr: "cursor-pointer hover:bg-gray-200 text-lg hover:scale-[1.01]" }} aria-label="Example empty table">
+        <TB id="content" isHeaderSticky removeWrapper isStriped={true} classNames={{ th: "bg-[#fa6602] text-white", table: "", thead: "", tr: "cursor-pointer hover:bg-gray-200 text-lg hover:scale-[1.01]" }} aria-label="Example empty table">
             <TableHeader>
                 {collumns.map((column) =>
                     <TableColumn key={column.uid}>{column.name}</TableColumn>
@@ -38,6 +37,6 @@ export default function TableGrid<T>({ collumns, data, renderCell, detail, ref }
                     </TableRow>
                 )}
             </TableBody>
-        </Table>
+        </TB>
     )
 }

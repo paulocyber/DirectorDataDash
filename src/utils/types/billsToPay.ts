@@ -10,11 +10,10 @@ export type BillsToPayItem = {
   NUMERO_DOCUMENTO_PGM: string;
   GRUPO_CENTRO: string;
   DESCRICAO_FRM: string;
+  APELIDO_PSS: string;
 };
 
-export interface BillsToPayPageProps {
-  listBilletInOpen: BillsToPayItem[];
-  listBilletPaid: BillsToPayItem[];
-  listBilletExpired: BillsToPayItem[];
-  listBilletPaidAndOpen: BillsToPayItem[];
-}
+export type BilletBySupplier = {
+  supplier: string;
+  value: number;
+};

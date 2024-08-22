@@ -9,7 +9,7 @@ import {
 import { parseCookies, destroyCookie } from "nookies";
 
 // Error
-import { AuthTokenError } from "@/service/errors/error";
+import { AuthTokenError } from "@/service/api/errors/AuthTokenError";
 
 export function canSSRAuth<P extends { [key: string]: any }>(
   fn: GetServerSideProps<P>

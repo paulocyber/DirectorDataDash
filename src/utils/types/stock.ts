@@ -5,3 +5,15 @@ export type Stock = {
   MARCA: string;
   TOTAL_VALOR_COMPRA: string;
 };
+
+export type StockByBrand = { 
+  brand:  string;
+  debtValue: number;
+  valueInStock: number;
+}
+
+export type StockByGroup = {
+  key: string;
+  value: number;
+};
+

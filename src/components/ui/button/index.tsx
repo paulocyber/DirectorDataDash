@@ -1,18 +1,18 @@
 // Biblioteca
-import { Button } from "@nextui-org/react";
+import { Button as Btn } from "@nextui-org/react";
 
 // React
 import { ComponentProps, ReactNode } from "react";
 
 // Tipagem
-type BtnProps = ComponentProps<typeof Button> & {
+type ButtonProps = ComponentProps<typeof Btn> & {
     children: ReactNode
 }
 
-export function Btn({ children, ...rest }: BtnProps) {
+export function Button({ children, ...rest }: ButtonProps) {
     return (
-        <Button className="w-full" {...rest}>
+        <Btn className="w-full" {...rest}>
             {children}
-        </Button>
+        </Btn>
     )
 }

@@ -1,13 +1,13 @@
-import { SalesByBrand } from "@/utils/types/SalesByBrand";
+import { SalesByBrand } from "@/utils/types/salesByBrand";
 
 export function groupSumByGroup(
   data: SalesByBrand[]
-): { brand: string; value: number }[] {
+): { group: string; value: number }[] {
   const groupedData = data.reduce(
-    (acc: Record<string, { brand: string; value: number }>, sales) => {
+    (acc: Record<string, { group: string; value: number }>, sales) => {
       if (!acc[sales.ID_GRUPO]) {
         acc[sales.ID_GRUPO] = {
-          brand: sales.GRUPO,
+          group: sales.GRUPO,
           value: 0,
         };
       }

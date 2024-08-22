@@ -1,15 +1,17 @@
+// Biblioteca
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
+
 // Componentes
-import { Btn } from "@/components/ui/button"
-import { InputForm } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 // React
-import { SyntheticEvent, useContext, useState } from "react"
-import { AuthContext } from "@/contexts/AuthContext"
+import { SyntheticEvent, useContext, useState } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
 
-// Bibliotecas
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5"
-import { toast } from "react-toastify"
-import { canSSRGuest } from "@/utils/permissions/canSSRGuest"
+// Framemork - Servidor
+import { canSSRGuest } from "@/utils/permissions/canSSRGuest";
 
 export default function LoginPage() {
   const [userName, setUserName] = useState<string>('')
@@ -42,7 +44,7 @@ export default function LoginPage() {
         <div className="mt-4 bg-white shadow-md rounded-lg text-left">
           <div className={`h-2 ${loading ? 'bg-green-500' : 'bg-blue-500'} rounded-t-md`}></div>
           <form onSubmit={handleSignIn} className="px-10 py-8 ">
-            <InputForm
+            <Input
               type="text"
               label="Nome: "
               labelPlacement="outside"
@@ -54,7 +56,7 @@ export default function LoginPage() {
               isInvalid={error}
             />
             <div className="pt-3">
-              <InputForm
+              <Input
                 type={isVisible ? "text" : "password"}
                 label="Senha: "
                 labelPlacement="outside"
@@ -74,7 +76,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="pt-3">
-              <Btn type="submit" isLoading={loading} color="primary" >Entrar</Btn>
+              <Button type="submit" isLoading={loading} color="primary" >Entrar</Button>
             </div>
           </form>
         </div>
@@ -82,7 +84,6 @@ export default function LoginPage() {
     </div>
   );
 }
-
 
 export const getServerSideProps = canSSRGuest(async (ctx) => {
   return {

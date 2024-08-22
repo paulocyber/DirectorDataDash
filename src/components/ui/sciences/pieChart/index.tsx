@@ -1,36 +1,38 @@
-// Biblioteca 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-
-// Componente
-import { LabelPieChart } from "./label";
+// Biblioteca
+import { Cell, Pie, PieChart as PieChartComponents, PieLabelRenderProps, ResponsiveContainer, Tooltip } from "recharts";
 
 // Dados
-import { vibrantPalette } from "@/data/graphicColorPalette";
+import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 
-// Tipagem
-import { graphicProps } from "@/utils/types/graphic";
-import { ToolTip } from "@/components/toolTipsBillsToPay";
+// componentes
 
-export default function PieChartComponent({ data }: graphicProps) {
+// Tipagem 
+interface PieChartProps<T> {
+    data: T[];
+    dataKey: string;
+    displayToolTip: boolean;
+    ToolTipComponent?: React.FC<any>;
+    label?: (props: PieLabelRenderProps) => JSX.Element;
+}
+
+export default function PieChart<T>({ data, dataKey, displayToolTip, ToolTipComponent, label }: PieChartProps<T>) {
     return (
-        <ResponsiveContainer className="w-full">
-            <PieChart>
-                <Tooltip content={ToolTip} />
+        <ResponsiveContainer width="100%">
+            <PieChartComponents margin={{ top: 20, right: 80, left:80, bottom: 20 }}>
+                {displayToolTip && <Tooltip content={ToolTipComponent} />}
                 <Pie
                     data={data}
-                    cx="50%"
-                    cy="50%"
                     labelLine={false}
-                    outerRadius={140}
+                    label={label}
+                    outerRadius="80%"
                     fill="#8884d8"
-                    dataKey="value"
-                    label={(props) => <LabelPieChart {...props} data={data} />}
+                    dataKey={dataKey}
                 >
                     {data.map((item, index) => (
-                        <Cell key={index} fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
+                        <Cell key={index} fill={(item as any).color !== '' ? (item as any).color : vibrantPalette[index % vibrantPalette.length]} />
                     ))}
                 </Pie>
-            </PieChart>
+            </PieChartComponents>
         </ResponsiveContainer>
-    )
+    );
 }

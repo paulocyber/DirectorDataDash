@@ -5,20 +5,14 @@ import 'nprogress/nprogress.css';
 
 // Framework
 import type { AppProps } from "next/app";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Router } from "next/router";
 
 // Biblioteca
 import { ToastContainer } from "react-toastify";
 import nProgress from 'nprogress'
-import { RecoilRoot } from "recoil";
-
-// React
-import { AuthProvider } from "@/contexts/AuthContext";
-
-// Componentes
 
 export default function App({ Component, pageProps }: AppProps) {
-
   Router.events.on('routeChangeStart', () => {
     nProgress.start()
   })
@@ -33,10 +27,8 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <AuthProvider>
-      <RecoilRoot>
-        <Component {...pageProps} />
-        <ToastContainer autoClose={3000} />
-      </RecoilRoot>
+      <Component {...pageProps} />
+      <ToastContainer autoClose={3000} />
     </AuthProvider>
-  );
+  )
 }

@@ -1,165 +1,142 @@
+// Framework - Servidor
+import { getSalesByBrandPageProps } from "@/utils/server/salesByBrandPageProps";
+
 // Componentes
-import Layout from "@/components/ui/layout"
-import Container from "@/components/ui/container"
-import ToolBar from "@/components/ui/toolbar"
-import { Loading } from "@/components/ui/loading"
-import { BarChartComponent } from "@/components/ui/sciences/BarChart/BarChartSimple"
-
-// Utils
-import { SalesByBrand } from "@/utils/queries/SalesByBrand"
-import { groupSumByBrand } from "@/utils/filters/salesByBrand/groupSumByBrand"
-import currentDate from "@/utils/CurrentDate"
-import { formatCurrency } from './../../utils/masks/formatCurrency';
-
-// Dados
-import { vibrantPalette } from './../../data/graphicColorPalette';
-
-// Bibliotecas
-import { DateValue, RangeValue } from "@nextui-org/react"
+import Layout from "@/components/ui/layout";
+import Container from "@/components/ui/container";
+import ContainerGraphic from "@/components/ui/container/graphic";
+import ToolBar from "@/components/ui/toolbar";
+import CustomFormattedLabel from "@/components/ui/sciences/BarChart/labelList/salesByBrand";
+import BarChart from "@/components/ui/sciences/BarChart";
+import BarChartComparison from "@/components/ui/sciences/BarChart/comparison";
 
 // React
-import { useState } from "react"
+import { useState } from "react";
 
-// Framework - Servidor
-import { canSSRAuth } from "@/utils/permissions/canSSRAuth"
-import { setupApiClient } from "@/service/api"
-import { Stock } from "@/utils/queries/Stock"
-import { groupSumByStock } from "@/utils/filters/stock/brandSumPerShare"
+// Dados
+import { highlightedColor } from "@/data/graphicColorPalette/palletBrand";
 
-type SalesByBrandType = {
-    brand: string;
-    value: number;
+// Utils
+import getDate from "@/utils/date/currentDate";
+import { fetchSalesByBrand } from "@/utils/fetchData/fetchSalesByBrand";
+import { formatCurrency } from "@/utils/mask/formatCurrency";
+
+// Tipagem
+import { StockByBrand } from "@/utils/types/stock";
+import { SalesByBrandType } from '@/utils/types/salesByBrand';
+import { DateRange, DateRangeState } from "@/utils/types/data";
+interface SalesByBrandPageProps {
+    listSalesByBrand: SalesByBrandType[];
+    listStockByBrand: StockByBrand[]
 }
 
-export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }: { listSalesByBrand: SalesByBrandType[]; listStockByBrand: SalesByBrandType[] }) {
+export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }: SalesByBrandPageProps) {
     const [salesByBrand, setSalesByBrand] = useState(listSalesByBrand || [])
     const [stockByBrand, setStockByBrand] = useState(listStockByBrand || [])
+    const [selectedDateRange, setSelectedDateRange] = useState<string>('day');
     const [loading, setLoading] = useState<boolean>(false)
 
-    const apiClient = setupApiClient();
+    const { today, year, month, startOfWeek, endOfWeek } = getDate()
+    const [dateRange, setDateRange] = useState<DateRangeState>({
+        start: today,
+        end: today
+    });
 
-    const fetchSalesByBrand = async (dataInit?: string, dataEnd?: string) => {
-        setLoading(true)
-
-        const playCell = SalesByBrand({ dataInit, dataEnd, emp: '1' })
-        const playCustom = SalesByBrand({ dataInit, dataEnd, emp: '2' })
-        const playUp = SalesByBrand({ dataInit, dataEnd, emp: '3' })
-        const { stockByBrand } = Stock();
-
-        const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock] = await Promise.all([
-            apiClient.post("/v1/find-db-query", { query: playCell }),
-            apiClient.post("/v1/find-db-query", { query: playCustom }),
-            apiClient.post("/v1/find-db-query", { query: playUp }),
-            apiClient.post("/v1/find-db-query", { query: stockByBrand })
-        ]);
-
-        const combinedSalesData = [
-            ...respSalesPlayCell.data.returnObject.body,
-            ...respSalesPlayCustom.data.returnObject.body,
-            ...respSalesPlayUp.data.returnObject.body
-        ];
-
-        const resultSales = groupSumByBrand(combinedSalesData)
-        const resultStock = groupSumByStock(respStock.data.returnObject.body);
-        setSalesByBrand(resultSales)
-        setStockByBrand(resultStock)
-
-        setLoading(false)
+    const handleFetchData = async () => { await fetchSalesByBrand({ dateInit: dateRange.start, dateEnd: dateRange.end, setLoading, setSalesByBrand, setStockByBrand }) }
+    async function handleCleanFilter() {
+        await fetchSalesByBrand({
+            dateInit: dateRange.start,
+            dateEnd: dateRange.end,
+            setLoading,
+            setSalesByBrand,
+            setStockByBrand
+        })
     }
 
-    const refresh = async () => {
-        const { today } = currentDate()
+    const handleDate = async (date: string) => {
+        setSelectedDateRange(date);
+        switch (date) {
+            case DateRange.Day:
+                setDateRange({ start: today, end: today });
+                await fetchSalesByBrand({
+                    dateInit: today,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByBrand,
+                    setStockByBrand
+                })
+                break;
+            case DateRange.Week:
+                setDateRange({ start: startOfWeek, end: endOfWeek });
 
-        await fetchSalesByBrand(today, today)
-    }
-
-    const onDateChange = async (date?: RangeValue<DateValue>, isDate?: string) => {
-        if (isDate === 'day') {
-            const { today } = currentDate()
-            await fetchSalesByBrand(today, today)
-        } else if (isDate === 'week') {
-            const { startOfWeek, endOfWeek } = currentDate()
-
-            await fetchSalesByBrand(startOfWeek, endOfWeek)
-        } else if (isDate === 'month') {
-            const { month, year, today } = currentDate()
-            const dateStart = `${year}/${month}/01`
-
-            await fetchSalesByBrand(dateStart, today)
-        } else {
-            const { today, year } = currentDate()
-            const dateInit = `${year}/01/01`
-
-            await fetchSalesByBrand(dateInit, today)
+                await fetchSalesByBrand({
+                    dateInit: startOfWeek,
+                    dateEnd: endOfWeek,
+                    setLoading,
+                    setSalesByBrand,
+                    setStockByBrand
+                })
+                break;
+            case DateRange.Month:
+                setDateRange({ start: `${year}/${month}/01`, end: today });
+                await fetchSalesByBrand({
+                    dateInit: `${year}/${month}/01`,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByBrand,
+                    setStockByBrand
+                })
+                break;
+            case DateRange.Year:
+                setDateRange({ start: `${year}/01/01`, end: today });
+                await fetchSalesByBrand({
+                    dateInit: `${year}/01/01`,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByBrand,
+                    setStockByBrand
+                })
+                break;
         }
-    }
+    };
 
     return (
         <Layout description="Vendas por marcas">
             <Container>
-                <ToolBar title="Estoque por marcas" handleRefreshClick={refresh} formOfPayment={true} handleDateFilter={onDateChange} />
-                <main className="flex w-full h-[540px] flex-col px-5">
-                    {loading
-                        ?
-                        <div className="h-[520px] flex items-center justify-center">
-                            <Loading />
-                        </div>
-                        :
-                        <div className="h-[410px]">
-                            <BarChartComponent data={salesByBrand} mask={18} keyValue="value" description="brand" />
-
-                            <div className="w-full flex px-6 ">
-                                {stockByBrand.map((stock, index) => (
-                                    <div key={index} className="flex mx-2 items-center px-1 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                        <div className="mx-5">
-                                            <div className="flex items-center">
-                                                <p style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }} className="rounded-full p-1 "></p>
-
-                                                <div className="text-gray-500 font-semibold text-sm pl-2">Estoque total em valor:</div>
-                                            </div>
-                                            <h4 className="text-2xl font-bold text-gray-700 text-xs">{formatCurrency(stock.value)}</h4>
-                                        </div>
-                                    </div>
-                                ))}
-
-                            </div>
-                        </div>
+                <ToolBar title="Vendas por marcas" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter} />
+                <ContainerGraphic
+                    loading={loading}
+                    children={
+                        <BarChart
+                            data={salesByBrand}
+                            dataKey="value"
+                            dataKeyXAxis="brand"
+                            displayXAxis={true}
+                            displayCartesianGrid={true}
+                            palette={highlightedColor}
+                            LabelListProps={{
+                                dataKey: "value",
+                                content: (props) => (
+                                    <CustomFormattedLabel
+                                        {...props}
+                                        position="top"
+                                        formatter={formatCurrency}
+                                        fill="#4b5563"
+                                        className="font-bold text-[11px] items-center flex w-full justify-center truncate "
+                                        value={(props as any).value}
+                                    />
+                                ),
+                            }}
+                        />
                     }
-                </main>
+                />
             </Container>
-        </Layout>// restante estoque
+            <Container>
+                <h1 className="font-bold md:text-lg text-sm p-5">Estoque em valor X Endividamento por marca</h1>
+                <ContainerGraphic loading={false} children={<BarChartComparison data={stockByBrand} xKey="brand" dataKeyOne="valueInStock" dataKeyTwo="debtValue" nameKeyOne="Estoque" nameKeyTwo="Dívida" />} />
+            </Container>
+        </Layout>
     )
 }
 
-export const getServerSideProps = canSSRAuth(async (ctx) => {
-    const apiClient = setupApiClient(ctx);
-    const { today } = currentDate();
-
-    const playCell = SalesByBrand({ dataInit: today, dataEnd: today, emp: '1' });
-    const playCustom = SalesByBrand({ dataInit: today, dataEnd: today, emp: '2' });
-    const playUp = SalesByBrand({ dataInit: today, dataEnd: today, emp: '3' });
-    const { stockByBrand } = Stock();
-
-    const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock] = await Promise.all([
-        apiClient.post("/v1/find-db-query", { query: playCell }),
-        apiClient.post("/v1/find-db-query", { query: playCustom }),
-        apiClient.post("/v1/find-db-query", { query: playUp }),
-        apiClient.post("/v1/find-db-query", { query: stockByBrand })
-    ]);
-
-    const combinedSalesData = [
-        ...respSalesPlayCell.data.returnObject.body,
-        ...respSalesPlayCustom.data.returnObject.body,
-        ...respSalesPlayUp.data.returnObject.body
-    ];
-
-    const totalValuePerBrandSale = groupSumByBrand(combinedSalesData);
-    const totalStockValuePerBrand = groupSumByStock(respStock.data.returnObject.body);
-
-    return {
-        props: {
-            listSalesByBrand: totalValuePerBrandSale,
-            listStockByBrand: totalStockValuePerBrand
-        }
-    };
-});
+export const getServerSideProps = getSalesByBrandPageProps; 

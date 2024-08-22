@@ -5,11 +5,10 @@ import { ReactNode } from "react";
 import Head from "next/head";
 
 // Component
-import { SideNav } from "../menu/SideNav";
+import { SideNav } from "../menu/sideNav";
 import { HeaderNav } from "../menu/HeaderNav";
 
 export default function Layout({ children, description }: { children: ReactNode, description: string }) {
-
     return (
         <>
             <Head>

@@ -1,142 +1,149 @@
 // Componentes
 import Container from "@/components/ui/container";
 import Layout from "@/components/ui/layout";
+import ContainerGraphic from "@/components/ui/container/graphic";
 import ToolBar from "@/components/ui/toolbar";
-import { canSSRAuth } from "@/utils/permissions/canSSRAuth";
-import { BarChartComponent } from "@/components/ui/sciences/BarChart/BarChartSimple";
-import { Loading } from "@/components/ui/loading";
+import BarChart from "@/components/ui/sciences/BarChart";
+import CustomFormattedLabel from "@/components/ui/sciences/BarChart/labelList/salesByBrand";
+import NumberAnimation from "@/components/ui/animated/numberAnimation";
+
+// Framework - Next
+import { getSalesByGroupPageProps } from "@/utils/server/salesByGroupPageProps";
+
+// Dados
+import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 
 // Utils
-import { SalesByGroup } from './../../utils/queries/SalesByGroup';
-import currentDate from "@/utils/CurrentDate";
-import { Stock } from "@/utils/queries/Stock";
-import { groupSumByGroup } from "@/utils/filters/salesByGroup/groupSumByGroup";
-import { formatCurrency } from "@/utils/masks/formatCurrency";
-import { groupSumByStock } from "@/utils/filters/stock/groupSumPerShare";
-
-// Next - Servidor
-import { setupApiClient } from "@/service/api";
+import { fetchSalesByGroup } from "@/utils/fetchData/fetchSalesByGroup";
+import getDate from "@/utils/date/currentDate";
+import { formatCurrency } from "@/utils/mask/formatCurrency";
 
 // React
 import { useState } from "react";
 
 // Tipagem
-import { DateValue, RangeValue } from "@nextui-org/react";
-import { vibrantPalette } from "@/data/graphicColorPalette";
-type SalesByGroupType = {
-    brand: string; // Organizacao - mudar o nome custom pela pro
-    value: number;
-}
+import { SalesByGroupType } from "@/utils/types/salesByGroup";
+import { DateRange, DateRangeState } from "@/utils/types/data";
+import { StockByGroup } from "@/utils/types/stock";
 
-export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }: { listSalesByGroup: SalesByGroupType[]; listStockByGroup: SalesByGroupType[] }) {
+export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }: { listSalesByGroup: SalesByGroupType[]; listStockByGroup: StockByGroup[] }) {
     const [salesByGroup, setSalesByGroup] = useState(listSalesByGroup || [])
     const [stockByGroup, setStockByGroup] = useState(listStockByGroup || [])
-    const [loading, setLoading] = useState<Boolean>()
+    const [selectedDateRange, setSelectedDateRange] = useState<string>('day');
+    const [loading, setLoading] = useState<boolean>(false)
 
-    const fetchSalesByGroup = async (dataInit?: string, dataEnd?: string) => {
-        setLoading(true)
+    const { today, year, month, day, startOfWeek, endOfWeek } = getDate()
+    const [dateRange, setDateRange] = useState<DateRangeState>({
+        start: today,
+        end: today
+    });
 
-        const apiClient = setupApiClient();
-
-        let salesByGroup = SalesByGroup({ dataInit, dataEnd })
-        const { stockByGroup } = Stock();
-
-        const [respSalesByGroup, respStockByGroup] = await Promise.all([
-            apiClient.post("/v1/find-db-query", { query: salesByGroup }),
-            apiClient.post("/v1/find-db-query", { query: stockByGroup })
-        ]);
-
-        const resultSales = groupSumByGroup(respSalesByGroup.data.returnObject.body);
-        const resultStock = groupSumByStock(respStockByGroup.data.returnObject.body)
-        setSalesByGroup(resultSales)
-        setStockByGroup(resultStock)
-
-        setLoading(false)
+    const handleFetchData = async () => { await fetchSalesByGroup({ dateInit: dateRange.start, dateEnd: dateRange.end, setLoading, setSalesByGroup, setStockByGroup }) }
+    async function handleCleanFilter() {
+        await fetchSalesByGroup({
+            dateInit: dateRange.start,
+            dateEnd: dateRange.end,
+            setLoading,
+            setSalesByGroup,
+            setStockByGroup
+        })
     }
 
-    const refresh = async () => {
-        const { today } = currentDate()
-
-        await fetchSalesByGroup(today, today)
-    }
-
-    const onDateChange = async (date?: RangeValue<DateValue>, isDate?: string) => {
-        if (isDate === 'day') {
-            const { today } = currentDate()
-            await fetchSalesByGroup(today, today)
-        } else if (isDate === 'week') {
-            const { startOfWeek, endOfWeek } = currentDate()
-
-            await fetchSalesByGroup(startOfWeek, endOfWeek)
-        } else if (isDate === 'month') {
-            const { month, year, today } = currentDate()
-            const dateStart = `${year}/${month}/01`
-
-            await fetchSalesByGroup(dateStart, today)
-        } else {
-            const { today, year } = currentDate()
-            const dateInit = `${year}/01/01`
-
-            await fetchSalesByGroup(dateInit, today)
+    const handleDate = async (date: string) => {
+        setSelectedDateRange(date);
+        switch (date) {
+            case DateRange.Day:
+                setDateRange({ start: today, end: today });
+                await fetchSalesByGroup({
+                    dateInit: today,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByGroup,
+                    setStockByGroup
+                })
+                break;
+            case DateRange.Week:
+                setDateRange({ start: startOfWeek, end: endOfWeek });
+                await fetchSalesByGroup({
+                    dateInit: startOfWeek,
+                    dateEnd: endOfWeek,
+                    setLoading,
+                    setSalesByGroup,
+                    setStockByGroup
+                })
+                break;
+            case DateRange.Month:
+                setDateRange({ start: `${year}/${month}/01`, end: today });
+                await fetchSalesByGroup({
+                    dateInit: `${year}/${month}/01`,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByGroup,
+                    setStockByGroup
+                })
+                break;
+            case DateRange.Year:
+                setDateRange({ start: `${year}/01/01`, end: today });
+                await fetchSalesByGroup({
+                    dateInit: `${year}/01/01`,
+                    dateEnd: today,
+                    setLoading,
+                    setSalesByGroup,
+                    setStockByGroup
+                })
+                break;
         }
-    }
+    };
 
     return (
         <Layout description="Vendas por grupos">
             <Container>
-                <ToolBar title="Vendas por grupos" handleRefreshClick={refresh} formOfPayment={true} handleDateFilter={onDateChange} />
-                <main className="flex w-full h-[540px] flex-col px-5">
-                    {loading
-                        ?
-                        <div className="h-[520px] flex items-center justify-center">
-                            <Loading />
-                        </div>
-                        :
-                        <div className="h-[410px]">
-                            <BarChartComponent data={salesByGroup} mask={18} keyValue="value" description="brand" />
+                <ToolBar title="Estoque por groupos" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter}/>
+                <ContainerGraphic
+                    loading={loading}
+                    children={
+                        <BarChart
+                            data={salesByGroup}
+                            dataKey="value"
+                            dataKeyXAxis="group"
+                            displayXAxis={true}
+                            displayCartesianGrid={true}
+                            palette={vibrantPalette}
+                            LabelListProps={{
+                                dataKey: "value",
+                                content: (props) => (
+                                    <CustomFormattedLabel
+                                        {...props}
+                                        position="top"
+                                        formatter={formatCurrency}
+                                        fill="#4b5563"
+                                        className="font-bold text-[11px]"
+                                        value={(props as any).value}
+                                    />
+                                ),
+                            }}
+                        />
+                    }
+                />
+                <div className="w-full flex px-6 py-6 overflow-auto">
+                    {stockByGroup.map((stock, index) => (
+                        <div key={index} className="flex mx-2 items-center px-1 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                            <div className="mx-5">
+                                <div className="flex items-center">
+                                    <p style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }} className="rounded-full p-1 "></p>
 
-                            <div className="w-full flex px-6 ">
-                                {stockByGroup.map((stock, index) => (
-                                    <div key={index} className="flex mx-2 items-center px-1 py-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                                        <div className="mx-5">
-                                            <div className="flex items-center">
-                                                <p style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }} className="rounded-full p-1 "></p>
-
-                                                <div className="text-gray-500 font-semibold text-sm pl-2">Estoque total em valor:</div>
-                                            </div>
-                                            <h4 className="text-2xl font-bold text-gray-700 text-xs">{formatCurrency(stock.value)}</h4>
-                                        </div>
-                                    </div>
-                                ))}
-
+                                    <div className="text-gray-500 font-semibold text-sm pl-2">Estoque total em valor:</div>
+                                </div>
+                                <h4 className="text-2xl font-bold text-gray-700 text-xs">
+                                    <NumberAnimation value={formatCurrency(stock.value)} />
+                                </h4>
                             </div>
                         </div>
-                    }
-                </main>
+                    ))}
+                </div>
             </Container>
         </Layout>
     )
 }
 
-export const getServerSideProps = canSSRAuth(async (ctx) => {
-    const apiClient = setupApiClient(ctx)
-    const { today } = currentDate()
-
-    let salesByGroup = SalesByGroup({ dataInit: today, dataEnd: today })
-    let { stockByGroup } = Stock()
-
-    const [respSalesByGroup, respStockByGroup] = await Promise.all([
-        apiClient.post("/v1/find-db-query", { query: salesByGroup }),
-        apiClient.post("/v1/find-db-query", { query: stockByGroup })
-    ]);
-
-    const totalValuePerGroupSale = groupSumByGroup(respSalesByGroup.data.returnObject.body);
-    const totalStockValuePerGroup = groupSumByStock(respStockByGroup.data.returnObject.body)
-
-    return {
-        props: {
-            listSalesByGroup: totalValuePerGroupSale,
-            listStockByGroup: totalStockValuePerGroup
-        }
-    }
-});
+export const getServerSideProps = getSalesByGroupPageProps;

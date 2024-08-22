@@ -1,55 +1,64 @@
 // Biblioteca
-import { Bar, BarChart, Cell, LabelList, ResponsiveContainer, Tooltip, YAxis } from "recharts";
-
-// Componentes
-import { ToolTip } from "@/components/toolTipsBillsToPay";
+import { Bar, BarChart as BarChartComponents, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 // Dados
-import { vibrantPalette } from "@/data/graphicColorPalette";
+import { formatCurrency } from "@/utils/mask/formatCurrency";
 
 // Tipagem
-import { graphicProps } from "@/utils/types/graphic";
+interface BarChartData {
+    value: number; // Adicione a propriedade 'value'
+    [key: string]: any; // Permite outras propriedades
+}
 
-export function BarChartComponent({ data }: graphicProps) {
-    const total = data.reduce((acc, cur) => acc + cur.value, 0)
+interface BarChartProps<T extends BarChartData> {
+    data: T[];
+    dataKey: string;
+    displayToolTip?: boolean;
+    ToolTipComponent?: React.FC<any>;
+    LabelListProps?: React.ComponentProps<typeof LabelList>;
+    displayXAxis?: boolean;
+    dataKeyXAxis?: string;
+    displayCartesianGrid?: boolean;
+    palette: string[]
+}
 
+export default function BarChart<T extends BarChartData>({ data, dataKey, displayToolTip, ToolTipComponent, LabelListProps, displayXAxis, dataKeyXAxis, displayCartesianGrid, palette }: BarChartProps<T>) {
     return (
-        <ResponsiveContainer width="100%">
-            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <Tooltip cursor={false} content={ToolTip} />
-                <YAxis fill='text-gray-600' allowDataOverflow={true} className='font-bold text-[12px]' />
-                <Bar dataKey="value">
-                    {data.map((item, index) => (
-                        <Cell key={index} fill={item.color !== '' ? item.color : vibrantPalette[index % vibrantPalette.length]} />
-                    ))}
-                    <LabelList
-                        dataKey="value"
-                        content={({ value, x, y }) => {
-                            if (typeof value !== 'undefined') {
-                                const numericValue = Number(value);
-                                if (!isNaN(numericValue) && total !== 0) {
-                                    const rate = `${((numericValue / total) * 100).toFixed(2)}%`;
-                                    const yOffset = typeof y === 'number' ? y + 3 : 0;
-                                    const xOffset = typeof x === 'number' ? x + 25 : 0;
-
-                                    return (
-                                        <text
-                                            x={xOffset}
-                                            y={yOffset}
-                                            dy={-10}
-                                            textAnchor="middle"
-                                            fill="text-gray-600"
-                                            className="font-bold text-[12px]"
-                                        >
-                                            {rate}
-                                        </text>
-                                    );
-                                }
-                            }
-                        }}
+        <ResponsiveContainer width="100%" >
+            <BarChartComponents outerRadius="80%" data={data} margin={{ top: 25, right: 20, left: 20, bottom: 0 }}>
+                {displayToolTip && <Tooltip content={ToolTipComponent} />}
+                {displayCartesianGrid && <CartesianGrid strokeDasharray="3 2" />}
+                {displayXAxis &&
+                    <XAxis
+                        tickFormatter={(dataKeyXAxis) => dataKeyXAxis}
+                        tickLine={false}
+                        dataKey={dataKeyXAxis}
+                        className="font-bold text-[11px]"
                     />
+                }
+                <YAxis
+                    tickFormatter={(value) => {
+                        const formattedValue = formatCurrency(value);
+                        const maxLength = 10;
+                        if (formattedValue.length > maxLength) {
+                            return `${formattedValue.substring(0, maxLength)}...`;
+                        }
+                        return formattedValue;
+                    }}
+                    fill="text-gray-600"
+                    allowDataOverflow={true}
+                    className="font-bold text-[12px]"
+                />
+                <Bar dataKey={dataKey} >
+                    {data.map((item, index) => (
+                        <Cell
+                            key={index}
+                            fill={item.color || palette[index % palette.length]} // Usar a cor ou o padrão
+                        />
+                    ))}
+                    {LabelListProps && <LabelList {...LabelListProps} />}
                 </Bar>
-            </BarChart>
+            </BarChartComponents>
         </ResponsiveContainer>
     )
 }

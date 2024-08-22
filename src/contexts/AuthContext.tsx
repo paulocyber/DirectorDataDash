@@ -4,7 +4,9 @@ import Router from "next/router";
 // Biblioteca
 import { destroyCookie, parseCookies, setCookie } from "nookies";
 import { toast } from "react-toastify";
-import { api } from "@/service/apiClient";
+
+// Service
+import { api } from "@/service/api/apiClient";
 
 // React
 import { createContext, ReactNode, useEffect, useState } from "react";

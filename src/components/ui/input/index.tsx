@@ -1,17 +1,17 @@
 // Biblioteca
-import { Input } from "@nextui-org/react";
+import { Input as Inp } from "@nextui-org/react";
 
 // React
 import { ComponentProps } from "react";
 
 // Tipagem 
-type InputFormProps = ComponentProps<typeof Input>
+type InputProps = ComponentProps<typeof Inp>
 
-export function InputForm({ ...rest }: InputFormProps) {
+export function Input({ ...rest }: InputProps) {
     return (
-        <Input
+        <Inp
             {...rest}
-            className=""
+            className="w-full"
             classNames={{ inputWrapper: "bg-transparent data-[hover=true]:bg-transparent group-data-[focus=true]:bg-transparent border" }}
         />
     )

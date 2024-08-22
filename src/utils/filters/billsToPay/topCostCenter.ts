@@ -1,51 +1,54 @@
-// Biblioteca
-import { useRecoilValue } from "recoil";
-
-// Atom
-import { filterDescription } from "@/atom/FilterDescription";
-
 // Tipagem
 import { BillsToPayItem } from "@/utils/types/billsToPay";
-import { vibrantPalette } from "@/data/graphicColorPalette";
+
+// Dados
+import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
+
+// Tipagem
+import { SelectionDescription } from "@/utils/types/selectionDescription";
 
 export function TopCostCenter({
-  billetPaidAndOpen,
+  allBillets,
+  filter = [],
 }: {
-  billetPaidAndOpen: BillsToPayItem[];
+  allBillets: BillsToPayItem[];
+  filter: SelectionDescription[];
 }) {
-  const costCenter = useRecoilValue(filterDescription);
-
-  const parsedData = billetPaidAndOpen.map((item) => ({
+  const parsedData = allBillets.map((item) => ({
     ...item,
     VALOR_PGM: parseFloat(item.VALOR_PGM.replace(",", ".")) || 0,
   }));
 
-  // Evitar redudencia
-  const costCenterSums: Record<string, { value: number; suppliers: string[] }> =
+  const costCenterSums: Record<string, { value: number; suppliers: string[]; fill: string }> =
     parsedData.reduce((acc, item) => {
       if (!acc[item.CENTRO_CUSTO]) {
-        acc[item.CENTRO_CUSTO] = { value: 0, suppliers: [] };
+        acc[item.CENTRO_CUSTO] = { value: 0, suppliers: [], fill: '' };
       }
       acc[item.CENTRO_CUSTO].value += item.VALOR_PGM;
       if (!acc[item.CENTRO_CUSTO].suppliers.includes(item.NOME_PSS)) {
         acc[item.CENTRO_CUSTO].suppliers.push(item.NOME_PSS);
       }
       return acc;
-    }, {} as Record<string, { value: number; suppliers: string[] }>);
+    }, {} as Record<string, { value: number; suppliers: string[], fill: string }>);
 
-  // Transformando array para objeto
-  const sortedCostCenters = Object.entries(costCenterSums)
-    .map(([description, { value, suppliers }]) => ({
+  const sortedCostCenters: {
+    description: string;
+    value: number;
+    suppliers: string[];
+    fill: string;
+  }[] = Object.entries(costCenterSums)
+    .map(([description, { value, suppliers, fill }]) => ({
       description,
       value,
       suppliers,
+      fill
     }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 10);
 
   const selectCostCenter = sortedCostCenters
     .map((item, index) => {
-      const filterItem = costCenter.find(
+      const filterItem = filter.find(
         (filter) => filter.description === item.description
       );
       return {
@@ -57,9 +60,10 @@ export function TopCostCenter({
     })
     .filter(
       (item) =>
-        costCenter.length === 0 ||
-        costCenter.some((filter) => filter.description === item.description)
+        filter.length === 0 ||
+        filter.some((filter) => filter.description === item.description)
     );
 
   return { sortedCostCenters, selectCostCenter };
 }
+
