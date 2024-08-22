@@ -1,4 +1,4 @@
-import { SalesByBrand } from "@/utils/types/salesByBrand";
+import { SalesByBrand } from "@/utils/types/SalesByBrand";
 
 export function groupSumByGroup(
   data: SalesByBrand[]

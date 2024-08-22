@@ -11,7 +11,7 @@ import getDate from "@/utils/date/currentDate";
 import { groupSumBySupplier } from "@/utils/filters/billsToPay/groupSumBySupplier";
 
 // Tipagem
-import { SalesByBrandType } from "@/utils/types/salesByBrand";
+import { SalesByBrandType } from "@/utils/types/SalesByBrand";
 import { StockByBrand } from "@/utils/types/stock";
 interface FetchSalesByBrandProps {
   dateInit: string;

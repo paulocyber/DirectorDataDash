@@ -1,4 +1,5 @@
-import { SalesByBrand } from "@/utils/types/salesByBrand";
+// Tipagem
+import { SalesByBrand } from "@/utils/types/SalesByBrand";
 
 export function groupSumByBrand(
   data: SalesByBrand[]

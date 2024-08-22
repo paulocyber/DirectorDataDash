@@ -23,7 +23,7 @@ import { formatCurrency } from "@/utils/mask/formatCurrency";
 
 // Tipagem
 import { StockByBrand } from "@/utils/types/stock";
-import { SalesByBrandType } from '@/utils/types/salesByBrand';
+import { SalesByBrandType } from "@/utils/types/SalesByBrand";
 import { DateRange, DateRangeState } from "@/utils/types/data";
 interface SalesByBrandPageProps {
     listSalesByBrand: SalesByBrandType[];
