@@ -8,7 +8,7 @@ export const Stock = () => {
     mrc.id_mrc = prd.id_mrc  left join grupos_produtos grp on grp.id_grp = prd.id_grp  left join cores crs on prd.id_crs = crs.id_crs  
     left join secoes_produtos sec on prd.id_sec = sec.id_sec  left join situacoes_tributarias_icms stc on ale.id_stc = stc.id_stc 
     left join linhas_produtos lnp on lnp.id_lnp = prd.id_lnp  left join fornecedores_produtos frp on (frp.id_prd = prd.id_prd and frp.nivel_frp = 'P')  
-    left join v_fornecedores_consulta frn on frn.id_pss = frp.id_pss  where ale.id_alm =  1 and prd.status_prd = 'A' 
+    left join v_fornecedores_consulta frn on frn.id_pss = frp.id_pss  where ale.id_alm in (1, 2, 3, 100) and prd.status_prd = 'A' 
     AND (grp.nome_grp IN ('relogio', 'BATERIA PORTATIL', 'SMARTWATCH') OR (grp.nome_grp = 'FONE BLUETOOTH' AND 
     prd.descricao_prd LIKE '%tws%')) order by prd.id_prd, prd.descricao_prd`;
 

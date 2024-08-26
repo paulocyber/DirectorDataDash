@@ -7,11 +7,11 @@ export function groupSumByStock(
   groupBy: GroupByType = "brand"
 ): StockByGroup[] {
   const groupedData = data.reduce((acc: Record<string, StockByGroup>, stock) => {
-    const key = groupBy === "brand" ? stock.ID_MARCA : stock.GRUPO;
+    const key = groupBy === "brand" ? stock.MARCA : stock.GRUPO;
 
     if (!acc[key]) {
       acc[key] = {
-        key: stock.MARCA,
+        key,
         value: 0,
       };
     }
