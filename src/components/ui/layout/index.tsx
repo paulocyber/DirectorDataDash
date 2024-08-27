@@ -8,7 +8,7 @@ import Head from "next/head";
 import { SideNav } from "../menu/sideNav";
 import { HeaderNav } from "../menu/HeaderNav";
 
-export default function Layout({ children, description }: { children: ReactNode, description: string }) {
+export default function PageLayout({ children, description }: { children: ReactNode, description: string }) {
     return (
         <>
             <Head>

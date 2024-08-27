@@ -9,11 +9,9 @@ import ToolBar from "@/components/ui/toolbar";
 import ContainerGraphic from "@/components/ui/container/graphic";
 import { ToolTip } from "@/components/ui/sciences/pieChart/toolTip/billsToPay";
 import BarChart from "@/components/ui/sciences/BarChart";
-
 import { CustomLabel } from "@/components/ui/sciences/pieChart/label/billsToPay";
 import DescriptionGraphic from "@/components/ui/sciences/descriptionGraphic";
 import CustomLabelContent from "@/components/ui/sciences/BarChart/labelList/billsToPay";
-
 import PieChart from "@/components/ui/sciences/pieChart";
 
 // React

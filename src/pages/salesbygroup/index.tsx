@@ -1,7 +1,7 @@
 // Componentes
 import Container from "@/components/ui/container";
-import Layout from "@/components/ui/layout";
-import ContainerGraphic from "@/components/ui/container/graphic";
+import PageLayout from "@/components/ui/layout";
+import GraphicContainer from "@/components/ui/container/graphic";
 import ToolBar from "@/components/ui/toolbar";
 import BarChart from "@/components/ui/sciences/BarChart";
 import CustomFormattedLabel from "@/components/ui/sciences/BarChart/labelList/salesByBrand";
@@ -96,10 +96,10 @@ export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }:
     };
 
     return (
-        <Layout description="Vendas por grupos">
+        <PageLayout description="Vendas por grupos">
             <Container>
                 <ToolBar title="Estoque por groupos" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter}/>
-                <ContainerGraphic
+                <GraphicContainer
                     loading={loading}
                     children={
                         <BarChart
@@ -142,7 +142,7 @@ export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }:
                     ))}
                 </div>
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 

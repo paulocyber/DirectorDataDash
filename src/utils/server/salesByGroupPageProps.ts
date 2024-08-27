@@ -34,7 +34,7 @@ export const getSalesByGroupPageProps = canSSRAuth(async (ctx) => {
   return {
     props: {
       listSalesByGroup: valuePerGroupSale,
-      listStockByGroup: sumOfStockByBrand,
+      listStockByGroup: sumOfStockByBrand
     },
   };
 });

@@ -18,7 +18,7 @@ interface PieChartProps<T> {
 export default function PieChart<T>({ data, dataKey, displayToolTip, ToolTipComponent, label }: PieChartProps<T>) {
     return (
         <ResponsiveContainer width="100%">
-            <PieChartComponents margin={{ top: 20, right: 80, left:80, bottom: 20 }}>
+            <PieChartComponents margin={{ top: 20, right: 80, left: 80, bottom: 20 }}>
                 {displayToolTip && <Tooltip content={ToolTipComponent} />}
                 <Pie
                     data={data}
@@ -29,7 +29,7 @@ export default function PieChart<T>({ data, dataKey, displayToolTip, ToolTipComp
                     dataKey={dataKey}
                 >
                     {data.map((item, index) => (
-                        <Cell key={index} fill={(item as any).color !== '' ? (item as any).color : vibrantPalette[index % vibrantPalette.length]} />
+                        <Cell key={`cell-${index}`} fill={(item as any).color || vibrantPalette[index % vibrantPalette.length]} />
                     ))}
                 </Pie>
             </PieChartComponents>

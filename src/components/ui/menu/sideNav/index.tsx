@@ -86,6 +86,11 @@ export function SideNav() {
                             <TiChartPieOutline className="w-6 h-6" />
                         </ActiveLink>
                     </li>
+                    <li>
+                        <ActiveLink href="/sales" nameLink="Vendas e Metas">
+                            <TiChartPieOutline className="w-6 h-6" />
+                        </ActiveLink>
+                    </li>
                 </ul>
             </div>
 
