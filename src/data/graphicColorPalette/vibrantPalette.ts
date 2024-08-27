@@ -2,7 +2,7 @@ export const vibrantPalette = [
   "#FF5733",
   "#FFC300",
   "#36A2EB",
-  "#4BC0C0",
+  "#A8E6CF",
   "#FF6384",
   "#9966CC",
   "#C71585",
