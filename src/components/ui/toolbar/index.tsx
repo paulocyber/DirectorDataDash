@@ -1,5 +1,5 @@
 // Biblioteca
-import { DateRangePicker, DateValue, RangeValue } from "@nextui-org/react";
+import { DateInput, DateRangePicker, DateValue, RangeValue } from "@nextui-org/react";
 
 // Componentes
 import OptionsToolBar from "../dropDown/toolBar";
@@ -10,9 +10,9 @@ import { Button } from "../button";
 import { CiSearch } from "react-icons/ci";
 
 // React
-import { useState } from "react";
 
 // Tipagem
+import { getLocalTimeZone, today } from "@internationalized/date";
 interface ToolBarProps {
     title: string;
     displayCalendar?: boolean;
@@ -35,17 +35,39 @@ interface ToolBarProps {
 export default function ToolBar({ title, displayCalendar, handleDateRangePicker, dateRange, handleDate, href, descriptionHref, handleRefreshClick, handleCleanFilter, displayInputSearch, setFilterSearch, generatePDF, displayBtnDate, selectedDateRange, displayFormOfPayment, searchFilter }: ToolBarProps) {
     return (
         <div className="sm:flex items-center justify-between w-full ">
-            <div className="pb-5 flex justify-between items-center w-full p-5">
-                <div className="flex w-full items-center">
+            <div className="flex justify-between items-center w-full">
+                <div className="flex w-full items-center p-4">
                     <div className="flex w-full items-center">
-                        <h1 className="font-bold md:text-lg text-sm pr-5">{title} </h1>
+                        <div className="w-full">
+                            <h1 className="font-bold md:text-lg text-sm">{title} </h1>
+                        </div>
                         {/* Botao do data */}
                         {displayBtnDate &&
-                            <div className="flex space-x-4">
+                            <div className="flex w-full items-center pl-2 space-x-4">
                                 <Button onClick={() => { handleDate && handleDate('day') }} color={selectedDateRange === 'day' ? "primary" : undefined} className={selectedDateRange != 'day' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Dia</ Button>
                                 <Button onClick={() => { handleDate && handleDate('week') }} color={selectedDateRange === 'week' ? "primary" : undefined} className={selectedDateRange != 'week' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Semana</Button>
                                 <Button onClick={() => { handleDate && handleDate('month') }} color={selectedDateRange === 'month' ? "primary" : undefined} className={selectedDateRange != 'month' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Mês</Button>
+                                <Button onClick={() => { handleDate && handleDate('month yesterday') }} color={selectedDateRange === 'month yesterday' ? "primary" : undefined} className={selectedDateRange != 'month yesterday' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Mês Passado</Button>
                                 <Button onClick={() => { handleDate && handleDate('year') }} color={selectedDateRange === 'year' ? "primary" : undefined} className={selectedDateRange != 'year' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Ano</Button>
+                                {/* <DateInput
+                                    label="Inicio"
+                                    // minValue={today(getLocalTimeZone())}
+                                    defaultValue={today(getLocalTimeZone()).subtract({ days: 1 })}
+                                    className="pb-2 text-gray-800"
+                                    color="default"
+                                    classNames={{
+                                        inputWrapper: "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-transparent focus-within:hover:bg-transparent",
+                                        innerWrapper: "text-gray-800 group-data:text-gray-800",
+                                        input: "text-gray-800 ",
+                                        segment: "text-gray-800 ",
+                                        base: "text-gray-800",
+                                        description: "text-gray-800",
+                                        errorMessage: "text-gray-800",
+                                        helperWrapper: "text-gray-800",
+                                        label: "text-gray-800",
+                                    }}
+                                    size="sm"
+                                /> */}
                             </div>
                         }
                     </div>
