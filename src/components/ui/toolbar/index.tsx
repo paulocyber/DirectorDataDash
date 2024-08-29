@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // Bibliotecas
 import { Autocomplete, AutocompleteItem, DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
 import { CiSearch } from "react-icons/ci";
@@ -15,23 +14,11 @@ import { ReactNode, useState } from "react";
 
 // Framework - Next
 import Link from "next/link";
-=======
-// Biblioteca
-import { DateInput, DateRangePicker, DateValue, RangeValue } from "@nextui-org/react";
->>>>>>> 0a668a5a442a5882c75782bf9f525e4a4106ca1b
 
 // Componentes
 import { Input } from "../input";
 import { Button } from "../button";
-<<<<<<< HEAD
 import OptionsToolBar from "../dropDown/toolBar";
-=======
-
-// Biblioteca
-import { CiSearch } from "react-icons/ci";
-
-// React
->>>>>>> 0a668a5a442a5882c75782bf9f525e4a4106ca1b
 
 // Tipagem
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -90,35 +77,6 @@ export default function ToolBar({
     const [animation, setAnimation] = useState<Boolean>(false)
 
     return (
-<<<<<<< HEAD
-        <div className="sm:flex items-center justify-between w-full">
-            <div className="pb-5 flex justify-between items-center w-full p-5">
-                <div className="flex w-full items-center">
-                    <h1 className="font-bold md:text-lg text-sm pr-5">{title}</h1>
-                    {displayBtnDate && (
-                        <div className="flex space-x-4">
-                            {dateButtons.map(({ label, value }) => (
-                                <Button
-                                    key={value}
-                                    onClick={() => handleDate && handleDate(value)}
-                                    color={selectedDateRange === value ? "primary" : undefined}
-                                    className={selectedDateRange !== value ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined}
-                                    size="md"
-                                >
-                                    {label}
-                                </Button>
-                            ))}
-                        </div>
-                    )}
-                    <div className="flex justify-end px-2 sm:hidden">
-                        <OptionsToolBar
-                            descriptionHref={descriptionHref}
-                            href={href}
-                            handleRefreshClick={handleRefreshClick}
-                            handleCleanFilter={handleCleanFilter}
-                            generatePDF={generatePDF}
-                        />
-=======
         <div className="sm:flex items-center justify-between w-full ">
             <div className="flex justify-between items-center w-full">
                 <div className="flex w-full items-center p-4">
@@ -155,7 +113,6 @@ export default function ToolBar({
                                 /> */}
                             </div>
                         }
->>>>>>> 0a668a5a442a5882c75782bf9f525e4a4106ca1b
                     </div>
                 </div>
             </div>
