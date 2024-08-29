@@ -87,6 +87,16 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
                     setStockByBrand
                 })
                 break;
+            case DateRange.MonthYesterday:
+                setDateRange({ start: `${year}/${month - 1}/01`, end: today });
+                await fetchSalesByBrand({
+                    dateInit: `${year}/${month - 1}/01`,
+                    dateEnd: `${year}/${month - 1}/30`,
+                    setLoading,
+                    setSalesByBrand,
+                    setStockByBrand
+                })
+                break;
             case DateRange.Year:
                 setDateRange({ start: `${year}/01/01`, end: today });
                 await fetchSalesByBrand({

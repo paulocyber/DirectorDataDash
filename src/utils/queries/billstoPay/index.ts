@@ -25,9 +25,15 @@ export const billsToPayQueries = ({
    AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE AND pgm.status_pgm IN (1, 4)) OR (pgm.datahora_pagamento_pgm BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND pgm.status_pgm = 2)) AND pgm.id_emp in(1, 2, 3, 100 ) ORDER BY pgm.data_vencimento_pgm,
     pgm.id_pss`;
 
-  let openBillFromSuppliers = `select pgm.valor_pgm, pgm.apelido_pss from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${year}/01/01' AND '${year}/12/31' AND CAST(pgm.datahora_lancamento_pgm AS DATE)
-   BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) AND pgm.apelido_pss IN('KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA') AND pgm.id_emp in(1, 2, 3, 100 ) order by 
-   pgm.data_vencimento_pgm, pgm.id_pss`;
+  // let openBillFromSuppliers = `select pgm.valor_pgm, pgm.apelido_pss from v_pagamentos pgm where (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${year}/01/01' AND '${year}/12/31' AND CAST(pgm.datahora_lancamento_pgm AS DATE)
+  //  BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) AND pgm.apelido_pss IN('KIMASTER', 'PEINING', 'DEVIA', 'B-MAX') AND pgm.id_emp in(1, 2, 3, 100 ) order by
+  //  pgm.data_vencimento_pgm, pgm.id_pss`;
+
+  let openBillFromSuppliers = `select CASE WHEN pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA') THEN UPPER('inova') 
+  ELSE pgm.apelido_pss END AS apelido_pss,SUM(pgm.valor_pgm) AS valor_pgm FROM v_pagamentos pgm WHERE (CAST(pgm.data_vencimento_pgm AS DATE) BETWEEN '${year}-01-01' AND '${year}-12-31' AND CAST(pgm.datahora_lancamento_pgm 
+  AS DATE) BETWEEN '2022-12-01' AND CURRENT_DATE) AND (pgm.status_pgm = 1 OR pgm.status_pgm = 4) AND pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 
+  'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA') AND pgm.id_emp IN (1, 2, 3, 100) GROUP BY CASE WHEN pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 
+  'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA') THEN UPPER('inova') ELSE pgm.apelido_pss END ORDER BY apelido_pss`;
 
   return {
     billetInOpen,

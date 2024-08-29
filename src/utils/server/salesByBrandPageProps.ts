@@ -10,6 +10,7 @@ import { groupSumByBrand } from "../filters/salesByBrand/groupSumByBrand";
 import { groupSumByStock } from "../filters/stock/groupSumByStock";
 import { billsToPayQueries } from "../queries/billstoPay";
 import { groupSumBySupplier } from "../filters/billsToPay/groupSumBySupplier";
+import { BillsToPayItem } from "../types/billsToPay";
 
 export const getSalesByBrandPageProps = canSSRAuth(async (ctx) => {
   const apiClient = setupApiClient(ctx);
@@ -50,23 +51,21 @@ export const getSalesByBrandPageProps = canSSRAuth(async (ctx) => {
     respStock.data.returnObject.body,
     "brand"
   );
-  const sumOfDebt = groupSumBySupplier(respDebt.data.returnObject.body);
+  const sumOfDebt: BillsToPayItem[] = respDebt.data.returnObject.body;
 
   const listStockByBrand = sumOfStockByBrand.map((stock) => {
-    const groupedData = sumOfDebt.find(
-      (debt) => debt.supplier === stock.key
-    );
+    const groupedData = sumOfDebt.find((debt) => debt.APELIDO_PSS === stock.key);
     return {
       brand: stock.key,
       valueInStock: stock.value,
-      debtValue: groupedData ? groupedData.value : 0,
+      debtValue: groupedData ? parseFloat(groupedData.VALOR_PGM.replace(',', '.')) : 0,
     };
   });
-
+  
   return {
     props: {
       listSalesByBrand: sumByBrand,
-      listStockByBrand: listStockByBrand, 
+      listStockByBrand: listStockByBrand,
     },
   };
 });

@@ -13,6 +13,7 @@ import { groupSumBySupplier } from "@/utils/filters/billsToPay/groupSumBySupplie
 // Tipagem
 import { SalesByBrandType } from "@/utils/types/SalesByBrand";
 import { StockByBrand } from "@/utils/types/stock";
+import { BillsToPayItem } from "@/utils/types/billsToPay";
 interface FetchSalesByBrandProps {
   dateInit: string;
   dateEnd: string;
@@ -57,16 +58,14 @@ export async function fetchSalesByBrand({
 
   const sumByBrand = groupSumByBrand(combinedSalesData);
   const sumOfStockByBrand = groupSumByStock(respStock.data.returnObject.body);
-  const sumOfDebt = groupSumBySupplier(respDebt.data.returnObject.body);
+  const sumOfDebt: BillsToPayItem[] = respDebt.data.returnObject.body;
 
   const listStockByBrand = sumOfStockByBrand.map((stock) => {
-    const groupedData = sumOfDebt.find(
-      (debt) => debt.supplier === stock.key
-    );
+    const groupedData = sumOfDebt.find((debt) => debt.APELIDO_PSS === stock.key);
     return {
       brand: stock.key,
       valueInStock: stock.value,
-      debtValue: groupedData ? groupedData.value : 0,
+      debtValue: groupedData ? parseFloat(groupedData.VALOR_PGM.replace(',', '.')) : 0,
     };
   });
 
