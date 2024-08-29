@@ -26,8 +26,8 @@ import { parseDate } from '@internationalized/date';
 export default function SalesPage({ salesData, sellersData }: { salesData: salesData[], sellersData: Sellers[] }) {
     const [sales, setSales] = useState<salesData[]>(salesData);
     const [sellers, setSellers] = useState(sellersData);
+    const [selectSeller, setSelectSeller] = useState<string>('')
     const [emp, setEmp] = useState('1');
-    const [selectSellers, setSelectSellers] = useState<React.Key | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
     const { year, month, today } = getDate();
@@ -41,8 +41,8 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
             dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
             emp,
+            sellers: selectSeller,
             setLoading,
-            sellers: sellers ? null : sellers,
             setSales
         });
     };
@@ -53,8 +53,8 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
             dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
             dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
             emp,
+            sellers: selectSeller,
             setLoading,
-            sellers: sellers ? null : sellers,
             setSales
         });
     };
@@ -65,6 +65,7 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
             end: parseDate(new Date(today).toISOString().split('T')[0])
         };
         setDate(initialDate);
+        setSelectSeller('')
         await fetchSales({
             dateInit: `${year}/${month}/01`,
             dateEnd: today,
@@ -75,15 +76,15 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
     };
 
     const handleFilters = async (key: React.Key | null) => {
-        setSelectSellers(key);
-        const selectedSeller = sellers.find(seller => seller.ID_PSS === key);
+        setSelectSeller(key as string);
+
         await fetchSales({
             dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
-            sellers: selectedSeller?.ID_PSS,
-            emp,
             setLoading,
-            setSales
+            setSales,
+            emp,
+            sellers: key ? key.toString() : ''
         });
     };
 
@@ -107,11 +108,12 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
                                 aria-label="Filtro de vendedores"
                                 placeholder="Selecione o vendedor"
                                 size="sm"
+                                value={selectSeller}
+                                onSelectionChange={handleFilters}
                                 variant="bordered"
                                 defaultItems={sellers}
                                 className="max-w-xs"
                                 allowsCustomValue={true}
-                                onSelectionChange={handleFilters}
                             >
                                 {(seller) => (
                                     <AutocompleteItem key={seller.ID_PSS}>

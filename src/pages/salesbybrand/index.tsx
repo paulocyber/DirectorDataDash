@@ -2,7 +2,7 @@
 import { getSalesByBrandPageProps } from "@/utils/server/salesByBrandPageProps";
 
 // Componentes
-import Layout from "@/components/ui/layout";
+import PageLayout from "@/components/ui/layout";
 import Container from "@/components/ui/container";
 import ContainerGraphic from "@/components/ui/container/graphic";
 import ToolBar from "@/components/ui/toolbar";
@@ -101,7 +101,7 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
     };
 
     return (
-        <Layout description="Vendas por marcas">
+        <PageLayout description="Vendas por marcas">
             <Container>
                 <ToolBar title="Vendas por marcas" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter} />
                 <ContainerGraphic
@@ -135,7 +135,7 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
                 <h1 className="font-bold md:text-lg text-sm p-5">Estoque em valor X Endividamento por marca</h1>
                 <ContainerGraphic loading={false} children={<BarChartComparison data={stockByBrand} xKey="brand" dataKeyOne="valueInStock" dataKeyTwo="debtValue" nameKeyOne="Estoque" nameKeyTwo="Dívida" />} />
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 

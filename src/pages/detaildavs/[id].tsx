@@ -3,7 +3,7 @@ import { getDetailDavPageProps } from "@/utils/server/detailDavPageProps";
 import Link from "next/link";
 
 // Componentes
-import Layout from "@/components/ui/layout";
+import PageLayout from "@/components/ui/layout";
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import Table from "@/components/ui/table";
@@ -41,7 +41,7 @@ export default function DetailDavPage({ listDavDetail, listProductsDav }: { list
     };
 
     return (
-        <Layout description="Relatorios dav's">
+        <PageLayout description="Relatorios dav's">
             <InfoCard data={infoDetailCard} />
             <Container>
                 <div className="md:flex-col items-center justify-between w-full ">
@@ -78,7 +78,7 @@ export default function DetailDavPage({ listDavDetail, listProductsDav }: { list
                     </div>
                 </main>
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 

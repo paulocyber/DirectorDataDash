@@ -6,7 +6,7 @@ import billsToPayPDF from "@/utils/relatorys/billsToPay";
 import { TotalSum } from "@/utils/functionSum";
 
 // Componentes
-import Layout from "@/components/ui/layout";
+import PageLayout from "@/components/ui/layout";
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import renderCell from "@/components/rowsTable/billsToPay/renderCell";
@@ -90,7 +90,7 @@ export default function BillsToPayPageTable({ listBilletInOpen, listBilletPaid, 
     }
 
     return (
-        <Layout description="Contas a pagar">
+        <PageLayout description="Contas a pagar">
             <InfoCard data={infoDetailCard} />
             <Container>
                 <ContainerTable
@@ -112,7 +112,7 @@ export default function BillsToPayPageTable({ listBilletInOpen, listBilletPaid, 
                     generatePDF={generatePdf}
                 />
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 

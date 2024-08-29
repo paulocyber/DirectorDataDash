@@ -10,7 +10,7 @@ import { InfoCardFromDav } from "@/data/infoCard/davs";
 import { columns } from "@/data/columns/dav/columns";
 
 // Componentes
-import Layout from "@/components/ui/layout";
+import PageLayout from "@/components/ui/layout";
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import ContainerTable from "@/components/ui/container/table";
@@ -48,7 +48,7 @@ export default function DavReportPage({ listDav }: { listDav: ItemsDav[] }) {
     }
 
     return (
-        <Layout description="Relatorios dav's">
+        <PageLayout description="Relatorios dav's">
             <InfoCard data={infoDetailCard} />
             <Container>
                 <ContainerTable
@@ -62,7 +62,7 @@ export default function DavReportPage({ listDav }: { listDav: ItemsDav[] }) {
                     loading={loading}
                 />
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 

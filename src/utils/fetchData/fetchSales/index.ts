@@ -29,7 +29,7 @@ export async function fetchSales({
 
   const sales = salesQueries({ dateInit, dateEnd, emp, sellers });
   const goals = goalsQueries();
-
+console.log("Query: ", sales)
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
     fetchData({ query: goals, setData: (data) => (goalsData = data) }),

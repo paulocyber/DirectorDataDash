@@ -2,7 +2,7 @@
 import { getBillsToPayPageProps } from "@/utils/server/billsToPayPageProps";
 
 // Componentes
-import Layout from "@/components/ui/layout";
+import PageLayout from "@/components/ui/layout";
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
@@ -98,7 +98,7 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listO
     const { sortedCostCenters, selectCostCenter } = TopCostCenter({ allBillets, filter: filters })
 
     return (
-        <Layout description="Contas a pagar">
+        <PageLayout description="Contas a pagar">
             <InfoCard data={infoDetailCard} />
             <Container>
                 <ToolBar title="Contas a pagar" handleRefreshClick={handleFetchData} displayCalendar={true} handleCleanFilter={handleCleanFilter} dateRange={date} handleDateRangePicker={handleDateRangePicker} href="/billstopay/table" descriptionHref="Tabela" />
@@ -120,7 +120,7 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listO
                     <DescriptionGraphic data={sortedCostCenters} dataKey="description" handleSelection={handleSelectingCostCenter} />
                 </div>
             </Container>
-        </Layout>
+        </PageLayout>
     )
 }
 
