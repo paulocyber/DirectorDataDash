@@ -16,11 +16,11 @@ export const getSalesPageProps = canSSRAuth(async (ctx) => {
     dateEnd: today,
     emp: "1",
   });
-  const goals = goalsQueries();
+  const { storeGoals } = goalsQueries({});
   const sellers = sellersQueries();
 
   const respSales = await apiClient.post("/v1/find-db-query", { query: sales });
-  const respGoals = await apiClient.post("/v1/find-db-query", { query: goals });
+  const respGoals = await apiClient.post("/v1/find-db-query", { query: storeGoals });
   const respSellers = await apiClient.post("/v1/find-db-query", {
     query: sellers,
   });

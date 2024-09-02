@@ -104,7 +104,7 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
                 >
                     <div className="w-full sm:flex hidden">
                         <div className="mr-auto md:mr-4 md:mt-0 mt-2 md:w-56 small-screen:w-full">
-                            {/* <Autocomplete
+                            <Autocomplete
                                 aria-label="Filtro de vendedores"
                                 placeholder="Selecione o vendedor"
                                 size="sm"
@@ -116,11 +116,11 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
                                 allowsCustomValue={true}
                             >
                                 {(seller) => (
-                                    <AutocompleteItem key={seller.ID_PSS}>
+                                    <AutocompleteItem key={seller.ID_FNC}>
                                         {seller.APELIDO_PSS}
                                     </AutocompleteItem>
                                 )}
-                            </Autocomplete> */}
+                            </Autocomplete>
                         </div>
                     </div>
                 </ToolBar>

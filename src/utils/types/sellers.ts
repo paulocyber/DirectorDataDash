@@ -1,4 +1,7 @@
 export type Sellers = {
-  ID_PSS: string;
+  VALOR_INDIVIDUAL_MTI: string;
+  VALOR_MTA: string;
   APELIDO_PSS: string;
+  ID_FNC: string;
+  ID_MTA: string;
 };

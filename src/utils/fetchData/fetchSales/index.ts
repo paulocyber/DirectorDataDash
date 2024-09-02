@@ -11,7 +11,7 @@ interface FetchSales {
   dateInit: string;
   dateEnd: string;
   emp?: string;
-  sellers?: string | null;
+  sellers?: string ;
 }
 
 export async function fetchSales({
@@ -28,11 +28,11 @@ export async function fetchSales({
   let salesData: any[] = [];
 
   const sales = salesQueries({ dateInit, dateEnd, emp, sellers });
-  const goals = goalsQueries();
-console.log("Query: ", sales)
+  const { storeGoals, individualGoals } = goalsQueries({ id: sellers });
+
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
-    fetchData({ query: goals, setData: (data) => (goalsData = data) }),
+    fetchData({ query: sellers ? individualGoals : storeGoals, setData: (data) => (goalsData = data) }),
   ];
 
   await Promise.all(queries);
@@ -43,7 +43,7 @@ console.log("Query: ", sales)
 
   const data = [
     { name: "Vendas", value: totalSalesValue },
-    { name: "Metas", value: parseFloat(goalsData[0].VALOR_MTA) },
+    { name: "Metas", value: sellers? parseFloat(goalsData[0].VALOR_INDIVIDUAL_MTI) : parseFloat(goalsData[0].VALOR_MTA) },
   ];
 
   setSales(data);
