@@ -41,8 +41,8 @@ export async function fetchBillsToPay({
       day: yesterday,
     });
 
-  let allBillets: any[] = [];
-  let lateBills: any[] = [];
+    let allBillets: BillsToPayItem[] = [];
+    let lateBills: BillsToPayItem[] = [];
 
   const queries = [
     fetchData({

@@ -8,10 +8,12 @@ export const ToolTip = (props: any) => {
     const suppliers = payload[0].payload.suppliers;
 
     return (
-        <div className="z-50 relative text-xs px-5 py-3 text-center bg-white dark:text-gray-900 font-bold">
-            <ul className="">
+        <div className="z-[100] relative sm:text-xs text-[11px] px-5 py-3 text-center bg-white rounded-lg dark:text-gray-900 font-bold  overflow-hidden lg:w-full w-[220px]">
+            <ul className="list-none">
                 {suppliers.map((supplier: string, index: number) => (
-                    <li key={index}>{supplier}</li>
+                    <li key={index} className=" truncate">
+                        {supplier}
+                    </li>
                 ))}
             </ul>
         </div>

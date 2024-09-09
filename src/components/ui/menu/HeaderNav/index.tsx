@@ -19,10 +19,12 @@ import { truncateString } from "@/utils/mask/truncateString";
 
 // Tipagem
 import { RouterColors } from "@/utils/types/routerColors";
+interface SideNavProps {
+    open: (value: boolean) => void;
+    toggleMenuState: boolean;
+}
 
-export function HeaderNav() {
-    const [isOpen, setIsOpen] = useState<boolean>(false)
-
+export function HeaderNav({ open, toggleMenuState }: SideNavProps) {
     const router = useRouter();
 
     let bgColorClass: string = '';
@@ -93,13 +95,7 @@ export function HeaderNav() {
                             </div>
                         </div>
                         <div className="flex ">
-                            <button onClick={() => setIsOpen(true)} className="hover:bg-blue-700 relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-full text-xs text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 grid xl:hidden">
-                                <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-                                    <RxHamburgerMenu className="h-6 w-6 text-white" />
-                                </span>
-                            </button>
-
-                            <a href="#">
+                            <div className="flex items-center">
                                 <button
                                     className="middle none font-sans font-bold center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 hidden items-center gap-1 px-4 xl:flex"
                                     type="button"
@@ -109,30 +105,40 @@ export function HeaderNav() {
                                 </button>
 
                                 <button
-                                    className="relative flex items-center middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 grid xl:hidden"
+                                    className="hover: relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
                                     type="button"
                                 >
-                                    <FaUserCircle className="h-5 w-5 text-white" />
+                                    <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                                        <FaUserCircle className="h-5 w-5 text-white" />
+                                    </span>
                                 </button>
-                            </a>
 
-                            <button
-                                className="hover: relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
-                                type="button"
-                            >
+                                <button
+                                    className="hover: relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
+                                    type="button"
+                                >
+                                    <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                                        <PiGearSixFill className="h-5 w-5 text-blue-gray-500" />
+                                    </span>
+                                </button>
+
+
+                                <button
+                                    className="relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
+                                    type="button"
+                                >
+                                    <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
+                                        <FaBell className="h-5 w-5 text-blue-gray-500" />
+                                    </span>
+                                </button>
+                            </div>
+                            <button onClick={() => open(true)} className={`${toggleMenuState ? 'bg-blue-700' : 'hover:bg-blue-700'} relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-full text-xs text-gray-500 hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30 grid xl:hidden`}>
                                 <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-                                    <PiGearSixFill className="h-5 w-5 text-blue-gray-500" />
+                                    <RxHamburgerMenu className="h-6 w-6 text-white" />
                                 </span>
                             </button>
 
-                            <button
-                                className="relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
-                                type="button"
-                            >
-                                <span className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2">
-                                    <FaBell className="h-5 w-5 text-blue-gray-500" />
-                                </span>
-                            </button>
+
                         </div>
                     </div>
                 </div>

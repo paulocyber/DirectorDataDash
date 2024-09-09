@@ -65,7 +65,14 @@ export default function BarChartComparison<T>({ data, xKey, dataKeyOne, dataKeyT
                     <LabelList
                         position="top"
                         fill="#4b5563"
-                        formatter={(value: number) => formatCurrency(value)}
+                        formatter={(value: number) => {
+                            const formattedValue = formatCurrency(value);
+                            const maxLenght = 10;
+                            if(formattedValue.length > maxLenght) {
+                                return `${formattedValue.substring(0, maxLenght)}...`
+                            }
+                            return formattedValue
+                        }}
                         className="font-bold text-[11px]"
                     />
                     {data.map((item, index) => (
@@ -80,7 +87,14 @@ export default function BarChartComparison<T>({ data, xKey, dataKeyOne, dataKeyT
                     <LabelList
                         position="top"
                         fill="#4b5563"
-                        formatter={(value: number) => formatCurrency(value)}
+                        formatter={(value: number) => {
+                            const formattedValue = formatCurrency(value);
+                            const maxLenght = 10;
+                            if(formattedValue.length > maxLenght) {
+                                return `${formattedValue.substring(0, maxLenght)}...`
+                            }
+                            return formattedValue
+                        }}
                         className="font-bold text-[11px]"
                     />
                     {data.map((item, index) => (

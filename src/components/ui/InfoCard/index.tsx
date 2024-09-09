@@ -28,9 +28,7 @@ export default function InfoCard({ data }: { data: { icon: React.ElementType; ti
                 {data.map((info, index) => (
                     <div key={index} className="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md md:z-10">
                         <div className={`${bgColorClass} mx-4 rounded-xl overflow-hidden text-white shadow-black-500/40 shadow-lg absolute -mt-4 grid md:h-16 h-14 md:w-16 w-14 place-items-center`}>
-
                             < info.icon className="w-5 h-5" />
-
                         </div>
                         <div className="p-4 text-right">
                             <p className="block antialiased font-sans md:text-sm text-xs leading-normal font-normal text-blue-gray-600">
@@ -38,7 +36,6 @@ export default function InfoCard({ data }: { data: { icon: React.ElementType; ti
                             </p>
                             <h4 className={`block antialiased tracking-normal font-sans md:text-2xl text-xl font-semibold leading-snug ${info.title === "Valores vencidos" ? "text-red-500" : "text-blue-gray-600"}`}>
                                 <NumberAnimation value={info.value} />
-                                {/* {info.value} */}
                             </h4>
                         </div>
                     </div>

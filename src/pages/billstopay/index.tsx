@@ -101,7 +101,7 @@ export default function BillsToPayPage({ listBilletInOpen, listBilletPaid, listO
         <PageLayout description="Contas a pagar">
             <InfoCard data={infoDetailCard} />
             <Container>
-                <ToolBar title="Contas a pagar" handleRefreshClick={handleFetchData} displayCalendar={true} handleCleanFilter={handleCleanFilter} dateRange={date} handleDateRangePicker={handleDateRangePicker} href="/billstopay/table" descriptionHref="Tabela" />
+                <ToolBar title="Contas a pagar" handleRefreshClick={handleFetchData} displayCalendar={true} handleCleanFilter={handleCleanFilter} dateRange={date} handleDateRangePicker={handleDateRangePicker} href="/billstopay/table" descriptionHref="Tabela" displayInputSearch={false}/>
                 <ContainerGraphic loading={loading}>
                     <PieChart displayToolTip={true} ToolTipComponent={ToolTip} data={selectCostCenter} dataKey="value" label={(props) => <CustomLabel {...props} data={selectCostCenter} />} />
                     <BarChart

@@ -102,7 +102,7 @@ export default function SalesPage({ salesData, sellersData }: { salesData: sales
                     setEmp={setEmp}
                     emp={emp}
                 >
-                    <div className="w-full sm:flex hidden">
+                    <div className="w-full sm:flex ">
                         <div className="mr-auto md:mr-4 md:mt-0 mt-2 md:w-56 small-screen:w-full">
                             <Autocomplete
                                 aria-label="Filtro de vendedores"

@@ -109,19 +109,6 @@ export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }:
                             displayXAxis={true}
                             displayCartesianGrid={true}
                             palette={vibrantPalette}
-                            LabelListProps={{
-                                dataKey: "value",
-                                content: (props) => (
-                                    <CustomFormattedLabel
-                                        {...props}
-                                        position="top"
-                                        formatter={formatCurrency}
-                                        fill="#4b5563"
-                                        className="font-bold text-[11px]"
-                                        value={(props as any).value}
-                                    />
-                                ),
-                            }}
                         />
                     }
                 />
@@ -132,7 +119,7 @@ export default function SalesByGroupPage({ listSalesByGroup, listStockByGroup }:
                                 <div className="flex items-center">
                                     <p style={{ backgroundColor: vibrantPalette[index % vibrantPalette.length] }} className="rounded-full p-1 "></p>
 
-                                    <div className="text-gray-500 font-semibold text-sm pl-2">Estoque total em valor:</div>
+                                    <div className="text-gray-500 font-semibold text-sm pl-2 truncate">Estoque total em valor:</div>
                                 </div>
                                 <h4 className="text-2xl font-bold text-gray-700 text-xs">
                                     <NumberAnimation value={formatCurrency(stock.value)} />

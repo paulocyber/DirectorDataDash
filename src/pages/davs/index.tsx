@@ -23,6 +23,7 @@ import { fetchData } from "@/utils/fetchData/fetchData";
 
 // Tipagem
 import { ItemsDav } from "@/utils/types/dav";
+import ToolBar from "@/components/ui/toolbar";
 
 export default function DavReportPage({ listDav }: { listDav: ItemsDav[] }) {
     const [dav, setDav] = useState(listDav || [])
@@ -51,14 +52,18 @@ export default function DavReportPage({ listDav }: { listDav: ItemsDav[] }) {
         <PageLayout description="Relatorios dav's">
             <InfoCard data={infoDetailCard} />
             <Container>
-                <ContainerTable
+                <ToolBar
                     title="Relatrio Dav's"
+                    handleRefreshClick={fetchItemDavs}
                     displayCalendar={true}
+                    displayBtnDate={false}
+                    displayFormOfPayment={false}
+                />
+                <ContainerTable
                     collumns={columns}
                     renderCell={renderCell}
                     data={dav}
                     detail={handleClick}
-                    handleRefreshClick={fetchItemDavs}
                     loading={loading}
                 />
             </Container>

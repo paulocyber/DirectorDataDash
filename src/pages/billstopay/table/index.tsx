@@ -24,6 +24,7 @@ import { useState } from "react";
 import { BillsToPayItem } from "@/utils/types/billsToPay";
 import { DateValue, RangeValue } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
+import ToolBar from "@/components/ui/toolbar";
 interface BillsToPayProps {
     listBilletInOpen: BillsToPayItem[];
     listBilletPaid: BillsToPayItem[];
@@ -93,13 +94,9 @@ export default function BillsToPayPageTable({ listBilletInOpen, listBilletPaid, 
         <PageLayout description="Contas a pagar">
             <InfoCard data={infoDetailCard} />
             <Container>
-                <ContainerTable
+                <ToolBar
                     title="Contas a pagar"
-                    collumns={columns}
-                    renderCell={renderCell}
-                    data={filterSearch}
                     handleRefreshClick={handleFetchData}
-                    loading={loading}
                     href="/billstopay"
                     descriptionHref="Grafico"
                     displayCalendar={true}
@@ -110,6 +107,12 @@ export default function BillsToPayPageTable({ listBilletInOpen, listBilletPaid, 
                     searchFilter={search}
                     handleCleanFilter={handleCleanFilter}
                     generatePDF={generatePdf}
+                />
+                <ContainerTable
+                    collumns={columns}
+                    renderCell={renderCell}
+                    data={filterSearch}
+                    loading={loading}
                 />
             </Container>
         </PageLayout>

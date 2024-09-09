@@ -17,26 +17,14 @@ type ItemsCollumns = {
 }
 
 interface ContainerTableProps<T> {
-    title: string;
-    displayCalendar?: boolean;
-    displayInputSearch?: boolean;
-    descriptionHref?: string;
-    href?: string;
-    collumns: ItemsCollumns[]
+    collumns: ItemsCollumns[];
     data: T[];
     loading: boolean;
-    dateRange?: RangeValue<DateValue>;
-    setFilterSearch?: (value: string) => void
-    searchFilter?: string;
-    handleDateRangePicker?: (date: RangeValue<DateValue>) => void;
     renderCell: (item: T, columnUid: string) => React.ReactNode;
     detail?: (value: string) => void;
-    handleRefreshClick: () => void;
-    handleCleanFilter?: () => void;
-    generatePDF?: () => void;
 }
 
-export default function ContainerTable<T>({ title, displayCalendar, collumns, data, renderCell, detail, handleRefreshClick, loading, descriptionHref, href, dateRange, handleDateRangePicker, displayInputSearch, setFilterSearch, searchFilter, handleCleanFilter, generatePDF }: ContainerTableProps<T>) {
+export default function ContainerTable<T>({ collumns, data, loading, renderCell, detail }: ContainerTableProps<T>) {
     const [limit, setLimit] = useState(0)
 
     const fetchMore = () => {
@@ -47,20 +35,6 @@ export default function ContainerTable<T>({ title, displayCalendar, collumns, da
 
     return (
         <>
-            <ToolBar
-                title={title}
-                displayCalendar={displayCalendar}
-                handleRefreshClick={handleRefreshClick}
-                href={href}
-                descriptionHref={descriptionHref}
-                dateRange={dateRange}
-                handleDateRangePicker={handleDateRangePicker}
-                displayInputSearch={displayInputSearch}
-                setFilterSearch={setFilterSearch}
-                searchFilter={searchFilter}
-                handleCleanFilter={handleCleanFilter}
-                generatePDF={generatePDF}
-            />
             <main className="flex w-full pb-6 h-[450px] flex-col px-5">
                 {
                     loading

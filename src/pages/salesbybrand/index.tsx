@@ -6,7 +6,6 @@ import PageLayout from "@/components/ui/layout";
 import Container from "@/components/ui/container";
 import ContainerGraphic from "@/components/ui/container/graphic";
 import ToolBar from "@/components/ui/toolbar";
-import CustomFormattedLabel from "@/components/ui/sciences/BarChart/labelList/salesByBrand";
 import BarChart from "@/components/ui/sciences/BarChart";
 import BarChartComparison from "@/components/ui/sciences/BarChart/comparison";
 
@@ -19,7 +18,6 @@ import { highlightedColor } from "@/data/graphicColorPalette/palletBrand";
 // Utils
 import getDate from "@/utils/date/currentDate";
 import { fetchSalesByBrand } from "@/utils/fetchData/fetchSalesByBrand";
-import { formatCurrency } from "@/utils/mask/formatCurrency";
 
 // Tipagem
 import { StockByBrand } from "@/utils/types/stock";
@@ -113,7 +111,7 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
     return (
         <PageLayout description="Vendas por marcas">
             <Container>
-                <ToolBar title="Vendas por marcas" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter} />
+                <ToolBar title="Vendas por marcas" handleRefreshClick={handleFetchData} displayBtnDate={true} selectedDateRange={selectedDateRange} handleDate={handleDate} displayFormOfPayment={true} handleCleanFilter={handleCleanFilter} displayCalendar={false}/>
                 <ContainerGraphic
                     loading={loading}
                     children={
@@ -124,19 +122,6 @@ export default function SalesByBrandPage({ listSalesByBrand, listStockByBrand }:
                             displayXAxis={true}
                             displayCartesianGrid={true}
                             palette={highlightedColor}
-                            LabelListProps={{
-                                dataKey: "value",
-                                content: (props) => (
-                                    <CustomFormattedLabel
-                                        {...props}
-                                        position="top"
-                                        formatter={formatCurrency}
-                                        fill="#4b5563"
-                                        className="font-bold text-[11px] items-center flex w-full justify-center truncate "
-                                        value={(props as any).value}
-                                    />
-                                ),
-                            }}
                         />
                     }
                 />
