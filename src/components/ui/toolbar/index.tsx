@@ -108,6 +108,7 @@ export default function ToolBar({
                                     startContent={<CiSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
                                 />
                             </div>
+                            
                             <div className="lg:flex hidden ">
                                 <DateRangePicker
                                     aria-label="filtro de data"

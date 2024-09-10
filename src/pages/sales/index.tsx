@@ -123,7 +123,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                     setEmp={setEmp}
                     emp={emp}
                 >
-                    <div className="w-full sm:flex ">
+                    <div className="w-full sm:flex hidden">
                         <div className="mr-auto md:mr-4 md:mt-0 mt-2 md:w-56 small-screen:w-full">
                             <Autocomplete
                                 aria-label="Filtro de vendedores"
@@ -145,6 +145,25 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                         </div>
                     </div>
                 </ToolBar>
+                <div className="mr-auto mb-2 w-full sm:hidden flex w-full px-4">
+                    <Autocomplete
+                        aria-label="Filtro de vendedores"
+                        placeholder="Selecione o vendedor"
+                        size="sm"
+                        value={selectSeller}
+                        onSelectionChange={handleFilters}
+                        variant="bordered"
+                        defaultItems={sellers}
+                        className=""
+                        allowsCustomValue={true}
+                    >
+                        {(seller) => (
+                            <AutocompleteItem key={seller.ID_FNC}>
+                                {seller.APELIDO_PSS}
+                            </AutocompleteItem>
+                        )}
+                    </Autocomplete>
+                </div>
                 <div className="w-full flex px-7">
                     <Progress
                         size="md"
