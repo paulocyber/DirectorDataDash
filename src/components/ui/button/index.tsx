@@ -6,7 +6,7 @@ import { ComponentProps, ReactNode } from "react";
 
 // Tipagem
 type ButtonProps = ComponentProps<typeof Btn> & {
-    children: ReactNode
+    children?: ReactNode
 }
 
 export function Button({ children, ...rest }: ButtonProps) {

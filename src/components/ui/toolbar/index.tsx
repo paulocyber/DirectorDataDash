@@ -78,9 +78,11 @@ export default function ToolBar({
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex w-full items-center justify-center  bg-white py-4 px-7">
+            <div className="flex w-full items-center justify-centerbg-white py-4 px-7">
                 <div className="flex justify-start w-full items-center text-gray-800">
-                    <h1 className="font-bold md:text-lg text-sm">{title} </h1>
+                    <div className="flex w-full">
+                        <h1 className="font-bold md:text-lg text-sm">{title} </h1>
+                    </div>
                     <div className="w-full items-center lg:flex hidden">
                         <div className={`${!displayBtnDate && 'hidden'} flex w-full items-center justify-start space-x-1 bg-white pb-4 px-7`}>
                             <Button onClick={() => { handleDate && handleDate('day') }} color={selectedDateRange === 'day' ? "primary" : undefined} className={selectedDateRange != 'day' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Dia</ Button>

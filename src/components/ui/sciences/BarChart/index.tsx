@@ -6,7 +6,7 @@ import { formatCurrency } from "@/utils/mask/formatCurrency";
 
 // Tipagem
 interface BarChartData {
-    value: number; // Adicione a propriedade 'value'
+    value?: number; // Adicione a propriedade 'value'
     [key: string]: any; // Permite outras propriedades
 }
 
@@ -56,7 +56,7 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                         />
                     ))}
                     {LabelListProps ? (
-                        <LabelList {...LabelListProps} /> 
+                        <LabelList {...LabelListProps} />
                     ) : (
                         <LabelList
                             position="top"

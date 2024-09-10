@@ -26,5 +26,11 @@ export const salesQueries = ({
     sellers ? `where dvd.id_vendedor = ${sellers}` : ""
   } ORDER BY empresa, vendedor`;
 
-  return sales;
+  let topTenSellers = `select tbv.id, tbv.vendedor, tbv.valor_total_liquido from ( select sds.id_fnc as id, fnc.apelido_pss as vendedor, sum(sdi.valor_liquido_sdi) as valor_total_liquido from saidas_itens sdi inner 
+  join saidas sds on sds.id_sds = sdi.id_sds inner join pessoas pss on pss.id_pss = sds.id_pss inner join pessoas fnc on fnc.id_pss = sds.id_fnc inner join produtos prd on sdi.id_prd = prd.id_prd inner join empresas 
+  emp on emp.id_emp = sds.id_emp left join fornecedores_produtos frp on (frp.id_prd = prd.id_prd and frp.nivel_frp = 'P') left join v_fornecedores frn on frn.id_pss = frp.id_pss where sdi.id_sdi is not null and 
+  sds.status_sds = '2' and sds.datahora_finalizacao_sds between '${dateInit} 00:00:00' and '${dateEnd} 23:59:59' and sds.tipo_sds in ('4','5','9') and emp.id_emp = ${emp} group by 1, 2) tbv order by tbv.valor_total_liquido
+  desc rows 10`;
+
+  return { sales, topTenSellers };
 };

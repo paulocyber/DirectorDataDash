@@ -4,19 +4,21 @@ import { fetchData } from "../fetchData";
 import { goalsQueries } from "@/utils/queries/goals";
 
 // Tipagem
-import { salesData } from "@/utils/types/sales";
+import { salesData, topSalesData } from "@/utils/types/sales";
 interface FetchSales {
   setLoading: (value: boolean) => void;
   setSales: (value: salesData[]) => void;
+  setTopSeller: (value: topSalesData[]) => void;
   dateInit: string;
   dateEnd: string;
   emp?: string;
-  sellers?: string ;
+  sellers?: string;
 }
 
 export async function fetchSales({
   setLoading,
   setSales,
+  setTopSeller,
   dateInit,
   dateEnd,
   emp,
@@ -26,13 +28,23 @@ export async function fetchSales({
 
   let goalsData: any[] = [];
   let salesData: any[] = [];
+  let topSeller: any[] = [];
 
-  const sales = salesQueries({ dateInit, dateEnd, emp, sellers });
+  const { sales, topTenSellers } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp,
+    sellers,
+  });
   const { storeGoals, individualGoals } = goalsQueries({ id: sellers });
 
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
-    fetchData({ query: sellers ? individualGoals : storeGoals, setData: (data) => (goalsData = data) }),
+    fetchData({
+      query: sellers ? individualGoals : storeGoals,
+      setData: (data) => (goalsData = data),
+    }),
+    fetchData({ query: topTenSellers, setData: (data) => (topSeller = data) }),
   ];
 
   await Promise.all(queries);
@@ -43,9 +55,27 @@ export async function fetchSales({
 
   const data = [
     { name: "Vendas", value: totalSalesValue },
-    { name: "Metas", value: sellers? parseFloat(goalsData[0].VALOR_INDIVIDUAL_MTI) : parseFloat(goalsData[0].VALOR_MTA) },
+    {
+      name: "Metas",
+      value: sellers
+        ? parseFloat(goalsData[0].VALOR_INDIVIDUAL_MTI)
+        : parseFloat(goalsData[0].VALOR_MTA),
+    },
   ];
 
+  const formattedTopSellerData = topSeller.map((item: topSalesData) => {
+    const valueLiquid =
+      typeof item.VALOR_TOTAL_LIQUIDO === "string"
+        ? parseFloat(item.VALOR_TOTAL_LIQUIDO.replace(",", "."))
+        : item.VALOR_TOTAL_LIQUIDO;
+
+    return {
+      ...item,
+      VALOR_TOTAL_LIQUIDO: valueLiquid,
+    };
+  });
+
   setSales(data);
+  setTopSeller(formattedTopSellerData);
   setLoading(false);
 }
