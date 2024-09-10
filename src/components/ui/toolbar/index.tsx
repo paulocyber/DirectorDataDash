@@ -108,7 +108,7 @@ export default function ToolBar({
                                     startContent={<CiSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />}
                                 />
                             </div>
-                            
+
                             <div className="lg:flex hidden ">
                                 <DateRangePicker
                                     aria-label="filtro de data"
@@ -159,15 +159,6 @@ export default function ToolBar({
                                     }
                                 />
                                 <DropdownItem
-                                    startContent={<GoSync className={animation ? "animate-spin text-lg" : "text-lg"} />}
-                                    onMouseEnter={() => setAnimation(true)}
-                                    onMouseLeave={() => setAnimation(false)}
-                                    className="flex justify-center items-center text-sm font-medium py-2"
-                                    textValue="atualizar"
-                                    onClick={handleRefreshClick}
-                                    endContent={<span className="md:text-sm text-xs w-full">Atualizar</span>}
-                                />
-                                <DropdownItem
                                     isReadOnly
                                     startContent={<FaStore className="text-lg" />}
                                     className={displayEmp ? "flex justify-center items-center w-full text-sm font-medium py-2" : "hidden"}
@@ -187,6 +178,15 @@ export default function ToolBar({
                                             <AutocompleteItem key="3">Play Up</AutocompleteItem>
                                         </Autocomplete>
                                     }
+                                />
+                                <DropdownItem
+                                    startContent={<GoSync className={animation ? "animate-spin text-lg" : "text-lg"} />}
+                                    onMouseEnter={() => setAnimation(true)}
+                                    onMouseLeave={() => setAnimation(false)}
+                                    className="flex justify-center items-center text-sm font-medium py-2"
+                                    textValue="atualizar"
+                                    onClick={handleRefreshClick}
+                                    endContent={<span className="md:text-sm text-xs w-full">Atualizar</span>}
                                 />
                                 <DropdownItem
                                     startContent={<RiFormatClear className="text-lg" />}
