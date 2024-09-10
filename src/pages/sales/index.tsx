@@ -5,7 +5,6 @@ import { useState } from "react";
 import Container from "@/components/ui/container";
 import GraphicContainer from "@/components/ui/container/graphic";
 import PageLayout from "@/components/ui/layout";
-import { CustomLabel } from "@/components/ui/sciences/pieChart/label/billsToPay";
 import SalesTooltip from "@/components/ui/sciences/pieChart/toolTip/sales";
 import ToolBar from "@/components/ui/toolbar";
 import { Button } from "@/components/ui/button";
@@ -24,11 +23,13 @@ import { formatCurrency } from "@/utils/mask/formatCurrency";
 import { getMonthName } from "@/utils/date/getMonthName";
 import { getEmpName } from "@/utils/emp/getEmpName";
 
+// Dados
+import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
+
 // Types
 import { salesData, topSalesData } from "@/utils/types/sales";
 import { Sellers } from "@/utils/types/sellers";
 import { parseDate } from '@internationalized/date';
-import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 interface SalesProps {
     salesData: salesData[];
     sellersData: Sellers[];
