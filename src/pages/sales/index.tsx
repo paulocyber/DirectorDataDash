@@ -165,8 +165,8 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                     <p className="text-sm text-gray-700 dark:text-white">Acumulados da meta de <span className="font-bold">{formatCurrency(sales[1].value)}</span></p>
                 </div>
             </Container>
-            <div className="w-full flex">
-                <div className="w-1/3">
+            <div className="w-full lg:flex ">
+                <div className="lg:w-1/3">
                     <Container>
                         <div className="w-full flex px-4 justify-between items-center p-2">
                             <div>
@@ -178,9 +178,14 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                         </div>
 
                         <div className="w-full">
-                            <div className="flex px-4 pb-3 items-center">
+                            <div className="flex w-full px-4 pb-3 items-center">
                                 <FaFlag className="text-sm" />
-                                <span className="pl-3 text-sm flex">01 de {getMonthName(date.start.month)} -  <p className="text-sm pl-2">{getLastDayOfMonth(date.start.year, date.start.month)} de {getMonthName(date.start.month)}</p></span>
+                                <span className="pl-3 text-sm flex truncate ">
+                                    01 de {getMonthName(date.start.month)} -
+                                    <p className="text-sm pl-2 truncate">
+                                        {getLastDayOfMonth(date.start.year, date.start.month)} de {getMonthName(date.start.month)}
+                                    </p>
+                                </span>
                             </div>
                             <div className="flex px-4 pb-3 items-center">
                                 <FaHotel className="text-sm" />
@@ -201,6 +206,8 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                                 data={topSeller}
                                 dataKey="VALOR_TOTAL_LIQUIDO"
                                 dataKeyXAxis="VENDEDOR"
+                                displayToolTip={true}
+                                ToolTipComponent={SalesTooltip}
                                 displayXAxis={true}
                                 displayCartesianGrid={true}
                                 palette={vibrantPalette}

@@ -14,7 +14,7 @@ const SalesTooltip : React.FC<TooltipProps<number, string>> = ({ active, payload
 
         return (
             <div className="bg-white border rounded-md p-4 shadow-lg">
-                <p className="text-xs font-medium text-gray-700">Valor das {name}: </p>
+                <p className="text-xs font-medium text-gray-700">Valor das Vendas: </p>
                 <p className="text-lg font-bold text-emerald-500">{formatCurrency(numericValue)}</p>
             </div>
         );
