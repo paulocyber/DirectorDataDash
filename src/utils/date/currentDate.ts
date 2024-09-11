@@ -27,6 +27,10 @@ export default function getDate() {
   const endOfWeekDate = new Date(startOfWeekDate);
   endOfWeekDate.setDate(startOfWeekDate.getDate() + 6);
 
+  function getLastDayOfMonth(year: number, month: number) {
+    return new Date(year, month, 0).getDate();
+  }
+
   return {
     today: formatDate(today),
     day,
@@ -36,5 +40,6 @@ export default function getDate() {
     monthExpired,
     startOfWeek: formatDate(startOfWeekDate),
     endOfWeek: formatDate(endOfWeekDate),
+    getLastDayOfMonth
   };
 }

@@ -7,13 +7,13 @@ import { salesQueries } from "../queries/sales";
 import getDate from "../date/currentDate";
 import { goalsQueries } from "../queries/goals";
 import { sellersQueries } from "../queries/sellers";
-import { topSalesData } from "../types/sales";
 
 //Tipagem
+import { topSalesData } from "../types/sales";
 
 export const getSalesPageProps = canSSRAuth(async (ctx) => {
   const apiClient = setupApiClient(ctx);
-  const { year, month, day, today } = getDate();
+  const { year, month, today } = getDate();
   const { sales, topTenSellers } = salesQueries({
     dateInit: `${year}/${month}/01`,
     dateEnd: today,
@@ -33,15 +33,8 @@ export const getSalesPageProps = canSSRAuth(async (ctx) => {
     query: topTenSellers,
   });
 
-  const totalSalesValue = respSales.data.returnObject.body.reduce(
-    (acc: number, sale: any) => {
-      return acc + parseFloat(sale.VALOR_LIQUIDO);
-    },
-    0
-  );
-
   const data = [
-    { name: "Vendas", value: totalSalesValue },
+    { name: "Vendas", value: parseFloat(respSales.data.returnObject.body[0].VALOR_LIQUIDO) },
     {
       name: "Metas",
       value: parseFloat(respGoals.data.returnObject.body[0].VALOR_MTA),

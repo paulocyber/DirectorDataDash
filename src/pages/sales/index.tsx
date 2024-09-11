@@ -14,6 +14,7 @@ import BarChart from "@/components/ui/sciences/BarChart";
 import { IoIosArrowDown } from "react-icons/io";
 import { Autocomplete, AutocompleteItem, DateValue, Progress, RangeValue } from "@nextui-org/react";
 import { FaClockRotateLeft, FaFlag, FaHotel } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 // Utils
 import { fetchSales } from "@/utils/fetchData/fetchSales";
@@ -30,7 +31,6 @@ import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 import { salesData, topSalesData } from "@/utils/types/sales";
 import { Sellers } from "@/utils/types/sellers";
 import { parseDate } from '@internationalized/date';
-import { toast } from "react-toastify";
 interface SalesProps {
     salesData: salesData[];
     sellersData: Sellers[];
@@ -45,7 +45,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
     const [emp, setEmp] = useState('1');
     const [loading, setLoading] = useState<boolean>(false);
 
-    const { year, month, today } = getDate();
+    const { year, month, today, getLastDayOfMonth } = getDate();
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date(today).toISOString().split('T')[0]),
@@ -107,11 +107,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
         });
     };
 
-    const getLastDayOfMonth = (year: number, month: number) => {
-        return new Date(year, month, 0).getDate();
-    };
-
-    if(sales[0].value === 0) {
+    if(sales[1].value === 0) {
         toast.error("Este vendedor não possui metas definidas.")
     }
 

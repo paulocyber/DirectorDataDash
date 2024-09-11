@@ -54,19 +54,15 @@ export async function fetchSales({
 
   await Promise.all(queries);
 
-  const totalSalesValue = salesData.reduce((acc: number, sale: any) => {
-    return acc + parseFloat(sale.VALOR_LIQUIDO);
-  }, 0);
-
   const individualGoalValue = sellers
     ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
     : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
 
   const data = [
-    { name: "Vendas", value: totalSalesValue },
+    { name: "Vendas", value:  parseFloat(salesData[0].VALOR_LIQUIDO)},
     { name: "Metas", value: individualGoalValue },
   ];
-
+console.log("Dados: ", data)
   const formattedTopSellerData = topSeller.map((item: topSalesData) => {
     const valueLiquid =
       typeof item.VALOR_TOTAL_LIQUIDO === "string"
