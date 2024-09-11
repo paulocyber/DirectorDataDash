@@ -1,8 +1,9 @@
 // Biblioteca
 import { Bar, BarChart as BarChartComponents, CartesianGrid, Cell, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-// Dados
+// Utils
 import { formatCurrency } from "@/utils/mask/formatCurrency";
+import { truncateString } from "@/utils/mask/truncateString";
 
 // Tipagem
 interface BarChartData {
@@ -30,10 +31,10 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                 {displayCartesianGrid && <CartesianGrid strokeDasharray="3 2" />}
                 {displayXAxis && (
                     <XAxis
-                        tickFormatter={(dataKeyXAxis) => dataKeyXAxis}
+                        tickFormatter={(dataKeyXAxis) => truncateString(dataKeyXAxis, 7)}
                         tickLine={false}
                         dataKey={dataKeyXAxis}
-                        className="font-bold text-[10px] truncate "
+                        className="font-bold text-[10px] "
                     />
                 )}
                 <YAxis

@@ -30,6 +30,7 @@ import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 import { salesData, topSalesData } from "@/utils/types/sales";
 import { Sellers } from "@/utils/types/sellers";
 import { parseDate } from '@internationalized/date';
+import { toast } from "react-toastify";
 interface SalesProps {
     salesData: salesData[];
     sellersData: Sellers[];
@@ -109,6 +110,10 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
     const getLastDayOfMonth = (year: number, month: number) => {
         return new Date(year, month, 0).getDate();
     };
+
+    if(sales[0].value === 0) {
+        toast.error("Esse vendedor não tem metas")
+    }
 
     return (
         <PageLayout description="Vendas e Metas">

@@ -37,8 +37,11 @@ export async function fetchSales({
     emp,
     sellers,
   });
-  const { year, month, today } = getDate();
-  const { storeGoals, individualGoals } = goalsQueries({ id: sellers, dateInit: `${year}/${month}/01` });
+  const { year, month } = getDate();
+  const { storeGoals, individualGoals } = goalsQueries({
+    id: sellers,
+    dateInit: `${year}/${month}/01`,
+  });
 
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
@@ -55,14 +58,13 @@ export async function fetchSales({
     return acc + parseFloat(sale.VALOR_LIQUIDO);
   }, 0);
 
+  const individualGoalValue = sellers
+    ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
+    : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
+
   const data = [
     { name: "Vendas", value: totalSalesValue },
-    {
-      name: "Metas",
-      value: sellers
-        ? parseFloat(goalsData[0].VALOR_INDIVIDUAL_MTI)
-        : parseFloat(goalsData[0].VALOR_MTA),
-    },
+    { name: "Metas", value: individualGoalValue },
   ];
 
   const formattedTopSellerData = topSeller.map((item: topSalesData) => {
@@ -76,7 +78,7 @@ export async function fetchSales({
       VALOR_TOTAL_LIQUIDO: valueLiquid,
     };
   });
-
+  // console.log("Dados: ", data);
   setSales(data);
   setTopSeller(formattedTopSellerData);
   setLoading(false);
