@@ -59,10 +59,13 @@ export async function fetchSales({
     : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
 
   const data = [
-    { name: "Vendas", value:  parseFloat(salesData[0].VALOR_LIQUIDO)},
+    {
+      name: "Vendas",
+      value: parseFloat(String(salesData[0].VALOR_LIQUIDO).replace(",", ".")),
+    },
     { name: "Metas", value: individualGoalValue },
   ];
-
+  
   const formattedTopSellerData = topSeller.map((item: topSalesData) => {
     const valueLiquid =
       typeof item.VALOR_TOTAL_LIQUIDO === "string"
