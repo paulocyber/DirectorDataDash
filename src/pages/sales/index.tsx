@@ -110,10 +110,8 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
 
     if (sales[1].value === 0 && selectSeller !== '') {
         toast.error("Este vendedor não possui metas definidas.");
-    } else {
-        toast.error("Não possui metas definidas neste mês. ");
     }
-    
+
     return (
         <PageLayout description="Vendas e Metas">
             <Container>
