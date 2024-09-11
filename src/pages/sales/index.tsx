@@ -112,7 +112,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
     };
 
     if(sales[0].value === 0) {
-        toast.error("Esse vendedor não tem metas")
+        toast.error("Este vendedor não possui metas definidas.")
     }
 
     return (
