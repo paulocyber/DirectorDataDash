@@ -40,7 +40,7 @@ export async function fetchSales({
   const { year, month } = getDate();
   const { storeGoals, individualGoals } = goalsQueries({
     id: sellers,
-    dateInit: `${year}/${month}/01`,
+    dateInit,
   });
 
   const queries = [
@@ -62,7 +62,7 @@ export async function fetchSales({
     { name: "Vendas", value:  parseFloat(salesData[0].VALOR_LIQUIDO)},
     { name: "Metas", value: individualGoalValue },
   ];
-console.log("Dados: ", data)
+
   const formattedTopSellerData = topSeller.map((item: topSalesData) => {
     const valueLiquid =
       typeof item.VALOR_TOTAL_LIQUIDO === "string"

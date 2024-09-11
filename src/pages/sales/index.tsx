@@ -1,5 +1,5 @@
 // React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Components
 import Container from "@/components/ui/container";
@@ -107,10 +107,13 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
         });
     };
 
-    if(sales[1].value === 0) {
-        toast.error("Este vendedor não possui metas definidas.")
-    }
 
+    if (sales[1].value === 0 && selectSeller !== '') {
+        toast.error("Este vendedor não possui metas definidas.");
+    } else {
+        toast.error("Não possui metas definidas neste mês. ");
+    }
+    
     return (
         <PageLayout description="Vendas e Metas">
             <Container>
