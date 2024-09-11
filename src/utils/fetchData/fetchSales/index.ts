@@ -5,6 +5,7 @@ import { goalsQueries } from "@/utils/queries/goals";
 
 // Tipagem
 import { salesData, topSalesData } from "@/utils/types/sales";
+import getDate from "@/utils/date/currentDate";
 interface FetchSales {
   setLoading: (value: boolean) => void;
   setSales: (value: salesData[]) => void;
@@ -36,7 +37,8 @@ export async function fetchSales({
     emp,
     sellers,
   });
-  const { storeGoals, individualGoals } = goalsQueries({ id: sellers });
+  const { year, month, today } = getDate();
+  const { storeGoals, individualGoals } = goalsQueries({ id: sellers, dateInit: `${year}/${month}/01` });
 
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
