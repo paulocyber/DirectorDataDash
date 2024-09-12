@@ -12,6 +12,7 @@ interface FetchSales {
   setTopSeller: (value: topSalesData[]) => void;
   dateInit: string;
   dateEnd: string;
+  month: number;
   emp?: string;
   sellers?: string;
 }
@@ -22,6 +23,7 @@ export async function fetchSales({
   setTopSeller,
   dateInit,
   dateEnd,
+  month,
   emp,
   sellers,
 }: FetchSales) {
@@ -37,10 +39,12 @@ export async function fetchSales({
     emp,
     sellers,
   });
-  const { year, month } = getDate();
+  const { year } = getDate();
   const { storeGoals, individualGoals } = goalsQueries({
     id: sellers,
     dateInit,
+    month,
+    year
   });
 
   const queries = [

@@ -57,6 +57,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
             emp,
             sellers: selectSeller,
+            month: date.start.month,
             setLoading,
             setSales,
             setTopSeller
@@ -68,6 +69,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
         await fetchSales({
             dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
             dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
+            month: date.start.month,
             emp,
             sellers: selectSeller,
             setLoading,
@@ -86,6 +88,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
         await fetchSales({
             dateInit: `${year}/${month}/01`,
             dateEnd: today,
+            month: month,
             emp,
             setLoading,
             setSales,
@@ -99,6 +102,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
         await fetchSales({
             dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
+            month: date.start.month,
             setLoading,
             setSales,
             setTopSeller,
