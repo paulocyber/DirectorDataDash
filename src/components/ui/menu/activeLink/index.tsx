@@ -9,12 +9,32 @@ import { ReactNode } from "react"
 type ActiveLinkProps = LinkProps & {
     children: ReactNode;
     nameLink: string;
+    role: string;
 }
 
-export default function ActiveLink({ children, href, nameLink }: ActiveLinkProps) {
-    const pathName = usePathname()
+// Função de roles
+function canAccess(role: string, pathName: string) {
+    const routesRestrictedBySellers = [
+        "/davs",
+        "/salesbygroup",
+        "/salesbybrand",
+        "/billstopay",
+        "/billstopay/table",
+    ];
+
+    // Permitir acesso apenas a "/sales" para vendedores
+    return role !== "vendedor" || pathName === "/sales";
+}
+
+export default function ActiveLink({ children, href, nameLink, role }: ActiveLinkProps) {
+    const pathName = usePathname();
     const isActive = pathName === href.toString() ||
         (href === "/davs" && pathName.startsWith('/detaildavs')) || (href === "/billstopay" && pathName.startsWith('/billstopay'));
+
+    // Verifique se o link pode ser acessado
+    if (!canAccess(role, href.toString())) {
+        return null; // Não renderiza nada se não puder acessar
+    }
 
     return (
         <Link
@@ -26,5 +46,5 @@ export default function ActiveLink({ children, href, nameLink }: ActiveLinkProps
                 {nameLink}
             </p>
         </Link>
-    )
+    );
 }

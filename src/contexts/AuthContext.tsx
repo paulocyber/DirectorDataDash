@@ -19,6 +19,7 @@ type SignInProps = {
 
 type AuthContextData = {
     user: string;
+    role: string;
     signIn: (credentials: SignInProps) => Promise<void>;
     signOut: () => void;
 }
@@ -28,6 +29,7 @@ export const AuthContext = createContext({} as AuthContextData);
 export function signOut() {
     try {
         destroyCookie(undefined, '@nextauth.token');
+        destroyCookie(undefined, '@nextauth.role'); // Remove o role
         Router.push("/");
     } catch (err) {
         console.error("Error ao deslogar: ", err);
@@ -36,15 +38,17 @@ export function signOut() {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [userName, setUserName] = useState<string>("");
+    const [roleUser, setRoleUser] = useState<string>("");
 
     useEffect(() => {
-        const { '@nextauth.token': token } = parseCookies();
+        const { '@nextauth.token': token, '@nextauth.role': role } = parseCookies();
 
         async function loadUser() {
             if (token) {
                 try {
-                    const resp = await api.post('/v1/auth/validate', { token: token });
+                    const resp = await api.post('/v1/auth/validate', { token });
                     setUserName(resp.data.returnObject.body.username as string);
+                    setRoleUser(role);
                 } catch (err) {
                     console.error("Erro ao validar token:", err);
                     signOut();
@@ -63,19 +67,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
 
             const { access_token } = resp.data.returnObject.body;
+            const { role } = resp.data.returnObject.body.user;
 
             setCookie(undefined, '@nextauth.token', access_token, {
                 maxAge: 60 * 60 * 24 * 30, // Expirar em 1 mês
                 path: "/" // Quais caminhos terão acesso ao cookie
             });
 
+            // Armazena o role no cookie
+            setCookie(undefined, '@nextauth.role', role, {
+                maxAge: 60 * 60 * 24 * 30,
+                path: "/"
+            });
+
             setUserName(username);
+            setRoleUser(role);
 
             api.defaults.headers['Authorization'] = `Bearer ${access_token}`;
 
             toast.success('Bem vindo!', { icon: <span>🚀</span> });
 
-            Router.push('/davs');
+            if(role === "vendedor") {
+                Router.push('/sales');
+            } else {
+                Router.push('/davs');
+            }
+            
         } catch (err) {
             toast.error("Erro ao acessar!");
             console.log("Error: ", err);
@@ -83,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user: userName, signIn, signOut }}>
+        <AuthContext.Provider value={{ user: userName, role: roleUser, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
     );

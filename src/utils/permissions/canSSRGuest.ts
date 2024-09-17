@@ -11,13 +11,21 @@ import { parseCookies } from "nookies";
 export function canSSRGuest<P extends { [key: string]: any }>(
   fn: GetServerSideProps<P>
 ) {
-  return async (
-    ctx: GetServerSidePropsContext
-  ): Promise<GetServerSidePropsResult<P>> => {
+  return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = parseCookies(ctx);
 
-    // Se o cara tentar acessa pagina  porem tendo login salvo sera redirecionador
-    if (cookies["@nextauth.token"]) {
+    // Se o usuário estiver logado, redireciona para "/davs"
+    if (cookies["@nextauth.token"] && cookies["@nextauth.role"]) {
+      
+      // if(cookies["@nextauth.role"]) {
+      //   return {
+      //     redirect: {
+      //       destination: "/sales",
+      //       permanent: false,
+      //     },.
+      //   };
+      // }
+
       return {
         redirect: {
           destination: "/davs",
@@ -25,6 +33,8 @@ export function canSSRGuest<P extends { [key: string]: any }>(
         },
       };
     }
+
+    
 
     return await fn(ctx);
   };

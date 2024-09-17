@@ -44,7 +44,7 @@ export function SideNav({ toggleMenuState, Close }: SideNavProps) {
         bgColorClass = "bg-blue-700";
     }
 
-    const { user } = useContext(AuthContext)
+    const { user, role } = useContext(AuthContext)
 
     return (
         <aside className={`${bgColorClass} fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 ${!toggleMenuState && "-translate-x-80"}`}>
@@ -73,27 +73,27 @@ export function SideNav({ toggleMenuState, Close }: SideNavProps) {
             <div className="m-4 h-screen">
                 <ul className="mb-4 flex flex-col gap-2">
                     <li>
-                        <ActiveLink href="/davs" nameLink="Relatório de DAV's">
+                        <ActiveLink href="/davs" nameLink="Relatório de DAV's" role={role}>
                             <FaTable className="w-5 h-5" />
                         </ActiveLink>
                     </li>
                     <li>
-                        <ActiveLink href="/billstopay" nameLink="Contas a pagar">
+                        <ActiveLink href="/billstopay" nameLink="Contas a pagar" role={role}>
                             {router.pathname === '/billstopay/table' ? <FaTable className="w-5 h-5" /> : <TiChartPieOutline className="w-7 h-7" />}
                         </ActiveLink>
                     </li>
                     <li>
-                        <ActiveLink href="/salesbybrand" nameLink="Vendas por marcas">
+                        <ActiveLink href="/salesbybrand" nameLink="Vendas por marcas" role={role}>
                             <TiChartPieOutline className="w-6 h-6" />
                         </ActiveLink>
                     </li>
                     <li>
-                        <ActiveLink href="/salesbygroup" nameLink="Vendas por grupo">
+                        <ActiveLink href="/salesbygroup" nameLink="Vendas por grupo" role={role}>
                             <TiChartPieOutline className="w-6 h-6" />
                         </ActiveLink>
                     </li>
                     <li>
-                        <ActiveLink href="/sales" nameLink="Vendas e Metas">
+                        <ActiveLink href="/sales" nameLink="Vendas e Metas" role={role}>
                             <TiChartPieOutline className="w-6 h-6" />
                         </ActiveLink>
                     </li>

@@ -3,6 +3,9 @@ import { salesQueries } from "@/utils/queries/sales";
 import { fetchData } from "../fetchData";
 import { goalsQueries } from "@/utils/queries/goals";
 
+// Bibliotecas
+import { parseCookies } from "nookies";
+
 // Tipagem
 import { salesData, topSalesData } from "@/utils/types/sales";
 import getDate from "@/utils/date/currentDate";
@@ -15,6 +18,7 @@ interface FetchSales {
   month: number;
   emp?: string;
   sellers?: string;
+  surname?: string;
 }
 
 export async function fetchSales({
@@ -26,8 +30,12 @@ export async function fetchSales({
   month,
   emp,
   sellers,
+  surname,
 }: FetchSales) {
   setLoading(true);
+
+  const cookies = parseCookies();
+  const { "@nextauth.role": role } = cookies;
 
   let goalsData: any[] = [];
   let salesData: any[] = [];
@@ -36,21 +44,28 @@ export async function fetchSales({
   const { sales, topTenSellers } = salesQueries({
     dateInit,
     dateEnd,
+    surname: role === "vendedor" ? surname : '',
     emp,
     sellers,
   });
   const { year } = getDate();
   const { storeGoals, individualGoals } = goalsQueries({
     id: sellers,
+    surname,
     dateInit,
     month,
-    year
+    year,
   });
 
   const queries = [
     fetchData({ query: sales, setData: (data) => (salesData = data) }),
     fetchData({
-      query: sellers ? individualGoals : storeGoals,
+      query:
+        role === "vendedor"
+          ? individualGoals
+          : sellers
+          ? individualGoals
+          : storeGoals,
       setData: (data) => (goalsData = data),
     }),
     fetchData({ query: topTenSellers, setData: (data) => (topSeller = data) }),
@@ -58,9 +73,12 @@ export async function fetchSales({
 
   await Promise.all(queries);
 
-  const individualGoalValue = sellers
-    ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
-    : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
+  const individualGoalValue =
+    role === "vendedor"
+      ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
+      : sellers
+      ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
+      : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
 
   const data = [
     {
@@ -69,7 +87,7 @@ export async function fetchSales({
     },
     { name: "Metas", value: individualGoalValue },
   ];
-  
+
   const formattedTopSellerData = topSeller.map((item: topSalesData) => {
     const valueLiquid =
       typeof item.VALOR_TOTAL_LIQUIDO === "string"
@@ -81,8 +99,8 @@ export async function fetchSales({
       VALOR_TOTAL_LIQUIDO: valueLiquid,
     };
   });
-  // console.log("Dados: ", data);
+  console.log("Dados: ", goalsData);
   setSales(data);
-  setTopSeller(formattedTopSellerData);
+  setTopSeller(role === "vendedor" ? [] : formattedTopSellerData);
   setLoading(false);
 }

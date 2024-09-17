@@ -6,5 +6,6 @@ export interface QueryProps {
   month?: number;
   day?: number;
   emp?: string;
-  sellers?: string | null
+  sellers?: string | null;
+  surname?: string;
 }

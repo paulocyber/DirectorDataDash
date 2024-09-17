@@ -1,5 +1,5 @@
 // React
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // Components
 import Container from "@/components/ui/container";
@@ -15,6 +15,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { Autocomplete, AutocompleteItem, DateValue, Progress, RangeValue } from "@nextui-org/react";
 import { FaClockRotateLeft, FaFlag, FaHotel } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import { parseCookies } from "nookies";
 
 // Utils
 import { fetchSales } from "@/utils/fetchData/fetchSales";
@@ -31,19 +32,25 @@ import { vibrantPalette } from "@/data/graphicColorPalette/vibrantPalette";
 import { salesData, topSalesData } from "@/utils/types/sales";
 import { Sellers } from "@/utils/types/sellers";
 import { parseDate } from '@internationalized/date';
+import { AuthContext } from "@/contexts/AuthContext";
 interface SalesProps {
     salesData: salesData[];
     sellersData: Sellers[];
     topTenSellerData: topSalesData[];
+    commision: number;
 }
 
-export default function SalesPage({ salesData, sellersData, topTenSellerData }: SalesProps) {
+export default function SalesPage({ salesData, sellersData, topTenSellerData, commision }: SalesProps) {
     const [sales, setSales] = useState<salesData[]>(salesData);
     const [sellers, setSellers] = useState(sellersData);
     const [topSeller, setTopSeller] = useState<topSalesData[]>(topTenSellerData)
     const [selectSeller, setSelectSeller] = useState<string>('')
     const [emp, setEmp] = useState('1');
     const [loading, setLoading] = useState<boolean>(false);
+
+    const cookies = parseCookies();
+    const { "@nextauth.role": role} = cookies;
+    const { user } = useContext(AuthContext)
 
     const { year, month, today, getLastDayOfMonth } = getDate();
     const [date, setDate] = useState<RangeValue<DateValue>>({
@@ -57,6 +64,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
             emp,
             sellers: selectSeller,
+            surname: role === "vendedor" ? user : '',
             month: date.start.month,
             setLoading,
             setSales,
@@ -72,6 +80,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
             month: date.start.month,
             emp,
             sellers: selectSeller,
+            surname: role === "vendedor" ? user : '',
             setLoading,
             setTopSeller,
             setSales
@@ -90,6 +99,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
             dateEnd: today,
             month: month,
             emp,
+            surname: role === "vendedor" ? user : '',
             setLoading,
             setSales,
             setTopSeller
@@ -126,11 +136,11 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                     dateRange={date}
                     handleDateRangePicker={handleDateRangePicker}
                     handleCleanFilter={handleCleanFilter}
-                    displayEmp={true}
+                    displayEmp={sellers.length === 0 ? false : true}
                     setEmp={setEmp}
                     emp={emp}
                 >
-                    <div className="w-full sm:flex hidden">
+                    <div className={`${sellers.length === 0 ? 'hidden' : 'w-full sm:flex hidden'} `}>
                         <div className="mr-auto md:mr-4 md:mt-0 mt-2 md:w-56 small-screen:w-full">
                             <Autocomplete
                                 aria-label="Filtro de vendedores"
@@ -152,7 +162,7 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                         </div>
                     </div>
                 </ToolBar>
-                <div className="mr-auto mb-2 w-full sm:hidden flex w-full px-4">
+                <div className={sellers.length === 0 ? 'hidden' : 'mr-auto mb-2 w-full sm:hidden flex w-full px-4'}>
                     <Autocomplete
                         aria-label="Filtro de vendedores"
                         placeholder="Selecione o vendedor"
@@ -226,19 +236,23 @@ export default function SalesPage({ salesData, sellersData, topTenSellerData }: 
                 </div>
                 <div className="w-full">
                     <Container>
-                        <h2 className="font-bold px-4 pt-3">Top 10 Vendedores</h2>
-                        <GraphicContainer loading={false}>
-                            <BarChart
-                                data={topSeller}
-                                dataKey="VALOR_TOTAL_LIQUIDO"
-                                dataKeyXAxis="VENDEDOR"
-                                displayToolTip={true}
-                                ToolTipComponent={SalesTooltip}
-                                displayXAxis={true}
-                                displayCartesianGrid={true}
-                                palette={vibrantPalette}
-                            />
-                        </GraphicContainer>
+                        <h2 className="font-bold px-4 pt-3">{topSeller ? 'Valor da comissão: ' : 'Top 10 Vendedores'}</h2>
+                        {topSeller.length === 0 ?
+                            <span className="font-bold px-4 pt-2 text-lg">{formatCurrency(commision)}</span>
+                            : 
+                            <GraphicContainer loading={false}>
+                                <BarChart
+                                    data={topSeller}
+                                    dataKey="VALOR_TOTAL_LIQUIDO"
+                                    dataKeyXAxis="VENDEDOR"
+                                    displayToolTip={true}
+                                    ToolTipComponent={SalesTooltip}
+                                    displayXAxis={true}
+                                    displayCartesianGrid={true}
+                                    palette={vibrantPalette}
+                                />
+                            </GraphicContainer>
+                        }
                     </Container>
                 </div>
             </div>
