@@ -16,6 +16,10 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { parseCookies, destroyCookie } from "nookies";
 
 //Tipagem
+type CommissionData = {
+  VALOR_COMISSAO: string;
+  VENDEDOR: string;
+};
 import { topSalesData } from "../types/sales";
 
 export const getSalesPageProps = canSSRAuth(async (ctx) => {
@@ -86,15 +90,23 @@ export const getSalesPageProps = canSSRAuth(async (ctx) => {
     }
   );
 
-  const commision = role === "vendedor" ? parseFloat(respCommision.data.returnObject.body[0].VALOR_COMISSAO) : 0
-  
+  const commisionData = respCommision.data.returnObject.body;
+
+  // Somando os valores das comissões
+  const totalCommission = commisionData.reduce((total: number, item: CommissionData) => {
+    const commissionValue = parseFloat(item.VALOR_COMISSAO.replace(",", ".")); // Converte a string em float
+    return total + (isNaN(commissionValue) ? 0 : commissionValue); // Soma ao total, tratando valores não numéricos
+  }, 0);
+
+  const commision = role === "vendedor" ? totalCommission : 0;
+
   return {
     props: {
       salesData: data,
       sellersData:
         role === "vendedor" ? [] : respSellers.data.returnObject.body,
       topTenSellerData: role === "vendedor" ? [] : formattedTopSellerData,
-    commision: commision
+      commision: commision,
     },
   };
 });
