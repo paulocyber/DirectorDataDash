@@ -15,6 +15,7 @@ import { cookies } from "next/headers";
 import { topSalesData } from "@/utils/types/sales";
 
 // MetaDados
+import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Relatório de vendas",
     description: "Informações sobre vendas e metas",
