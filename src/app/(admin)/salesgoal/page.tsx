@@ -10,12 +10,12 @@ import { salesQueries } from "@/utils/queries/sales";
 
 // Framework
 import { cookies } from "next/headers";
+import { Metadata } from "next";
 
 // Tipagem
 import { topSalesData } from "@/utils/types/sales";
 
 // MetaDados
-import { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Relatório de vendas",
     description: "Informações sobre vendas e metas",

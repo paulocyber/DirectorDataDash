@@ -7,7 +7,7 @@ import { setupApiClient } from "@/service/api";
 
 // Utils
 import getDate from "@/utils/currentDate";
-import { billsToPayQueries } from "@/utils/queries/billstopay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay";
 
 // Dados
 import InfoCardFromBillsToPay from "@/data/infoCard/billsToPay";

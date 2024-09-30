@@ -1,6 +1,6 @@
 // Utils
 import getDate from "@/utils/currentDate";
-import { billsToPayQueries } from "@/utils/queries/billstopay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay";
 import { salesQueries } from "@/utils/queries/sales";
 import { Stock } from "@/utils/queries/stock";
 import { fetchData } from "..";

@@ -1,5 +1,5 @@
 // Utils
-import { billsToPayQueries } from "@/utils/queries/billstopay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay/index";
 import { fetchData } from "..";
 
 // Dados
