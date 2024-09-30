@@ -1,106 +1,81 @@
+// Bibliotecas
+import { toast } from "react-toastify";
+
 // Utils
 import { salesQueries } from "@/utils/queries/sales";
-import { fetchData } from "../fetchData";
 import { goalsQueries } from "@/utils/queries/goals";
-
-// Bibliotecas
-import { parseCookies } from "nookies";
+import { fetchData } from "..";
 
 // Tipagem
-import { salesData, topSalesData } from "@/utils/types/sales";
-import getDate from "@/utils/date/currentDate";
+type SalesData = {
+  name: string;
+  value: number;
+};
+
 interface FetchSales {
-  setLoading: (value: boolean) => void;
-  setSales: (value: salesData[]) => void;
-  setTopSeller: (value: topSalesData[]) => void;
+  token: string;
   dateInit: string;
   dateEnd: string;
-  month: number;
-  emp?: string;
-  sellers?: string;
-  surname?: string;
+  surname: string;
+  setLoading: (value: boolean) => void;
+  setSales: (value: SalesData[]) => void;
 }
 
 export async function fetchSales({
-  setLoading,
-  setSales,
-  setTopSeller,
+  token,
   dateInit,
   dateEnd,
-  month,
-  emp,
-  sellers,
   surname,
+  setLoading,
+  setSales,
 }: FetchSales) {
   setLoading(true);
-
-  const cookies = parseCookies();
-  const { "@nextauth.role": role } = cookies;
-
-  let goalsData: any[] = [];
-  let salesData: any[] = [];
-  let topSeller: any[] = [];
-
-  const { sales, topTenSellers } = salesQueries({
+  const { sales } = salesQueries({
     dateInit,
     dateEnd,
-    surname: role === "vendedor" ? surname : '',
-    emp,
-    sellers,
-  });
-  const { year } = getDate();
-  const { storeGoals, individualGoals } = goalsQueries({
-    id: sellers,
+    emp: "1",
     surname,
-    dateInit,
-    month,
-    year,
   });
+  const { individualGoals } = goalsQueries({ dateInit, surname });
+
+  let salesData: any[] = [];
+  let goalsData: any[] = [];
 
   const queries = [
-    fetchData({ query: sales, setData: (data) => (salesData = data) }),
     fetchData({
-      query:
-        role === "vendedor"
-          ? individualGoals
-          : sellers
-          ? individualGoals
-          : storeGoals,
+      ctx: token,
+      query: sales,
+      setData: (data) => (salesData = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: individualGoals,
       setData: (data) => (goalsData = data),
     }),
-    fetchData({ query: topTenSellers, setData: (data) => (topSeller = data) }),
   ];
 
   await Promise.all(queries);
 
-  const individualGoalValue =
-    role === "vendedor"
-      ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
-      : sellers
-      ? parseFloat(goalsData[0]?.VALOR_INDIVIDUAL_MTI) || 0
-      : parseFloat(goalsData[0]?.VALOR_MTA) || 0;
-
-  const data = [
+  const salesAndGolas = [
     {
       name: "Vendas",
-      value: parseFloat(String(salesData[0].VALOR_LIQUIDO).replace(",", ".")),
+      value:
+        parseFloat(String(salesData[0]?.VALOR_LIQUIDO).replace(",", ".")) || 0,
+    }, // Usando o operador de encadeamento opcional
+    {
+      name: "Metas",
+      value: goalsData[0]?.VALOR_INDIVIDUAL_MTI
+        ? parseFloat(
+            String(goalsData[0].VALOR_INDIVIDUAL_MTI).replace(",", ".")
+          )
+        : 0,
     },
-    { name: "Metas", value: individualGoalValue },
   ];
 
-  const formattedTopSellerData = topSeller.map((item: topSalesData) => {
-    const valueLiquid =
-      typeof item.VALOR_TOTAL_LIQUIDO === "string"
-        ? parseFloat(item.VALOR_TOTAL_LIQUIDO.replace(",", "."))
-        : item.VALOR_TOTAL_LIQUIDO;
+  if (salesAndGolas[1].value === 0) {
+    toast.error("Não possui metas para esse mês 😞");
+  }
 
-    return {
-      ...item,
-      VALOR_TOTAL_LIQUIDO: valueLiquid,
-    };
-  });
-  console.log("Dados: ", goalsData);
-  setSales(data);
-  setTopSeller(role === "vendedor" ? [] : formattedTopSellerData);
+  setSales(salesAndGolas);
   setLoading(false);
 }

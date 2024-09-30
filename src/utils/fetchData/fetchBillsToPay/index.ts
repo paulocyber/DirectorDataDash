@@ -1,73 +1,83 @@
 // Utils
-import getDate from "@/utils/date/currentDate";
-import { billsToPayQueries } from "@/utils/queries/billstoPay";
-import { fetchData } from "../fetchData";
+import { billsToPayQueries } from "@/utils/queries/billstopay";
+import { fetchData } from "..";
+
+// Dados
+import InfoCardFromBillsToPay from "@/data/infoCard/billsToPay";
 
 // React
+import { ReactNode } from "react";
 
 // Tipagem
 import { BillsToPayItem } from "@/utils/types/billsToPay";
-interface fetchBillsToPayProps {
-  setLoading: (value: boolean) => void;
-  setBilletInOpen: (billets: BillsToPayItem[]) => void;
-  setBilletPaid: (billets: BillsToPayItem[]) => void;
-  setLateBills: (billets: BillsToPayItem[]) => void;
-  setAllBillets: (billets: BillsToPayItem[]) => void;
+interface FetchBillsToPayProps {
+  token: string;
   dateInit: string;
   dateEnd: string;
-  expiredByDate?: boolean;
+  year: number;
+  month: number;
+  day: number;
+  clear?: boolean;
+  setLoading: (value: boolean) => void;
+  setBillets: (value: BillsToPayItem[]) => void;
+  setBilletInOpen: (value: BillsToPayItem[]) => void;
+  setBilletPaid: (value: BillsToPayItem[]) => void;
+  setLateBills: (value: BillsToPayItem[]) => void;
 }
 
 export async function fetchBillsToPay({
+  token,
+  dateInit,
+  dateEnd,
+  year,
+  month,
+  day, 
+  clear,
   setLoading,
+  setBillets,
   setBilletInOpen,
   setBilletPaid,
   setLateBills,
-  setAllBillets,
-  dateInit,
-  dateEnd,
-  expiredByDate,
-}: fetchBillsToPayProps) {
+}: FetchBillsToPayProps) {
   setLoading(true);
-
-  const { year, month, today, yesterday, monthExpired } = getDate();
 
   const { expiredBilletAll, expiredBillet, billetPaidAndOpen } =
     billsToPayQueries({
       dateInit,
       dateEnd,
       year,
-      month: monthExpired,
-      day: yesterday,
+      month,
+      day,
     });
 
-    let allBillets: BillsToPayItem[] = [];
-    let lateBills: BillsToPayItem[] = [];
+  let allBillets: BillsToPayItem[] = [];
+  let lateBills: any[] = [];
 
-  const queries = [
+  const quries = [
     fetchData({
+      ctx: token,
       query: billetPaidAndOpen,
       setData: (data) => (allBillets = data),
     }),
     fetchData({
-      query: expiredByDate ? expiredBillet : expiredBilletAll,
+      ctx: token,
+      query: clear ? expiredBillet : expiredBilletAll,
       setData: (data) => (lateBills = data),
     }),
   ];
 
-  await Promise.all(queries);
+  await Promise.all(quries);
 
   const filterBilletInOpen = allBillets.filter(
     (billet) => billet.STATUS_PGM === "1" || billet.STATUS_PGM === "4"
   );
-
   const filterBilletPaid = allBillets.filter(
     (billet) => billet.STATUS_PGM === "2"
   );
 
-  setBilletInOpen(filterBilletInOpen);
-  setBilletPaid(filterBilletPaid);
-  setLateBills(lateBills);
-  setAllBillets(allBillets);
   setLoading(false);
+  setBillets(allBillets)
+  setBilletInOpen(filterBilletInOpen)
+  setBilletPaid(filterBilletPaid)
+  setLateBills(lateBills)
 }

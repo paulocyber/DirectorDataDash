@@ -1,0 +1,7 @@
+{
+  "/davs": "table",
+  "/": "table",
+  "/detaildavs/": "table",
+  "/billstopay/table": "table",
+  "/billstopay": "dashboard"
+}

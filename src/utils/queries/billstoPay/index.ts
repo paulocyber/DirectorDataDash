@@ -1,5 +1,5 @@
 // Tipagem
-import { QueryProps } from "@/utils/types/querys";
+import { QueryProps } from "@/utils/types/query";
 
 export const billsToPayQueries = ({
   dateInit,

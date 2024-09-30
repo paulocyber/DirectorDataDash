@@ -1,76 +1,116 @@
-// Services
-import { setupApiClient } from "@/service/api/api";
-
 // Utils
-import { groupSumByBrand } from "@/utils/filters/salesByBrand/groupSumByBrand";
-import { groupSumByStock } from "@/utils/filters/stock/groupSumByStock";
-import { billsToPayQueries } from "@/utils/queries/billstoPay";
-import { SalesByBrand } from "@/utils/queries/salesByBrand";
+import getDate from "@/utils/currentDate";
+import { billsToPayQueries } from "@/utils/queries/billstopay";
+import { salesQueries } from "@/utils/queries/sales";
 import { Stock } from "@/utils/queries/stock";
-import getDate from "@/utils/date/currentDate";
-import { groupSumBySupplier } from "@/utils/filters/billsToPay/groupSumBySupplier";
+import { fetchData } from "..";
+import { groupSumBy } from "@/utils/filters/sumsByGroup";
 
 // Tipagem
-import { SalesByBrandType } from "@/utils/types/SalesByBrand";
+import { SalesByBrandType } from "@/utils/types/salesByBrand";
 import { StockByBrand } from "@/utils/types/stock";
-import { BillsToPayItem } from "@/utils/types/billsToPay";
+
 interface FetchSalesByBrandProps {
+  token: string;
   dateInit: string;
   dateEnd: string;
   setLoading: (value: boolean) => void;
-  setSalesByBrand: (sales: SalesByBrandType[]) => void;
-  setStockByBrand: (sales: StockByBrand[]) => void;
+  setSalesByBrand: (value: SalesByBrandType[]) => void; 
+  setStockByBrand: (value: StockByBrand[]) => void; 
 }
 
 export async function fetchSalesByBrand({
-  setLoading,
-  setSalesByBrand,
-  setStockByBrand,
+  token,
   dateInit,
   dateEnd,
+  setLoading,
+  setSalesByBrand,
+  setStockByBrand
 }: FetchSalesByBrandProps) {
-  const apiClient = setupApiClient();
+  setLoading(true);
 
   const { year } = getDate();
 
-  setLoading(true);
-
-  const playCell = SalesByBrand({ dateInit, dateEnd, emp: "1" });
-  const playCustom = SalesByBrand({ dateInit, dateEnd, emp: "2" });
-  const playUp = SalesByBrand({ dateInit, dateEnd, emp: "3" });
+  const { SalesByBrand: playCell } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp: "1",
+  });
+  const { SalesByBrand: playCustom } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp: "2",
+  });
+  const { SalesByBrand: playUp } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp: "3",
+  });
   const { stockByBrand } = Stock();
   const { openBillFromSuppliers } = billsToPayQueries({ year });
 
-  const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock, respDebt] =
-    await Promise.all([
-      apiClient.post("/v1/find-db-query", { query: playCell }),
-      apiClient.post("/v1/find-db-query", { query: playCustom }),
-      apiClient.post("/v1/find-db-query", { query: playUp }),
-      apiClient.post("/v1/find-db-query", { query: stockByBrand }),
-      apiClient.post("/v1/find-db-query", { query: openBillFromSuppliers })
-    ]);
+  let salesPlayCell: any[] = [];
+  let salesPlayCustom: any[] = [];
+  let salesPlayUp: any[] = [];
+  let stock: any[] = [];
+  let debt: any[] = [];
 
-  const combinedSalesData = [
-    ...respSalesPlayCell.data.returnObject.body,
-    ...respSalesPlayCustom.data.returnObject.body,
-    ...respSalesPlayUp.data.returnObject.body,
+  const queries = [
+    fetchData({
+      ctx: token,
+      query: playCell,
+      setData: (data) => (salesPlayCell = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: playCustom,
+      setData: (data) => (salesPlayCustom = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: playUp,
+      setData: (data) => (salesPlayUp = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: stockByBrand,
+      setData: (data) => (stock = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: openBillFromSuppliers,
+      setData: (data) => (debt = data),
+    }),
   ];
 
-  const sumByBrand = groupSumByBrand(combinedSalesData);
-  const sumOfStockByBrand = groupSumByStock(respStock.data.returnObject.body);
-  const sumOfDebt: BillsToPayItem[] = respDebt.data.returnObject.body;
+  await Promise.all(queries);
 
-  const listStockByBrand = sumOfStockByBrand.map((stock) => {
-    const groupedData = sumOfDebt.find((debt) => debt.APELIDO_PSS === stock.key);
-    return {
-      brand: stock.key,
-      valueInStock: stock.value,
-      debtValue: groupedData ? parseFloat(groupedData.VALOR_PGM.replace(',', '.')) : 0,
-    };
+  const salesData = [...salesPlayCell, ...salesPlayCustom, ...salesPlayUp];
+  const sumByBrand = groupSumBy(salesData, {
+    key: "MARCAS",
+    valueKey: "VALOR_BRUTO_SDI",
+  }).sort((a, b) => b.value - a.value);
+
+  const sumOfStockByBrand = groupSumBy(stock, {
+    key: "MARCA",
+    valueKey: "TOTAL_VALOR_COMPRA",
   });
 
+  const listStockByBrand = sumOfStockByBrand.map((stock) => {
+    const groupedData = debt.find(
+      (debt: any) => debt.APELIDO_PSS === stock.brand
+    );
+
+    return {
+      brand: stock.brand,
+      debtValue: stock.value, 
+      valueInStock: groupedData
+        ? parseFloat(groupedData.VALOR_PGM.replace(",", "."))
+        : 0,
+    };
+  }).sort((a, b) => b.valueInStock - a.valueInStock)
+  
   setSalesByBrand(sumByBrand);
   setStockByBrand(listStockByBrand);
-
   setLoading(false);
 }

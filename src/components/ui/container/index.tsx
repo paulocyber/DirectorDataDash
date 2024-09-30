@@ -1,8 +1,6 @@
 // React
 import { ReactNode } from "react";
 
-// Componente
-
 // Tipagem
 interface ContainerProps {
     children: ReactNode;

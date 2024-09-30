@@ -1,51 +1,62 @@
-// Serviço
-import { setupApiClient } from "@/service/api/api";
-
 // Utils
-import { SalesByGroup } from "@/utils/queries/SalesByGroup";
+import { salesQueries } from "@/utils/queries/sales";
 import { Stock } from "@/utils/queries/stock";
-import { groupSumByGroup } from "@/utils/filters/salesByGroup/groupSumByGroup";
-import { groupSumByStock } from "@/utils/filters/stock/groupSumByStock";
+import { fetchData } from "..";
+import { groupSumBy } from "@/utils/filters/sumsByGroup";
 
 // Tipagem
 import { SalesByGroupType } from "@/utils/types/salesByGroup";
 import { StockByGroup } from "@/utils/types/stock";
-interface FetchSalesByBrandProps {
-  setLoading: (value: boolean) => void;
+interface FetchSalesByGroup {
+  token: string;
   dateInit: string;
   dateEnd: string;
-  setSalesByGroup: (sales: SalesByGroupType[]) => void;
-  setStockByGroup: (sales: StockByGroup[]) => void;
+  setLoading: (value: boolean) => void;
+  setSalesByGroup: (value: SalesByGroupType[]) => void;
+  setStockByGroup: (value: StockByGroup[]) => void;
 }
 
 export async function fetchSalesByGroup({
+  token,
   dateInit,
   dateEnd,
   setLoading,
   setSalesByGroup,
-  setStockByGroup,
-}: FetchSalesByBrandProps) {
-  const apiClient = setupApiClient();
-
+  setStockByGroup
+}: FetchSalesByGroup) {
   setLoading(true);
 
-  const salesByGroup = SalesByGroup({ dateInit, dateEnd });
-  let { stockByGroup } = Stock();
+  const { salesByGroup } = salesQueries({ dateInit, dateEnd });
+  const { stockByGroup } = Stock();
 
-  const [respSalesByGroup, respStockByGroup] = await Promise.all([
-    apiClient.post("/v1/find-db-query", { query: salesByGroup }),
-    apiClient.post("/v1/find-db-query", { query: stockByGroup }),
-  ]);
+  let sales: any[] = [];
+  let stock: any[] = [];
 
-  const sumByGroup = groupSumByGroup(respSalesByGroup.data.returnObject.body);
-  
-  const sumOfStockByBrand = groupSumByStock(
-    respStockByGroup.data.returnObject.body,
-    "group",
-  )
+  const queries = [
+    fetchData({
+      ctx: token,
+      query: salesByGroup,
+      setData: (data) => (sales = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: stockByGroup,
+      setData: (data) => (stock = data),
+    }),
+  ];
 
-  setSalesByGroup(sumByGroup);
-  setStockByGroup(sumOfStockByBrand);
+  await Promise.all(queries);
 
-  setLoading(false);
+  const sumByGroup = groupSumBy(sales, {
+    key: "GRUPO",
+    valueKey: "VALOR_BRUTO_SDI",
+  });
+  const sumByStock = groupSumBy(stock, {
+    key: "GRUPO",
+    valueKey: "TOTAL_VALOR_COMPRA",
+  });
+
+  setSalesByGroup(sumByGroup)
+  setStockByGroup(sumByStock)
+  setLoading(false)
 }

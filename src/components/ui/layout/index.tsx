@@ -1,15 +1,25 @@
+'use client'
+
 // React
 import { ReactNode, useEffect, useRef, useState } from "react";
 
-// Framework - servidor
-import Head from "next/head";
+// Componente
+import { SideNav } from "../menu/SideNav";
+import { HeaderNav } from './../menu/HeaderNav';
 
-// Component
-import { SideNav } from "../menu/sideNav";
-import { HeaderNav } from "../menu/HeaderNav";
+// Dados
+import permission from "@/data/linkPermission.json";
 
-export default function PageLayout({ children, description }: { children: ReactNode, description: string }) {
-    const [isOpen, setIsopen] = useState<boolean>(false)
+// Tipagem
+type RoleType = 'vendedor' | 'diretoria' | 'tecnologia'; // Defina as roles possíveis aqui
+type PermissionType = {
+    [key in RoleType]: {
+        router: { name: string; path: string }[];
+    };
+};
+
+export function Layout({ children, role }: { children: ReactNode; role?: string }) {
+    const [isOpen, setIsopen] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -34,23 +44,21 @@ export default function PageLayout({ children, description }: { children: ReactN
         };
     }, []);
 
+    // Acessando as rotas com segurança
+    const routes = (role && (permission as PermissionType)[role as RoleType]?.router) || [];
+
     return (
-        <>
-            <Head>
-                <title>{description}</title>
-            </Head>
-            <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-auto">
-                {isOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50" />
-                )}
-                <div ref={menuRef}>
-                    <SideNav toggleMenuState={isOpen} Close={setIsopen} />
-                </div>
-                <HeaderNav open={setIsopen} toggleMenuState={isOpen} />
-                <main className="p-4 xl:ml-80 z-20">
-                    {children}
-                </main>
+        <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-hidden">
+            {isOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50" />
+            )}
+            <div ref={menuRef}>
+                <SideNav toggleMenuState={isOpen} Close={setIsopen} routes={routes}/>
             </div>
-        </>
-    )
+            <HeaderNav open={setIsopen} toggleMenuState={isOpen} />
+            <main className="p-4 overflow-auto xl:ml-80 z-20">
+                {children}
+            </main>
+        </div>
+    );
 }

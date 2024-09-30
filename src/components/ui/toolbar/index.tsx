@@ -1,86 +1,53 @@
-// Bibliotecas
+// Biblioteca
 import { Autocomplete, AutocompleteItem, DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
-import { CiSearch } from "react-icons/ci";
-import { ImFilePdf } from "react-icons/im";
-import { FaStore } from "react-icons/fa6";
-import { VscTable } from "react-icons/vsc";
-import { GoSync } from "react-icons/go";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { GoSync } from "react-icons/go";
 import { RiFormatClear } from "react-icons/ri";
 import { AiOutlinePieChart } from "react-icons/ai";
+import { VscTable } from "react-icons/vsc";
+import { CiSearch } from "react-icons/ci";
+import { ImFilePdf } from "react-icons/im";
+import { FaStore } from "react-icons/fa";
 
-// Reat
+// React
 import { ReactNode, useState } from "react";
-
-// Framework - Next
-import Link from "next/link";
 
 // Componentes
 import { Input } from "../input";
 import { Button } from "../button";
-import OptionsToolBar from "../dropDown/toolBar";
 
 // Tipagem
-import { getLocalTimeZone, today } from "@internationalized/date";
 interface ToolBarProps {
     title: string;
-    displayCalendar?: boolean;
-    displayInputSearch?: boolean;
-    displayBtnDate?: boolean;
-    displayFormOfPayment?: boolean;
-    displayEmp?: boolean;
     descriptionHref?: string;
-    selectedDateRange?: string;
     href?: string;
-    searchFilter?: string;
+    displayCalendar: boolean;
     dateRange?: RangeValue<DateValue>;
+    displayInputSearch?: boolean;
+    searchFilter?: string;
+    selectedDateRange?: string;
+    displayBtnDate?:  boolean;
+    displayFormOfPayment?: boolean;
     emp?: string;
+    displayEmp?: boolean;
     children?: ReactNode;
-    setFilterSearch?: (value: string) => void;
-    setEmp?: (value: string) => void;
     handleDateRangePicker?: (date: RangeValue<DateValue>) => void;
-    handleDate?: (date: string) => void;
     handleRefreshClick: () => void;
     handleCleanFilter?: () => void;
+    setFilterSearch?: (value: string) => void;
     generatePDF?: () => void;
+    handleDate?: (date: string) => void;
+    setEmp?: (value: string) => void;
 }
 
-const dateButtons = [
-    { label: "Dia", value: "day" },
-    { label: "Semana", value: "week" },
-    { label: "Mês", value: "month" },
-    { label: "Ano", value: "year" },
-];
-
-export default function ToolBar({
-    title,
-    displayCalendar,
-    handleDateRangePicker,
-    dateRange,
-    handleDate,
-    href,
-    descriptionHref,
-    handleRefreshClick,
-    handleCleanFilter,
-    displayInputSearch,
-    setFilterSearch,
-    generatePDF,
-    displayBtnDate,
-    selectedDateRange,
-    displayFormOfPayment,
-    searchFilter,
-    displayEmp,
-    setEmp,
-    emp,
-    children
-}: ToolBarProps) {
+export default function ToolBar({ title, descriptionHref, href, displayCalendar, dateRange, displayInputSearch, searchFilter, selectedDateRange, displayBtnDate, displayFormOfPayment, emp, displayEmp, children, setFilterSearch, handleDateRangePicker, handleRefreshClick, handleCleanFilter, generatePDF, handleDate, setEmp }: ToolBarProps) {
     const [animation, setAnimation] = useState<Boolean>(false)
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex w-full items-center justify-centerbg-white py-4 px-7">
+            <div className="flex w-full items-center justify-center bg-white py-4 px-7">
                 <div className="flex justify-start w-full items-center text-gray-800">
-                    <div className="flex w-full items-center">
+                    <div className="flex w-full items-center ">
                         <h1 className="font-bold md:text-lg text-sm">{title} </h1>
                         <div className="lg:flex hidden">
                             <div className={`${!displayBtnDate && 'hidden'} flex w-full items-center justify-start space-x-1 bg-white pb-4 px-7`}>
@@ -201,9 +168,10 @@ export default function ToolBar({
                                     startContent={descriptionHref === 'Grafico' ? <AiOutlinePieChart className="text-lg" /> : <VscTable className="text-lg" />}
                                     className={!href ? 'hidden' : `flex justify-center items-center text-sm font-medium py-2`}
                                     textValue="tabela"
-                                    endContent={<Link href={href ? href : ''} className="md:text-sm text-xs w-full">{descriptionHref}</Link>}
+                                    href={href}
+                                    endContent={<p className="md:text-sm text-xs w-full">{descriptionHref}</p>}
                                 />
-                                {/* Gerador de pdf */}
+
                                 <DropdownItem
                                     startContent={<ImFilePdf className="text-lg" />}
                                     className={!generatePDF ? "hidden" : "flex justify-center items-center w-full text-sm font-medium py-2"}
@@ -243,5 +211,5 @@ export default function ToolBar({
                 </div>
             </div>
         </div>
-    );
+    )
 }
