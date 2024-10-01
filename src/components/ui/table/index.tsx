@@ -48,7 +48,7 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
     }
 
     return (
-        <main className="flex overflow-y-auto overflow-x-hidden h-[420px] w-full pb-8 flex-col px-5">
+        <main className="flex lg:overflow-y-auto overflow-auto h-[420px] w-full pb-8 flex-col px-5">
             <div className="px-4">
                 <TableUi 
                     id="content" 
