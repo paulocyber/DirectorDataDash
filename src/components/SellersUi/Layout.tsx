@@ -42,6 +42,7 @@ const getLastDayOfMonth = (year: number, month: number) => {
 
 export default function Layout({ salesAndGolas, commision, year, month, today }: LayoutProps) {
     const [sales, setSales] = useState<SalesData[]>(salesAndGolas);
+    const [commisionValue, setComissionValue] = useState(commision || 0)
     const [emp, setEmp] = useState('1');
     const [loading, setLoading] = useState<boolean>(false);
     const [date, setDate] = useState<RangeValue<DateValue>>({
@@ -58,6 +59,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
             setLoading,
             setSales,
+            setComission: setComissionValue,
             surname: user,
             token
         })
@@ -70,6 +72,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
             setLoading,
             setSales,
+            setComission: setComissionValue,
             surname: user,
             token
         });
@@ -82,6 +85,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             dateEnd: today,
             setLoading,
             setSales,
+            setComission: setComissionValue,
             surname: user,
             token
         })
@@ -154,7 +158,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
                 <div className="w-full">
                     <Container>
                         <h2 className="font-bold px-4 pt-3">Valor da comissão: </h2>
-                        <span className="font-bold px-4 pt-2 text-lg">{formatCurrency(commision)}</span>
+                        <span className="font-bold px-4 pt-2 text-lg">{formatCurrency(commisionValue)}</span>
                     </Container>
                 </div>
             </div>

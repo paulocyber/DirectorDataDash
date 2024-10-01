@@ -22,7 +22,7 @@ export const salesQueries = ({
    empresa, trc.id_fnc AS id_vendedor, trc.id_fnc || ' - ' || COALESCE(fnc.apelido_pss, fnc.nome_pss) AS vendedor, COALESCE(fnc.comissao_pss, 0) AS comissao, 0 AS qtde_vendas, CAST(0 AS NUMERIC(15,6)) AS valor_bruto,
     CAST(0 AS NUMERIC(15,6)) AS valor_desconto, SUM(tri.total_liquido_tri) AS valor_troca, CAST(0 AS NUMERIC(15,6)) AS valor_cancelamento, CAST(0 AS NUMERIC(15,6)) AS valor_liquido from trocas_devolucoes_itens tri 
     INNER JOIN trocas_devolucoes trc ON trc.id_trc = tri.id_trc INNER JOIN empresas emp ON emp.id_emp = trc.id_emp INNER JOIN v_funcionarios fnc ON fnc.id_pss = trc.id_fnc where trc.status_trc = '2' AND 
-    trc.datahora_finalizacao_trc between '${dateInit} 00:00:00' AND '${dateInit} 23:59:59' AND trc.id_emp = ${emp} AND COALESCE(fnc.comissao_pss, 0) > 0 GROUP BY 1, 2, 3, 4) vda GROUP BY 1, 2, 3, 4) dvd where 
+    trc.datahora_finalizacao_trc between '${dateInit} 00:00:00' AND '${dateInit} 23:59:59' AND trc.id_emp in ('1', 2, 3) AND COALESCE(fnc.comissao_pss, 0) > 0 GROUP BY 1, 2, 3, 4) vda GROUP BY 1, 2, 3, 4) dvd where 
     dvd.vendedor like '%${surname}%' ORDER BY empresa, vendedor`;
 
   let sales = `select SUM(sds.valor_liquido_sds - COALESCE(sds.valor_troca_sds, 0)) AS VALOR_LIQUIDO FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN pessoas fnc ON fnc.id_pss = 

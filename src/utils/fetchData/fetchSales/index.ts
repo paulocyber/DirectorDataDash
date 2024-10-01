@@ -11,6 +11,10 @@ type SalesData = {
   name: string;
   value: number;
 };
+type CommissionData = {
+  VALOR_COMISSAO: string;
+  VENDEDOR: string;
+};
 
 interface FetchSales {
   token: string;
@@ -18,6 +22,7 @@ interface FetchSales {
   dateEnd: string;
   surname: string;
   setLoading: (value: boolean) => void;
+  setComission: (value: number) => void;
   setSales: (value: SalesData[]) => void;
 }
 
@@ -27,9 +32,11 @@ export async function fetchSales({
   dateEnd,
   surname,
   setLoading,
+  setComission,
   setSales,
 }: FetchSales) {
   setLoading(true);
+  
   const { sales } = salesQueries({
     dateInit,
     dateEnd,
@@ -37,8 +44,14 @@ export async function fetchSales({
     surname,
   });
   const { individualGoals } = goalsQueries({ dateInit, surname });
-
+  const { commissionPerSalesPerson } = salesQueries({
+    dateInit,
+    dateEnd,
+    surname
+  });
+console.log("Query: ", individualGoals)
   let salesData: any[] = [];
+  let commision: any[] = [];
   let goalsData: any[] = [];
 
   const queries = [
@@ -52,6 +65,11 @@ export async function fetchSales({
       query: individualGoals,
       setData: (data) => (goalsData = data),
     }),
+    fetchData({
+      ctx: token,
+      query: commissionPerSalesPerson,
+      setData: (data) => (commision = data),
+    }),
   ];
 
   await Promise.all(queries);
@@ -61,7 +79,7 @@ export async function fetchSales({
       name: "Vendas",
       value:
         parseFloat(String(salesData[0]?.VALOR_LIQUIDO).replace(",", ".")) || 0,
-    }, // Usando o operador de encadeamento opcional
+    },
     {
       name: "Metas",
       value: goalsData[0]?.VALOR_INDIVIDUAL_MTI
@@ -76,6 +94,15 @@ export async function fetchSales({
     toast.error("Não possui metas para esse mês 😞");
   }
 
+  const commissionSum = commision.reduce(
+    (total: number, item: CommissionData) => {
+      const commissionValue = parseFloat(item.VALOR_COMISSAO.replace(",", "."));
+      return total + (isNaN(commissionValue) ? 0 : commissionValue);
+    },
+    0
+  );
+
   setSales(salesAndGolas);
+  setComission(commissionSum);
   setLoading(false);
 }

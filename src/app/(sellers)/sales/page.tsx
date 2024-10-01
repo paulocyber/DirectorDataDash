@@ -54,9 +54,19 @@ export default async function SalesPage() {
     }, 0);
     
     const salesAndGolas = [
-        { name: "Vendas", value: parseFloat(String(respSales.data.returnObject.body[0].VALOR_LIQUIDO).replace(",", ".")) },
-        { name: "Metas", value: parseFloat(String(respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI)) }
-    ]
+        { 
+            name: "Vendas", 
+            value: respSales.data.returnObject.body.lenght > 0 && respSales.data.returnObject.body[0].VALOR_LIQUIDO
+            ? parseFloat(String(respSales.data.returnObject.body[0].VALOR_LIQUIDO).replace(",", "."))
+            : 0
+        },
+        { 
+            name: "Metas", 
+            value: respGoals.data.returnObject.body.length > 0 && respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI 
+                ? parseFloat(String(respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI).replace(",", ".")) 
+                : 0 
+        }
+    ];
 
     return (
         <Layout
