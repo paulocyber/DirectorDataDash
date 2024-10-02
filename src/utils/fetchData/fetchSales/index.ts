@@ -49,7 +49,7 @@ export async function fetchSales({
     dateEnd,
     surname
   });
-console.log("Query: ", individualGoals)
+
   let salesData: any[] = [];
   let commision: any[] = [];
   let goalsData: any[] = [];
