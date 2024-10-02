@@ -56,7 +56,7 @@ export default async function SalesPage() {
     const salesAndGolas = [
         { 
             name: "Vendas", 
-            value: respSales.data.returnObject.body.lenght > 0 && respSales.data.returnObject.body[0].VALOR_LIQUIDO
+            value: respSales.data.returnObject.body[0].VALOR_LIQUIDO
             ? parseFloat(String(respSales.data.returnObject.body[0].VALOR_LIQUIDO).replace(",", "."))
             : 0
         },

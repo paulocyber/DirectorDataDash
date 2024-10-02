@@ -34,6 +34,15 @@ interface SideNavProps {
     routes: { name: string, path: string }[];
 }
 
+// Mapeamento de ícones
+const iconMap: { [key: string]: JSX.Element } = {
+    '/davs': <FaTable className="w-5 h-5" />,
+    '/salesbybrand': <TiChartPieOutline className="w-7 h-7" />,
+    '/salesbygroup': <TiChartPieOutline className="w-7 h-7" />,
+    '/salesgoal': <TiChartPieOutline className="w-7 h-7" />,
+    '/billstopay/table': <FaTable className="w-5 h-5" />,
+};
+
 export function SideNav({ toggleMenuState, Close, routes }: SideNavProps) {
     const router = usePathname();
 
@@ -45,7 +54,7 @@ export function SideNav({ toggleMenuState, Close, routes }: SideNavProps) {
     bgColorClass = (routeColor === "table" || isDetailDavs) ? "bg-[#fa6602]" : "bg-blue-700";
 
     const table = (router === "/billstopay/table" && 'tabela')
-    console.log("Router", table)
+    
     const { user, signOut } = useContext(AuthContext)
 
     return (
