@@ -112,8 +112,8 @@ export default function Layout({ salesData, sellersData, topSalesData, year, mon
             dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
             year: date.start.year,
             month: date.start.month,
-            emp,
             surname: key ? key.toString() : '',
+            emp,
             setSales,
             setTopSaller
         })
