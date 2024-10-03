@@ -27,7 +27,7 @@ export async function fetchSalesByGroup({
   setLoading(true);
 
   const { salesByGroup } = salesQueries({ dateInit, dateEnd });
-  const { stockByGroup } = Stock();
+  const { stockByGroup } = Stock({dateInit: '', dateEnd: ''});
 
   let sales: any[] = [];
   let stock: any[] = [];

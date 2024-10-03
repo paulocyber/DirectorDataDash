@@ -46,7 +46,7 @@ export async function fetchSalesByBrand({
     dateEnd,
     emp: "3",
   });
-  const { stockByBrand } = Stock();
+  const { stockByBrand } = Stock({dateInit: '', dateEnd: ''});
   const { openBillFromSuppliers } = billsToPayQueries({ year });
 
   let salesPlayCell: any[] = [];
