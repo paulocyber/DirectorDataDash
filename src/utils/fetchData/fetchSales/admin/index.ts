@@ -33,7 +33,7 @@ export async function fetchSales({
 }: fetchSalesProps) {
   const { sales, topTenSellers } = salesQueries({ dateInit, dateEnd, emp, sellers: surname });
 
-  const { storeGoals, individualGoals } = goalsQueries({ dateInit, year, month, id: surname });
+  const { storeGoals, individualGoals } = goalsQueries({ dateInit, year, month, id: surname, emp });
 
   let respSales: any[] = [];
   let respTopTenSellers: any[] = [];

@@ -37,6 +37,7 @@ export default async function SalesPage() {
         month,
         year,
         dateInit: `${year}/${month}/01`,
+        emp: '1'
     });
     const sellers = sellersQueries({ dateInit: `${year}/${month}/01` });
 

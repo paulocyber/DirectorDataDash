@@ -29,7 +29,7 @@ export default async function SalesByBrandPage() {
     const { SalesByBrand: playCell } = salesQueries({ dateInit: today, dateEnd: today, emp: "1" })
     const { SalesByBrand: playCustom } = salesQueries({ dateInit: today, dateEnd: today, emp: "2" })
     const { SalesByBrand: playUp } = salesQueries({ dateInit: today, dateEnd: today, emp: "3" })
-    const { stockByBrand } = Stock()
+    const { stockByBrand } = Stock({ dateInit: '', dateEnd: '' })
     const { openBillFromSuppliers } = billsToPayQueries({ year })
 
     const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock, respDebt] = await Promise.all([

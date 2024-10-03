@@ -28,7 +28,7 @@ export default async function SalesByGroupPage() {
 
     const { today } = getDate();
     const { salesByGroup } = salesQueries({ dateInit: today, dateEnd: today })
-    const { stockByGroup } = Stock()
+    const { stockByGroup } = Stock({dateInit: '', dateEnd: '' })
 
     const [respSalesByGroup, respStockByGroup] = await Promise.all([api.post("/v1/find-db-query", { query: salesByGroup }), api.post("/v1/find-db-query", { query: stockByGroup })])
     const sumByGroup = groupSumBy(respSalesByGroup.data.returnObject.body, { key: 'GRUPO', valueKey: 'VALOR_BRUTO_SDI' })

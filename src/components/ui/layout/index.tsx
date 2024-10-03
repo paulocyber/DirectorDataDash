@@ -10,6 +10,9 @@ import { HeaderNav } from './../menu/HeaderNav';
 // Dados
 import permission from "@/data/linkPermission.json";
 
+// Biblioteca
+import { useDisclosure } from "@nextui-org/react";
+
 // Tipagem
 type RoleType = 'vendedor' | 'diretoria' | 'tecnologia'; // Defina as roles possíveis aqui
 type PermissionType = {
@@ -47,6 +50,8 @@ export function Layout({ children, role }: { children: ReactNode; role?: string 
     // Acessando as rotas com segurança
     const routes = (role && (permission as PermissionType)[role as RoleType]?.router) || [];
 
+    const {isOpen: isOpenModal, onOpen, onOpenChange} = useDisclosure();
+console.log("Rotas: ", routes)
     return (
         <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-hidden">
             {isOpen && (
