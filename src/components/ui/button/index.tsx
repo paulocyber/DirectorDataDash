@@ -6,10 +6,12 @@ import { ComponentProps, ReactNode } from "react";
 
 // Tipagem
 type ButtonProps = ComponentProps<typeof Btn> & {
-    children?: ReactNode
+    children?: ReactNode;
+    custom?: boolean;
 }
 
-export function Button({ children, ...rest }: ButtonProps) {
+export function Button({ children, custom, ...rest }: ButtonProps) {
+    
     return (
         <Btn className="w-full" {...rest}>
             {children}

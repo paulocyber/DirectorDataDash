@@ -17,7 +17,7 @@ import Layout from "@/components/SellersUi/Layout";
 
 // Tipagem
 type CommissionData = {
-    VALOR_COMISSAO: string;
+    COMISSAO: string;
     VENDEDOR: string;
 };
 
@@ -39,7 +39,7 @@ export default async function SalesPage() {
     const { year, month, today } = getDate()
     const user = await getUserName(token as string);
 
-    const { sales, commissionPerSalesPerson } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, emp: "1", surname: user })
+    const { sales, commissionPerSalesPerson } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, emp: "1, 2, 3", surname: user })
     const { individualGoals } = goalsQueries({ dateInit: `${year}/${month}/01`, surname: user })
 
     const [respSales, respGoals, respComission] = await Promise.all([
@@ -49,7 +49,7 @@ export default async function SalesPage() {
     ]);
 
     const commissionSum = respComission.data.returnObject.body.reduce((total: number, item: CommissionData) => {
-        const commissionValue = parseFloat(item.VALOR_COMISSAO.replace(",", "."));
+        const commissionValue = parseFloat(item.COMISSAO.replace(",", "."));
         return total + (isNaN(commissionValue) ? 0 : commissionValue);
     }, 0);
     

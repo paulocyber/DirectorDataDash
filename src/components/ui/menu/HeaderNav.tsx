@@ -21,10 +21,11 @@ type RouterColors = {
 
 interface SideNavProps {
     open: (value: boolean) => void;
+    openModal: () => void;
     toggleMenuState: boolean;
 }
 
-export function HeaderNav({ open, toggleMenuState }: SideNavProps) {
+export function HeaderNav({ open, openModal, toggleMenuState }: SideNavProps) {
     const router = usePathname();
 
     let bgColorClass: string = '';
@@ -111,7 +112,7 @@ export function HeaderNav({ open, toggleMenuState }: SideNavProps) {
                                 </button>
 
                                 <button
-                                    
+                                    onClick={() => openModal()}
                                     className="hover: relative middle none font-sans font-medium text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none w-10 max-w-[40px] h-10 max-h-[40px] rounded-lg text-xs text-white hover:bg-blue-gray-500/10 active:bg-blue-gray-500/30"
                                     type="button"
                                 >

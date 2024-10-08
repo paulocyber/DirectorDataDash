@@ -2,7 +2,7 @@
 import { ReactNode } from "react";
 
 // Componentes
-import { Layout } from '@/components/ui/layout/index';
+import { Layout } from "@/components/ui/layout";
 
 // Next - Framework
 import { cookies } from "next/headers"; 
@@ -18,7 +18,7 @@ export default function SellersRouter({ children }: { children: ReactNode }) {
     }
 
     return (
-        <Layout role={role}>
+        <Layout role={role} >
             {children}
         </Layout>
     );

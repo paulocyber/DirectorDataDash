@@ -12,7 +12,7 @@ type SalesData = {
   value: number;
 };
 type CommissionData = {
-  VALOR_COMISSAO: string;
+  COMISSAO: string;
   VENDEDOR: string;
 };
 
@@ -40,7 +40,7 @@ export async function fetchSales({
   const { sales } = salesQueries({
     dateInit,
     dateEnd,
-    emp: "1",
+    emp: "1, 2, 3",
     surname,
   });
   const { individualGoals } = goalsQueries({ dateInit, surname });
@@ -96,7 +96,7 @@ export async function fetchSales({
 
   const commissionSum = commision.reduce(
     (total: number, item: CommissionData) => {
-      const commissionValue = parseFloat(item.VALOR_COMISSAO.replace(",", "."));
+      const commissionValue = parseFloat(item.COMISSAO.replace(",", "."));
       return total + (isNaN(commissionValue) ? 0 : commissionValue);
     },
     0
