@@ -21,5 +21,5 @@ export default function SellersRouter({ children }: { children: ReactNode }) {
         <Layout role={role} >
             {children}
         </Layout>
-    );
+    ); 
 }

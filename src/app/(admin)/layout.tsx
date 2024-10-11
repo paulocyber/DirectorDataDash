@@ -14,6 +14,7 @@ import { suppliersQuery } from "@/utils/queries/suppliers";
 
 // Biblioteca
 import { setupApiClient } from "@/service/api";
+import { Recoil } from "@/contexts/AtomContext";
 
 export default async function AdminRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
@@ -35,8 +36,10 @@ export default async function AdminRouter({ children }: { children: ReactNode })
     ])
 
     return (
-        <Layout role={role}>
-            {children}
+        <Layout role={role} supplier={respSuppliers.data.returnObject.body} enterprise={respEnterprise.data.returnObject.body}>
+            <Recoil>
+                {children}
+            </Recoil>
         </Layout>
     )
 }

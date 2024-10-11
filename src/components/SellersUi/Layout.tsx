@@ -10,11 +10,16 @@ import { useContext, useState } from "react";
 import { DateValue, Progress, RangeValue } from "@nextui-org/react";
 import Container from "../ui/container";
 import { Button } from "../ui/button";
+import GraphicContainer from "../ui/sciences/graphics/GraphicContainer";
+import BarChart from "../ui/sciences/graphics/BarChart";
+
+// Dados
+import highLightColor from "@/data/palettes/brands/highlightedColor.json"
 
 // Biblioteca
 import { IoIosArrowDown } from "react-icons/io";
 import { FaFlag, FaHotel } from "react-icons/fa";
-import { FaClockRotateLeft } from "react-icons/fa6";
+import { MdOutlineAttachMoney } from "react-icons/md";
 
 // Utils
 import { getMonthName } from "@/utils/mask/date/getMonthName";
@@ -23,6 +28,8 @@ import { fetchSales } from "@/utils/fetchData/fetchSales";
 
 // Tipagem
 import { parseDate } from '@internationalized/date';
+import { topClientsPlusBuyData } from "@/utils/types/sales";
+import { SellersTooltip } from "../ui/sciences/graphics/PieChart/ToolTip/sellers";
 type SalesData = {
     name: string;
     value: number;
@@ -30,6 +37,7 @@ type SalesData = {
 
 interface LayoutProps {
     salesAndGolas: SalesData[];
+    topClients: topClientsPlusBuyData[]
     commision: number;
     year: number;
     month: number;
@@ -40,8 +48,9 @@ const getLastDayOfMonth = (year: number, month: number) => {
     return new Date(year, month, 0).getDate();
 };
 
-export default function Layout({ salesAndGolas, commision, year, month, today }: LayoutProps) {
+export default function Layout({ salesAndGolas, topClients, commision, year, month, today }: LayoutProps) {
     const [sales, setSales] = useState<SalesData[]>(salesAndGolas);
+    const [clients, setClients] = useState(topClients)
     const [commisionValue, setComissionValue] = useState(commision || 0)
     const [emp, setEmp] = useState('1');
     const [loading, setLoading] = useState<boolean>(false);
@@ -60,6 +69,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             setLoading,
             setSales,
             setComission: setComissionValue,
+            setClients,
             surname: user,
             token
         })
@@ -73,6 +83,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             setLoading,
             setSales,
             setComission: setComissionValue,
+            setClients,
             surname: user,
             token
         });
@@ -86,6 +97,7 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
             setLoading,
             setSales,
             setComission: setComissionValue,
+            setClients,
             surname: user,
             token
         })
@@ -148,8 +160,8 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
                                 <span className="pl-3 text-sm flex">Loja {getEmpName(emp)}</span>
                             </div>
                             <div className="flex px-4 pb-3 items-center">
-                                <FaClockRotateLeft className="text-sm" />
-                                <span className="pl-3 text-sm flex">Agora atrás</span>
+                                <MdOutlineAttachMoney className="text-lg" />
+                                <p className="pl-2 text-sm flex">Comissão: <span className="font-bold px-2">{formatCurrency(commisionValue)}</span></p>
                             </div>
                         </div>
                     </Container>
@@ -157,8 +169,8 @@ export default function Layout({ salesAndGolas, commision, year, month, today }:
 
                 <div className="w-full">
                     <Container>
-                        <h2 className="font-bold px-4 pt-3">Valor da comissão: </h2>
-                        <span className="font-bold px-4 pt-2 text-lg">{formatCurrency(commisionValue)}</span>
+                        <h2 className="font-bold px-4 py-4">Top Clientes do dia</h2>
+                        <GraphicContainer loading={false} children={<BarChart data={clients} dataKey="VALOR_LIQUIDO" dataKeyXAxis="NOME_CLIENTE" displayXAxis={true} displayCartesianGrid={true} palette={highLightColor} displayToolTip={true} ToolTipComponent={SellersTooltip}/>} />
                     </Container>
                 </div>
             </div>

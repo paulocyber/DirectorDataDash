@@ -1,12 +1,12 @@
 // Biblioteca
 import { PieLabelRenderProps, Sector } from "recharts";
 
-// Definindo o tipo esperado para os dados do gráfico
+// Tipagem
 interface DataItem {
     value: number;
 }
 
-export const CustomLabel = (props: PieLabelRenderProps & { data: DataItem[] }): JSX.Element => {
+export const ExternalPieLabel = (props: PieLabelRenderProps & { data: DataItem[] }): JSX.Element => {
     const radian = Math.PI / 180;
     const { cx, cy, midAngle, startAngle, endAngle, payload, outerRadius, value, data } = props;
 
@@ -55,5 +55,28 @@ export const CustomLabel = (props: PieLabelRenderProps & { data: DataItem[] }): 
                 {`${percentage}%`}
             </text>
         </g>
+    );
+};
+
+export const InternalPieLabel = ({cx, cy, midAngle, innerRadius, outerRadius, percent}: PieLabelRenderProps) => {
+    const RADIAN = Number(Math.PI) / 180;
+
+    // Convertendo valores para number
+    const radius = Number(innerRadius) + (Number(outerRadius) - Number(innerRadius)) * 0.5;
+    const x = Number(cx) + radius * Math.cos(-Number(midAngle) * RADIAN);
+    const y = Number(cy) + radius * Math.sin(-Number(midAngle) * RADIAN);
+
+    return (
+        <text
+            x={x}
+            y={y}
+            fill="white"
+            className=""
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={12}
+        >
+            {(percent! * 100).toFixed(1)}%
+        </text>
     );
 };

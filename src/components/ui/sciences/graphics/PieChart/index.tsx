@@ -25,7 +25,6 @@ export default function PieChart<T>({ data, dataKey, displayToolTip, ToolTipComp
                     outerRadius="80%"
                     fill="#8884d8"
                     dataKey={dataKey}
-
                 >
                     {data.map((item, index) => (
                         <Cell key={`cell-${index}`} fill={(item as any).color || vibrantPallete[index % vibrantPallete.length]} />

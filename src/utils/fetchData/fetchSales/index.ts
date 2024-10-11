@@ -5,8 +5,10 @@ import { toast } from "react-toastify";
 import { salesQueries } from "@/utils/queries/sales";
 import { goalsQueries } from "@/utils/queries/goals";
 import { fetchData } from "..";
+import getDate from "@/utils/currentDate";
 
 // Tipagem
+import { topClientsPlusBuyData } from "@/utils/types/sales";
 type SalesData = {
   name: string;
   value: number;
@@ -23,6 +25,7 @@ interface FetchSales {
   surname: string;
   setLoading: (value: boolean) => void;
   setComission: (value: number) => void;
+  setClients: (value: topClientsPlusBuyData[]) => void;
   setSales: (value: SalesData[]) => void;
 }
 
@@ -33,10 +36,13 @@ export async function fetchSales({
   surname,
   setLoading,
   setComission,
+  setClients,
   setSales,
 }: FetchSales) {
   setLoading(true);
   
+  const { today } = getDate()
+
   const { sales } = salesQueries({
     dateInit,
     dateEnd,
@@ -49,8 +55,10 @@ export async function fetchSales({
     dateEnd,
     surname
   });
+  const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, surname});
 
   let salesData: any[] = [];
+  let clientsData: any[] = [];
   let commision: any[] = [];
   let goalsData: any[] = [];
 
@@ -70,6 +78,11 @@ export async function fetchSales({
       query: commissionPerSalesPerson,
       setData: (data) => (commision = data),
     }),
+    fetchData({
+      ctx: token,
+      query: topClientsPlusBuy,
+      setData: (data) => (clientsData = data),
+    })
   ];
 
   await Promise.all(queries);
@@ -102,7 +115,15 @@ export async function fetchSales({
     0
   );
 
+  const topClients = clientsData.map((client) => ({
+    ID_VENDEDOR: client.ID_VENDEDOR,
+    ID_CLIENTE: client.ID_CLIENTE,
+    NOME_CLIENTE: client.NOME_CLIENTE,
+    VALOR_LIQUIDO: parseFloat(client.VALOR_LIQUIDO as string) 
+}));
+
   setSales(salesAndGolas);
   setComission(commissionSum);
+  setClients(topClients);
   setLoading(false);
 }

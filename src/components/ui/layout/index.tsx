@@ -27,11 +27,11 @@ type PermissionType = {
 interface LayoutProps {
     children: ReactNode;
     role?: string;
-    // enterprise: EnterpriseData[];
-    // supplier: Supplier[];
+    enterprise?: EnterpriseData[];
+    supplier?: Supplier[];
 }
 
-export function Layout({ children, role /*enterprise, supplier*/ }: LayoutProps) {
+export function Layout({ children, role, enterprise, supplier }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -64,7 +64,7 @@ export function Layout({ children, role /*enterprise, supplier*/ }: LayoutProps)
 
     return (
         <>
-            {/* <Settings isOpen={isOpenModal} onOpenChange={onOpenChange} enterprise={enterprise} supplier={supplier} /> */}
+            <Settings isOpen={isOpenModal} onOpenChange={onOpenChange} enterprise={enterprise || []} supplier={supplier || []} />
             <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-hidden">
                 {isOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50" />

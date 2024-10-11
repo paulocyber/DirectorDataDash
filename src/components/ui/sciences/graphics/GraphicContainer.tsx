@@ -17,7 +17,7 @@ export default function GraphicContainer({ children, loading }: { children: Reac
     }
 
     return (
-        <div className="flex w-full flex-col h-[450px] overflow-auto">
+        <div className="flex w-full flex-col h-[420px] overflow-auto">
             <main className="p-4 space-y-1 h-full z-0">
                 {children}
             </main>

@@ -13,7 +13,7 @@ import { cookies } from "next/headers";
 import { Metadata } from "next";
 
 // Tipagem
-import { topSalesData } from "@/utils/types/sales";
+import { topClientsPlusBuyData, topSalesData } from "@/utils/types/sales";
 
 // MetaDados
 export const metadata: Metadata = {
@@ -33,6 +33,7 @@ export default async function SalesPage() {
         dateEnd: today,
         emp: "1",
     });
+    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today })
     const { storeGoals } = goalsQueries({
         month,
         year,
@@ -40,12 +41,13 @@ export default async function SalesPage() {
         emp: '1'
     });
     const sellers = sellersQueries({ dateInit: `${year}/${month}/01` });
-
-    const [respSales, respTonTenSellers, respGoals, respSellers] = await Promise.all([
+    
+    const [respSales, respTonTenSellers, respGoals, respSellers, respTopClientsPlusBuy] = await Promise.all([
         api.post("/v1/find-db-query", { query: sales }),
         api.post("/v1/find-db-query", { query: topTenSellers }),
         api.post("/v1/find-db-query", { query: storeGoals }),
-        api.post("/v1/find-db-query", { query: sellers })
+        api.post("/v1/find-db-query", { query: sellers }),
+        api.post("/v1/find-db-query", { query: topClientsPlusBuy })
     ]);
 
     const salesValue = respSales.data.returnObject?.body[0]?.VALOR_LIQUIDO ?
@@ -70,6 +72,13 @@ export default async function SalesPage() {
         }
     })
 
+    const topClients = respTopClientsPlusBuy.data.returnObject.body.map((client: topClientsPlusBuyData) => ({
+        ID_VENDEDOR: client.ID_VENDEDOR,
+        ID_CLIENTE: client.ID_CLIENTE,
+        NOME_CLIENTE: client.NOME_CLIENTE,
+        VALOR_LIQUIDO: parseFloat(client.VALOR_LIQUIDO as string) 
+    }));
+
     return (
         <Layout
             salesData={data}
@@ -78,6 +87,7 @@ export default async function SalesPage() {
             year={year}
             month={month}
             today={today}
+            topClientsData={topClients}
         />
     );
 }

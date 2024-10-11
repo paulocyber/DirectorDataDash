@@ -11,6 +11,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // Biblioteca
 import { ToastContainer } from "react-toastify";
 import NextTopLoader from "nextjs-toploader";
+import { Recoil } from "@/contexts/AtomContext";
 
 export const metadata: Metadata = {
   title: "Login - Sistema de Gestão",
@@ -29,7 +30,9 @@ export default function RootLayout({
           <NextTopLoader
             color="#ef4444"
           />
-          {children}
+          <Recoil>
+            {children}
+          </Recoil>
           <ToastContainer autoClose={3000} />
         </AuthProvider>
       </body>

@@ -15,7 +15,7 @@ import Container from "../ui/container";
 import GraphicContainer from "../ui/sciences/graphics/GraphicContainer";
 import PieChart from "../ui/sciences/graphics/PieChart";
 import { ToolTip } from "../ui/sciences/graphics/PieChart/ToolTip";
-import { CustomLabel } from "../ui/sciences/graphics/PieChart/Label";
+import { ExternalPieLabel } from "../ui/sciences/graphics/PieChart/Label";
 import CustomLabelContent from "../ui/sciences/graphics/BarChart/Label";
 import BarChart from "../ui/sciences/graphics/BarChart";
 import DescriptionGraphic from "../ui/sciences/graphics/description";
@@ -125,7 +125,7 @@ export default function Layout({ allBillets, listBilletInOpen, listBilletPaid, l
             <Container>
                 <ToolBar title="Contas a pagar" displayCalendar={true} dateRange={date} handleRefreshClick={handleRefresh} handleDateRangePicker={handleDateRangerPicker} handleCleanFilter={handleCleanFilter} href="/billstopay/table" descriptionHref="Tabela" />
                 <GraphicContainer loading={loading}>
-                    <PieChart data={selectCostCenter} dataKey="value" displayToolTip={true} ToolTipComponent={ToolTip} label={(props) => <CustomLabel {...props} data={selectCostCenter} />} />
+                    <PieChart data={selectCostCenter} dataKey="value" displayToolTip={true} ToolTipComponent={ToolTip} label={(props) => <ExternalPieLabel {...props} data={selectCostCenter} />} />
                     <BarChart
                         displayToolTip={true}
                         ToolTipComponent={ToolTip}
@@ -138,7 +138,9 @@ export default function Layout({ allBillets, listBilletInOpen, listBilletPaid, l
                         }}
                     />
                 </GraphicContainer>
-                <DescriptionGraphic data={sortedCostCenters} dataKey="description" handleSelection={handleSelectingCostCenter} />
+                <div className="flex w-full py-4 overflow-auto">
+                    <DescriptionGraphic data={sortedCostCenters} dataKey="description" handleSelection={handleSelectingCostCenter} />
+                </div>
             </Container>
         </>
     )

@@ -1,21 +1,19 @@
-'use client'
+"use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-export function handleSelecting () {
-    const [selecting, setSelecting] = useState<string[]>([])
+export function handleSelecting(
+  setSelecting: Dispatch<SetStateAction<string[]>>
+) {
+  const handleCheckboxChange = (name: string) => {
+    setSelecting((prev) => {
+      if (prev.includes(name)) {
+        return prev.filter((item) => item !== name);
+      } else {
+        return [...prev, name];
+      }
+    });
+  };
 
-    const handleCheckboxChange = (name: string) => {
-        setSelecting(prev => {
-            if (prev.includes(name)) {
-                
-                return prev.filter(item => item !== name);
-            } else {
-                
-                return [...prev, name];
-            }
-        });
-    };
-
-    return {selecting, handleCheckboxChange}
+  return handleCheckboxChange;
 }

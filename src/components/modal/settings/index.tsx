@@ -3,6 +3,11 @@
 // Biblioteca
 import { Checkbox, Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react";
 import { CiSearch } from "react-icons/ci";
+import { useRecoilState } from "recoil";
+
+// Atom
+import { suppliersSelection } from "@/atoms/suppliers";
+import { enterpriseSelection } from "@/atoms/enterprise";
 
 // Componentes
 import { Input } from "@/components/ui/input";
@@ -27,11 +32,13 @@ interface SettingsProps {
 
 export default function Settings({ isOpen, enterprise, supplier, onOpenChange }: SettingsProps) {
     const [menuOptions, setMenuOptions] = useState<string>('Empresas')
+    const [suppliers, setSuppliers] = useRecoilState(suppliersSelection);
+    const [enterprises, setEnterprises] = useRecoilState(enterpriseSelection);
     const [searchParams, setSearchParams] = useState<string>('');
 
     const filterSearch = searchFilter({ data: supplier, search: searchParams })
-    const { selecting: supplierSelection, handleCheckboxChange: handleSelectionSupplier } = handleSelecting()
-    const { selecting: enterpriseSelection, handleCheckboxChange: handleSelectionEnterprise } = handleSelecting()
+    const handleSelectionSupplier = handleSelecting(setSuppliers)
+    const handleSelectionEnterprise = handleSelecting(setEnterprises)
     
     return (
         <Modal
@@ -72,7 +79,7 @@ export default function Settings({ isOpen, enterprise, supplier, onOpenChange }:
                                                     <Checkbox 
                                                         classNames={{ label: "truncate w-40" }} 
                                                         className="rounded-lg" 
-                                                        isSelected={enterpriseSelection.includes(item.SIGLA_EMP)} 
+                                                        isSelected={enterprises.includes(item.SIGLA_EMP)} 
                                                         onChange={() => handleSelectionEnterprise(item.SIGLA_EMP)}
                                                     >
                                                         {item.SIGLA_EMP}
@@ -98,7 +105,7 @@ export default function Settings({ isOpen, enterprise, supplier, onOpenChange }:
                                                         <Checkbox 
                                                             classNames={{ label: "truncate w-52" }} 
                                                             className="rounded-lg" 
-                                                            isSelected={supplierSelection.includes(item.APELIDO_OU_NOME)} 
+                                                            isSelected={suppliers.includes(item.APELIDO_OU_NOME)} 
                                                             onChange={() => handleSelectionSupplier(item.APELIDO_OU_NOME)}
                                                         >
                                                             {item.APELIDO_OU_NOME}
