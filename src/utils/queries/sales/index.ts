@@ -42,7 +42,7 @@ export const salesQueries = ({
   let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO FROM  saidas_itens sdi INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd INNER JOIN saidas sds ON sds.id_sds = sdi.id_sds
   INNER JOIN almoxarifados_estoque ale ON ale.id_prd = sdi.id_prd AND ale.id_alm = sdi.id_alm INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc) INNER JOIN empresas emp ON emp.id_emp
   = sds.id_emp LEFT JOIN fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' WHERE  sds.status_sds = '2'  AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59'
-  AND sds.id_emp = 1  AND sds.tipo_sds = '4'  AND sdi.id_tbl IN (1, 2)  AND ${sellers ? `and fnc.id_pss = ${sellers}` : ""} ${surname ? `and fnc.apelido_pss like '%${surname}%'` : ""} GROUP BY fnc.apelido_pss ORDER BY vendedor`
+  AND sds.id_emp = 1  AND sds.tipo_sds = '4'  AND sdi.id_tbl IN (1, 2)  ${sellers ? `and fnc.id_pss = ${sellers}` : ""} ${surname ? `and fnc.apelido_pss like '%${surname}%'` : ""} GROUP BY fnc.apelido_pss ORDER BY vendedor`
 
   let topTenSellers = `select tbv.id, tbv.vendedor, tbv.valor_total_liquido from ( select sds.id_fnc as id, fnc.apelido_pss as vendedor, sum(sdi.valor_liquido_sdi) as valor_total_liquido from saidas_itens sdi inner 
   join saidas sds on sds.id_sds = sdi.id_sds inner join pessoas pss on pss.id_pss = sds.id_pss inner join pessoas fnc on fnc.id_pss = sds.id_fnc inner join produtos prd on sdi.id_prd = prd.id_prd inner join empresas 

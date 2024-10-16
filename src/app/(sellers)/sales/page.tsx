@@ -55,7 +55,7 @@ export default async function SalesPage() {
         const commissionValue = parseFloat(item.COMISSAO.replace(",", "."));
         return total + (isNaN(commissionValue) ? 0 : commissionValue);
     }, 0);
-
+console.log("Query: ", sales)
     const salesAndGolas = [
         {
             name: "Vendas",
