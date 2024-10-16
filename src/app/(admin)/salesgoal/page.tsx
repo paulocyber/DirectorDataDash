@@ -28,7 +28,7 @@ export default async function SalesPage() {
     const api = setupApiClient(token as string);
     const { year, month, today, getLastDayOfMonth } = getDate();
 
-    const { sales, topTenSellers } = salesQueries({
+    const { salesAll, topTenSellers } = salesQueries({
         dateInit: `${year}/${month}/01`,
         dateEnd: today,
         emp: "1",
@@ -43,7 +43,7 @@ export default async function SalesPage() {
     const sellers = sellersQueries({ dateInit: `${year}/${month}/01` });
     
     const [respSales, respTonTenSellers, respGoals, respSellers, respTopClientsPlusBuy] = await Promise.all([
-        api.post("/v1/find-db-query", { query: sales }),
+        api.post("/v1/find-db-query", { query: salesAll }),
         api.post("/v1/find-db-query", { query: topTenSellers }),
         api.post("/v1/find-db-query", { query: storeGoals }),
         api.post("/v1/find-db-query", { query: sellers }),

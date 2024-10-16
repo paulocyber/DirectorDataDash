@@ -40,7 +40,7 @@ export async function fetchSales({
 }: fetchSalesProps) {
   const { today } = getDate();
 
-  const { sales, topTenSellers } = salesQueries({
+  const { salesAll, topTenSellers } = salesQueries({
     dateInit,
     dateEnd,
     emp,
@@ -70,7 +70,7 @@ export async function fetchSales({
   const quries = [
     fetchData({
       ctx: token,
-      query: sales,
+      query: salesAll,
       setData: (data) => {
         respSales = data;
       },

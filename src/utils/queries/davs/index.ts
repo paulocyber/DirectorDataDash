@@ -29,4 +29,3 @@ export const davsQueries = ({ dateInit, dateEnd, id }: QueryProps) => {
 
   return { davFinished, davFinalizationDetail, obtainProductsContainedInDav };
 };
- 

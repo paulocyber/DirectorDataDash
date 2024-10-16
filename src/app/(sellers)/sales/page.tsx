@@ -77,7 +77,7 @@ export default async function SalesPage() {
         NOME_CLIENTE: client.NOME_CLIENTE,
         VALOR_LIQUIDO: parseFloat(client.VALOR_LIQUIDO as string) 
     }));
-
+console.log("Query: ", sales)
     return (
         <Layout
             salesAndGolas={salesAndGolas}
