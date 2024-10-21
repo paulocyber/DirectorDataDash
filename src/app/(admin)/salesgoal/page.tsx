@@ -33,7 +33,7 @@ export default async function SalesPage() {
         dateEnd: today,
         emp: "1",
     });
-    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today })
+    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, emp: "1" })
     const { storeGoals } = goalsQueries({
         month,
         year,
@@ -78,7 +78,7 @@ export default async function SalesPage() {
         NOME_CLIENTE: client.NOME_CLIENTE,
         VALOR_LIQUIDO: parseFloat(client.VALOR_LIQUIDO as string) 
     }));
-
+console.log("Dados: ", data)
     return (
         <Layout
             salesData={data}

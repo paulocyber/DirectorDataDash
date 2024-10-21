@@ -42,7 +42,7 @@ export default async function SalesPage() {
 
     const { sales, commissionPerSalesPerson } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, emp: "1, 2, 3", surname: user })
     const { individualGoals } = goalsQueries({ dateInit: `${year}/${month}/01`, surname: user })
-    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, surname: user })
+    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, surname: user, emp: "1, 2, 3" })
 
     const [respSales, respGoals, respComission, respTopClientsPlusBuy] = await Promise.all([
         api.post("/v1/find-db-query", { query: sales }),
@@ -55,7 +55,7 @@ export default async function SalesPage() {
         const commissionValue = parseFloat(item.COMISSAO.replace(",", "."));
         return total + (isNaN(commissionValue) ? 0 : commissionValue);
     }, 0);
-console.log("Query: ", sales)
+
     const salesAndGolas = [
         {
             name: "Vendas",
@@ -77,7 +77,7 @@ console.log("Query: ", sales)
         NOME_CLIENTE: client.NOME_CLIENTE,
         VALOR_LIQUIDO: parseFloat(client.VALOR_LIQUIDO as string) 
     }));
-console.log("Query: ", sales)
+
     return (
         <Layout
             salesAndGolas={salesAndGolas}

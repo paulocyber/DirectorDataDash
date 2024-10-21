@@ -53,9 +53,10 @@ export async function fetchSales({
   const { commissionPerSalesPerson } = salesQueries({
     dateInit,
     dateEnd,
-    surname
+    surname,
+    emp: "1, 2, 3"
   });
-  const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, surname});
+  const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, surname, emp: "1, 2, 3"});
 
   let salesData: any[] = [];
   let clientsData: any[] = [];
