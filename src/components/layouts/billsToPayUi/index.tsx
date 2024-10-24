@@ -7,12 +7,12 @@ import { AuthContext } from "@/contexts/AuthContext";
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/ToolBar";
+import ToolBar from "../../ui/toolbar";
 import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer";
 import { CustomTooltip } from '@/components/ui/sciences/toolTip';
-import PieChart from "@/components/ui/sciences/graphics/pieChart";
+import PieChart from "@/components/ui/sciences/graphics/PieChart";
 import { ExternalPieLabel } from "@/components/ui/sciences/label";
-import BarChart from "@/components/ui/sciences/graphics/barChart";
+import BarChart from "@/components/ui/sciences/graphics/BarChart";
 import DescriptionGraphic from "@/components/ui/sciences/description";
 
 // Utils

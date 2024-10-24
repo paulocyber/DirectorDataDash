@@ -12,7 +12,7 @@ import collumns from "@/data/collumns/billsToPay/columns.json"
 import InfoCard from "@/components/ui/InfoCard"
 import Container from "@/components/ui/container"
 import Table from "@/components/ui/table"
-import ToolBar from "@/components/ui/ToolBar"
+import ToolBar from "@/components/ui/toolbar"
 import { renderCell } from "@/components/ui/renderCell/billsToPay/renderCell"
 
 // Utils

@@ -7,7 +7,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/ToolBar";
+import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 
 // Dados

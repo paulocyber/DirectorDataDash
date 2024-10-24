@@ -6,10 +6,10 @@ import { AuthContext } from "@/contexts/AuthContext"
 
 // Componentes
 import Container from "@/components/ui/container"
-import ToolBar from "@/components/ui/ToolBar"
+import ToolBar from "@/components/ui/toolbar"
 import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer"
-import BarChart from "@/components/ui/sciences/graphics/barChart"
-import BarChartComparison from "@/components/ui/sciences/graphics/barChart/barChartComparison"
+import BarChart from "@/components/ui/sciences/graphics/BarChart"
+import BarChartComparison from "@/components/ui/sciences/graphics/BarChart/BarChartComparison"
 
 
 // Dados

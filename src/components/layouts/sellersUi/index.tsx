@@ -6,11 +6,11 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 // Componentes
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/ToolBar";
+import ToolBar from "@/components/ui/toolbar";
 import ProgressBar from "@/components/ui/progressBar";
 import Card from "@/components/ui/card";
 import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer";
-import BarChart from "@/components/ui/sciences/graphics/barChart";
+import BarChart from "@/components/ui/sciences/graphics/BarChart/index";
 import { CustomTooltip } from "@/components/ui/sciences/toolTip";
 
 // Bibliotecas

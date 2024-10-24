@@ -9,7 +9,7 @@ import { setupApiClient } from "@/services/api";
 import getDate from "@/utils/date/currentDate";
 import { salesQueries } from "@/utils/queries/sales";
 import { stockQueries } from "@/utils/queries/stock";
-import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay";
 import { groupSumBy } from "@/utils/filters/sumsByGroup";
 
 // Componentes

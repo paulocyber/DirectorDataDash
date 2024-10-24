@@ -19,9 +19,9 @@ import { brandsAtom } from "@/atom/brandsAtom";
 
 // Componentes
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/ToolBar";
+import ToolBar from "@/components/ui/toolbar";
 import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer";
-import BarChart from "@/components/ui/sciences/graphics/barChart";
+import BarChart from "@/components/ui/sciences/graphics/BarChart"; 
 
 // Tipagem
 type DateRangeState = {

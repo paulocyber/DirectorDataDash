@@ -13,15 +13,15 @@ import highLightColor from '@/data/palettes/highlightedColor.json';
 
 // Componentes
 import Container from '@/components/ui/container';
-import ToolBar from '@/components/ui/ToolBar';
+import ToolBar from '@/components/ui/toolbar';
 import ProgressBar from '@/components/ui/progressBar';
 import Card from '@/components/ui/card';
 import GraphicContainer from '@/components/ui/sciences/graphics/GraphicContainer';
-import { CustomActiveShapePieChart } from '@/components/ui/sciences/graphics/pieChart/CustomActiveShapePieChart';
+import { CustomActiveShapePieChart } from '@/components/ui/sciences/graphics/PieChart/CustomActiveShapePieChart';
 import { CustomTooltip } from '@/components/ui/sciences/toolTip';
 import { InternalPieLabel } from '@/components/ui/sciences/label';
 import DescriptionGraphic from '@/components/ui/sciences/description';
-import BarChart from '@/components/ui/sciences/graphics/barChart';
+import BarChart from '@/components/ui/sciences/graphics/BarChart';
 
 // Utils
 import { getMonthName } from '@/utils/mask/date';

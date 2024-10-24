@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import { parseDate } from '@internationalized/date';
-import ToolBar from "@/components/ui/ToolBar";
+import ToolBar from "@/components/ui/toolbar";
 import Container from "@/components/ui/container";
 import { renderCell } from "../../ui/renderCell/davs/renderCell"
 import Table from "@/components/ui/table";
