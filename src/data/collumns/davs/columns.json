@@ -1,7 +1,7 @@
 [
-    {"name": "Número da Dav", "uid": "nDav"},
-    {"name": "Cliente", "uid": "cliente"},
-    {"name": "Vendedor", "uid": "vendedor"},
-    {"name": "Valor Bruto", "uid": "valorBruto"},
-    {"name": "Data Finalização", "uid": "dataFinalização"}
+  { "name": "Número da Dav", "uid": "nDav" },
+  { "name": "Cliente", "uid": "cliente" },
+  { "name": "Vendedor", "uid": "vendedor" },
+  { "name": "Valor Bruto", "uid": "valorBruto" },
+  { "name": "Data Finalização", "uid": "dataFinalização" }
 ]

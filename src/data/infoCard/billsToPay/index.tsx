@@ -1,29 +1,25 @@
-// Utils
-import { TotalSum } from "@/utils/functionSum";
-import { formatCurrency } from "@/utils/mask/money";
-
 // Biblioteca
 import { CiWarning } from "react-icons/ci";
 import { GiPayMoney } from "react-icons/gi";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { TbMoneybag } from "react-icons/tb";
 
-// Tipagem
-import { BillsToPayItem } from "@/utils/types/billsToPay";
+// Utils
+import { formatCurrency } from "@/utils/mask/money";
+import { TotalSum } from "@/utils/functionSum";
 
-type SelectionDescription = {
-    description: string;
-    color: string;
-    id: number;
-};
+// Tipagem
+import { BillsToPayData } from "@/types/billsToPay";
+import { SelectionDescription } from "@/types/filters/selectionDescription";
 
 interface InfoCardFromBillsToPayProps {
-    listBilletInOpen: BillsToPayItem[];
-    listBilletPaid: BillsToPayItem[];
-    listBilletExpired: BillsToPayItem[];
+    listBilletInOpen: BillsToPayData[];
+    listBilletPaid: BillsToPayData[];
+    listBilletExpired: BillsToPayData[];
     costCenterFilter?: SelectionDescription[];
-    filterSearch?: BillsToPayItem[];
+    filterSearch?: BillsToPayData[];
 }
+
 
 export default function InfoCardFromBillsToPay({ listBilletInOpen, listBilletPaid, listBilletExpired, costCenterFilter, filterSearch }: InfoCardFromBillsToPayProps) {
     const filteredOpenBillets =
@@ -115,5 +111,5 @@ export default function InfoCardFromBillsToPay({ listBilletInOpen, listBilletPai
         pastDueAmounts,
         amountsPaid,
         totalInvoicesPaid,
-      };
+    };
 }

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { TableBody, TableCell, TableColumn, TableHeader, TableRow, Table as TableUi } from "@nextui-org/react";
 
 // Utils
-import { InfiniteScroll } from "@/utils/InfiniteScroll";
+import { InfiniteScroll } from './../../../utils/InfiniteScroll';
 
 // Componentes
 import Loading from "../loading";
@@ -48,19 +48,18 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
     }
 
     return (
-        <main className="flex lg:overflow-y-auto overflow-auto h-[420px] w-full pb-8 flex-col px-5">
-            <div className="px-4">
-                <TableUi 
-                    id="content" 
-                    isHeaderSticky 
-                    removeWrapper 
-                    classNames={{ 
-                        th: "bg-[#fa6602] text-white text-sm ", 
-                        table: "rounded-lg", 
-                        thead: "", 
-                        tr: "cursor-pointer hover:bg-gray-200 border-b-2 transition duration-200 ease-in-out", 
-                        tbody: "" 
-                    }} 
+        <main className="flex w-full pb-8 flex-col px-5">
+            <div className="px-4 lg:overflow-y-auto overflow-auto h-[420px]">
+                <TableUi
+                    id="content"
+                    isHeaderSticky
+                    removeWrapper
+                    classNames={{
+                        th: "bg-[#fa6602] text-white text-sm",
+                        table: "rounded-lg",
+                        thead: "",
+                        tr: "cursor-pointer hover:bg-gray-200 border-b-2 transition duration-200 ease-in-out",
+                    }}
                     aria-label="Table"
                 >
                     <TableHeader>
@@ -72,20 +71,23 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
                         {(item) => (
                             <TableRow key={(item as any).ID_SDS} className="border-b">
                                 {collumns.map((column) => (
-                                    <TableCell 
-                                        onClick={() => detail && detail((item as any).ID_SDS)} 
-                                        key={column.uid} 
-                                        className="py-4 px-2 text-center hover:bg-gray-100 transition duration-150 ease-in-out"
+                                    <TableCell
+                                        onClick={() => detail && detail((item as any).ID_SDS)}
+                                        key={column.uid}
+                                        className="py-2 px-2 text-center hover:bg-gray-100 transition duration-150 ease-in-out overflow-hidden "
                                     >
-                                        {renderCell(item, column.uid)}
+                                        <div className="whitespace-nowrap overflow-hidden overflow-ellipsis truncate lg:w-full w-40">   
+                                            {renderCell(item, column.uid)}
+                                        </div>
                                     </TableCell>
                                 ))}
                             </TableRow>
                         )}
                     </TableBody>
                 </TableUi>
+                
+                <InfiniteScroll fetchMore={fetchMore} />
             </div>
-            <InfiniteScroll fetchMore={fetchMore} />
         </main>
     )
 }

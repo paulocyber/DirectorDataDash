@@ -1,12 +1,12 @@
-// Biblioteca
+// Bibliotecas
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
-// Biblioteca
+// Utils
 import { formatCurrency } from "@/utils/mask/money";
 
 // Tipagem
-import { BillsToPayItem } from "@/utils/types/billsToPay";
+import { BillsToPayData } from "@/types/billsToPay";
 
 type PageSize =
   | "A4"
@@ -25,7 +25,7 @@ type CreatePdf = {
 };
 
 export default function billsToPayPDF(
-  allBillets: BillsToPayItem[],
+  allBillets: BillsToPayData[],
   amountInOpen: number,
   amountExpired: number,
   amountPaid: number,
@@ -101,27 +101,77 @@ export default function billsToPayPDF(
     {
       table: {
         headerRows: 1,
-        widths: ["auto", "auto", "auto", "auto", "auto", "auto", "auto", "auto"],
+        widths: [
+          "auto",
+          "auto",
+          "auto",
+          "auto",
+          "auto",
+          "auto",
+          "auto",
+          "auto",
+        ],
         body: [
           [
-            { text: "Status", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Vencimento", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Valor", style: "tableHeader", fontSize: 8, alignment: "right" },
-            { text: "Nº Documento", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Centro de Custo", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Nome", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Centro", style: "tableHeader", fontSize: 8, alignment: "center" },
-            { text: "Descrição", style: "tableHeader", fontSize: 8, alignment: "center" },
+            {
+              text: "Status",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Vencimento",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Valor",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "right",
+            },
+            {
+              text: "Nº Documento",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Centro de Custo",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Nome",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Centro",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
+            {
+              text: "Descrição",
+              style: "tableHeader",
+              fontSize: 8,
+              alignment: "center",
+            },
           ],
           ...data,
         ],
       },
       layout: {
-        fillColor: (rowIndex: number) => (rowIndex % 2 === 0 ? "#f0f0f0" : null),
+        fillColor: (rowIndex: number) =>
+          rowIndex % 2 === 0 ? "#f0f0f0" : null,
         hLineWidth: () => 1,
         vLineWidth: () => 1,
-        hLineColor: () => '#cccccc',
-        vLineColor: () => '#cccccc',
+        hLineColor: () => "#cccccc",
+        vLineColor: () => "#cccccc",
       },
     },
   ];
@@ -132,7 +182,7 @@ export default function billsToPayPDF(
     fontSize: 9,
     bold: true,
     margin: [0, 10, 0, 5],
-    color: 'blue', // Cor para destacar
+    color: "blue", // Cor para destacar
   };
 
   const totalAmountExpired: any = {
@@ -141,7 +191,7 @@ export default function billsToPayPDF(
     fontSize: 9,
     bold: true,
     margin: [0, 5, 0, 5],
-    color: 'red', // Cor para destacar
+    color: "red", // Cor para destacar
   };
 
   const totalAmountPaid: any = {
@@ -150,7 +200,7 @@ export default function billsToPayPDF(
     fontSize: 9,
     bold: true,
     margin: [0, 5, 0, 5],
-    color: 'green', // Cor para destacar
+    color: "green", // Cor para destacar
   };
 
   const quantityAmountPaid: any = {
@@ -168,7 +218,7 @@ export default function billsToPayPDF(
         alignment: "right",
         fontSize: 8,
         margin: [0, 0, 20, 5],
-        color: '#888888', // Tom mais suave
+        color: "#888888", // Tom mais suave
       },
     ];
   }
@@ -179,7 +229,7 @@ export default function billsToPayPDF(
     header: reportTitle,
     content: [
       details,
-      { text: '', margin: [0, 10, 0, 10] }, // Espaço vazio para separação
+      { text: "", margin: [0, 10, 0, 10] }, // Espaço vazio para separação
       totalAmountInOpen,
       totalAmountExpired,
       totalAmountPaid,

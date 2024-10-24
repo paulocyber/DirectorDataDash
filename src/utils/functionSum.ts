@@ -1,5 +1,5 @@
 // Utils
-import { convertStringToNumber } from "./mask/convertStringToNumber";
+import { convertStringToNumber } from "./convertToNumeric";
 
 export function TotalSum(data: any[], value: string) {
   return data.reduce((total, data) => {

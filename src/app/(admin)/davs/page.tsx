@@ -3,14 +3,14 @@ import { Metadata } from "next";
 import { cookies } from "next/headers";
 
 // Biblioteca
-import { setupApiClient } from "@/service/api";
+import { setupApiClient } from '@/services/api';
 
 // Utils
-import getDate from "@/utils/currentDate";
-import { davsQueries } from "@/utils/queries/davs";
+import getDate from "@/utils/date/currentDate";
+import { davsQueries } from "@/utils/queries/davs"
 
 // Compononentes
-import Layout from "@/components/DavsUi";
+import UiDav from "@/components/layouts/davsUi";
 
 // Dados
 import InfoCardFromDav from "@/data/infoCard/davs";
@@ -34,6 +34,6 @@ export default async function DavsPage() {
     const infoCard = InfoCardFromDav({listDav: respDavs.data.returnObject.body})
 
     return (
-        <Layout listDav={respDavs.data.returnObject.body} infoCard={infoCard} />
+        <UiDav listDav={respDavs.data.returnObject.body} infoCard={infoCard} today={today}/>
     )
 }

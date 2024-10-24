@@ -34,7 +34,7 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                         tickFormatter={(dataKeyXAxis) => truncateString(dataKeyXAxis, 7)}
                         tickLine={false}
                         dataKey={dataKeyXAxis}
-                        className="font-bold text-[10px] "
+                        className="font-bold text-[10px] w-20 truncate"
                     />
                 )}
                 <YAxis
@@ -69,7 +69,7 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                                     ? `${formattedValue.substring(0, maxLength)}...`
                                     : formattedValue;
                             }}
-                            className="font-bold text-[11px] "
+                            className="font-bold text-[11px] lg:flex hidden"
                         />
                     )}
                 </Bar>

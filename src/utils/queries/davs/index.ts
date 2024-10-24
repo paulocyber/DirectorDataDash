@@ -1,5 +1,5 @@
 // Tipagem
-import { QueryProps } from "@/utils/types/query";
+import { QueryProps } from "@/types/queires";
 
 export const davsQueries = ({ dateInit, dateEnd, id }: QueryProps) => {
   let davFinished = `select sds.id_sds, emp.sigla_emp as empresa, cast(sds.datahora_sds as date) as datahora_sds, cast(sds.datahora_finalizacao_sds as date) 

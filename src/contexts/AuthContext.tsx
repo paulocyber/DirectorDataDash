@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 // Biblioteca
 import { toast } from "react-toastify";
-import { setupApiClient } from "@/service/api";
+import { setupApiClient } from "@/services/api";
 
 // React
 import { createContext, ReactNode, useEffect, useState } from "react";

@@ -5,8 +5,8 @@ import { Bar, BarChart, CartesianGrid, Cell, LabelList, ResponsiveContainer, Too
 import { formatCurrency } from "@/utils/mask/money";
 
 // Dados
-import highlightedColor from "@/data/palettes/brands/highlightedColor.json";
-import lightColor from "@/data/palettes/brands/lightColor.json"
+import highlightedColor from "@/data/palettes/highlightedColor.json";
+import lightColor from "@/data/palettes/lightColor.json"
 
 // Tipagem 
 interface BarChartComparisonProps<T> {

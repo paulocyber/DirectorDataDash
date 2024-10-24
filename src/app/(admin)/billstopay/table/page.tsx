@@ -1,19 +1,19 @@
-// Next - Framework
+// Next Framework
 import { cookies } from "next/headers";
 import { Metadata } from "next";
 
 // Biblioteca
-import { setupApiClient } from "@/service/api";
+import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/currentDate";
-import { billsToPayQueries } from "@/utils/queries/billstoPay";
+import getDate from "@/utils/date/currentDate";
+import { billsToPayQueries } from "@/utils/queries/billsToPay";
 
 // Tipagem
-import { BillsToPayItem } from "@/utils/types/billsToPay";
+import { BillsToPayData } from "@/types/billsToPay";
+import UiBillsToPayTable from "@/components/layouts/billsToPayUi/table";
 
-// Componente
-import Layout from "@/components/BillsToPay/table/Layout";
+// Componentes
 
 // MetasDados
 export const metadata: Metadata = {
@@ -41,12 +41,12 @@ export default async function BillsToPayPage() {
         api.post("/v1/find-db-query", { query: billetPaidAndOpen }),
     ]);
 
-    const allBillets: BillsToPayItem[] = respBilletPaidAndOpen.data.returnObject.body;
+    const allBillets: BillsToPayData[] = respBilletPaidAndOpen.data.returnObject.body;
     const filterBilletInOpen = allBillets.filter((billet) => billet.STATUS_PGM === "1" || billet.STATUS_PGM === "4")
     const filterBilletPaid = allBillets.filter((billet) => billet.STATUS_PGM === "2")
 
     return (
-        <Layout
+        <UiBillsToPayTable
             allBillets={allBillets}
             listBilletInOpen={filterBilletInOpen}
             listBilletPaid={filterBilletPaid}

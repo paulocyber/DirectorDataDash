@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { Layout } from "@/components/ui/layout";
 
 // Next - Framework
-import { cookies } from "next/headers"; 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default function SellersRouter({ children }: { children: ReactNode }) {
@@ -21,5 +21,5 @@ export default function SellersRouter({ children }: { children: ReactNode }) {
         <Layout role={role} >
             {children}
         </Layout>
-    ); 
+    );
 }

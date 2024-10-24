@@ -1,9 +1,9 @@
 {
-  "name": "directdash",
+  "name": "dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -11,17 +11,16 @@
   "dependencies": {
     "@nextui-org/react": "^2.4.8",
     "axios": "^1.7.7",
-    "directdash": "file:",
-    "framer-motion": "^11.5.4",
-    "next": "14.2.11",
-    "nextjs-toploader": "^3.6.15",
-    "nookies": "^2.5.2",
-    "pdfmake": "^0.2.13",
+    "dashboard": "file:",
+    "framer-motion": "^11.11.8",
+    "next": "14.2.15",
+    "nextjs-toploader": "^3.7.15",
+    "pdfmake": "^0.2.14",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.3.0",
-    "react-toastify": "^10.0.5",
-    "recharts": "^2.12.7",
+    "react-toastify": "^10.0.6",
+    "recharts": "^2.13.0",
     "recoil": "^0.7.7"
   },
   "devDependencies": {

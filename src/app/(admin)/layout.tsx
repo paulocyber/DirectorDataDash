@@ -9,12 +9,10 @@ import { redirect } from "next/navigation";
 import { Layout } from "@/components/ui/layout";
 
 // Utils
-import { enterpriseQueries } from "@/utils/queries/enterprise";
-import { suppliersQuery } from "@/utils/queries/suppliers";
+import { brandsQueries } from "@/utils/queries/brands";
 
 // Biblioteca
-import { setupApiClient } from "@/service/api";
-import { Recoil } from "@/contexts/AtomContext";
+import { setupApiClient } from "@/services/api";
 
 export default async function AdminRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
@@ -27,19 +25,15 @@ export default async function AdminRouter({ children }: { children: ReactNode })
         redirect('/')
     }
 
-    const enterprise = enterpriseQueries()
-    const suppliers = suppliersQuery()
+    const brands = brandsQueries()
 
-    const [respEnterprise, respSuppliers] = await Promise.all([
-        api.post("/v1/find-db-query", { query: enterprise }),
-        api.post("/v1/find-db-query", { query: suppliers })
+    const [respBrands] = await Promise.all([
+        api.post("/v1/find-db-query", { query: brands })
     ])
 
     return (
-        <Layout role={role} supplier={respSuppliers.data.returnObject.body} enterprise={respEnterprise.data.returnObject.body}>
-            <Recoil>
-                {children}
-            </Recoil>
+        <Layout role={role} brands={respBrands.data.returnObject.body}>
+            {children}
         </Layout>
     )
 }

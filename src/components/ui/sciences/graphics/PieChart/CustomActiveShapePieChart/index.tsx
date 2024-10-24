@@ -1,11 +1,11 @@
-// Biblioteca
+// Bibliotecas
 import { Pie, PieChart, ResponsiveContainer, Cell, PieLabelRenderProps, Tooltip } from "recharts";
 
 // React
 import React from "react";
 
 // Dados
-import vibrantPalette from "@/data/palettes/vibrant.json";
+import vibrantPalette from '@/data/palettes/vibrant.json';
 
 // Tipagem
 interface CustomActiveShapePieChartProps<T> {
@@ -38,7 +38,7 @@ export const CustomActiveShapePieChart = <T,>({ data, valueKey, displayToolTip, 
                     innerRadius={60}
                     outerRadius={118}
                     fill="#8884d8"
-                    dataKey="percentage" 
+                    dataKey="percentage"
                     label={label}
                     labelLine={false}
                 >
@@ -49,4 +49,4 @@ export const CustomActiveShapePieChart = <T,>({ data, valueKey, displayToolTip, 
             </PieChart>
         </ResponsiveContainer>
     );
-};
+}

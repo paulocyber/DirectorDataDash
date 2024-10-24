@@ -1,6 +1,5 @@
 // Biblioteca
-import Layout from '@/components/DavsUi/detail';
-import { setupApiClient } from '@/service/api';
+import { setupApiClient } from '@/services/api';
 import { davsQueries } from '@/utils/queries/davs';
 
 // Framework - next
@@ -9,6 +8,9 @@ import { Metadata } from 'next';
 
 // Dados
 import InfoCardFromDav from '@/data/infoCard/davs';
+
+// Componentes
+import UiDavDetail from '@/components/layouts/davsUi/detail';
 
 // MetasDados
 export const metadata: Metadata = {
@@ -28,6 +30,6 @@ export default async function DetailDavsPage({ params }: { params: { id: string 
     const infoCard = InfoCardFromDav({ listDav: respDavs.data.returnObject.body, detail: true })
 
     return (
-        <Layout listDav={respDavs.data.returnObject.body} products={respProdcuts.data.returnObject.body} infoCard={infoCard} />
+        <UiDavDetail listDav={respDavs.data.returnObject.body} products={respProdcuts.data.returnObject.body} infoCard={infoCard} />
     )
 }

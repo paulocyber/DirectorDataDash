@@ -1,17 +1,19 @@
-// Next - Framework 
+// Next - framework
 import { cookies } from "next/headers";
 import { Metadata } from "next";
 
-// Biblioteca
-import { setupApiClient } from "@/service/api";
+// Bibliotecas
+import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/currentDate";
+import getDate from "@/utils/date/currentDate";
 import { salesQueries } from "@/utils/queries/sales";
-import { Stock } from "@/utils/queries/stock";
-import { billsToPayQueries } from "@/utils/queries/billstoPay/";
+import { stockQueries } from "@/utils/queries/stock";
+import { billsToPayQueries } from "@/utils/queries/billsToPay";
 import { groupSumBy } from "@/utils/filters/sumsByGroup";
-import Layout from "@/components/SalesByBrand/Layout";
+
+// Componentes
+import UiSalesByBrand from "@/components/layouts/salesByBrand";
 
 // MetasDados
 export const metadata: Metadata = {
@@ -29,7 +31,7 @@ export default async function SalesByBrandPage() {
     const { SalesByBrand: playCell } = salesQueries({ dateInit: today, dateEnd: today, emp: "1" })
     const { SalesByBrand: playCustom } = salesQueries({ dateInit: today, dateEnd: today, emp: "2" })
     const { SalesByBrand: playUp } = salesQueries({ dateInit: today, dateEnd: today, emp: "3" })
-    const { stockByBrand } = Stock({ dateInit: '', dateEnd: '' })
+    const { stockByBrand } = stockQueries({ dateInit: '', dateEnd: '' })
     const { openBillFromSuppliers } = billsToPayQueries({ year })
 
     const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock, respDebt] = await Promise.all([
@@ -55,6 +57,6 @@ export default async function SalesByBrandPage() {
     }).sort((a, b) => b.valueInStock - a.valueInStock)
 
     return (
-        <Layout listSalesByBrand={sumByBrand} listStockByBrand={listStockByBrand} />
+        <UiSalesByBrand listSalesByBrand={sumByBrand} listStockByBrand={listStockByBrand} />
     )
 }

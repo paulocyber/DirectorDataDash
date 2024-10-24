@@ -3,21 +3,22 @@
 // React
 import { ReactNode, useEffect, useRef, useState } from "react";
 
-// Componente
-import { SideNav } from "../menu/SideNav";
-import { HeaderNav } from './../menu/HeaderNav';
-import Settings from "@/components/modal/settings";
-
 // Dados
-import permission from "@/data/linkPermission.json";
+import permission from "@/data/permissions/ruleByUser.json";
 
-// Biblioteca
+// Next Framework
+import { usePathname } from "next/navigation";
+
+// Componente
+import { SideNav } from "../menu/sideNav";
+import { HeaderNav } from './../menu/headerNav/index';
 import { useDisclosure } from "@nextui-org/react";
+import { Modal } from "../modal";
+import { Settings } from "../settings";
 
 // Tipagem
-import { EnterpriseData } from "@/utils/types/enterprise";
-import { Supplier } from "@/utils/types/suppliers";
-type RoleType = 'vendedor' | 'diretoria' | 'tecnologia'; // Defina as roles possíveis aqui
+import { BrandData } from "@/types/brands";
+type RoleType = 'vendedor' | 'diretoria' | 'tecnologia';
 type PermissionType = {
     [key in RoleType]: {
         router: { name: string; path: string }[];
@@ -27,13 +28,13 @@ type PermissionType = {
 interface LayoutProps {
     children: ReactNode;
     role?: string;
-    enterprise?: EnterpriseData[];
-    supplier?: Supplier[];
+    brands?: BrandData[];
 }
 
-export function Layout({ children, role, enterprise, supplier }: LayoutProps) {
+export function Layout({ children, role, brands }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const router = usePathname()
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -57,14 +58,14 @@ export function Layout({ children, role, enterprise, supplier }: LayoutProps) {
         };
     }, []);
 
-    // Acessando as rotas com segurança
     const routes = (role && (permission as PermissionType)[role as RoleType]?.router) || [];
+    const { isOpen: isopenModal, onOpen, onClose } = useDisclosure();
 
-    const { isOpen: isOpenModal, onOpen, onOpenChange } = useDisclosure();
+    const canOpenSettings = (role === 'tecnologia' || role === 'diretoria') && router === '/salesbygroup';
 
     return (
         <>
-            <Settings isOpen={isOpenModal} onOpenChange={onOpenChange} enterprise={enterprise || []} supplier={supplier || []} />
+            <Modal title="Configuração de filtros" isOpen={isopenModal} onClose={onClose} children={<Settings brands={brands ? brands : []} />} />
             <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-hidden">
                 {isOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50" />
@@ -72,7 +73,7 @@ export function Layout({ children, role, enterprise, supplier }: LayoutProps) {
                 <div ref={menuRef}>
                     <SideNav toggleMenuState={isOpen} Close={setIsopen} routes={routes} />
                 </div>
-                <HeaderNav open={setIsopen} openModal={onOpen} toggleMenuState={isOpen} />
+                <HeaderNav open={setIsopen} openModal={canOpenSettings ? onOpen : undefined} toggleMenuState={isOpen} />
                 <main className="p-4 overflow-auto xl:ml-80 z-20">
                     {children}
                 </main>

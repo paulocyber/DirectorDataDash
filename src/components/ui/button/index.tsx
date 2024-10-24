@@ -11,7 +11,7 @@ type ButtonProps = ComponentProps<typeof Btn> & {
 }
 
 export function Button({ children, custom, ...rest }: ButtonProps) {
-    
+
     return (
         <Btn className="w-full" {...rest}>
             {children}

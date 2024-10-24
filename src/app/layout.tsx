@@ -1,4 +1,4 @@
-// Framework - Next
+// Next
 import type { Metadata } from "next";
 
 // Css
@@ -11,7 +11,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // Biblioteca
 import { ToastContainer } from "react-toastify";
 import NextTopLoader from "nextjs-toploader";
-import { Recoil } from "@/contexts/AtomContext";
+import { Recoil } from "@/contexts/Recoil";
 
 export const metadata: Metadata = {
   title: "Login - Sistema de Gestão",
@@ -24,16 +24,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-br">
-      <body>
+    <html lang="pt-Br">
+      <body
+        className=""
+      >
         <AuthProvider>
           <NextTopLoader
             color="#ef4444"
           />
+          <ToastContainer autoClose={3000} />
           <Recoil>
             {children}
           </Recoil>
-          <ToastContainer autoClose={3000} />
         </AuthProvider>
       </body>
     </html>

@@ -1,4 +1,9 @@
-// Biblioteca
+'use client'
+
+// React
+import { ReactNode, useState } from "react"
+
+// Bibliotecas
 import { Autocomplete, AutocompleteItem, DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { GoSync } from "react-icons/go";
@@ -9,9 +14,6 @@ import { CiSearch } from "react-icons/ci";
 import { ImFilePdf } from "react-icons/im";
 import { FaStore } from "react-icons/fa";
 
-// React
-import { ReactNode, useState } from "react";
-
 // Componentes
 import { Input } from "../input";
 import { Button } from "../button";
@@ -21,26 +23,22 @@ interface ToolBarProps {
     title: string;
     descriptionHref?: string;
     href?: string;
-    displayCalendar: boolean;
     dateRange?: RangeValue<DateValue>;
-    displayInputSearch?: boolean;
-    searchFilter?: string;
     selectedDateRange?: string;
-    displayBtnDate?:  boolean;
+    searchFilter?: string;
     displayFormOfPayment?: boolean;
     emp?: string;
-    displayEmp?: boolean;
-    children?: ReactNode;
-    handleDateRangePicker?: (date: RangeValue<DateValue>) => void;
     handleRefreshClick: () => void;
+    handleDateRangePicker?: (date: RangeValue<DateValue>) => void;
+    handleDate?: (date: string) => void;
     handleCleanFilter?: () => void;
     setFilterSearch?: (value: string) => void;
     generatePDF?: () => void;
-    handleDate?: (date: string) => void;
     setEmp?: (value: string) => void;
+    children?: ReactNode;
 }
 
-export default function ToolBar({ title, descriptionHref, href, displayCalendar, dateRange, displayInputSearch, searchFilter, selectedDateRange, displayBtnDate, displayFormOfPayment, emp, displayEmp, children, setFilterSearch, handleDateRangePicker, handleRefreshClick, handleCleanFilter, generatePDF, handleDate, setEmp }: ToolBarProps) {
+export default function ToolBar({ title, descriptionHref, href, dateRange, searchFilter, selectedDateRange, displayFormOfPayment, emp, handleRefreshClick, handleCleanFilter, handleDateRangePicker, handleDate, setFilterSearch, generatePDF, setEmp, children }: ToolBarProps) {
     const [animation, setAnimation] = useState<Boolean>(false)
 
     return (
@@ -50,7 +48,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                     <div className="flex w-full items-center ">
                         <h1 className="font-bold md:text-lg text-sm">{title} </h1>
                         <div className="lg:flex hidden">
-                            <div className={`${!displayBtnDate && 'hidden'} flex w-full items-center justify-start space-x-1 bg-white pb-4 px-7`}>
+                            <div className={`${!handleDate && 'hidden'} flex w-full items-center justify-start space-x-1 bg-white pb-4 px-7`}>
                                 <Button onClick={() => { handleDate && handleDate('day') }} color={selectedDateRange === 'day' ? "primary" : undefined} className={selectedDateRange != 'day' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Dia</ Button>
                                 <Button onClick={() => { handleDate && handleDate('week') }} color={selectedDateRange === 'week' ? "primary" : undefined} className={selectedDateRange != 'week' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Semana</Button>
                                 <Button onClick={() => { handleDate && handleDate('month') }} color={selectedDateRange === 'month' ? "primary" : undefined} className={selectedDateRange != 'month' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="md">Mês</Button>
@@ -65,7 +63,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                     <div className="flex w-full items-center px-3">
                         <div className="flex w-full items-center px-3">
                             {children}
-                            <div className={`${!displayInputSearch ? 'hidden' : 'px-2 md:mt-0 mt-2 md:w-56 w-full sm:flex hidden mr-auto'}`}>
+                            <div className={`${!setFilterSearch ? 'hidden' : 'px-2 md:mt-0 mt-2 md:w-56 w-full sm:flex hidden mr-auto'}`}>
                                 <Input
                                     size="sm"
                                     value={searchFilter}
@@ -82,7 +80,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                                     size="sm"
                                     classNames={{
                                         inputWrapper: `lg:flex bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500`,
-                                        base: `text-white  ${!displayCalendar && 'hidden'}`,
+                                        base: `text-white  ${!dateRange && 'hidden'}`,
                                         innerWrapper: "py-[0.2em] text-white ",
                                         segment: "text-white",
                                         selectorIcon: "text-center text-white",
@@ -107,7 +105,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                             <DropdownMenu variant="faded" aria-label="Dropdown menu with icons">
                                 <DropdownItem
                                     isReadOnly
-                                    className={`flex justify-center items-center text-sm font-medium py-2 lg:hidden ${!displayCalendar && 'hidden'} `}
+                                    className={`flex justify-center items-center text-sm font-medium py-2 lg:hidden ${!dateRange && 'hidden'} `}
                                     textValue="Filtro de data"
                                     children={
                                         <DateRangePicker
@@ -115,7 +113,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                                             size="sm"
                                             classNames={{
                                                 inputWrapper: `bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500`,
-                                                base: `text-white  ${!displayCalendar && 'hidden'}`,
+                                                base: `text-white  ${!dateRange && 'hidden'}`,
                                                 innerWrapper: "py-[0.2em] text-white ",
                                                 segment: "text-white",
                                                 selectorIcon: "text-center text-white",
@@ -128,7 +126,7 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                                 <DropdownItem
                                     isReadOnly
                                     startContent={<FaStore className="text-lg" />}
-                                    className={displayEmp ? "flex justify-center items-center w-full text-sm font-medium py-2" : "hidden"}
+                                    className={emp ? "flex justify-center items-center w-full text-sm font-medium py-2" : "hidden"}
                                     textValue="lojas"
                                     children={
                                         <Autocomplete aria-label="Filtro de empresas" selectedKey={emp} onSelectionChange={(key) => {
@@ -171,7 +169,6 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
                                     href={href}
                                     endContent={<p className="md:text-sm text-xs w-full">{descriptionHref}</p>}
                                 />
-
                                 <DropdownItem
                                     startContent={<ImFilePdf className="text-lg" />}
                                     className={!generatePDF ? "hidden" : "flex justify-center items-center w-full text-sm font-medium py-2"}
@@ -186,14 +183,14 @@ export default function ToolBar({ title, descriptionHref, href, displayCalendar,
             </div>
             {/* Responsivo */}
             <div className="flex w-full items-center justify-between sm:flex-nowrap flex-wrap lg:hidden overflow-auto px-7">
-                <div className={`${!displayBtnDate && 'hidden'} flex w-full  justify-start space-x-1 bg-white pb-4 px-0`}>
+                <div className={`${!handleDate && 'hidden'} flex w-full  justify-start space-x-1 bg-white pb-4 px-0`}>
                     <Button onClick={() => { handleDate && handleDate('day') }} color={selectedDateRange === 'day' ? "primary" : undefined} className={selectedDateRange !== 'day' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="sm">Dia</Button>
                     <Button onClick={() => { handleDate && handleDate('week') }} color={selectedDateRange === 'week' ? "primary" : undefined} className={selectedDateRange !== 'week' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="sm">Semana</Button>
                     <Button onClick={() => { handleDate && handleDate('month') }} color={selectedDateRange === 'month' ? "primary" : undefined} className={selectedDateRange !== 'month' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="sm">Mês</Button>
                     <Button onClick={() => { handleDate && handleDate('year') }} color={selectedDateRange === 'year' ? "primary" : undefined} className={selectedDateRange !== 'year' ? "font-bold bg-white text-gray-800 border border-gray-400 font-bold hover:bg-[#006fee] hover:text-white" : undefined} size="sm">Ano</Button>
                 </div>
 
-                <div className={`${!displayInputSearch ? 'hidden' : 'px-2 my-2 w-full flex sm:hidden'} `}>
+                <div className={`${!setFilterSearch ? 'hidden' : 'px-2 my-2 w-full flex sm:hidden'} `}>
                     <Input
                         size="sm"
                         value={searchFilter}
