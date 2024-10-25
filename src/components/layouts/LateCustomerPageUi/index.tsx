@@ -23,7 +23,15 @@ import { BillsToReceiveData } from "@/types/billsToReceive";
 import { DateValue, RangeValue } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
 
-export default function UiLateCustomer({ dataReceiveInOpen, year, month, yesterday }: { dataReceiveInOpen: BillsToReceiveData[]; year: number; month: number; yesterday: number; }) {
+interface UiLateCustomerProps {
+    dataReceiveInOpen: BillsToReceiveData[];
+    admin?: boolean;
+    year: number;
+    month: number;
+    yesterday: number;
+}
+
+export default function UiLateCustomer({ dataReceiveInOpen, admin, year, month, yesterday }: UiLateCustomerProps) {
     const [receiveInOpen, setReceiveInOpen] = useState(dataReceiveInOpen)
     const [loading, setLoading] = useState<boolean>(false)
     const [cleanFilter, setCleanFilter] = useState<boolean>(false)
@@ -36,42 +44,71 @@ export default function UiLateCustomer({ dataReceiveInOpen, year, month, yesterd
     const infoCard = InFoCardFromLateCustomer({ receiveInOpen: receiveInOpen })
 
     const handleRefresh = async () => {
-        await fetchLateCustomer({
-            token,
-            dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
-            dateEnd: cleanFilter ? `${date.end.year}/${date.end.month}/${date.end.day}` : `${year}/${month}/${yesterday}`,
-            seller: user,
-            setReceiveInOpen,
-            setLoading
-        })
+        !admin ?
+            await fetchLateCustomer({
+                token,
+                dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
+                dateEnd: cleanFilter ? `${date.end.year}/${date.end.month}/${date.end.day}` : `${year}/${month}/${yesterday}`,
+                seller: user,
+                setReceiveInOpen,
+                setLoading
+            })
+            :
+            await fetchLateCustomer({
+                token,
+                dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
+                dateEnd: cleanFilter ? `${date.end.year}/${date.end.month}/${date.end.day}` : `${year}/${month}/${yesterday}`,
+                setReceiveInOpen,
+                setLoading
+            })
+
     }
 
     const handleDateRangerPicker = async (newDate: RangeValue<DateValue>) => {
         setDate(newDate)
         setCleanFilter(false);
 
-        await fetchLateCustomer({
-            token,
-            dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
-            dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
-            seller: user,
-            setReceiveInOpen,
-            setLoading
-        })
+        !admin ?
+            await fetchLateCustomer({
+                token,
+                dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
+                dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
+                seller: user,
+                setReceiveInOpen,
+                setLoading
+            })
+            :
+            await fetchLateCustomer({
+                token,
+                dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
+                dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
+                setReceiveInOpen,
+                setLoading
+            })
     }
 
     const handleCleanFilter = async () => {
         setDate({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date(`${year}/${month}/${yesterday}`).toISOString().split('T')[0]) })
         setCleanFilter(true);
 
-        await fetchLateCustomer({
-            token,
-            dateInit: `${year}/${month}/01`,
-            dateEnd: `${year}/${month}/${yesterday}`,
-            seller: user,
-            setReceiveInOpen,
-            setLoading
-        })
+        !admin
+            ?
+            await fetchLateCustomer({
+                token,
+                dateInit: `${year}/${month}/01`,
+                dateEnd: `${year}/${month}/${yesterday}`,
+                seller: user,
+                setReceiveInOpen,
+                setLoading
+            })
+            :
+            await fetchLateCustomer({
+                token,
+                dateInit: `${year}/${month}/01`,
+                dateEnd: `${year}/${month}/${yesterday}`,
+                setReceiveInOpen,
+                setLoading
+            })
     }
 
     return (

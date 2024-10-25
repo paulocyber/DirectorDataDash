@@ -11,7 +11,7 @@ interface fetchLateCustomerProps {
   token: string;
   dateInit: string;
   dateEnd: string;
-  seller: string;
+  seller?: string;
   setReceiveInOpen: (value: BillsToReceiveData[]) => void;
   setLoading: (value: boolean) => void;
 }

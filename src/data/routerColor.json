@@ -4,5 +4,6 @@
   "/detaildavs/": "table",
   "/billstopay/table": "table",
   "/billstopay": "dashboard",
-  "/latecustomer": "table"
+  "/latecustomer": "table",
+  "/salesgoal/latecustomer": "table"
 }

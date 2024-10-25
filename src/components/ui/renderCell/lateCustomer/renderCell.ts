@@ -6,6 +6,8 @@ import { BillsToReceiveData } from "@/types/billsToReceive";
 
 export const renderCell = (item: BillsToReceiveData, columnKey: string) => {
   switch (columnKey) {
+    case "idCliente":
+      return item.ID_PSS;
     case "nDav":
       return item.ID_ORIGEM;
     case "dataVencimento":

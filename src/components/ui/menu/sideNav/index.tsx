@@ -88,7 +88,7 @@ export function SideNav({ toggleMenuState, Close, routes }: SideNavProps) {
                                         <TiChartPieOutline className="w-7 h-7" />
                                     ) : route.path === '/salesgoal' ? (
                                         <TiChartPieOutline className="w-7 h-7" />
-                                    ) : route.path === '/latecustomer' ? (
+                                    ) : route.path === '/latecustomer' || route.path === '/salesgoal/latecustomer' ? (
                                         <FaTable className="w-5 h-5" />
                                     ) : table === 'tabela' ? (
                                         <FaTable className="w-5 h-5" />

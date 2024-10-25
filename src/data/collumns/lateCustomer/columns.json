@@ -1,4 +1,5 @@
 [
+  { "name": "ID do cliente", "uid": "idCliente" },
   { "name": "Número da Dav", "uid": "nDav" },
   { "name": "Data do Vencimento", "uid": "dataVencimento" },
   { "name": "Cliente", "uid": "cliente" },

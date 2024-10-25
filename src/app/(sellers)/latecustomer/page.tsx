@@ -10,7 +10,6 @@ import getUserName from "@/utils/data/getUser";
 import UiLateCustomer from "@/components/layouts/LateCustomerPageUi";
 
 // Dados
-import InFoCardFromLateCustomer from "@/data/infoCard/lateCustomer";
 
 // Next Framework
 import { Metadata } from "next";
