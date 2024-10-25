@@ -10,6 +10,13 @@ import UiLateCustomer from "@/components/layouts/LateCustomerPageUi";
 // Biblioteca
 import { setupApiClient } from "@/services/api";
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Relatório de clientes em atrasos",
+    description: "Informações sobre vendas e metas",
+};
+
 
 export default async function LateCustomerPage() {
     const cookieStore = cookies();
