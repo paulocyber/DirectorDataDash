@@ -5,11 +5,11 @@ export const stockQueries = ({
   dateInit,
   dateEnd,
   emp,
-  idBrands,
+  brands,
 }: QueryProps) => {
   // Verifica se idBrands é um array e o transforma em uma string separada por vírgulas
-  const formattedIdBrands = Array.isArray(idBrands)
-    ? idBrands.map((id) => `'${id}'`).join(", ")
+  const formattedIdBrands = Array.isArray(brands)
+    ? brands.map((brand) => `'${brand}'`).join(", ")
     : "";
 
   let stockByBrand = `select mrc.id_mrc AS id_marca, COALESCE(mrc.descricao_mrc, 'SEM MARCA') AS marca, 
@@ -18,7 +18,7 @@ export const stockQueries = ({
       INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
       LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc 
       WHERE ale.id_alm IN (1, 2, 3, 100) 
-      AND mrc.descricao_mrc IN ('KIMASTER', 'INOVA', 'B-MAX', 'PEINING', 'HREBOS', 'DEVIA', 'HREBOS') 
+      AND mrc.descricao_mrc IN (${formattedIdBrands}) 
       AND prd.status_prd = 'A' 
       ORDER BY mrc.id_mrc, mrc.descricao_mrc`;
 
@@ -62,7 +62,7 @@ export const stockQueries = ({
       AND sdi.valor_liquido_sdi > 0 
       AND sdi.id_item_sdi > 0 
       AND sdi.produtopai_kit_sdi IS FALSE 
-      AND prd.id_mrc IN (${formattedIdBrands}) 
+      AND mrc.id_mrc IN (${formattedIdBrands}) 
       AND ale.id_alm = ${emp} 
       GROUP BY sdi.id_prd, prd.codigo_prd, prd.descricao_prd, prd.referencia_prd, 
       prd.unidade_compra_prd, prd.unidade_venda_prd, sdi.id_prd || ' - ' || prd.descricao_prd, 

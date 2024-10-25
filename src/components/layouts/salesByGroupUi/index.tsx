@@ -54,7 +54,7 @@ export default function UiSalesByGroup({ listStockByGroup, listTopProducts, year
     const brands = useRecoilValue(brandsAtom)
 
     const handleRefresh = async () => {
-        await fetchSalesByGroup({ token, dateInit: `${date.start}`, dateEnd: `${date.end}`, brands, emp: '1', setLoading, setTopProducts })
+        // await fetchSalesByGroup({ token, dateInit: `${date.start}`, dateEnd: `${date.end}`, brands, emp: '1', setLoading, setTopProducts })
     }
 
     return (

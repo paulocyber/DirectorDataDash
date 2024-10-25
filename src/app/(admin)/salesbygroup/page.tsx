@@ -32,7 +32,7 @@ export default async function SalesByGroupPage() {
 
     const { today, year, month, day, startOfWeek, endOfWeek } = getDate();
     const { salesByGroup } = salesQueries({ dateInit: today, dateEnd: today })
-    const { stockByGroup, topsProductsByBrand } = stockQueries({ dateInit: today, dateEnd: today, idBrands: ['36'], emp: '1' })
+    const { stockByGroup, topsProductsByBrand } = stockQueries({ dateInit: today, dateEnd: today, brands: ['36'], emp: '1' })
 
     const [respSalesByGroup, respStockByGroup, respTopsProductsByBrand] = await Promise.all([api.post("/v1/find-db-query", { query: salesByGroup }), api.post("/v1/find-db-query", { query: stockByGroup }), api.post("/v1/find-db-query", { query: topsProductsByBrand })])
     const sumByStock = groupSumBy(respStockByGroup.data.returnObject.body, { key: 'GRUPO', valueKey: 'TOTAL_VALOR_COMPRA' })

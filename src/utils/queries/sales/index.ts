@@ -7,12 +7,17 @@ export const salesQueries = ({
   emp,
   sellersSurname,
   idSellers,
+  brands,
 }: QueryProps) => {
   //   let sales = `select SUM(sds.valor_liquido_sds - COALESCE(sds.valor_troca_sds, 0)) AS VALOR_LIQUIDO FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc
   // INNER JOIN empresas emp ON emp.id_emp = sds.id_emp WHERE sds.id_emp in (${emp}) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.tipo_sds IN  ('4', '5', '9') AND
   // sds.status_sds IN ('2') and (fnc.id_pss = ${
   //     idSellers ? `'${idSellers}'` : "?"
   //   } or fnc.APELIDO_PSS LIKE ${sellersSurname ? `'%${sellersSurname}%'` : "?"} )`;
+
+  const formattedIdBrands = Array.isArray(brands)
+    ? brands.map((brands) => `'${brands}'`).join(", ")
+    : "";
 
   const sellerFilter =
     idSellers || sellersSurname
@@ -70,7 +75,7 @@ export const salesQueries = ({
           AND sdi.id_emp = ${emp} 
           AND ale.id_alm = ${emp} 
           AND prd.status_prd = 'A' 
-          AND mrc.descricao_mrc IN ('KIMASTER', 'INOVA', 'B-MAX', 'PEINING', 'HREBOS', 'DEVIA', 'HREBOS') 
+          AND mrc.descricao_mrc in (${formattedIdBrands})
           ORDER BY sdi.id_prd, prd.descricao_prd`;
 
   let salesByGroup = `select sdi.id_prd AS id_produto, prd.descricao_prd AS produto, mrc.id_mrc AS id_marca, 

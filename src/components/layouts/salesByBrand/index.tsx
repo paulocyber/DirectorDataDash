@@ -11,6 +11,11 @@ import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer
 import BarChart from "@/components/ui/sciences/graphics/BarChart"
 import BarChartComparison from "@/components/ui/sciences/graphics/BarChart/BarChartComparison"
 
+// Bibliotecas
+import { useRecoilState, useRecoilValue } from "recoil"
+
+// Atoms
+import { brandsAtom } from "@/atom/brandsAtom"
 
 // Dados
 import highLightColor from "@/data/palettes/highlightedColor.json"
@@ -45,6 +50,7 @@ export default function UiSalesByBrand({ listSalesByBrand, listStockByBrand }: S
     const [salesByBrand, setSalesByBrand] = useState(listSalesByBrand || [])
     const [stockByBrand, setStockByBrand] = useState(listStockByBrand || [])
     const [selectedDateRange, setSelectedDateRange] = useState<string>('day');
+    const [brands, setBrands] = useRecoilState(brandsAtom)
     const [loading, setLoading] = useState<boolean>(false)
 
     const { today, year, month, startOfWeek, endOfWeek } = getDate()
@@ -54,12 +60,14 @@ export default function UiSalesByBrand({ listSalesByBrand, listStockByBrand }: S
     });
     const { token } = useContext(AuthContext)
     const handleRefresh = async () => {
-        await fetchSalesByBrand({ token, dateInit: date.start, dateEnd: date.end, setLoading, setSalesByBrand, setStockByBrand })
+        await fetchSalesByBrand({ token, dateInit: date.start, dateEnd: date.end, setLoading, setSalesByBrand, setStockByBrand, brands })
     }
 
     const handleCleanFilter = async () => {
         setSelectedDateRange('day')
-        await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand })
+        setBrands(['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'])
+
+        await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
     }
 
     const handleData = async (date: string) => {
@@ -67,28 +75,28 @@ export default function UiSalesByBrand({ listSalesByBrand, listStockByBrand }: S
         switch (date) {
             case DateRange.Day:
                 setDate({ start: today, end: today })
-                await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand })
+                await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
                 break;
 
             case DateRange.Week:
                 setDate({ start: startOfWeek, end: endOfWeek })
 
-                await fetchSalesByBrand({ token, dateInit: startOfWeek, dateEnd: endOfWeek, setLoading, setSalesByBrand, setStockByBrand })
+                await fetchSalesByBrand({ token, dateInit: startOfWeek, dateEnd: endOfWeek, setLoading, setSalesByBrand, setStockByBrand, brands })
                 break;
 
             case DateRange.Month:
                 setDate({ start: `${year}/${month}/01`, end: today })
-                await fetchSalesByBrand({ token, dateInit: `${year}/${month}/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand })
+                await fetchSalesByBrand({ token, dateInit: `${year}/${month}/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
                 break;
 
             case DateRange.MonthYesterday:
                 setDate({ start: `${year}/${month - 1}/01`, end: today });
-                await fetchSalesByBrand({ token, dateInit: `${year}/${month - 1}/01`, dateEnd: `${year}/${month - 1}/30`, setLoading, setSalesByBrand, setStockByBrand })
+                await fetchSalesByBrand({ token, dateInit: `${year}/${month - 1}/01`, dateEnd: `${year}/${month - 1}/30`, setLoading, setSalesByBrand, setStockByBrand, brands })
                 break;
 
             case DateRange.Year:
                 setDate({ start: `${year}/01/01`, end: today })
-                await fetchSalesByBrand({ token, dateInit: `${year}/01/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand })
+                await fetchSalesByBrand({ token, dateInit: `${year}/01/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
                 break;
         }
     }

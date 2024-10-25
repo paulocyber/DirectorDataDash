@@ -61,7 +61,7 @@ export function Layout({ children, role, brands }: LayoutProps) {
     const routes = (role && (permission as PermissionType)[role as RoleType]?.router) || [];
     const { isOpen: isopenModal, onOpen, onClose } = useDisclosure();
 
-    const canOpenSettings = (role === 'tecnologia' || role === 'diretoria') && router === '/salesbygroup';
+    const canOpenSettings = (role === 'tecnologia' || role === 'diretoria') && router === '/salesbybrand';
 
     return (
         <>

@@ -23,20 +23,20 @@ interface SettingsProps {
 }
 
 export function Settings({ brands: brandsData }: SettingsProps) {
-    const [searchsParams, setSearchParams] = useState<string>('')
-    const [selectedBrands, setSelectedBrands] = useRecoilState(brandsAtom)
+    const [searchsParams, setSearchParams] = useState<string>('');
+    const [selectedBrands, setSelectedBrands] = useRecoilState(brandsAtom);
 
-    const handleCheckboxChange = (brandId: string) => {
+    const handleCheckboxChange = (brandDescription: string) => {
         setSelectedBrands((prevSelected) => {
-            if (prevSelected.includes(brandId)) {
-                return prevSelected.filter((id) => id !== brandId);
+            if (prevSelected.includes(brandDescription)) {
+                return prevSelected.filter((description) => description !== brandDescription);
             } else {
-                return [...prevSelected, brandId];
+                return [...prevSelected, brandDescription];
             }
         });
     };
 
-    const filterSearch = searchFilter({ data: brandsData, search: searchsParams })
+    const filterSearch = searchFilter({ data: brandsData, search: searchsParams });
 
     return (
         <div className="w-full flex">
@@ -68,8 +68,8 @@ export function Settings({ brands: brandsData }: SettingsProps) {
                             <Checkbox
                                 classNames={{ label: "truncate w-28" }}
                                 className="rounded-lg"
-                                isSelected={selectedBrands.includes(item.ID_MRC)}
-                                onChange={() => handleCheckboxChange(item.ID_MRC)}
+                                isSelected={selectedBrands.includes(item.DESCRICAO_MRC)}
+                                onChange={() => handleCheckboxChange(item.DESCRICAO_MRC)}
                             >
                                 {item.DESCRICAO_MRC}
                             </Checkbox>

@@ -14,6 +14,7 @@ interface FetchSalesByBrandProps {
   token: string;
   dateInit: string;
   dateEnd: string;
+  brands: string[];
   setLoading: (value: boolean) => void;
   setSalesByBrand: (value: SalesByBrandType[]) => void;
   setStockByBrand: (value: StockByBrand[]) => void;
@@ -23,6 +24,7 @@ export async function fetchSalesByBrand({
   token,
   dateInit,
   dateEnd,
+  brands,
   setLoading,
   setSalesByBrand,
   setStockByBrand,
@@ -35,18 +37,21 @@ export async function fetchSalesByBrand({
     dateInit,
     dateEnd,
     emp: "1",
+    brands
   });
   const { SalesByBrand: playCustom } = salesQueries({
     dateInit,
     dateEnd,
     emp: "2",
+    brands
   });
   const { SalesByBrand: playUp } = salesQueries({
     dateInit,
     dateEnd,
     emp: "3",
+    brands
   });
-  const { stockByBrand } = stockQueries({ dateInit: "", dateEnd: "" });
+  const { stockByBrand } = stockQueries({ dateInit: "", dateEnd: "", brands });
   const { openBillFromSuppliers } = billsToPayQueries({ year });
 
   let salesPlayCell: any[] = [];

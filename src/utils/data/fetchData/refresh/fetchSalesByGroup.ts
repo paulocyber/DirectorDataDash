@@ -28,7 +28,7 @@ export async function fetchSalesByGroup({
     dateInit,
     dateEnd,
     emp,
-    idBrands: brands,
+    brands: brands,
   });
 
   

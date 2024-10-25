@@ -8,5 +8,5 @@ export interface QueryProps {
   emp?: string;
   sellersSurname?: string;
   idSellers?: string;
-  idBrands?: string[];
+  brands?: string[];
 }
