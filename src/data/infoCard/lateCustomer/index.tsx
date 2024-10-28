@@ -11,13 +11,17 @@ import { IoIosPeople } from "react-icons/io";
 import { BillsToReceiveData } from "@/types/billsToReceive";
 
 interface InFoCardFromLateCustomerProps {
-    receiveInOpen: BillsToReceiveData[]
+    receiveInOpen: BillsToReceiveData[];
+    dataReceiveLate?: BillsToReceiveData[];
+    admin?: boolean;
 }
 
-export default function InFoCardFromLateCustomer({ receiveInOpen }: InFoCardFromLateCustomerProps) {
+export default function InFoCardFromLateCustomer({ receiveInOpen, dataReceiveLate, admin }: InFoCardFromLateCustomerProps) {
     const totalRemainingAmount = TotalSum(receiveInOpen, "RESTANTE_RCB")
     const totalPaid = TotalSum(receiveInOpen, "VALOR_PAGO_RCB")
-    const totalClientsLate = receiveInOpen.length
+    const totalClientsLate = admin
+        ? receiveInOpen.length.toString()
+        : dataReceiveLate?.length?.toString() ?? "0";
 
     const infoCard = [
         {
@@ -33,7 +37,7 @@ export default function InFoCardFromLateCustomer({ receiveInOpen }: InFoCardFrom
         {
             icon: <IoIosPeople className="w-5 h-5" />,
             title: "Número Total de Clientes Atrasados",
-            value: totalClientsLate.toString()
+            value: totalClientsLate
         }
     ]
 

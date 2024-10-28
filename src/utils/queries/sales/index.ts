@@ -22,7 +22,13 @@ export const salesQueries = ({
   const sellerFilter =
     idSellers || sellersSurname
       ? `AND (fnc.id_pss = ${idSellers ? `'${idSellers}'` : "?"} 
-     OR fnc.apelido_pss LIKE ${sellersSurname ? `'%${sellersSurname}%'` : "?"})`
+     OR fnc.apelido_pss LIKE ${
+       sellersSurname
+         ? `'%${
+             sellersSurname === "mikaele" ? "MIKAELE SANTANA" : sellersSurname
+           }%'`
+         : "?"
+     })`
       : "";
 
   let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO 

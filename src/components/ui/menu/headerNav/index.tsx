@@ -40,7 +40,7 @@ export function HeaderNav({ open, openModal, toggleMenuState }: SideNavProps) {
     const secondPart = router.split("/")[2];
 
     const { user } = useContext(AuthContext)
-
+    
     return (
         <div className="p-4 xl:ml-[19em] 2xl:ml-80">
             <nav className={`block w-full max-w-full ${bgColorClass} text-white shadow-none rounded-xl transition-all px-3 py-2 overflow-auto`}>

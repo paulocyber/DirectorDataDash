@@ -85,7 +85,6 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
                         )}
                     </TableBody>
                 </TableUi>
-                
                 <InfiniteScroll fetchMore={fetchMore} />
             </div>
         </main>

@@ -14,6 +14,7 @@ import Container from "@/components/ui/container"
 import Table from "@/components/ui/table"
 import ToolBar from "@/components/ui/toolbar"
 import { renderCell } from "@/components/ui/renderCell/billsToPay/renderCell"
+import { Button } from "@/components/ui/button"
 
 // Utils
 import { fetchBillsToPay } from "@/utils/data/fetchData/refresh/fetchBillsToPay"
@@ -115,7 +116,7 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
     const generatePdf = () => {
         billsToPayPDF(billets, openValues, pastDueAmounts, amountsPaid, totalInvoicesPaid)
     }
-
+    
     return (
         <>
             <InfoCard data={infoDetailCard} />

@@ -1,7 +1,7 @@
 'use client'
 
 // React
-import { ReactNode, useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 
 // Componentes
@@ -9,6 +9,10 @@ import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+// Bibliotecas
+import { DateValue, RangeValue } from "@nextui-org/react";
 
 // Dados
 import colummns from "@/data/collumns/lateCustomer/columns.json"
@@ -20,18 +24,18 @@ import { fetchLateCustomer } from "@/utils/data/fetchData/refresh/fetchLateCusto
 
 // Tipagem
 import { BillsToReceiveData } from "@/types/billsToReceive";
-import { DateValue, RangeValue } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
 
 interface UiLateCustomerProps {
     dataReceiveInOpen: BillsToReceiveData[];
+    dataReceiveLate?: BillsToReceiveData[];
     admin?: boolean;
     year: number;
     month: number;
     yesterday: number;
 }
 
-export default function UiLateCustomer({ dataReceiveInOpen, admin, year, month, yesterday }: UiLateCustomerProps) {
+export default function UiLateCustomer({ dataReceiveInOpen, dataReceiveLate, admin, year, month, yesterday }: UiLateCustomerProps) {
     const [receiveInOpen, setReceiveInOpen] = useState(dataReceiveInOpen)
     const [loading, setLoading] = useState<boolean>(false)
     const [cleanFilter, setCleanFilter] = useState<boolean>(false)
@@ -41,7 +45,7 @@ export default function UiLateCustomer({ dataReceiveInOpen, admin, year, month, 
     })
 
     const { token, user } = useContext(AuthContext)
-    const infoCard = InFoCardFromLateCustomer({ receiveInOpen: receiveInOpen })
+    const infoCard = InFoCardFromLateCustomer({ receiveInOpen: receiveInOpen, admin, dataReceiveLate})
 
     const handleRefresh = async () => {
         !admin ?

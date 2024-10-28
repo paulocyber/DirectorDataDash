@@ -9,8 +9,6 @@ import getUserName from "@/utils/data/getUser";
 // Componentes
 import UiLateCustomer from "@/components/layouts/LateCustomerPageUi";
 
-// Dados
-
 // Next Framework
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -29,12 +27,14 @@ export default async function LateCustomerPage() {
     const { year, month, yesterday } = getDate()
     const seller = await getUserName(token as string)
     const { billsToReceiveInOpen } = billsToReceiveQueries({ dateInit: `${year}/${month}/01`, dateEnd: `${year}/${month}/${yesterday}`, sellersSurname: seller })
+    const { billsToReceiveInOpen: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/01/01`, dateEnd: `${year}/${month}/${yesterday}`, sellersSurname: seller })
 
-    const [respReceiveInOpen] = await Promise.all([
-        api.post("/v1/find-db-query", { query: billsToReceiveInOpen })
+    const [respReceiveInOpen, respReceiveLate] = await Promise.all([
+        api.post("/v1/find-db-query", { query: billsToReceiveInOpen }),
+        api.post("/v1/find-db-query", { query: billsToReceiveLate })
     ])
 
     return (
-        <UiLateCustomer dataReceiveInOpen={respReceiveInOpen.data.returnObject.body} year={year} month={month} yesterday={yesterday} />
+        <UiLateCustomer dataReceiveInOpen={respReceiveInOpen.data.returnObject.body} year={year} month={month} yesterday={yesterday} dataReceiveLate={respReceiveLate.data.returnObject.body} />
     )
 }

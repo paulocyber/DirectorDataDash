@@ -11,4 +11,6 @@ export type BillsToReceiveData = {
   APELIDO_PSS: string;
   VENDEDOR: string;
   FORMA_PAGAMENTO: string;
+  STATUS_RCB: string;
+  ATRASO_RCB: string;
 };

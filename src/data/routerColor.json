@@ -5,5 +5,6 @@
   "/billstopay/table": "table",
   "/billstopay": "dashboard",
   "/latecustomer": "table",
-  "/salesgoal/latecustomer": "table"
+  "/salesgoal/latecustomer": "table",
+  "/billstoreceive": "dashboard"
 }

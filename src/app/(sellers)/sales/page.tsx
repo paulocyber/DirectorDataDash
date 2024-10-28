@@ -1,5 +1,6 @@
 // Next
 import { cookies } from "next/headers";
+import { Metadata } from "next";
 
 // Bibliotecas
 import { setupApiClient } from "@/services/api";
@@ -20,6 +21,11 @@ import { topClientsPlusBuyData } from "@/types/sales";
 type CommissionData = {
     COMISSAO: string;
     VENDEDOR: string;
+};
+
+export const metadata: Metadata = {
+    title: "Relatório de vendas e metas",
+    description: "Informações sobre vendas",
 };
 
 export default async function SalesPage() {
@@ -50,8 +56,8 @@ export default async function SalesPage() {
         },
         {
             name: "Metas",
-            value: respGoals.data.returnObject.body.length > 0 && respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI 
-                ? convertStringToNumber(respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI) 
+            value: respGoals.data.returnObject.body.length > 0 && respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI
+                ? convertStringToNumber(respGoals.data.returnObject.body[0].VALOR_INDIVIDUAL_MTI)
                 : 0
         }
     ]

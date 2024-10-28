@@ -11,6 +11,7 @@ export type BillsToPayData = {
   GRUPO_CENTRO: string;
   DESCRICAO_FRM: string;
   APELIDO_PSS: string;
+  ATRASO_RCB: string;
 };
 
 export type BilletBySupplierData = {

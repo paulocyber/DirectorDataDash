@@ -28,7 +28,7 @@ export default async function BillsToPayPage() {
     const api = setupApiClient(token as string)
     const { year, month, today, yesterday, monthExpired } = getDate()
 
-    const { expiredBilletAll, billetPaidAndOpen } = billsToPayQueries({
+    const { expiredBilletAll, billetPaidAndOpen, billetInOpen } = billsToPayQueries({
         dateInit: `${year}/${month}/01`,
         dateEnd: today,
         year,
@@ -36,9 +36,10 @@ export default async function BillsToPayPage() {
         day: yesterday,
     });
 
-    const [respExpiredBillet, respBilletPaidAndOpen] = await Promise.all([
+    const [respExpiredBillet, respBilletPaidAndOpen, respBilletInOpen] = await Promise.all([
         api.post("/v1/find-db-query", { query: expiredBilletAll }),
         api.post("/v1/find-db-query", { query: billetPaidAndOpen }),
+        api.post("/v1/find-db-query", { query: billetInOpen })
     ]);
 
     const allBillets: BillsToPayData[] = respBilletPaidAndOpen.data.returnObject.body;
