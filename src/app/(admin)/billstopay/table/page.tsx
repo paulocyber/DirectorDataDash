@@ -42,8 +42,8 @@ export default async function BillsToPayPage() {
     ]);
 
     const allBillets: BillsToPayData[] = respBilletPaidAndOpen.data.returnObject.body;
-    const filterBilletInOpen = allBillets.filter((billet) => billet.STATUS_PGM === "1" || billet.STATUS_PGM === "4")
-    const filterBilletPaid = allBillets.filter((billet) => billet.STATUS_PGM === "2")
+    const filterBilletInOpen = allBillets.filter((billet) => billet.STATUS_PGM === "Em Aberto" || billet.STATUS_PGM === "Parcial")
+    const filterBilletPaid = allBillets.filter((billet) => billet.STATUS_PGM === "Paga")
     
     return (
         <UiBillsToPayTable
