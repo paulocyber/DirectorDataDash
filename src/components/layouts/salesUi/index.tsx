@@ -174,7 +174,7 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
                     <Container>
                         <div className="flex">
                             <GraphicContainer loading={false}>
-                                <CustomActiveShapePieChart data={topSales} valueKey='VALOR_LIQUIDO' displayToolTip={true} ToolTipComponent={(props) => (<CustomTooltip {...props} dataKey='VENDEDOR' />)} label={(props) => <InternalPieLabel {...props} />} />
+                                <CustomActiveShapePieChart data={topSales} valueKey='VALOR_LIQUIDO' displayToolTip={true} ToolTipComponent={(props) => (<CustomTooltip {...props} dataKey='VENDEDOR' valueKey='VALOR_LIQUIDO'/>)} label={(props) => <InternalPieLabel {...props} />} />
                             </GraphicContainer>
                             <div className="flex px-2 max-h-full justify-end items-center">
                                 <div className="hidden lg:flex lg:flex-col overflow-auto">

@@ -23,31 +23,31 @@ export default async function BillsToReceivePage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
-    const { yesterday, month } = getDate()
+    const { yesterday, month, year } = getDate()
 
-    const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: `2024/${month}/${yesterday}`, dateEnd: `2024/${month}/${yesterday}` })
+    const { billsToReceiveAll: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: `${year}/${month}/${yesterday}` })
 
-    const [respBillsToReceive] = await Promise.all([
-        api.post("/v1/find-db-query", { query: billsToReceiveAll })
+    const [respReceiveLate] = await Promise.all([
+        api.post("/v1/find-db-query", { query: billsToReceiveLate })
     ])
 
-    const allBillsToReceive: BillsToReceiveData[] = respBillsToReceive.data.returnObject.body
-    const infoCard = InFoCardFromBillsToReceive({ billsToReceiveData: allBillsToReceive })
+    const lateBillsToReceive: BillsToReceiveData[] = respReceiveLate.data.returnObject.body
+    const infoCard = InFoCardFromBillsToReceive({ billsToReceiveData: lateBillsToReceive })
 
-    const filterBillsToReceiveInOpen = allBillsToReceive.filter((receive) => receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4")
-    const filterBillsToReceiveInPaid = allBillsToReceive.filter((receive) => receive.STATUS_RCB === "2")
+    const filterBillsToReceiveInOpen = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4")
+    const filterBillsToReceiveInPaid = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "2")
 
     const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB")
     const valuePartiallyPaid = TotalSum(filterBillsToReceiveInOpen, "VALOR_PAGO_RCB")
     const totalPaid = TotalSum(filterBillsToReceiveInPaid, "VALOR_PAGO_RCB")
-
+    
     const billsToReceiveData = [
-        { name: "Valor em aberto", value: valueInOpen },
+        { name: "Valor em atraso", value: valueInOpen },
         { name: "Valor parcialmente pago", value: valuePartiallyPaid },
         { name: "Valor pago por total", value: totalPaid }
     ]
-console.log("valores: ", billsToReceiveData)
+
     return (
-        <UiBillsToReceive infoCard={infoCard} billsToReceiveData={billsToReceiveData} />
+        <UiBillsToReceive infoCardData={infoCard} billsToReceiveData={billsToReceiveData} />
     )
 }

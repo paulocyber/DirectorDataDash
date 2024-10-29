@@ -1,7 +1,7 @@
 // React
 import React from 'react';
 
-// Biblioteca
+// Bibliotecas
 import { TooltipProps } from 'recharts';
 
 // Utils
@@ -10,11 +10,14 @@ import { formatCurrency } from '@/utils/mask/money';
 // Tipagem
 interface CustomTooltipProps extends TooltipProps<number, string> {
     dataKey: string;
+    valueKey?: string;
 }
 
-export const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, dataKey }) => {
+export const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, dataKey, valueKey }) => {
     if (active && payload && payload.length > 0) {
-        const data = payload[0].payload[dataKey]; 
+        const data = payload[0].payload[dataKey];
+
+        const value = valueKey ? payload[0].payload[valueKey as string] : undefined;
 
         const isArray = Array.isArray(data);
 
@@ -27,13 +30,13 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, d
                         </p>
                     ))
                 ) : (
-                    <p className="text-xs truncate  font-medium text-gray-700">
+                    <p className="text-xs truncate font-medium text-gray-700">
                         {data || 'Sem dados disponíveis'}
                     </p>
                 )}
                 <p className="text-lg font-bold text-emerald-500 mt-2">
-                    {payload[0].payload.VALOR_LIQUIDO && formatCurrency(payload[0].payload.VALOR_LIQUIDO)}
-                </p>    
+                    {value !== undefined ? formatCurrency(value) : ''}
+                </p>
             </div>
         );
     }

@@ -71,10 +71,10 @@ export const InternalPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, p
             x={x}
             y={y}
             fill="white"
-            className=""
+            className="font-bold"
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize={12}
+            fontSize={13}
         >
             {(percent! * 100).toFixed(1)}%
         </text>
