@@ -8,23 +8,24 @@ import { AuthContext } from "@/contexts/AuthContext"
 import InfoCardFromBillsToPay from "@/data/infoCard/billsToPay"
 import collumns from "@/data/collumns/billsToPay/columns.json"
 
+// Bibliotecas
+import { DateValue, RangeValue } from "@nextui-org/react"
+
 // Componentes
 import InfoCard from "@/components/ui/InfoCard"
 import Container from "@/components/ui/container"
 import Table from "@/components/ui/table"
 import ToolBar from "@/components/ui/toolbar"
 import { renderCell } from "@/components/ui/renderCell/billsToPay/renderCell"
-import { Button } from "@/components/ui/button"
 
 // Utils
 import { fetchBillsToPay } from "@/utils/data/fetchData/refresh/fetchBillsToPay"
 import { searchFilter } from "@/utils/filters/searchFilter"
+import billsToPayPDF from "@/utils/relatory/pdf/billsToPay"
 
 // Tipagem
 import { BillsToPayData } from "@/types/billsToPay"
-import { DateValue, RangeValue } from "@nextui-org/react"
 import { parseDate } from '@internationalized/date';
-import billsToPayPDF from "@/utils/relatory/pdf/billsToPay"
 
 interface LayoutProps {
     allBillets: BillsToPayData[];
@@ -116,12 +117,15 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
     const generatePdf = () => {
         billsToPayPDF(billets, openValues, pastDueAmounts, amountsPaid, totalInvoicesPaid)
     }
-    
+
     return (
         <>
             <InfoCard data={infoDetailCard} />
             <Container>
                 <ToolBar title="Contas a pagar" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangerPicker} handleCleanFilter={handleCleanFilter} generatePDF={generatePdf} searchFilter={searchParams} setFilterSearch={setSearchParams} />
+                {/* <div className="w-full pb-3 px-8 justify-end items-end flex">
+                    <Checkbox defaultSelected size="md">Aberto</Checkbox>
+                </div> */}
                 <main className="flex h-[450px]">
                     <Table collumns={collumns} data={filterSearch} renderCell={renderCell} loading={loading} />
                 </main>

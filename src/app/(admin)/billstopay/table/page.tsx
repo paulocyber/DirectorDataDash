@@ -28,7 +28,7 @@ export default async function BillsToPayPage() {
     const api = setupApiClient(token as string)
     const { year, month, today, yesterday, monthExpired } = getDate()
 
-    const { expiredBilletAll, billetPaidAndOpen, billetInOpen } = billsToPayQueries({
+    const { expiredBilletAll, billetPaidAndOpen, } = billsToPayQueries({
         dateInit: `${year}/${month}/01`,
         dateEnd: today,
         year,
@@ -36,16 +36,15 @@ export default async function BillsToPayPage() {
         day: yesterday,
     });
 
-    const [respExpiredBillet, respBilletPaidAndOpen, respBilletInOpen] = await Promise.all([
+    const [respExpiredBillet, respBilletPaidAndOpen] = await Promise.all([
         api.post("/v1/find-db-query", { query: expiredBilletAll }),
-        api.post("/v1/find-db-query", { query: billetPaidAndOpen }),
-        api.post("/v1/find-db-query", { query: billetInOpen })
+        api.post("/v1/find-db-query", { query: billetPaidAndOpen })
     ]);
 
     const allBillets: BillsToPayData[] = respBilletPaidAndOpen.data.returnObject.body;
     const filterBilletInOpen = allBillets.filter((billet) => billet.STATUS_PGM === "1" || billet.STATUS_PGM === "4")
     const filterBilletPaid = allBillets.filter((billet) => billet.STATUS_PGM === "2")
-
+    
     return (
         <UiBillsToPayTable
             allBillets={allBillets}

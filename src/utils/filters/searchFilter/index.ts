@@ -11,7 +11,7 @@ export function searchFilter<T extends Record<string, any>>({
   search,
 }: SearchParamsProps<T>): T[] {
   const query = search.toLowerCase();
-
+console.log("Dados: ", data)
   return data.filter((item) => {
     // Verifica todos os valores do objeto
     return Object.values(item).some((value) => {

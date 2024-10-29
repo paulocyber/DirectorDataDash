@@ -9,7 +9,7 @@ export const renderCell = (item: BillsToPayData, columnKey: string) => {
     case "foipago":
       return (
         <p
-          className={`p-[0.6em] rounded-full ${item.STATUS_PGM != "2" ? "bg-blue-500" : "bg-green-500"
+          className={`p-[0.6em] rounded-full ${item.STATUS_PGM != "Pago" ? "bg-blue-500" : "bg-green-500"
             }`}
         ></p>
       );
