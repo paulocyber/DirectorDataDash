@@ -13,6 +13,7 @@ import { VscTable } from "react-icons/vsc";
 import { CiSearch } from "react-icons/ci";
 import { ImFilePdf } from "react-icons/im";
 import { FaStore } from "react-icons/fa";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 // Componentes
 import { Input } from "../input";
@@ -35,10 +36,11 @@ interface ToolBarProps {
     setFilterSearch?: (value: string) => void;
     generatePDF?: () => void;
     setEmp?: (value: string) => void;
+    setFilterStatus?: (value: string) => void;
     children?: ReactNode;
 }
 
-export default function ToolBar({ title, descriptionHref, href, dateRange, searchFilter, selectedDateRange, displayFormOfPayment, emp, handleRefreshClick, handleCleanFilter, handleDateRangePicker, handleDate, setFilterSearch, generatePDF, setEmp, children }: ToolBarProps) {
+export default function ToolBar({ title, descriptionHref, href, dateRange, searchFilter, selectedDateRange, displayFormOfPayment, emp, handleRefreshClick, handleCleanFilter, handleDateRangePicker, handleDate, setFilterSearch, generatePDF, setEmp, setFilterStatus, children }: ToolBarProps) {
     const [animation, setAnimation] = useState<Boolean>(false)
 
     return (
@@ -152,6 +154,32 @@ export default function ToolBar({ title, descriptionHref, href, dateRange, searc
                                     textValue="atualizar"
                                     onClick={handleRefreshClick}
                                     endContent={<span className="md:text-sm text-xs w-full">Atualizar</span>}
+                                />
+                                <DropdownItem
+                                    isReadOnly
+                                    className="flex justify-center items-center text-sm font-medium py-2"
+                                    textValue="status"
+                                    // onClick={handleRefreshClick}
+                                    children={
+                                        <Dropdown classNames={{ base: "end-10" }}>
+                                            <DropdownTrigger>
+                                                <div className="w-full flex ">
+                                                    <button className="w-full flex items-start justify-start">
+                                                        <MdOutlineKeyboardArrowDown className="text-xl" />
+                                                        <span className="md:text-sm text-xs px-4 font-semibold">Status</span>
+                                                    </button>
+                                                </div>
+                                            </DropdownTrigger>
+                                            <DropdownMenu variant="faded" aria-label="Dropdown status">
+                                                <DropdownItem>
+                                                    <button onClick={() => setFilterStatus && setFilterStatus('Paga')} className="md:text-sm text-xs w-full">Pago</button>
+                                                </DropdownItem>
+                                                <DropdownItem>
+                                                    <button onClick={() => setFilterStatus && setFilterStatus('Em aberto')} className="md:text-sm text-xs w-full">Em Aberto</button>
+                                                </DropdownItem>
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    }
                                 />
                                 <DropdownItem
                                     startContent={<RiFormatClear className="text-lg" />}

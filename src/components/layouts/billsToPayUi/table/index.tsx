@@ -47,13 +47,14 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
     const [loading, setLoading] = useState<boolean>(false)
     const [searchParams, setSearchParams] = useState<string>('');
     const [clearFilter, setClearFilter] = useState<boolean>(true);
+    const [filterStatus, setFilterStatus] = useState<string>('todos')
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
         end: parseDate(new Date().toISOString().split('T')[0]),
     })
 
     const { token } = useContext(AuthContext)
-    const filterSearch = searchFilter({ data: billets, search: searchParams })
+    const filterSearch = searchFilter({ data: filterStatus === 'todos' ? billets : filterStatus === 'Paga' ? billetPaid : billetInopen, search: searchParams })
     const { infoDetailCard, openValues, pastDueAmounts, amountsPaid, totalInvoicesPaid } = InfoCardFromBillsToPay({ listBilletInOpen: billetInopen, listBilletPaid: billetPaid, listBilletExpired: lateBills, costCenterFilter: [], filterSearch })
 
     const handleRefresh = async () => {
@@ -97,6 +98,7 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
         setDate({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date(today).toISOString().split('T')[0]) })
         setSearchParams('')
         setClearFilter(false)
+        setFilterStatus('todos')
 
         await fetchBillsToPay({
             token,
@@ -122,10 +124,7 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
         <>
             <InfoCard data={infoDetailCard} />
             <Container>
-                <ToolBar title="Contas a pagar" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangerPicker} handleCleanFilter={handleCleanFilter} generatePDF={generatePdf} searchFilter={searchParams} setFilterSearch={setSearchParams} />
-                {/* <div className="w-full pb-3 px-8 justify-end items-end flex">
-                    <Checkbox defaultSelected size="md">Aberto</Checkbox>
-                </div> */}
+                <ToolBar title="Contas a pagar" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangerPicker} handleCleanFilter={handleCleanFilter} generatePDF={generatePdf} searchFilter={searchParams} setFilterSearch={setSearchParams} setFilterStatus={setFilterStatus} />
                 <main className="flex h-[450px]">
                     <Table collumns={collumns} data={filterSearch} renderCell={renderCell} loading={loading} />
                 </main>
