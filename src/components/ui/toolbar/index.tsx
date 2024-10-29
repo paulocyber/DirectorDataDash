@@ -157,7 +157,7 @@ export default function ToolBar({ title, descriptionHref, href, dateRange, searc
                                 />
                                 <DropdownItem
                                     isReadOnly
-                                    className="flex justify-center items-center text-sm font-medium py-2"
+                                    className={`flex ${!setFilterStatus && 'hidden'} justify-center items-center text-sm font-medium py-2`}
                                     textValue="status"
                                     // onClick={handleRefreshClick}
                                     children={
