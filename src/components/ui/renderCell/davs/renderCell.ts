@@ -14,6 +14,10 @@ export const renderCell = (item: ItemsDavData, columnKey: string) => {
             return item.VENDEDOR;
         case "valorBruto":
             return formatCurrency(Number(item.VALOR_BRUTO_SDS.replace(",", ".")));
+        case "custoMercadoria":
+            return formatCurrency(Number(item.PRECO_CUSTO_ALE.replace(",", ".")));
+        case "lucroTotal":
+            return formatCurrency(Number(item.LUCRO.replace(",", ".")));
         case "dataFinalização":
             return item.DATAHORA_FINALIZACAO_SDS.split(' ')[0];
         default:

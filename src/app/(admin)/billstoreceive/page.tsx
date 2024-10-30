@@ -23,9 +23,9 @@ export default async function BillsToReceivePage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
-    const { yesterday, month, year } = getDate()
+    const { yesterday, month, year, today } = getDate()
 
-    const { billsToReceiveAll: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: `${year}/${month}/${yesterday}` })
+    const { billsToReceiveAll: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: today })
 
     const [respReceiveLate] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveLate })
@@ -34,15 +34,24 @@ export default async function BillsToReceivePage() {
     const lateBillsToReceive: BillsToReceiveData[] = respReceiveLate.data.returnObject.body
     const infoCard = InFoCardFromBillsToReceive({ billsToReceiveData: lateBillsToReceive })
 
-    const filterBillsToReceiveInOpen = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4")
+    const filterBillsToReceiveInLate = lateBillsToReceive.filter((receive) =>
+        (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
+        parseInt(receive.ATRASO_RCB) > 0
+    );
+    const filterBillsToReceiveInOpen = lateBillsToReceive.filter((receive) =>
+        (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
+        parseInt(receive.ATRASO_RCB) === 0
+    );
     const filterBillsToReceiveInPaid = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "2")
 
+    const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB")
     const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB")
-    const valuePartiallyPaid = TotalSum(filterBillsToReceiveInOpen, "VALOR_PAGO_RCB")
+    const valuePartiallyPaid = TotalSum(filterBillsToReceiveInLate, "VALOR_PAGO_RCB")
     const totalPaid = TotalSum(filterBillsToReceiveInPaid, "VALOR_PAGO_RCB")
     
     const billsToReceiveData = [
-        { name: "Valor em atraso", value: valueInOpen },
+        { name: "Valor em atraso", value: valueInLate },
+        { name: "Valor em aberto", value: valueInOpen },
         { name: "Valor parcialmente pago", value: valuePartiallyPaid },
         { name: "Valor pago por total", value: totalPaid }
     ]
