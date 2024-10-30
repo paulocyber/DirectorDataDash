@@ -46,14 +46,12 @@ export default async function BillsToReceivePage() {
 
     const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB")
     const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB")
-    const valuePartiallyPaid = TotalSum(filterBillsToReceiveInLate, "VALOR_PAGO_RCB")
     const totalPaid = TotalSum(filterBillsToReceiveInPaid, "VALOR_PAGO_RCB")
     
     const billsToReceiveData = [
         { name: "Valor em atraso", value: valueInLate },
         { name: "Valor em aberto", value: valueInOpen },
-        { name: "Valor parcialmente pago", value: valuePartiallyPaid },
-        { name: "Valor pago por total", value: totalPaid }
+        { name: "Valor recebido", value: totalPaid }
     ]
 
     return (

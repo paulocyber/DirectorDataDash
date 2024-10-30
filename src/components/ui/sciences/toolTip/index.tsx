@@ -34,7 +34,7 @@ export const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, d
                         {data || 'Sem dados disponíveis'}
                     </p>
                 )}
-                <p className="text-lg font-bold text-emerald-500 mt-2">
+                <p className={`text-lg font-bold ${data === 'Valor em atraso' ? 'text-red-500' : 'text-emerald-500' } mt-2`}>
                     {value !== undefined ? formatCurrency(value) : ''}
                 </p>
             </div>

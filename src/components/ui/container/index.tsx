@@ -10,7 +10,7 @@ export default function Container({ children }: ContainerProps) {
     return (
         <div className="py-2">
             <div className="px-4 lg:px-8">
-                <div className="bg-white shadow-xl rounded-lg">
+                <div className="bg-white w-full shadow-xl rounded-lg">
                     {children}
                 </div>
             </div>

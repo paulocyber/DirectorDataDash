@@ -12,6 +12,7 @@ import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer
 import { CustomActiveShapePieChart } from "@/components/ui/sciences/graphics/PieChart/CustomActiveShapePieChart";
 import { CustomTooltip } from "@/components/ui/sciences/toolTip";
 import { InternalPieLabel } from "@/components/ui/sciences/label";
+import DescriptionGraphic from "@/components/ui/sciences/description";
 
 // Utils
 import { fetchBillsToReceive } from "@/utils/data/fetchData/refresh/fetchBillsToReceive";
@@ -29,33 +30,52 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData }: U
     const [loading, setLoading] = useState<boolean>(false)
 
     const { token } = useContext(AuthContext)
-    const { year, month, yesterday } = getDate()
+    const { year, month, yesterday, today } = getDate()
     const handleRefresh = async () => {
         await fetchBillsToReceive({
             token,
             dateInit: `${year}/${month}/${yesterday}`,
-            dateEnd: `${year}/${month}/${yesterday}`,
+            dateEnd: today,
             setBillsToReceive,
             setInfoCard,
             setLoading
         })
     }
-    const filteredBillsToReceive = billsToReceive.filter(bill => bill.value > 0);
+    const handleClearFilter = async () => {
+        await fetchBillsToReceive({
+            token,
+            dateInit: `${year}/${month}/${yesterday}`,
+            dateEnd: today,
+            setBillsToReceive,
+            setInfoCard,
+            setLoading
+        })
+    }
+
     return (
         <>
             <InfoCard data={infoCard} />
             <Container>
-                <ToolBar title="Contas a receber" handleRefreshClick={handleRefresh} />
-                <GraphicContainer loading={false}>
-                    <CustomActiveShapePieChart
-                        data={filteredBillsToReceive}
-                        valueKey="value"
-                        displayToolTip={true}
-                        ToolTipComponent={(props) => (<CustomTooltip {...props}
-                            dataKey="name" valueKey="value" />)}
-                        label={(props) => <InternalPieLabel {...props} />}
-                    />
-                </GraphicContainer>
+                <ToolBar title="Contas a receber" handleRefreshClick={handleRefresh} handleCleanFilter={handleClearFilter} />
+                <main className="w-full flex items-center justify-center">
+                    <div className="flex w-1/2">
+                        <GraphicContainer loading={loading}>
+                            <CustomActiveShapePieChart
+                                data={billsToReceive}
+                                valueKey="value"
+                                displayToolTip={true}
+                                ToolTipComponent={(props) => (<CustomTooltip {...props}
+                                    dataKey="name" valueKey="value" />)}
+                                label={(props) => <InternalPieLabel {...props} />}
+                            />
+                        </GraphicContainer>
+                        <div className="flex max-h-full justify-end items-center">
+                            <div className="hidden w-full lg:flex lg:flex-col overflow-auto">
+                                <DescriptionGraphic data={billsToReceive} dataKey="name" />
+                            </div>
+                        </div>
+                    </div>
+                </main>
             </Container>
         </>
     )

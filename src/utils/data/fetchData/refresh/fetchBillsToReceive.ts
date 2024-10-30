@@ -49,26 +49,31 @@ export async function fetchBillsToReceive({
     billsToReceiveData: billsToReceive,
   });
 
+  const filterBillsToReceiveInLate = billsToReceive.filter(
+    (receive) =>
+      (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
+      parseInt(receive.ATRASO_RCB) > 0
+  );
   const filterBillsToReceiveInOpen = billsToReceive.filter(
-    (receive) => receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4"
+    (receive) =>
+      (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
+      parseInt(receive.ATRASO_RCB) === 0
   );
   const filterBillsToReceiveInPaid = billsToReceive.filter(
     (receive) => receive.STATUS_RCB === "2"
   );
 
+  const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB");
   const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB");
-  const valuePartiallyPaid = TotalSum(
-    filterBillsToReceiveInOpen,
-    "VALOR_PAGO_RCB"
-  );
   const totalPaid = TotalSum(filterBillsToReceiveInPaid, "VALOR_PAGO_RCB");
 
   const billsToReceiveData = [
+    { name: "Valor em atraso", value: valueInLate },
     { name: "Valor em aberto", value: valueInOpen },
-    { name: "Valor parcialmente pago", value: valuePartiallyPaid },
-    { name: "Valor pago por total", value: totalPaid },
+    { name: "Valor recebido", value: totalPaid },
   ];
 
   setBillsToReceive(billsToReceiveData);
   setInfoCard(infoCard);
+  setLoading(false);
 }
