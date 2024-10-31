@@ -10,14 +10,19 @@ import { TotalSum } from "@/utils/functionSum";
 import InFoCardFromBillsToReceive from "@/data/infoCard/billsToReceive";
 
 // Tipagem
+import { BillsToReceiveData } from "@/types/billsToReceive";
 interface FetchBillsToReceiveProps {
   token: string;
   dateInit: string;
   dateEnd: string;
+  filterStatus?: string;
   setInfoCard: (
     data: { icon: ReactNode; title: string; value: string }[]
   ) => void;
-  setBillsToReceive: (data: { name: string; value: number }[]) => void;
+  setBillsToReceive?: (data: { name: string; value: number }[]) => void;
+  setReceipts?: (data: BillsToReceiveData[]) => void;
+  setReceiptsInOpen?: (data: BillsToReceiveData[]) => void;
+  setReceiptsInPayed?: (data: BillsToReceiveData[]) => void;
   setLoading: (value: boolean) => void;
 }
 
@@ -25,7 +30,11 @@ export async function fetchBillsToReceive({
   token,
   dateInit,
   dateEnd,
+  filterStatus,
   setBillsToReceive,
+  setReceipts,
+  setReceiptsInOpen,
+  setReceiptsInPayed,
   setInfoCard,
   setLoading,
 }: FetchBillsToReceiveProps) {
@@ -73,7 +82,8 @@ export async function fetchBillsToReceive({
     { name: "Valor recebido", value: totalPaid },
   ];
 
-  setBillsToReceive(billsToReceiveData);
+  setBillsToReceive && setBillsToReceive(billsToReceiveData);
+  setReceipts && setReceipts(billsToReceive);
   setInfoCard(infoCard);
   setLoading(false);
 }

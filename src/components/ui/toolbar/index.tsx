@@ -45,7 +45,7 @@ export default function ToolBar({ title, descriptionHref, href, dateRange, searc
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex w-full items-center justify-center bg-white py-4 px-7">
+            <div className="flex w-full items-center justify-center rounded-lg bg-white py-4 px-7">
                 <div className="flex justify-start w-full items-center text-gray-800">
                     <div className="flex w-full items-center ">
                         <h1 className="font-bold md:text-lg text-sm">{title} </h1>

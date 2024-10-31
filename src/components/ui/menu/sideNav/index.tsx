@@ -44,10 +44,10 @@ export function SideNav({ toggleMenuState, Close, routes }: SideNavProps) {
     const isDetailDavs = router.startsWith('/detaildavs/');
     bgColorClass = (routeColor === "table" || isDetailDavs) ? "bg-[#fa6602]" : "bg-blue-700";
 
-    const table = (router === "/billstopay/table" && 'tabela')
-
+    const billsToPayTable = router === "/billstopay/table" ? 'tabela' : '';
+    const billsToReceiveTable = router === "/billstoreceive/table" ? 'tabela' : '';
     const { user, signOut } = useContext(AuthContext)
-
+    console.log("Dados: ", billsToReceiveTable)
     return (
         <aside className={`${bgColorClass} fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 border border-blue-gray-100 ${!toggleMenuState && "-translate-x-80"}`}>
             <div className="flex items-center justify-end py-2 pr-2">
@@ -90,7 +90,9 @@ export function SideNav({ toggleMenuState, Close, routes }: SideNavProps) {
                                         <TiChartPieOutline className="w-7 h-7" />
                                     ) : route.path === '/latecustomer' || route.path === '/salesgoal/latecustomer' ? (
                                         <FaTable className="w-5 h-5" />
-                                    ) : table === 'tabela' ? (
+                                    ) : billsToPayTable === 'tabela' ? (
+                                        <FaTable className="w-5 h-5" />
+                                    ) : billsToReceiveTable === 'tabela' ? (
                                         <FaTable className="w-5 h-5" />
                                     ) : (
                                         <TiChartPieOutline className="w-7 h-7" />

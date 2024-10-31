@@ -15,7 +15,8 @@ export function ActiveLink({ children, content, href }: ActiveLinkProps) {
     const pathName = usePathname();
     const isActive =
         (href === '/davs' && (pathName === '/davs' || pathName.startsWith('/detaildavs/'))) ||
-        (href === '/billstopay' && (pathName === '/billstopay' || pathName.startsWith('/billstopay/'))) || // Ativar para '/billstopay' e suas subrotas
+        (href === '/billstopay' && (pathName === '/billstopay' || pathName.startsWith('/billstopay/'))) || 
+        (href === '/billstoreceive' && (pathName === '/billstoreceive' || pathName.startsWith('/billstoreceive'))) ||
         pathName === href.toString();
 
     return (

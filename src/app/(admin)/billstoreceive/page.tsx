@@ -14,6 +14,7 @@ import UiBillsToReceive from "@/components/layouts/billsToReceive";
 import getDate from "@/utils/date/currentDate";
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
 import { TotalSum } from "@/utils/functionSum";
+import { convertToNumeric } from "@/utils/convertToNumeric";
 
 // Tipagem
 import { BillsToReceiveData } from '@/types/billsToReceive';
@@ -25,10 +26,11 @@ export default async function BillsToReceivePage() {
     const api = setupApiClient(token as string)
     const { yesterday, month, year, today } = getDate()
 
-    const { billsToReceiveAll: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: today })
+    const { billsToReceiveAll: billsToReceiveLate, topClientLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: today, year })
 
-    const [respReceiveLate] = await Promise.all([
-        api.post("/v1/find-db-query", { query: billsToReceiveLate })
+    const [respReceiveLate, respTopClientLate] = await Promise.all([
+        api.post("/v1/find-db-query", { query: billsToReceiveLate }),
+        api.post("/v1/find-db-query", { query: topClientLate })
     ])
 
     const lateBillsToReceive: BillsToReceiveData[] = respReceiveLate.data.returnObject.body
@@ -47,14 +49,27 @@ export default async function BillsToReceivePage() {
     const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB")
     const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB")
     const totalPaid = TotalSum(filterBillsToReceiveInPaid, "VALOR_PAGO_RCB")
-    
+
     const billsToReceiveData = [
         { name: "Valor em atraso", value: valueInLate },
         { name: "Valor em aberto", value: valueInOpen },
         { name: "Valor recebido", value: totalPaid }
     ]
 
+    const topClientsLate = convertToNumeric<BillsToReceiveData>(
+        respTopClientLate.data.returnObject.body,
+        ['RESTANTE_RCB']
+    ).sort((a, b) => parseInt(b.RESTANTE_RCB) - parseInt(a.RESTANTE_RCB))
+
     return (
-        <UiBillsToReceive infoCardData={infoCard} billsToReceiveData={billsToReceiveData} />
+        <UiBillsToReceive
+            infoCardData={infoCard}
+            billsToReceiveData={billsToReceiveData}
+            year={year}
+            month={month}
+            yesterday={yesterday}
+            today={today}
+            clientsLate={topClientsLate}
+        />
     )
 }
