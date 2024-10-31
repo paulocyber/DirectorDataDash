@@ -32,7 +32,7 @@ export default async function SalesByBrandPage() {
     const { SalesByBrand: playCustom } = salesQueries({ dateInit: today, dateEnd: today, emp: "2", brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { SalesByBrand: playUp } = salesQueries({ dateInit: today, dateEnd: today, emp: "3", brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { stockByBrand } = stockQueries({ dateInit: '', dateEnd: '', brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
-    const { openBillFromSuppliers } = billsToPayQueries({ year })
+    const { openBillFromSuppliers } = billsToPayQueries({ year, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
 
     const [respSalesPlayCell, respSalesPlayCustom, respSalesPlayUp, respStock, respDebt] = await Promise.all([
         api.post("/v1/find-db-query", { query: playCell }),

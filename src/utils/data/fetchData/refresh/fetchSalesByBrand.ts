@@ -37,22 +37,22 @@ export async function fetchSalesByBrand({
     dateInit,
     dateEnd,
     emp: "1",
-    brands
+    brands,
   });
   const { SalesByBrand: playCustom } = salesQueries({
     dateInit,
     dateEnd,
     emp: "2",
-    brands
+    brands,
   });
   const { SalesByBrand: playUp } = salesQueries({
     dateInit,
     dateEnd,
     emp: "3",
-    brands
+    brands,
   });
   const { stockByBrand } = stockQueries({ dateInit: "", dateEnd: "", brands });
-  const { openBillFromSuppliers } = billsToPayQueries({ year });
+  const { openBillFromSuppliers } = billsToPayQueries({ year, brands });
 
   let salesPlayCell: any[] = [];
   let salesPlayCustom: any[] = [];
