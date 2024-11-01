@@ -24,9 +24,9 @@ export default async function BillsToReceivePage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
-    const { yesterday, month, year, today } = getDate()
+    const { yesterday, monthExpired, month, year, today } = getDate()
 
-    const { billsToReceiveAll: billsToReceiveLate, topClientLate } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: today, year })
+    const { billsToReceiveAll: billsToReceiveLate, topClientLate } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today, year })
 
     const [respReceiveLate, respTopClientLate] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveLate }),
@@ -66,7 +66,7 @@ export default async function BillsToReceivePage() {
             infoCardData={infoCard}
             billsToReceiveData={billsToReceiveData}
             year={year}
-            month={month}
+            month={monthExpired}
             yesterday={yesterday}
             today={today}
             clientsLate={topClientsLate}

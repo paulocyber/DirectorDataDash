@@ -23,9 +23,9 @@ export default async function LateCustomerPage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string);
-    const { year, month, yesterday } = getDate()
+    const { year, monthExpired, yesterday } = getDate()
 
-    const { billsToReceiveInOpen } = billsToReceiveQueries({ dateInit: `${year}/${month}/01`, dateEnd: `${year}/${month}/${yesterday}` })
+    const { billsToReceiveInOpen } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/01`, dateEnd: `${year}/${monthExpired}/${yesterday}` })
 
     const [respReceiveInOpen] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveInOpen })
@@ -35,7 +35,7 @@ export default async function LateCustomerPage() {
         <UiLateCustomer
             dataReceiveInOpen={respReceiveInOpen.data.returnObject.body}
             year={year}
-            month={month}
+            month={monthExpired}
             yesterday={yesterday}
             admin={true}
         />
