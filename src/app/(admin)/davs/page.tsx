@@ -32,7 +32,7 @@ export default async function DavsPage() {
 
     const respDavs = await api.post("/v1/find-db-query", { query: davFinished })
     const infoCard = InfoCardFromDav({listDav: respDavs.data.returnObject.body})
-
+console.log("QUery: ", davFinished)
     return (
         <UiDav listDav={respDavs.data.returnObject.body} infoCard={infoCard} today={today}/>
     )

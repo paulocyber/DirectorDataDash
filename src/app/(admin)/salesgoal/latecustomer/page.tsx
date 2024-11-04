@@ -17,7 +17,6 @@ export const metadata: Metadata = {
     description: "Informações sobre vendas e metas",
 };
 
-
 export default async function LateCustomerPage() {
     const cookieStore = cookies();
     const token = cookieStore.get('@nextauth.token')?.value;

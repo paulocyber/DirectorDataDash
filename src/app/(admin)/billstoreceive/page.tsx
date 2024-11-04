@@ -24,7 +24,7 @@ export default async function BillsToReceivePage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
-    const { yesterday, monthExpired, month, year, today } = getDate()
+    const { year, monthExpired, yesterday, today } = getDate()
 
     const { billsToReceiveAll: billsToReceiveLate, topClientLate } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today, year })
 

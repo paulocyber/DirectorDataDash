@@ -71,7 +71,8 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
-            setTopClients
+            setTopClients,
+            setSellers
         })
     }
 
@@ -88,7 +89,8 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
-            setTopClients
+            setTopClients,
+            setSellers
         })
     }
 
@@ -107,6 +109,7 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             setLoading,
             setGoalProgress: setSalesProgress,
             setTopClients,
+            setSellers
         })
     }
 
@@ -122,14 +125,19 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
-            setTopClients
+            setTopClients,
+            setSellers
         })
+    }
+
+    const generatePdf = () => {
+
     }
 
     return (
         <>
             <Container>
-                <ToolBar title={`Metas de ${getMonthName(date.start.month)}`} handleDateRangePicker={handleDateRangePicker} handleRefreshClick={handleRefresh} handleCleanFilter={handleCleanFilter} dateRange={date} emp={emp} setEmp={setEmp} children={
+                <ToolBar title={`Metas de ${getMonthName(date.start.month)}`} handleDateRangePicker={handleDateRangePicker} handleRefreshClick={handleRefresh} handleCleanFilter={handleCleanFilter} dateRange={date} emp={emp} setEmp={setEmp} generatePDF={generatePdf}>
                     <div className="mr-auto sm:flex hidden md:mr-4 mt-2 md:w-56 small-screen:w-full">
                         <Autocomplete
                             aria-label="Filtro de vendedores"
@@ -148,7 +156,7 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
                             )}
                         </Autocomplete>
                     </div>
-                } />
+                </ToolBar>
                 <div className='mr-auto mb-2 w-full sm:hidden flex w-full px-4'>
                     <Autocomplete
                         aria-label="Filtro de vendedores"
@@ -174,7 +182,7 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
                     <Container>
                         <div className="flex">
                             <GraphicContainer loading={false}>
-                                <CustomActiveShapePieChart data={topSales} valueKey='VALOR_LIQUIDO' displayToolTip={true} ToolTipComponent={(props) => (<CustomTooltip {...props} dataKey='VENDEDOR' valueKey='VALOR_LIQUIDO'/>)} label={(props) => <InternalPieLabel {...props} />} />
+                                <CustomActiveShapePieChart data={topSales} valueKey='VALOR_LIQUIDO' displayToolTip={true} ToolTipComponent={(props) => (<CustomTooltip {...props} dataKey='VENDEDOR' valueKey='VALOR_LIQUIDO' />)} label={(props) => <InternalPieLabel {...props} />} />
                             </GraphicContainer>
                             <div className="flex px-2 max-h-full justify-end items-center">
                                 <div className="hidden lg:flex lg:flex-col overflow-auto">

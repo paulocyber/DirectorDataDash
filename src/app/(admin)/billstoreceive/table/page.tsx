@@ -21,8 +21,8 @@ export default async function BillsToReceivePage() {
 
     const api = setupApiClient(token as string)
 
-    const { yesterday, month, year, today } = getDate()
-    const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: `${year}/${month}/${yesterday}`, dateEnd: today })
+    const { yesterday, month, monthExpired, year, today } = getDate()
+    const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today })
 
     const [respBillsToReceive] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveAll })
@@ -44,7 +44,7 @@ export default async function BillsToReceivePage() {
             receiptsInOpenData={filterBillsToReceiveInOpen}
             receiptsInPayedData={filterBillsToReceiveInPaid}
             year={year}
-            month={month}
+            month={monthExpired}
             yesterday={yesterday}
             today={today}
         />

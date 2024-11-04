@@ -9,12 +9,14 @@ import {
   convertStringToNumber,
   convertToNumeric,
 } from "@/utils/convertToNumeric";
+import { sellersQueries } from "@/utils/queries/employees/sellers";
 
 // Bibliotecas
 import { toast } from "react-toastify";
 
 // Tipagem
 import { salesProgressData, topClientsPlusBuyData } from "@/types/sales";
+import { SellersType } from "@/types/Employees";
 
 type CommissionData = {
   COMISSAO: string;
@@ -34,6 +36,7 @@ interface FetchSales {
   setCommissionValue?: (value: number) => void;
   setTopClients: (value: topClientsPlusBuyData[]) => void;
   setGoalProgress: (value: salesProgressData[]) => void;
+  setSellers?: (value: SellersType[]) => void;
 }
 
 export async function fetchSales({
@@ -49,6 +52,7 @@ export async function fetchSales({
   setCommissionValue,
   setTopClients,
   setGoalProgress,
+  setSellers,
 }: FetchSales) {
   setLoading(true);
 
@@ -65,7 +69,7 @@ export async function fetchSales({
     dateInit,
     sellersSurname,
     idSellers: idSeller,
-    year: year ? year : undefined ,
+    year: year ? year : undefined,
     month: month ? month : undefined,
     emp: emp ? emp : "1, 2, 3",
   });
@@ -80,8 +84,9 @@ export async function fetchSales({
     dateEnd: today,
     sellersSurname,
     emp: "1, 2, 3",
-    idSellers: idSeller
+    idSellers: idSeller,
   });
+  const sellers = sellersQueries({ dateInit });
 
   let sales: any[] = [];
   let topClients: any[] = [];
@@ -109,6 +114,11 @@ export async function fetchSales({
       query: topClientsPlusBuy,
       setData: (data) => (topClients = data),
     }),
+    fetchData({
+      ctx: token,
+      query: sellers,
+      setData: (data) => setSellers?.(data),
+    }),
   ];
 
   await Promise.all(queries);
@@ -120,7 +130,10 @@ export async function fetchSales({
     },
     {
       name: "Metas",
-      value: convertStringToNumber(emp ? goals[0]?.VALOR_MTA : goals[0]?.VALOR_INDIVIDUAL_MTI) || 0,
+      value:
+        convertStringToNumber(
+          emp ? goals[0]?.VALOR_MTA : goals[0]?.VALOR_INDIVIDUAL_MTI
+        ) || 0,
     },
   ];
 
@@ -136,9 +149,9 @@ export async function fetchSales({
   const topClient = convertToNumeric<topClientsPlusBuyData>(topClients, [
     "VALOR_LIQUIDO",
   ]);
-  console.log("Query: ", salesQuery);
+console.log("Dados: ", sales)
   setCommissionValue && setCommissionValue(comissionSum);
   setGoalProgress(goalProgress);
   setTopClients(topClient);
   setLoading(false);
-} 
+}

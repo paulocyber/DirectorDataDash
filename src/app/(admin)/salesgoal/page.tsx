@@ -29,11 +29,11 @@ export default async function SalesPage() {
     const token = cookieStore.get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string);
-    const { year, month, today, getLastDayOfMonth } = getDate();
+    const { year, month, today } = getDate();
 
     const { sales, topSellers } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, emp: "1" })
     const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, emp: '1' })
-    const { storeGoals } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: '1' })
+    const { storeGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: '1' })
     const sellers = sellersQueries({ dateInit: `${year}/${month}/01` })
 
     const [respSales, respTopSellers, respGoals, respSellers, respTopClientBuy] = await Promise.all([
