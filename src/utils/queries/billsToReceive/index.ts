@@ -15,7 +15,13 @@ export const billsToReceiveQueries = ({
    idSellers || sellersSurname
      ? `and (a.id_fnc = ${idSellers ? idSellers : "?"} or a.apelido_fnc = ${
          sellersSurname
-           ? `'${sellersSurname === "LUCAS V" ? "RODRIGUES" : sellersSurname}'`
+           ? `'${
+               sellersSurname === "LUCAS V"
+                 ? "RODRIGUES"
+                 : sellersSurname === "ana_carolina"
+                 ? "CAROLINA"
+                 : sellersSurname
+             }'`
            : "?"
        })`
      : ""

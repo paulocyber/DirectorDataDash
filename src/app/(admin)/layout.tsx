@@ -17,12 +17,12 @@ import { setupApiClient } from "@/services/api";
 export default async function AdminRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
     const token = cookieStore.get('@nextauth.token')?.value;
-    const role = cookieStore.get('@nextauth.role')?.value;
+    const role = cookieStore.get('@nextauth.role')?.value || "";
 
     const api = setupApiClient(token as string);
 
-    if (!token || role === 'vendedor') {
-        redirect('/')
+    if (!token || ['vendedor', 'vendedora'].includes(role)) {
+        redirect('/');
     }
 
     const brands = brandsQueries()

@@ -5,6 +5,12 @@
       { "name": "Clientes em atraso", "path": "/latecustomer" }
     ]
   },
+  "vendedora": {
+    "router": [
+      { "name": "Vendas e Metas", "path": "/sales" },
+      { "name": "Clientes em atraso", "path": "/latecustomer" }
+    ]
+  },
   "diretoria": {
     "router": [
       { "name": "Relatório de DAV's", "path": "/davs" },

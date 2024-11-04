@@ -11,9 +11,9 @@ import { redirect } from "next/navigation";
 export default function SellersRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies(); // Obter os cookies
     const token = cookieStore.get('@nextauth.token')?.value;
-    const role = cookieStore.get('@nextauth.role')?.value;
+    const role = cookieStore.get('@nextauth.role')?.value || "";
 
-    if (!token || role !== 'vendedor') {
+    if (!token || !['vendedor', 'vendedora'].includes(role)) {
         redirect('/');
     }
 

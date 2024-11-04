@@ -9,10 +9,10 @@ export default async function GuestRouter({ children }: { children: ReactNode })
     const cookieStore = cookies();
 
     const token = cookieStore.get('@nextauth.token')?.value;
-    const role = cookieStore.get('@nextauth.role')?.value;
+    const role = cookieStore.get('@nextauth.role')?.value || "";
 
     if (token) {
-        if (role !== 'vendedor') {
+        if (!['vendedor', 'vendedora'].includes(role)) {
             redirect('/davs');
         } else {
             redirect('/sales')
