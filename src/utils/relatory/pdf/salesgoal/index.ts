@@ -49,8 +49,8 @@ export default function SalesGoalsPDF(
         : "não",
   }));
 
-  const topSellers = formattedSales
-    .sort((a, b) => parseFloat(b.VALOR_LIQUIDO) - parseFloat(a.VALOR_LIQUIDO))
+  const topSellers = sellersAndGoals
+    .sort((a, b) => Number(b.VALOR_LIQUIDO.replace(",", ".")) - Number(a.VALOR_LIQUIDO.replace(",", ".")))
     .slice(0, 3);
 
   const topTableBody = [
@@ -80,7 +80,7 @@ export default function SalesGoalsPDF(
         fillColor: index % 2 === 0 ? "#f2f6fa" : null,
       },
       {
-        text: vendedor.VALOR_LIQUIDO,
+        text: formatCurrency(Number(vendedor.VALOR_LIQUIDO.replace(",", "."))),
         fontSize: 7,
         alignment: "center",
         fillColor: index % 2 === 0 ? "#f2f6fa" : null,
@@ -236,14 +236,18 @@ export default function SalesGoalsPDF(
         // Seção dos cards com os valores
         columns: [
           {
-            text: `Meta grupo play: ${formatCurrency(progressSalesRelatory[2].value)}`, // Exemplo de valor da meta
+            text: `Meta grupo play: ${formatCurrency(
+              progressSalesRelatory[2].value
+            )}`, // Exemplo de valor da meta
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
             alignment: "center",
           },
           {
-            text: `Total lucro: ${formatCurrency(progressSalesRelatory[1].value)}`, // Exemplo de valor do lucro
+            text: `Total lucro: ${formatCurrency(
+              progressSalesRelatory[1].value
+            )}`, // Exemplo de valor do lucro
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
