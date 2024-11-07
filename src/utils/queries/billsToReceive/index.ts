@@ -23,7 +23,7 @@ export const billsToReceiveQueries = ({
                  : sellersSurname
              }'`
            : "?"
-       })`
+       })` 
      : ""
  } order by a.id_emp,a.data_vencimento_rcb,nome_pss`;
 

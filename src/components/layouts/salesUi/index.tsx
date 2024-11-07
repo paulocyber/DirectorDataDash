@@ -27,10 +27,11 @@ import BarChart from '@/components/ui/sciences/graphics/BarChart';
 import { getMonthName } from '@/utils/mask/date';
 import { getEmpName } from '@/utils/mask/nameEnterprise';
 import { fetchSales } from '@/utils/data/fetchData/refresh/fetchSales';
+import SalesGoalsPDF from '@/utils/relatory/pdf/salesgoal';
 
 // Tipagem
 import { SellersType } from "@/types/Employees";
-import { salesProgressData, topClientsPlusBuyData, topSalesData } from "@/types/sales";
+import { profitsFromSale, salesProgressData, topClientsPlusBuyData, topSalesData } from "@/types/sales";
 import { Autocomplete, AutocompleteItem, DateValue, RangeValue } from '@nextui-org/react';
 import { parseDate } from '@internationalized/date';
 interface SalesProps {
@@ -38,6 +39,8 @@ interface SalesProps {
     sellersData: SellersType[];
     topSalesData: topSalesData[];
     topClientsData: topClientsPlusBuyData[];
+    salesAndGoalsRelatoryData: profitsFromSale[]
+    progressSalesRelatoryData: salesProgressData[]
     year: number;
     month: number;
     today: string;
@@ -47,11 +50,13 @@ const getLastDayOfMonth = (year: number, month: number) => {
     return new Date(year, month, 0).getDate();
 };
 
-export default function UiSales({ salesProgressData, sellersData, topSalesData, topClientsData, year, month, today }: SalesProps) {
+export default function UiSales({ salesProgressData, sellersData, topSalesData, topClientsData, salesAndGoalsRelatoryData, progressSalesRelatoryData, year, month, today }: SalesProps) {
     const [salesProgress, setSalesProgress] = useState(salesProgressData)
     const [sellers, setSellers] = useState(sellersData)
     const [topSales, setTopSales] = useState(topSalesData)
     const [topClients, setTopClients] = useState(topClientsData)
+    const [sellersAndGoals, setSellersAndGoals] = useState(salesAndGoalsRelatoryData)
+    const [progressSalesRelatory, setProgressSalesRelatory] = useState(progressSalesRelatoryData)
     const [emp, setEmp] = useState('1')
     const [selectSeller, setSelectSeller] = useState<string>('')
     const [date, setDate] = useState<RangeValue<DateValue>>({ start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]), end: parseDate(new Date(today).toISOString().split('T')[0]), })
@@ -71,6 +76,8 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
+            setSellersAndGoals,
+            setProgressSalesRelatory,
             setTopClients,
             setSellers
         })
@@ -89,6 +96,8 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
+            setSellersAndGoals,
+            setProgressSalesRelatory,
             setTopClients,
             setSellers
         })
@@ -108,6 +117,8 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             month: !key && date.start.month,
             setLoading,
             setGoalProgress: setSalesProgress,
+            setSellersAndGoals,
+            setProgressSalesRelatory,
             setTopClients,
             setSellers
         })
@@ -125,13 +136,15 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
             emp,
             setLoading,
             setGoalProgress: setSalesProgress,
+            setSellersAndGoals,
+            setProgressSalesRelatory,
             setTopClients,
             setSellers
         })
     }
 
     const generatePdf = () => {
-
+        SalesGoalsPDF(sellersAndGoals, progressSalesRelatory, `${date.start.day}/${date.start.month}/${date.start.year}`)
     }
 
     return (

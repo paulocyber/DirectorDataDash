@@ -15,7 +15,11 @@ import { sellersQueries } from "@/utils/queries/employees/sellers";
 import { toast } from "react-toastify";
 
 // Tipagem
-import { salesProgressData, topClientsPlusBuyData } from "@/types/sales";
+import {
+  profitsFromSale,
+  salesProgressData,
+  topClientsPlusBuyData,
+} from "@/types/sales";
 import { SellersType } from "@/types/Employees";
 
 type CommissionData = {
@@ -37,6 +41,8 @@ interface FetchSales {
   setTopClients: (value: topClientsPlusBuyData[]) => void;
   setGoalProgress: (value: salesProgressData[]) => void;
   setSellers?: (value: SellersType[]) => void;
+  setSellersAndGoals?: (value: profitsFromSale[]) => void;
+  setProgressSalesRelatory?: (value: salesProgressData[]) => void;
 }
 
 export async function fetchSales({
@@ -53,44 +59,67 @@ export async function fetchSales({
   setTopClients,
   setGoalProgress,
   setSellers,
+  setSellersAndGoals,
+  setProgressSalesRelatory,
 }: FetchSales) {
   setLoading(true);
 
   const { today } = getDate();
 
-  const { sales: salesQuery } = salesQueries({
+  const { sales: salesQuery, profitsFromSale } = salesQueries({
     dateInit,
     dateEnd,
     emp: emp ? emp : "1, 2, 3",
     sellersSurname,
-    idSellers: idSeller,
+    idSeller: idSeller,
+    month: month ? month : undefined,
+    year: year ? year : undefined,
+  });
+  const { sales: relatorySales } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp: emp ? emp : "1, 2, 3",
+    sellersSurname,
+    idSeller: idSeller,
+    month: month ? month : undefined,
+    year: year ? year : undefined,
   });
   const { individualGoals, storeGoals } = goalsQueries({
     dateInit,
     sellersSurname,
-    idSellers: idSeller,
+    idSeller: idSeller,
     year: year ? year : undefined,
     month: month ? month : undefined,
     emp: emp ? emp : "1, 2, 3",
+  });
+  const { storeGoals: relatoryStoreGoals } = goalsQueries({
+    dateInit,
+    sellersSurname,
+    idSeller: idSeller,
+    year: year ? year : undefined,
+    month: month ? month : undefined,
+    emp:  "1, 2, 3",
   });
   const { commissionPerSalesPerson } = salesQueries({
     dateInit,
     dateEnd,
     sellersSurname,
-    idSellers: idSeller,
+    idSeller: idSeller,
   });
   const { topClientsPlusBuy } = salesQueries({
     dateInit: today,
     dateEnd: today,
     sellersSurname,
     emp: "1, 2, 3",
-    idSellers: idSeller,
+    idSeller: idSeller,
   });
   const sellers = sellersQueries({ dateInit });
 
   let sales: any[] = [];
   let topClients: any[] = [];
   let commissionValue: any[] = [];
+  let relatorySalesData: any[] = [];
+  let relatoryStoreGoalsData: any[] = [];
   let goals: any[] = [];
 
   const queries = [
@@ -119,6 +148,21 @@ export async function fetchSales({
       query: sellers,
       setData: (data) => setSellers?.(data),
     }),
+    fetchData({
+      ctx: token,
+      query: profitsFromSale,
+      setData: (data) => setSellersAndGoals?.(data),
+    }),
+    fetchData({
+      ctx: token,
+      query: relatorySales,
+      setData: (data) => (relatorySalesData = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: relatoryStoreGoals,
+      setData: (data) => (relatoryStoreGoalsData = data),
+    }),
   ];
 
   await Promise.all(queries);
@@ -137,6 +181,15 @@ export async function fetchSales({
     },
   ];
 
+  const progressSalesRelatory = [
+    { name: "Vendas", value: TotalSum(relatorySalesData, "VALOR_LIQUIDO") },
+    { name: "Lucro", value: TotalSum(relatorySalesData, "VALOR_LUCRO") },
+    {
+      name: "Meta grupo play",
+      value: TotalSum(relatoryStoreGoalsData, "VALOR_MTA"),
+    },
+  ];
+
   if (goalProgress[1].value === 0) {
     toast.error("Não possui metas para esse mês 😞");
   }
@@ -149,8 +202,9 @@ export async function fetchSales({
   const topClient = convertToNumeric<topClientsPlusBuyData>(topClients, [
     "VALOR_LIQUIDO",
   ]);
-console.log("Dados: ", sales)
+
   setCommissionValue && setCommissionValue(comissionSum);
+  setProgressSalesRelatory && setProgressSalesRelatory(progressSalesRelatory);
   setGoalProgress(goalProgress);
   setTopClients(topClient);
   setLoading(false);
