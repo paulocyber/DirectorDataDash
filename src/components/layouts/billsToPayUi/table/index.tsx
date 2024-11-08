@@ -117,9 +117,9 @@ export default function UiBillsToPayTable({ allBillets, listBilletInOpen, listBi
     }
 
     const generatePdf = () => {
-        billsToPayPDF(billets, openValues, pastDueAmounts, amountsPaid, totalInvoicesPaid)
+        billsToPayPDF(filterStatus === 'todos' ? billets : filterStatus === 'Paga' ? billetPaid : billetInopen, openValues, pastDueAmounts, amountsPaid, totalInvoicesPaid)
     }
-
+    
     return (
         <>
             <InfoCard data={infoDetailCard} />
