@@ -22,6 +22,17 @@
       { "name": "Clientes em atraso", "path": "/salesgoal/latecustomer" }
     ]
   },
+  "financeiro": {
+    "router": [
+      { "name": "Relatório de DAV's", "path": "/davs" },
+      { "name": "Contas a pagar", "path": "/billstopay" },
+      { "name": "Contas a receber", "path": "/billstoreceive" },
+      { "name": "Vendas por marcas", "path": "/salesbybrand" },
+      { "name": "Vendas por grupo", "path": "/salesbygroup" },
+      { "name": "Vendas e Metas", "path": "/salesgoal" },
+      { "name": "Clientes em atraso", "path": "/salesgoal/latecustomer" }
+    ]
+  },
   "tecnologia": {
     "router": [
       { "name": "Relatório de DAV's", "path": "/davs" },
