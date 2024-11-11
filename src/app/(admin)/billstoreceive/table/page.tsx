@@ -1,5 +1,6 @@
 // Next - Framework
 import { cookies } from "next/headers";
+import { Metadata } from "next";
 
 // Dados
 import InFoCardFromBillsToReceive from "@/data/infoCard/billsToReceive";
@@ -14,6 +15,11 @@ import getDate from "@/utils/date/currentDate";
 
 // Tipagem
 import { BillsToReceiveData } from "@/types/billsToReceive";
+
+export const metadata: Metadata = {
+    title: "Relatório dos Contas a receber",
+    description: "Informações o que tem a receber",
+};
 
 export default async function BillsToReceivePage() {
     const cookieStore = cookies();

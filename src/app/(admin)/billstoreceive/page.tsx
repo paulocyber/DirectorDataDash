@@ -3,6 +3,7 @@ import { setupApiClient } from "@/services/api";
 
 // Next - framework
 import { cookies } from "next/headers";
+import { Metadata } from "next";
 
 // Dados
 import InFoCardFromBillsToReceive from "@/data/infoCard/billsToReceive";
@@ -19,6 +20,11 @@ import { convertToNumeric } from "@/utils/convertToNumeric";
 // Tipagem
 import { BillsToReceiveData } from '@/types/billsToReceive';
 
+export const metadata: Metadata = {
+    title: "Relatório dos Contas a receber",
+    description: "Informações o que tem a receber",
+};
+
 export default async function BillsToReceivePage() {
     const cookieStore = cookies();
     const token = cookieStore.get('@nextauth.token')?.value;
@@ -26,11 +32,12 @@ export default async function BillsToReceivePage() {
     const api = setupApiClient(token as string)
     const { year, monthExpired, yesterday, today } = getDate()
 
-    const { billsToReceiveAll: billsToReceiveLate, topClientLate } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today, year })
+    const { billsToReceiveAll: billsToReceiveLate, topClientLate, summaryReceive } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today, year })
 
-    const [respReceiveLate, respTopClientLate] = await Promise.all([
+    const [respReceiveLate, respTopClientLate, respSummaryReceive] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveLate }),
-        api.post("/v1/find-db-query", { query: topClientLate })
+        api.post("/v1/find-db-query", { query: topClientLate }),
+        api.post("/v1/find-db-query", { query: summaryReceive }),
     ])
 
     const lateBillsToReceive: BillsToReceiveData[] = respReceiveLate.data.returnObject.body
@@ -65,6 +72,7 @@ export default async function BillsToReceivePage() {
         <UiBillsToReceive
             infoCardData={infoCard}
             billsToReceiveData={billsToReceiveData}
+            summaryReceive={respSummaryReceive.data.returnObject.body}
             year={year}
             month={monthExpired}
             yesterday={yesterday}

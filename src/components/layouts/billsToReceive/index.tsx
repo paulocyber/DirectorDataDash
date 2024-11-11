@@ -17,28 +17,33 @@ import { CustomTooltip } from "@/components/ui/sciences/toolTip";
 import { InternalPieLabel } from "@/components/ui/sciences/label";
 import DescriptionGraphic from "@/components/ui/sciences/description";
 import BarChart from "@/components/ui/sciences/graphics/BarChart";
+import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 
 // Dados
 import highLightColor from '@/data/palettes/highlightedColor.json';
 
 // Utils
 import { fetchBillsToReceive } from "@/utils/data/fetchData/refresh/fetchBillsToReceive";
+import { formatCurrency } from './../../../utils/mask/money/index';
 
 // Tipagem
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
 import { BillsToReceiveData } from "@/types/billsToReceive";
+import { TotalSum } from "@/utils/functionSum";
 interface UiBillsToReceiveProps {
     infoCardData: { icon: ReactNode; title: string; value: string }[];
     billsToReceiveData: { name: string; value: number }[];
-    clientsLate: BillsToReceiveData[]
+    clientsLate: BillsToReceiveData[];
+    summaryReceive: BillsToReceiveData[];
     year: number;
     month: number;
     yesterday: number;
     today: string;
 }
 
-export default function UiBillsToReceive({ infoCardData, billsToReceiveData, year, month, yesterday, today, clientsLate }: UiBillsToReceiveProps) {
+export default function UiBillsToReceive({ infoCardData, billsToReceiveData, clientsLate, summaryReceive, year, month, yesterday, today }: UiBillsToReceiveProps) {
     const [billsToReceive, setBillsToReceive] = useState(billsToReceiveData)
     const [infoCard, setInfoCard] = useState(infoCardData)
     const [loading, setLoading] = useState<boolean>(false)
@@ -49,6 +54,7 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, yea
 
     const router = useRouter();
     const { token } = useContext(AuthContext)
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handleRefresh = async () => {
         await fetchBillsToReceive({
@@ -85,6 +91,29 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, yea
 
     return (
         <>
+            <Modal title="Resumo" isOpen={isOpen} onClose={onClose} width="lg" displayFooter={true} footerTitle="Total: " value={formatCurrency(TotalSum(summaryReceive, 'VALOR_PAGO_RCB'))}>
+                <div className="items-center  flex-col justify-center flex w-full mb-4 border-collapse border-gray-200 dark:border-white/40">
+                    <div className="w-full flex flex-col  h-[220px]">
+                        {summaryReceive.map((relatory, index) => (
+                            <div key={index} className="w-full items-center justify-between flex p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
+                                <div className="flex w-full flex-col">
+                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">Mês/Ano:</h2>
+                                    <span className="mb-0 text-sm leading-normal dark:text-white">{relatory.MES_ANO}</span>
+                                </div>
+
+                                <div className="flex w-full flex-col">
+                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">Valor:</h2>
+                                    <span className="mb-0 text-sm leading-normal dark:text-white">{formatCurrency(Number(relatory.VALOR_PAGO_RCB.replace(",", ".")))}</span>
+                                </div>
+                                <div className="flex w-1/4 flex-col">
+                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">%:</h2>
+                                    <span className="mb-0 text-sm leading-normal dark:text-white">{relatory.PORCENTAGEM} %</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </Modal>
             <InfoCard data={infoCard} />
             <Container>
                 <ToolBar
@@ -101,7 +130,12 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, yea
             <div className="flex flex-col lg:flex-row w-full">
                 <main className="lg:w-1/3 w-full">
                     <Container>
-                        <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Resumo de recebimentos:</h1>
+                        <div className="w-full flex justify-between">
+                            <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Recebimentos: </h1>
+                            <div className="py-2 px-4">
+                                <Button color="primary" onClick={() => onOpen()}>Resumo</Button>
+                            </div>
+                        </div>
                         <div className="flex items-center justify-center">
                             <GraphicContainer loading={loading}>
                                 <CustomActiveShapePieChart

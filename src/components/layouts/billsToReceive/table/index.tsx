@@ -12,13 +12,13 @@ import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
+import { renderCell } from "@/components/ui/renderCell/billsToReceive/renderCell";
 
 // Utils
 import { fetchBillsToReceive } from "@/utils/data/fetchData/refresh/fetchBillsToReceive";
 
 // Tipagem
 import { BillsToReceiveData } from "@/types/billsToReceive";
-import { renderCell } from "@/components/ui/renderCell/billsToReceive/renderCell";
 import { parseDate } from '@internationalized/date';
 import { DateValue, RangeValue } from "@nextui-org/react";
 
@@ -96,7 +96,7 @@ export default function UiBillsToReceiveTable({ receiveData, receiptsInOpenData,
         <>
             <InfoCard data={infoCard} />
             <Container>
-                <ToolBar title="Contas a receber" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangePicker} setFilterStatus={setFilterStatus} handleCleanFilter={handleCleanFilter} />
+                <ToolBar title="Contas a receber" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangePicker} setFilterStatus={setFilterStatus} handleCleanFilter={handleCleanFilter} descriptionHref="Grafico" href="/billstoreceive"/>
                 <Table collumns={columns} renderCell={renderCell} data={filterStatus === 'todos' ? receipts : filterStatus === 'paga' ? receiptsInPayed : receiptsInOpen} loading={loading} />
             </Container>
         </>

@@ -19,7 +19,7 @@ export const renderCell = (item: BillsToReceiveData, columnKey: string) => {
         case "valorRestante":
             return formatCurrency(Number(item.RESTANTE_RCB.replace(",", ".")))
         case "valorPago":
-            return item.VALOR_PAGO_RCB
+            return formatCurrency(Number(item.VALOR_PAGO_RCB.replace(",", ".")))
         default:
             return null;
     }

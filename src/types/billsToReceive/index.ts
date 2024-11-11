@@ -13,4 +13,6 @@ export type BillsToReceiveData = {
   FORMA_PAGAMENTO: string;
   STATUS_RCB: string;
   ATRASO_RCB: string;
+  MES_ANO: string;
+  PORCENTAGEM: string;
 };
