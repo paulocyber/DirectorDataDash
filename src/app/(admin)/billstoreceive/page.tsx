@@ -51,7 +51,7 @@ export default async function BillsToReceivePage() {
         (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
         parseInt(receive.ATRASO_RCB) === 0
     );
-    const filterBillsToReceiveInPaid = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "2")
+    const filterBillsToReceiveInPaid = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "2" || receive.STATUS_RCB === "4")
 
     const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB")
     const valueInOpen = TotalSum(filterBillsToReceiveInOpen, "RESTANTE_RCB")

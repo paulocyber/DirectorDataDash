@@ -69,7 +69,7 @@ export async function fetchBillsToReceive({
       parseInt(receive.ATRASO_RCB) === 0
   );
   const filterBillsToReceiveInPaid = billsToReceive.filter(
-    (receive) => receive.STATUS_RCB === "2"
+    (receive) => receive.STATUS_RCB === "2" || receive.STATUS_RCB === "4"
   );
 
   const valueInLate = TotalSum(filterBillsToReceiveInLate, "RESTANTE_RCB");
