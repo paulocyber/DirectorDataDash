@@ -67,7 +67,7 @@ export default async function BillsToReceivePage() {
         respTopClientLate.data.returnObject.body,
         ['RESTANTE_RCB']
     ).sort((a, b) => parseInt(b.RESTANTE_RCB) - parseInt(a.RESTANTE_RCB))
-
+console.log("Dados: ", summaryReceive)
     return (
         <UiBillsToReceive
             infoCardData={infoCard}

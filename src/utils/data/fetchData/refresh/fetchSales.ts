@@ -69,7 +69,7 @@ export async function fetchSales({
   const { sales: salesQuery, profitsFromSale } = salesQueries({
     dateInit,
     dateEnd,
-    emp: emp ? emp : "1, 2, 3",
+    emp: emp ? emp : "1, 2, 3, 4, 5",
     sellersSurname,
     idSeller: idSeller,
     month: month ? month : undefined,
@@ -78,7 +78,7 @@ export async function fetchSales({
   const { sales: relatorySales } = salesQueries({
     dateInit,
     dateEnd,
-    emp: emp ? emp : "1, 2, 3",
+    emp: emp ? emp : "1, 2, 3, 4, 5",
     sellersSurname,
     idSeller: idSeller,
     month: month ? month : undefined,
@@ -90,7 +90,7 @@ export async function fetchSales({
     idSeller: idSeller,
     year: year ? year : undefined,
     month: month ? month : undefined,
-    emp: emp ? emp : "1, 2, 3",
+    emp: emp ? emp : "1, 2, 3, 4, 5",
   });
   const { storeGoals: relatoryStoreGoals } = goalsQueries({
     dateInit,
@@ -98,7 +98,7 @@ export async function fetchSales({
     idSeller: idSeller,
     year: year ? year : undefined,
     month: month ? month : undefined,
-    emp:  "1, 2, 3",
+    emp:  "1, 2, 3, 4, 5",
   });
   const { commissionPerSalesPerson } = salesQueries({
     dateInit,
@@ -110,7 +110,7 @@ export async function fetchSales({
     dateInit: today,
     dateEnd: today,
     sellersSurname,
-    emp: "1, 2, 3",
+    emp: "1, 2, 3, 4, 5",
     idSeller: idSeller,
   });
   const sellers = sellersQueries({ dateInit });
