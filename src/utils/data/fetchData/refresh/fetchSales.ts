@@ -78,12 +78,13 @@ export async function fetchSales({
   const { sales: relatorySales } = salesQueries({
     dateInit,
     dateEnd,
-    emp: emp ? emp : "1, 2, 3, 4, 5",
+    emp: "1, 2, 3, 4, 5",
     sellersSurname,
     idSeller: idSeller,
     month: month ? month : undefined,
     year: year ? year : undefined,
   });
+
   const { individualGoals, storeGoals } = goalsQueries({
     dateInit,
     sellersSurname,
@@ -98,7 +99,7 @@ export async function fetchSales({
     idSeller: idSeller,
     year: year ? year : undefined,
     month: month ? month : undefined,
-    emp:  "1, 2, 3, 4, 5",
+    emp: "1, 2, 3, 4, 5",
   });
   const { commissionPerSalesPerson } = salesQueries({
     dateInit,
@@ -202,6 +203,8 @@ export async function fetchSales({
   const topClient = convertToNumeric<topClientsPlusBuyData>(topClients, [
     "VALOR_LIQUIDO",
   ]);
+
+  console.log("query: ", profitsFromSale)
 
   setCommissionValue && setCommissionValue(comissionSum);
   setProgressSalesRelatory && setProgressSalesRelatory(progressSalesRelatory);

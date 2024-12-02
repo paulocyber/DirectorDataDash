@@ -147,7 +147,6 @@ export default function UiSales({ salesProgressData, sellersData, topSalesData, 
         SalesGoalsPDF(sellersAndGoals, progressSalesRelatory, `${date.start.day}/${date.start.month}/${date.start.year}`)
     }
 
-    // a
     return (
         <>
             <Container>

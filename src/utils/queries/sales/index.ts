@@ -135,7 +135,7 @@ export const salesQueries = ({
   let profitsFromSale = `select lucro.id_vendedor, lucro.apelido_pss, lucro.valor_liquido, lucro.valor_lucro, COALESCE(metas.VALOR_INDIVIDUAL_MTI, '') AS meta_individual, case WHEN valor_liquido <> 0 then valor_lucro
   / valor_liquido else 0 end as margem_lucro FROM (SELECT sdi.ID_pss AS id_vendedor, fnc.apelido_pss, SUM(sdi.valor_liquido_sdi) AS valor_liquido, SUM(sdi.QTDE_SDI * sdi.preco_custo_sdi) AS valor_custo, 
   SUM(sdi.valor_liquido_sdi) - SUM(sdi.QTDE_SDI * sdi.preco_custo_sdi) AS valor_lucro FROM saidas sds INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds INNER JOIN almoxarifados_estoque ale ON ale.id_alm = 
-  sdi.id_emp AND ale.id_prd = sdi.id_prd INNER JOIN v_funcionarios fnc ON fnc.id_pss = sdi.id_pss WHERE sds.tipo_sds = '4' AND sdi.id_emp IN (1,2,3,100) AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00'
+  sdi.id_emp AND ale.id_prd = sdi.id_prd INNER JOIN v_funcionarios fnc ON fnc.id_pss = sdi.id_pss WHERE sds.tipo_sds = '4' AND sdi.id_emp IN (1,2,3,4,5,100) AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00'
   AND '${dateEnd} 23:59:59' AND sdi.id_emp = ale.ID_ALM GROUP BY sdi.ID_pss, fnc.apelido_pss) AS lucro INNER JOIN (SELECT mti.ID_FNC, mti.VALOR_INDIVIDUAL_MTI FROM metas_vendas mtv INNER JOIN metas_vendas_itens mti ON
   mtv.ID_MTA = mti.ID_MTA WHERE CAST(mtv.DATA_INICIO_MTA AS DATE) = '${year}/${month}/01') AS metas ON lucro.id_vendedor = metas.ID_FNC ORDER BY lucro.id_vendedor`;
 
