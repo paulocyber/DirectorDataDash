@@ -51,12 +51,19 @@ export async function fetchSalesByBrand({
     emp: "3",
     brands,
   });
+  const { SalesByBrand: playCovers } = salesQueries({
+    dateInit,
+    dateEnd,
+    emp: "4",
+    brands,
+  });
   const { stockByBrand } = stockQueries({ dateInit: "", dateEnd: "", brands });
   const { openBillFromSuppliers } = billsToPayQueries({ year, brands });
 
   let salesPlayCell: any[] = [];
   let salesPlayCustom: any[] = [];
   let salesPlayUp: any[] = [];
+  let salesPlayCovers: any[] = [];
   let stock: any[] = [];
   let debt: any[] = [];
 
@@ -78,6 +85,11 @@ export async function fetchSalesByBrand({
     }),
     fetchData({
       ctx: token,
+      query: playCovers,
+      setData: (data) => (salesPlayCovers = data),
+    }),
+    fetchData({
+      ctx: token,
       query: stockByBrand,
       setData: (data) => (stock = data),
     }),
@@ -90,7 +102,7 @@ export async function fetchSalesByBrand({
 
   await Promise.all(queries);
 
-  const salesData = [...salesPlayCell, ...salesPlayCustom, ...salesPlayUp];
+  const salesData = [...salesPlayCell, ...salesPlayCustom, ...salesPlayUp, ...salesPlayCovers];
   const sumByBrand = groupSumBy(salesData, {
     key: "MARCAS",
     valueKey: "VALOR_BRUTO_SDI",

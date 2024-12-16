@@ -16,7 +16,8 @@ interface BarChartProps<T extends BarChartData> {
     dataKey: string;
     displayToolTip?: boolean;
     ToolTipComponent?: React.FC<any>;
-    LabelListProps?: React.ComponentProps<typeof LabelList>;
+    // LabelListProps?: React.ComponentProps<typeof LabelList>;
+    LabelListProps?: boolean;
     displayXAxis?: boolean;
     dataKeyXAxis?: string;
     displayCartesianGrid?: boolean;
@@ -56,7 +57,20 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                             fill={item.color || palette[index % palette.length]} // Usar a cor ou o padrão
                         />
                     ))}
-                    {LabelListProps ? (
+                    {LabelListProps && (
+                        <LabelList
+                            position="top"
+                            fill="#4b5563"
+                            formatter={(value: number) => {
+                                const formattedValue = formatCurrency(value);
+                                const maxLength = 15;
+                                return formattedValue.length > maxLength
+                                    ? `${formattedValue.substring(0, maxLength)}...`
+                                    : formattedValue;
+                            }}
+                            className="font-bold text-[11px] lg:flex hidden"
+                        />)}
+                    {/* {LabelListProps ? (
                         <LabelList {...LabelListProps} />
                     ) : (
                         <LabelList
@@ -71,7 +85,7 @@ export default function BarChart<T extends BarChartData>({ data, dataKey, displa
                             }}
                             className="font-bold text-[11px] lg:flex hidden"
                         />
-                    )}
+                    )} */}
                 </Bar>
             </BarChartComponents>
         </ResponsiveContainer>

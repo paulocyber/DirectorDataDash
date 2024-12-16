@@ -141,9 +141,12 @@ export default function ToolBar({ title, descriptionHref, href, dateRange, searc
                                                 }
                                             }
                                         }} value={emp} className="w-full" size="sm">
+                                            <AutocompleteItem key="0">Grupo PlayCell</AutocompleteItem>
                                             <AutocompleteItem key="1">PlayCell</AutocompleteItem>
                                             <AutocompleteItem key="2">Play Personalizados</AutocompleteItem>
                                             <AutocompleteItem key="3">Play Up</AutocompleteItem>
+                                            <AutocompleteItem key="4">Play Capas</AutocompleteItem>
+                                            <AutocompleteItem key="4">Inow</AutocompleteItem>
                                         </Autocomplete>
                                     }
                                 />

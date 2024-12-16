@@ -69,7 +69,7 @@ export async function fetchSales({
   const { sales: salesQuery, profitsFromSale } = salesQueries({
     dateInit,
     dateEnd,
-    emp: emp ? emp : "1, 2, 3, 4, 5",
+    emp: emp && emp !== "0" ? emp : "1, 2, 3, 4, 5",
     sellersSurname,
     idSeller: idSeller,
     month: month ? month : undefined,
@@ -91,7 +91,7 @@ export async function fetchSales({
     idSeller: idSeller,
     year: year ? year : undefined,
     month: month ? month : undefined,
-    emp: emp ? emp : "1, 2, 3, 4, 5",
+    emp: emp && emp !== "0" ? emp : "1, 2, 3, 4, 5",
   });
   const { storeGoals: relatoryStoreGoals } = goalsQueries({
     dateInit,
@@ -168,6 +168,12 @@ export async function fetchSales({
 
   await Promise.all(queries);
 
+  const metaValue = emp
+    ? emp === "0"
+      ? TotalSum(relatoryStoreGoalsData, "VALOR_MTA")
+      : goals[0]?.VALOR_MTA
+    : goals[0]?.VALOR_INDIVIDUAL_MTI;
+
   const goalProgress = [
     {
       name: "Vendas",
@@ -175,13 +181,10 @@ export async function fetchSales({
     },
     {
       name: "Metas",
-      value:
-        convertStringToNumber(
-          emp ? goals[0]?.VALOR_MTA : goals[0]?.VALOR_INDIVIDUAL_MTI
-        ) || 0,
+      value: convertStringToNumber(metaValue),
     },
   ];
-
+  console.log("Metas: ", metaValue);
   const progressSalesRelatory = [
     { name: "Vendas", value: TotalSum(relatorySalesData, "VALOR_LIQUIDO") },
     { name: "Lucro", value: TotalSum(relatorySalesData, "VALOR_LUCRO") },
@@ -204,7 +207,7 @@ export async function fetchSales({
     "VALOR_LIQUIDO",
   ]);
 
-  console.log("query: ", profitsFromSale)
+  console.log("Query: ", salesQuery);
 
   setCommissionValue && setCommissionValue(comissionSum);
   setProgressSalesRelatory && setProgressSalesRelatory(progressSalesRelatory);

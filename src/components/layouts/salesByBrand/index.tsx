@@ -148,7 +148,7 @@ export default function UiSalesByBrand({ listSalesByBrand, listStockByBrand }: S
                         onChange={handleDateRangeChange}
                     />
                 </div>
-                <GraphicContainer loading={loading} children={<BarChart data={salesByBrand} dataKey="value" dataKeyXAxis="brand" displayXAxis={true} displayCartesianGrid={true} palette={highLightColor} />} />
+                <GraphicContainer loading={loading} children={<BarChart data={salesByBrand} dataKey="value" dataKeyXAxis="brand" displayXAxis={true} displayCartesianGrid={true} palette={highLightColor} LabelListProps={true}/>} />
             </Container>
             <Container>
                 <h1 className="font-bold md:text-lg text-sm p-5">Estoque em valor X Endividamento por marca</h1>

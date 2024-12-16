@@ -31,13 +31,13 @@ export default async function SalesPage() {
     const api = setupApiClient(token as string);
     const { year, month, today } = getDate();
 
-    const { sales, topSellers, profitsFromSale } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, month, year, emp: "1" })
+    const { sales, topSellers, profitsFromSale } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, month, year, emp: "1, 2, 3, 4, 5" })
     const { sales: relatorySales } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, month, year, emp: "1, 2, 3, 4, 5" })
     const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, emp: '1' })
-    const { storeGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: '1' })
+    const { storeGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: "1, 2, 3, 4, 5" })
     const { storeGoals: relatoryStoreGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: '1, 2, 3, 4, 5' })
     const sellers = sellersQueries({ dateInit: `${year}/${month}/01` })
-
+    
     const [respSales, respTopSellers, respGoals, respSellers, respTopClientBuy, respProfitFromSale, respRelatorySales, respRelatoryStoreGoals] = await Promise.all([
         api.post("/v1/find-db-query", { query: sales }),
         api.post("/v1/find-db-query", { query: topSellers }),
@@ -62,7 +62,7 @@ export default async function SalesPage() {
 
     const salesProgress = [
         { name: "Vendas", value: salesValue },
-        { name: "Metas", value: goalsValue }
+        { name: "Metas", value: goalsRelatory }
     ]
 
     const progressSalesRelatory = [

@@ -16,7 +16,7 @@ export const davsQueries = ({ dateInit, dateEnd, id }: QueryProps) => {
   COALESCE(sds.valor_troca_sds, 0.00)) AS valor_liquido_total, (MAX(sds.valor_liquido_sds) - SUM(ale.PRECO_CUSTO_ALE)) AS lucro FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN saidas_itens
   sdi ON sdi.id_sds = sds.id_sds INNER JOIN almoxarifados_estoque ale ON ale.id_prd = sdi.id_prd INNER JOIN empresas emp ON emp.id_emp = sds.id_emp INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm LEFT JOIN 
   pessoas fnc ON fnc.id_pss = sds.id_fnc LEFT JOIN pessoas prf ON prf.id_pss = sds.id_prf LEFT JOIN grupos_pessoas gps ON gps.id_gps = pss.id_gps LEFT JOIN grupos_pessoas gpf ON gpf.id_gps = fnc.id_gps LEFT JOIN 
-  usuarios usr ON usr.id_usr = sds.id_usr INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd WHERE sds.tipo_sds = '4' AND sds.id_emp IN (1, 2, 3, 100) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP 
+  usuarios usr ON usr.id_usr = sds.id_usr INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd WHERE sds.tipo_sds = '4' AND sds.id_emp IN (1, 2, 3, 4, 5, 100) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP 
   '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sdi.id_emp = ale.ID_ALM GROUP BY sds.id_sds, emp.sigla_emp, sds.datahora_sds, sds.datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss, fnc.apelido_pss, 
   sds.id_alm, alm.descricao_alm, sds.tipo_venda_sds, sds.status_sds ORDER BY sds.datahora_sds, sds.id_sds`;
 
