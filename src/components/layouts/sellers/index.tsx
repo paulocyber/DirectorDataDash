@@ -2,12 +2,12 @@
 
 // Compononentes
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolBar";
+import ToolBar from "@/components/ui/toolbar";
 import ProgressBar from "@/components/ui/progressBar";
-import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
+import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
 import Card from "@/components/ui/card";
-import BarChart from "@/components/ui/Sciences/BarChart";
-import { Tooltip } from "@/components/ui/Sciences/ToolTip";
+import BarChart from "@/components/ui/sciences/BarChart";
+import { Tooltip } from "@/components/ui/sciences/toolTip";
 
 // Utils
 import { getMonthName } from "@/utils/mask/date";

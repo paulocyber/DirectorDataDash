@@ -1,10 +1,10 @@
 'use client'
 
 // Componentes
-import ToolBar from "@/components/ui/toolBar";
+import ToolBar from "@/components/ui/toolbar";
 import Container from "@/components/ui/container";
-import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
-import BarChart from "@/components/ui/Sciences/BarChart";
+import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
+import BarChart from "@/components/ui/sciences/BarChart";
 
 // Dados
 import vibrantPalette from '@/data/pallets/vibrant.json';

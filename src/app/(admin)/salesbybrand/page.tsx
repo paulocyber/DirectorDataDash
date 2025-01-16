@@ -12,7 +12,7 @@ import { salesQueries } from "@/utils/queries/sales";
 import getCurrentDateDetails from "@/utils/getDate";
 import { groupSumBy } from "@/utils/filters/groupSumBy";
 import { StockQueries } from "@/utils/queries/stock";
-import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import { billsToPayQueries } from '@/utils/queries/billstoPay';
 
 // Componentes
 import LayoutSalesByBrand from "@/components/layouts/salesByBrand";
@@ -27,7 +27,7 @@ export default async function SalesByBrandPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
-    
+
     const { today, year } = getCurrentDateDetails()
     const { SalesByBrand: playCell } = salesQueries({ dateInit: today, dateEnd: today, company: ["1"], brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { SalesByBrand: playCustom } = salesQueries({ dateInit: today, dateEnd: today, company: ["2"], brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })

@@ -2,11 +2,11 @@
 
 // Componentes
 import Container from "@/components/ui/container";
-import BarChart from "@/components/ui/Sciences/BarChart";
-import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
-import ToolBar from "@/components/ui/toolBar";
+import BarChart from "@/components/ui/sciences/BarChart";
+import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
+import ToolBar from "@/components/ui/toolbar";
 import { Button } from "@/components/ui/button";
-import BarChartComparison from "@/components/ui/Sciences/BarChart/BarChartComparison";
+import BarChartComparison from "@/components/ui/sciences/BarChart/BarChartComparison";
 
 // Dados
 import highLightColor from "@/data/pallets/highLigh.json"

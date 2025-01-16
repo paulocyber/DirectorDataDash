@@ -6,13 +6,13 @@ import { AuthContext } from "@/contexts/auth";
 
 // Componentes
 import Container from "@/components/ui/container"
-import ToolBar from "@/components/ui/toolBar"
+import ToolBar from "@/components/ui/toolbar";
 import ProgressBar from "@/components/ui/progressBar";;
 import Card from "@/components/ui/card";
-import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
-import BarChart from "@/components/ui/Sciences/BarChart";
-import { Tooltip } from "@/components/ui/Sciences/ToolTip";
-import DescriptionGraphic from "@/components/ui/Sciences/description";
+import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
+import BarChart from "@/components/ui/sciences/BarChart";
+import { Tooltip } from "@/components/ui/sciences/toolTip";
+import DescriptionGraphic from "@/components/ui/sciences/description";
 
 // Utils
 import { formatCurrency } from "@/utils/mask/money";

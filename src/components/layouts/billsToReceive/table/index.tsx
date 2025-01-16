@@ -18,7 +18,7 @@ import columns from "@/data/columns/billsToReceive/columns.json"
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolBar";
+import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell } from "@/components/cells/billsToReceive";
 

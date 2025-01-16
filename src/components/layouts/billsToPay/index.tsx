@@ -11,13 +11,13 @@ import vibrantPalette from '@/data/pallets/vibrant.json';
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolBar";
-import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
-import PieChart from "@/components/ui/Sciences/PieChart";
-import { ExternalPieLabel } from "@/components/ui/Sciences/labelChart/ExternalPieLabel";
-import { Tooltip } from "@/components/ui/Sciences/ToolTip";
-import BarChart from "@/components/ui/Sciences/BarChart";
-import DescriptionGraphic from "@/components/ui/Sciences/description";
+import ToolBar from "@/components/ui/toolbar";
+import GraphicContainer from "@/components/ui/sciences/GraphicContainer"
+import PieChart from "@/components/ui/sciences/PieChart";
+import { ExternalPieLabel } from "@/components/ui/sciences/labelChart/ExternalPieLabel";
+import { Tooltip } from "@/components/ui/sciences/toolTip"
+import BarChart from "@/components/ui/sciences/BarChart"
+import DescriptionGraphic from "@/components/ui/sciences/description"
 
 // Utils
 import { FilterSelecting, SelectingCostCenter } from "@/utils/handlersFilters/billsToPay/selecting";

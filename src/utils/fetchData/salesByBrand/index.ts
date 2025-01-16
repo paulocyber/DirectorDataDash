@@ -1,7 +1,7 @@
 // Utils
 import { salesQueries } from "@/utils/queries/sales";
 import { StockQueries } from "@/utils/queries/stock";
-import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay";
 import { fetchData } from "..";
 import { groupSumBy } from "@/utils/filters/groupSumBy";
 

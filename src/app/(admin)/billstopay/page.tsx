@@ -7,7 +7,7 @@ import { setupApiClient } from "@/services/api";
 
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
-import { billsToPayQueries } from "@/utils/queries/billsToPay";
+import { billsToPayQueries } from "@/utils/queries/billstoPay";
 
 // Tipagem
 import { ItemsBillsToPay } from "@/types/billsToPay";

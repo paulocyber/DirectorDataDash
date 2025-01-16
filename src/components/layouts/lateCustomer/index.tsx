@@ -7,7 +7,7 @@ import { AuthContext } from "@/contexts/auth";
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolBar";
+import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell, renderCellAdmin } from "@/components/cells/lateCustomer";
 
