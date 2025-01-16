@@ -1,40 +1,43 @@
-// Bibliotecas
-import { setupApiClient } from "@/services/api";
+// Next
+import { cookies } from "next/headers"
+import { Metadata } from "next"
 
-// Utils
-import getDate from "@/utils/date/currentDate";
-import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
-import getUserName from "@/utils/data/getUser";
+// Biblioteca
+import { setupApiClient } from "@/services/api"
 
 // Componentes
-import UiLateCustomer from "@/components/layouts/LateCustomerPageUi";
+import LayoutCustomer from "@/components/layouts/lateCustomer"
 
-// Next Framework
-import { Metadata } from "next";
-import { cookies } from "next/headers";
+// Utils
+import getCurrentDateDetails from "@/utils/getDate"
+import { billsToReceiveQueries } from "@/utils/queries/billsToReceive"
 
 export const metadata: Metadata = {
     title: "Relatório de clientes atrasados",
     description: "Informações sobre clientes em atrasos",
 };
 
-export default async function LateCustomerPage() {
-    const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+export default async function SellerPage() {
+    const cookieStore = cookies()
+    const token = (await cookieStore).get('@nextauth.token')?.value
 
-    const api = setupApiClient(token as string);
+    const api = setupApiClient(token)
+    const user = await api.post('/v1/auth/validate', { token })
 
-    const { year, month, yesterday } = getDate()
-    const seller = await getUserName(token as string)
-    const { billsToReceiveInOpen } = billsToReceiveQueries({ dateInit: `${year}/${month}/01`, dateEnd: `${year}/${month}/${yesterday}`, sellersSurname: seller })
-    const { billsToReceiveInOpen: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `${year}/01/01`, dateEnd: `${year}/${month}/${yesterday}`, sellersSurname: seller })
+    const { today } = getCurrentDateDetails()
+    const { billsToReceiveInOpen } = billsToReceiveQueries({ dateInit: `2023/01/01`, dateEnd: today, sellerSurname: user.data.returnObject.body.username })
+    const { billsToReceiveInOpen: billsToReceiveLate } = billsToReceiveQueries({ dateInit: `2023/01/01`, dateEnd: today, sellerSurname: user.data.returnObject.body.username })
 
-    const [respReceiveInOpen, respReceiveLate] = await Promise.all([
+    const [openBillsData, overdueBills] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveInOpen }),
-        api.post("/v1/find-db-query", { query: billsToReceiveLate })
+        api.post("/v1/find-db-query", { query: billsToReceiveLate }),
     ])
 
     return (
-        <UiLateCustomer dataReceiveInOpen={respReceiveInOpen.data.returnObject.body} year={year} month={month} yesterday={yesterday} dataReceiveLate={respReceiveLate.data.returnObject.body} />
+        <LayoutCustomer
+            openBills={openBillsData.data.returnObject.body}
+            overdueBills={overdueBills.data.returnObject.body}
+            today={today}
+        />
     )
 }

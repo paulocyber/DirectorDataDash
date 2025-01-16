@@ -11,14 +11,12 @@ export function searchFilter<T extends Record<string, any>>({
   search,
 }: SearchParamsProps<T>): T[] {
   const query = search.toLowerCase();
-console.log("Dados: ", data)
+
   return data.filter((item) => {
-    // Verifica todos os valores do objeto
     return Object.values(item).some((value) => {
       if (typeof value === "string") {
         return value.toLowerCase().includes(query);
       }
-      // Adicione lógica se o valor for um objeto
       if (typeof value === "object" && value !== null) {
         return Object.values(value).some(
           (subValue) =>

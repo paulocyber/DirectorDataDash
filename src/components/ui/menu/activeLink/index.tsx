@@ -1,33 +1,46 @@
-// Next - Framework
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 
-// React
-import { ReactNode } from "react";
+// Biblioteca
+import { AiOutlineDashboard } from "react-icons/ai";
+import { HiMiniTableCells } from "react-icons/hi2";
 
 // Tipagem
 type ActiveLinkProps = LinkProps & {
-    children: ReactNode;
     content: string;
-}
+    icon: string;
+};
 
-export function ActiveLink({ children, content, href }: ActiveLinkProps) {
+export function ActiveLink({ content, href, icon }: ActiveLinkProps) {
     const pathName = usePathname();
-    const isActive =
-        (href === '/davs' && (pathName === '/davs' || pathName.startsWith('/detaildavs/'))) ||
-        (href === '/billstopay' && (pathName === '/billstopay' || pathName.startsWith('/billstopay/'))) || 
-        (href === '/billstoreceive' && (pathName === '/billstoreceive' || pathName.startsWith('/billstoreceive'))) ||
-        pathName === href.toString();
+
+    const isActive = pathName === href || pathName.startsWith(`${href}/`);
 
     return (
         <Link
             href={href}
-            className={`transition duration-150 ease-in-out undmiddle none font-sans font-bold center transition-all flex w-full items-center gap-4 px-4 capitalize transform hover:scale-105 py-3 rounded-lg ${isActive ? "bg-white" : "disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs text-white hover:bg-black/50 "} `}
+            className={`group flex items-center space-x-4 p-3 rounded-lg ${isActive
+                ? "bg-white text-gray-900 shadow-md"
+                : "text-white hover:bg-white hover:text-gray-900 hover:shadow-md"
+                } transition-all cursor-pointer`}
         >
-            {children}
-            <p className="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">
+            {icon === "dash" ? (
+                <AiOutlineDashboard
+                    className={`h-6 w-6 ${isActive ? "text-bluegray-900" : "group-hover:scale-110"
+                        } transition-transform`}
+                />
+            ) : (
+                <HiMiniTableCells
+                    className={`h-6 w-6 ${isActive ? "text-bluegray-900" : "group-hover:scale-110"
+                        } transition-transform`}
+                />
+            )}
+            <span
+                className={`text-sm font-medium ${isActive ? "text-bluegray-900" : ""
+                    }`}
+            >
                 {content}
-            </p>
+            </span>
         </Link>
-    )
+    );
 }

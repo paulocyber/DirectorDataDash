@@ -1,39 +1,34 @@
-// Framework - Next
-import { Metadata } from "next";
+// Next
 import { cookies } from "next/headers";
+import { Metadata } from "next";
 
 // Biblioteca
-import { setupApiClient } from '@/services/api';
+import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/date/currentDate";
-import { davsQueries } from "@/utils/queries/davs"
+import getCurrentDateDetails from "@/utils/getDate";
+import { davsQueries } from "@/utils/queries/dav";
 
-// Compononentes
-import UiDav from "@/components/layouts/davsUi";
+// Componentes
+import LayoutDav from "@/components/layouts/dav";
 
-// Dados
-import InfoCardFromDav from "@/data/infoCard/davs";
-
-// MetasDados
 export const metadata: Metadata = {
     title: "Relatório das Dav's",
     description: "Informação sobre documentos de vendas",
 };
 
-export default async function DavsPage() {
+export default async function DavPage() {
     const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+    const token = (await cookieStore).get('@nextauth.token')?.value;
 
-    const api = setupApiClient(token as string)
-    const { today } = getDate()
+    const api = setupApiClient(token)
+    const { today } = getCurrentDateDetails()
 
-    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today });
+    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today })
 
-    const respDavs = await api.post("/v1/find-db-query", { query: davFinished })
-    const infoCard = InfoCardFromDav({listDav: respDavs.data.returnObject.body})
-console.log("QUery: ", davFinished)
+    const davResponse = await api.post("/v1/find-db-query", { query: davFinished });
+
     return (
-        <UiDav listDav={respDavs.data.returnObject.body} infoCard={infoCard} today={today}/>
+        <LayoutDav davsData={davResponse.data.returnObject.body} today={today} />
     )
 }

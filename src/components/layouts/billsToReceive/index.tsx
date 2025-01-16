@@ -1,129 +1,79 @@
 'use client'
 
-// React
-import { ReactNode, useContext, useState } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
-
-// Nnext - Framework
-import { useRouter } from "next/navigation";
-
 // Componentes
-import InfoCard from "@/components/ui/InfoCard";
-import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolbar";
-import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer";
-import { CustomActiveShapePieChart } from "@/components/ui/sciences/graphics/PieChart/CustomActiveShapePieChart";
-import { CustomTooltip } from "@/components/ui/sciences/toolTip";
-import { InternalPieLabel } from "@/components/ui/sciences/label";
-import DescriptionGraphic from "@/components/ui/sciences/description";
-import BarChart from "@/components/ui/sciences/graphics/BarChart";
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/modal";
+import InfoCard from "@/components/ui/InfoCard"
+import Container from "@/components/ui/container"
+import ToolBar from "@/components/ui/toolBar"
+import { Button } from "@/components/ui/button"
+import GraphicContainer from "@/components/ui/Sciences/GraphicContainer"
+import { Tooltip } from "@/components/ui/Sciences/ToolTip"
+import { CustomActiveShapePieChart } from "@/components/ui/Sciences/PieChart/activeShapePieChart"
+import { InternalPieLabel } from "@/components/ui/Sciences/labelChart/InternalPieLabel"
+import DescriptionGraphic from "@/components/ui/Sciences/description"
+import BarChart from "@/components/ui/Sciences/BarChart"
+import { ContainerModal } from "@/components/containersModal/billsToReceive"
+import Modal from "@/components/ui/modal"
 
 // Dados
-import highLightColor from '@/data/palettes/highlightedColor.json';
+import InFoCardFromBillsToReceive from "@/data/infoCards/billsToReceive"
+import vibrantPalette from '@/data/pallets/vibrant.json';
+
+// React
+import { useContext, useState } from "react"
+import { AuthContext } from "@/contexts/auth"
 
 // Utils
-import { fetchBillsToReceive } from "@/utils/data/fetchData/refresh/fetchBillsToReceive";
-import { formatCurrency } from './../../../utils/mask/money/index';
+import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/billsToReceive"
 
 // Tipagem
-import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
+import { ItemsBillsToReceiveData } from "@/types/billsToReceive"
+import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react"
 import { parseDate } from '@internationalized/date';
-import { BillsToReceiveData } from "@/types/billsToReceive";
-import { TotalSum } from "@/utils/functionSum";
-interface UiBillsToReceiveProps {
-    infoCardData: { icon: ReactNode; title: string; value: string }[];
-    billsToReceiveData: { name: string; value: number }[];
-    clientsLate: BillsToReceiveData[];
-    summaryReceive: BillsToReceiveData[];
-    year: number;
-    month: number;
-    yesterday: number;
+
+interface LayoutBillsToReceiveProps {
+    allBillsData: ItemsBillsToReceiveData[];
+    topClientsLateData: ItemsBillsToReceiveData[];
+    summaryBilletData: ItemsBillsToReceiveData[];
+    summaryReceiveReleaseData: ItemsBillsToReceiveData[];
+    summaryOfReceivableData: { name: string; value: number }[];
     today: string;
 }
 
-export default function UiBillsToReceive({ infoCardData, billsToReceiveData, clientsLate, summaryReceive, year, month, yesterday, today }: UiBillsToReceiveProps) {
-    const [billsToReceive, setBillsToReceive] = useState(billsToReceiveData)
-    const [infoCard, setInfoCard] = useState(infoCardData)
+export default function LayoutBillsToReceive({ allBillsData, topClientsLateData, summaryBilletData, summaryReceiveReleaseData, summaryOfReceivableData, today }: LayoutBillsToReceiveProps) {
+    const [billsToReceive, setBillsToReceive] = useState(allBillsData);
+    const [summaryOfReceivable, setSummaryOfReceivableData] = useState(summaryOfReceivableData)
+    const [overdueClients, setOverdueClients] = useState(topClientsLateData);
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
-        start: parseDate(new Date(`${year}/${month}/${yesterday}`).toISOString().split('T')[0]),
-        end: parseDate(new Date().toISOString().split('T')[0]),
+        start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
+        end: parseDate(new Date(`${today}`).toISOString().split('T')[0]),
     })
 
-    const router = useRouter();
+    const infoCard = InFoCardFromBillsToReceive({ allBillsData: billsToReceive })
+
     const { token } = useContext(AuthContext)
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
-    const handleRefresh = async () => {
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
-            dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
-            setBillsToReceive,
-            setInfoCard,
-            setLoading
-        })
-    }
-    const handleClearFilter = async () => {
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${year}/${month}/${yesterday}`,
-            dateEnd: today,
-            setBillsToReceive,
-            setInfoCard,
-            setLoading
-        })
-    }
-    const handleDateRangePicker = async (newDate: RangeValue<DateValue>) => {
-        setDate(newDate)
-
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
-            dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
-            setBillsToReceive,
-            setInfoCard,
-            setLoading
-        })
-    }
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
-        <>
-            <Modal title="Resumo" isOpen={isOpen} onClose={onClose} width="lg" displayFooter={true} footerTitle="Total: " value={formatCurrency(TotalSum(summaryReceive, 'VALOR_PAGO_RCB'))}>
-                <div className="items-center  flex-col justify-center flex w-full mb-4 border-collapse border-gray-200 dark:border-white/40">
-                    <div className="w-full flex flex-col  h-[220px]">
-                        {summaryReceive.map((relatory, index) => (
-                            <div key={index} className="w-full items-center justify-between flex p-2 align-middle bg-transparent border-b whitespace-nowrap dark:border-white/40">
-                                <div className="flex w-full flex-col">
-                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">Mês/Ano:</h2>
-                                    <span className="mb-0 text-sm leading-normal dark:text-white">{relatory.MES_ANO}</span>
-                                </div>
-
-                                <div className="flex w-full flex-col">
-                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">Valor:</h2>
-                                    <span className="mb-0 text-sm leading-normal dark:text-white">{formatCurrency(Number(relatory.VALOR_PAGO_RCB.replace(",", ".")))}</span>
-                                </div>
-                                <div className="flex w-1/4 flex-col">
-                                    <h2 className="mb-0 text-base font-semibold dark:text-white dark:opacity-60">%:</h2>
-                                    <span className="mb-0 text-sm leading-normal dark:text-white">{relatory.PORCENTAGEM} %</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+        <div className="flex flex-col">
+            <Modal
+                title="Contas a receber (Resumo)"
+                isopen={isOpen}
+                onOpenChange={onOpenChange}
+                displayFooter={false}
+            >
+                <ContainerModal summaryBilletData={summaryBilletData} summaryReceiveReleaseData={summaryReceiveReleaseData} />
             </Modal>
             <InfoCard data={infoCard} />
             <Container>
                 <ToolBar
                     title="Contas a receber"
-                    handleRefreshClick={handleRefresh}
-                    handleCleanFilter={handleClearFilter}
-                    dateRange={date}
-                    handleDateRangePicker={handleDateRangePicker}
-                    descriptionHref="Visão detalhada"
+                    descriptionHref="Visualizar em tabela"
                     href="/billstoreceive/table"
+                    handleRefreshClick={() => handleRefresh({ date, token, setLoading, setBillsToReceive, setSummaryOfReceivableData, setOverdueClients })}
+                    handleCleanFilter={() => handleCleanFilter({ token, setDate, setLoading, setBillsToReceive, setSummaryOfReceivableData, setOverdueClients })}
+                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, token, setDate, setLoading, setBillsToReceive, setSummaryOfReceivableData, setOverdueClients })}
+                    dateRange={date}
                 />
             </Container>
 
@@ -131,26 +81,27 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, cli
                 <main className="lg:w-1/3 w-full">
                     <Container>
                         <div className="w-full flex justify-between">
-                            <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Recebimentos: </h1>
+                            <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Recebimentos </h1>
                             <div className="py-2 px-4">
-                                <Button color="primary" onClick={() => onOpen()}>Resumo</Button>
+                                <Button color="primary" onClick={() => onOpen()} >Resumo</Button>
                             </div>
                         </div>
+
                         <div className="flex items-center justify-center">
                             <GraphicContainer loading={loading}>
                                 <CustomActiveShapePieChart
-                                    data={billsToReceive}
+                                    data={summaryOfReceivable}
                                     valueKey="value"
                                     displayToolTip={true}
                                     ToolTipComponent={(props) => (
-                                        <CustomTooltip {...props} dataKey="name" valueKey="value" />
+                                        <Tooltip {...props} dataKey="name" valueKey="value" />
                                     )}
                                     label={(props) => <InternalPieLabel {...props} />}
                                 />
                             </GraphicContainer>
                             <div className="flex max-h-full justify-end items-center">
                                 <div className="hidden lg:flex lg:flex-col overflow-auto w-full">
-                                    <DescriptionGraphic data={billsToReceive} dataKey="name" />
+                                    <DescriptionGraphic data={summaryOfReceivable} dataKey="name" />
                                 </div>
                             </div>
                         </div>
@@ -159,19 +110,19 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, cli
 
                 <main className="lg:w-2/3 w-full mt-4 lg:mt-0">
                     <Container>
-                        <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Top clientes em atraso:</h1>
+                        <h1 className="font-semibold py-2 px-4 text-sm md:text-lg">Top clientes em atraso</h1>
                         <div className="flex items-center justify-center">
-                            <GraphicContainer loading={loading} >
+                            <GraphicContainer loading={loading}>
                                 <BarChart
-                                    data={clientsLate}
+                                    data={overdueClients}
                                     dataKey="RESTANTE_RCB"
                                     dataKeyXAxis="APELIDO_PSS"
                                     displayXAxis={true}
                                     displayCartesianGrid={true}
-                                    palette={highLightColor}
+                                    palette={vibrantPalette}
                                     displayToolTip={true}
                                     ToolTipComponent={(props) => (
-                                        <CustomTooltip {...props} dataKey="APELIDO_PSS" valueKey="RESTANTE_RCB" />
+                                        <Tooltip {...props} dataKey="APELIDO_PSS" valueKey="RESTANTE_RCB" />
                                     )}
                                 />
                             </GraphicContainer>
@@ -179,6 +130,6 @@ export default function UiBillsToReceive({ infoCardData, billsToReceiveData, cli
                     </Container>
                 </main>
             </div>
-        </>
+        </div >
     )
 }

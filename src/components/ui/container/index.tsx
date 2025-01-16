@@ -8,11 +8,9 @@ interface ContainerProps {
 
 export default function Container({ children }: ContainerProps) {
     return (
-        <div className="py-2">
-            <div className="px-4 lg:px-8">
-                <div className="bg-white w-full shadow-xl rounded-lg">
-                    {children}
-                </div>
+        <div className="py-2 px-2">
+            <div className="bg-white w-full shadow-xl rounded-lg">
+                {children}
             </div>
         </div>
     )

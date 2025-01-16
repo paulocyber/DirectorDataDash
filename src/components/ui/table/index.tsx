@@ -7,26 +7,26 @@ import { useState } from "react";
 import { TableBody, TableCell, TableColumn, TableHeader, TableRow, Table as TableUi } from "@nextui-org/react";
 
 // Utils
-import { InfiniteScroll } from './../../../utils/InfiniteScroll';
+import { InfiniteScroll } from './../../../utils/infiniteScroll/index';
 
 // Componentes
 import Loading from "../loading";
 
 // Tipagem
-type ItemsCollumns = {
+type Itemscolumns = {
     name: string;
     uid: string;
 }
 
 interface ContainerTableProps<T> {
-    collumns: ItemsCollumns[];
+    columns: Itemscolumns[];
     data: T[];
     loading: boolean;
     detail?: (value: string) => void;
     renderCell: (item: T, columnUid: string) => React.ReactNode;
 }
 
-export default function Table<T>({ collumns, data, loading, renderCell, detail }: ContainerTableProps<T>) {
+export default function Table<T>({ columns, data, loading, renderCell, detail }: ContainerTableProps<T>) {
     const [limit, setLimit] = useState(0)
 
     const fetchMore = () => {
@@ -39,44 +39,52 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
 
     if (loading) {
         return (
-            <main className="flex w-full pb-6 h-[450px] flex-col px-5">
-                <div className="flex h-full w-full justify-center items-center">
-                    <Loading />
-                </div>
+            <main className="flex w-full h-[450px] justify-center items-center">
+                <Loading />
             </main>
-        )
+        );
     }
 
     return (
-        <main className="flex w-full pb-8 flex-col px-5">
-            <div className="px-4 lg:overflow-y-auto overflow-auto h-[420px]">
+        <main className="flex flex-col w-full px-4 pb-8">
+            <div className="relative px-4 lg:overflow-y-auto overflow-auto max-h-[420px] h-full">
                 <TableUi
                     id="content"
                     isHeaderSticky
                     removeWrapper
                     classNames={{
-                        th: "bg-[#fa6602] text-white text-sm",
-                        table: "rounded-lg",
-                        thead: "",
-                        tr: "cursor-pointer hover:bg-gray-200 border-b-2 transition duration-200 ease-in-out",
+                        wrapper: "border-none",
+                        th: "bg-[#fa6602] text-white font-bold text-sm capitalize text-center",
+                        thead: "border-none",
+                        tr: `hover:bg-gray-100 transition duration-150 ease-in-out ${detail && 'cursor-pointer'}`,
+                        tbody: "text-gray-700",
                     }}
                     aria-label="Table"
                 >
                     <TableHeader>
-                        {collumns.map((column) =>
+                        {columns.map((column) =>
                             <TableColumn key={column.uid} className="text-center font-semibold">{column.name}</TableColumn>
                         )}
                     </TableHeader>
-                    <TableBody emptyContent={"Nenhum dado foi encontrado 😞 "} items={dataLimit}>
+                    <TableBody
+                        emptyContent={"Nenhum dado foi encontrado 😞 "}
+                        items={dataLimit.map((item, index) => ({
+                            ...item,
+                            uniqueKey: `${(item as any).ID_SDS}-${index}`, // Combina ID_SDS com índice
+                        }))}
+                    >
                         {(item) => (
-                            <TableRow key={(item as any).ID_SDS} className="border-b">
-                                {collumns.map((column) => (
+                            <TableRow
+                                key={(item as any).uniqueKey} // Usa o uniqueKey gerado no map
+                                className="hover:bg-gray-50 border-b last:border-b-0"
+                            >
+                                {columns.map((column) => (
                                     <TableCell
                                         onClick={() => detail && detail((item as any).ID_SDS)}
-                                        key={column.uid}
-                                        className="py-2 px-2 text-center hover:bg-gray-100 transition duration-150 ease-in-out overflow-hidden "
+                                        key={`${(item as any).ID_SDS}-${column.uid}`} // Garante unicidade
+                                        className="text-center text-sm text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out"
                                     >
-                                        <div className="whitespace-nowrap overflow-hidden overflow-ellipsis truncate lg:w-full w-40">   
+                                        <div className="whitespace-nowrap overflow-hidden overflow-ellipsis truncate lg:w-full">
                                             {renderCell(item, column.uid)}
                                         </div>
                                     </TableCell>
@@ -84,6 +92,7 @@ export default function Table<T>({ collumns, data, loading, renderCell, detail }
                             </TableRow>
                         )}
                     </TableBody>
+
                 </TableUi>
                 <InfiniteScroll fetchMore={fetchMore} />
             </div>

@@ -1,13 +1,12 @@
 export interface QueryProps {
   dateInit?: string;
   dateEnd?: string;
-  id?: string;
   year?: number;
   month?: number;
   day?: number;
-  emp?: string;
-  sellersSurname?: string;
-  idSeller?: string;
-  idSellers?: string[];
+  company?: string[];
+  sellerSurname?: string;
+  idSeller?: string[] | string;
   brands?: string[];
+  id?: string;
 }

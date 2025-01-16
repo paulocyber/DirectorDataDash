@@ -8,17 +8,17 @@ import { Layout } from "@/components/ui/layout";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default function SellersRouter({ children }: { children: ReactNode }) {
-    const cookieStore = cookies(); // Obter os cookies
-    const token = cookieStore.get('@nextauth.token')?.value;
-    const role = cookieStore.get('@nextauth.role')?.value || "";
+export default async function SellersRouter({ children }: { children: ReactNode }) {
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('@nextauth.token')?.value;
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
 
     if (!token || !['vendedor', 'vendedora'].includes(role)) {
         redirect('/');
     }
 
     return (
-        <Layout role={role} >
+        <Layout role={role}>
             {children}
         </Layout>
     );

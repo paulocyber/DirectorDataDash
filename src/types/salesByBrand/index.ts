@@ -1,4 +1,4 @@
-export type SalesByBrand = {
+export type ItemsSalesByBrand = {
   ID_PRODUTO: string;
   PRODUTO: string;
   ID_MARCA: string;
@@ -12,7 +12,7 @@ export type SalesByBrand = {
   PRECO_CUSTO: string;
 };
 
-export type SalesByBrandType = {
+export type ItemsGroupBySumSales = {
   brand: string;
   value: number;
 };

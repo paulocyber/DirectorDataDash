@@ -1,104 +1,62 @@
 'use client'
 
 // React
-import { ReactNode, useContext, useState } from "react";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useContext, useState } from "react";
+import { AuthContext } from "@/contexts/auth";
 
-// Dados
-import columns from "@/data/collumns/billsToReceive/columns.json"
-
-// Compoentes
-import InfoCard from "@/components/ui/InfoCard";
-import Container from "@/components/ui/container";
-import ToolBar from "@/components/ui/toolbar";
-import Table from "@/components/ui/table";
-import { renderCell } from "@/components/ui/renderCell/billsToReceive/renderCell";
+// Biblioteca
+import { DateValue, RangeValue } from "@nextui-org/react";
+import { parseDate } from '@internationalized/date';
 
 // Utils
-import { fetchBillsToReceive } from "@/utils/data/fetchData/refresh/fetchBillsToReceive";
+import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/billsToReceive/table";
+
+// Dados
+import InFoCardFromBillsToReceive from "@/data/infoCards/billsToReceive";
+import columns from "@/data/columns/billsToReceive/columns.json"
+
+// Componentes
+import InfoCard from "@/components/ui/InfoCard";
+import Container from "@/components/ui/container";
+import ToolBar from "@/components/ui/toolBar";
+import Table from "@/components/ui/table";
+import { renderCell } from "@/components/cells/billsToReceive";
 
 // Tipagem
-import { BillsToReceiveData } from "@/types/billsToReceive";
-import { parseDate } from '@internationalized/date';
-import { DateValue, RangeValue } from "@nextui-org/react";
-
-interface UiBillsToReceiveTableProps {
-    receiveData: BillsToReceiveData[];
-    receiptsInOpenData: BillsToReceiveData[];
-    receiptsInPayedData: BillsToReceiveData[];
-    infoCardData: { icon: ReactNode; title: string; value: string }[];
-    year: number;
-    month: number;
-    yesterday: number;
+import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
+interface LayoutBillsToReceiveProps {
+    allBillsData: ItemsBillsToReceiveData[];
+    openBillsData: ItemsBillsToReceiveData[];
     today: string;
 }
 
-export default function UiBillsToReceiveTable({ receiveData, receiptsInOpenData, receiptsInPayedData, infoCardData, year, month, yesterday, today }: UiBillsToReceiveTableProps) {
-    const [receipts, setReceipts] = useState(receiveData)
-    const [receiptsInOpen, setReceipsInOpen] = useState(receiptsInOpenData)
-    const [receiptsInPayed, setReceiptsInPayed] = useState(receiptsInPayedData)
-    const [infoCard, setInfoCard] = useState(infoCardData)
+export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData, today }: LayoutBillsToReceiveProps) {
+    const [billsToReceive, setBillsToReceive] = useState(allBillsData);
+    const [openBills, setOpenBills] = useState(openBillsData)
     const [loading, setLoading] = useState<boolean>(false)
-    const [filterStatus, setFilterStatus] = useState<string>('todos')
     const [date, setDate] = useState<RangeValue<DateValue>>({
-        start: parseDate(new Date(`${year}/${month}/${yesterday}`).toISOString().split('T')[0]),
-        end: parseDate(new Date().toISOString().split('T')[0]),
+        start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
+        end: parseDate(new Date(`${today}`).toISOString().split('T')[0]),
     })
 
+    const infoCard = InFoCardFromBillsToReceive({ allBillsData: billsToReceive })
     const { token } = useContext(AuthContext)
-    const handleRefresh = async () => {
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
-            dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
-            filterStatus,
-            setReceipts,
-            setReceiptsInOpen: setReceipsInOpen,
-            setReceiptsInPayed: setReceiptsInPayed,
-            setInfoCard,
-            setLoading
-        })
-    }
-    const handleDateRangePicker = async (newDate: RangeValue<DateValue>) => {
-        setDate(newDate)
-
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${newDate.start.year}/${newDate.start.month}/${newDate.start.day}`,
-            dateEnd: `${newDate.end.year}/${newDate.end.month}/${newDate.end.day}`,
-            filterStatus,
-            setReceipts,
-            setReceiptsInOpen: setReceipsInOpen,
-            setReceiptsInPayed: setReceiptsInPayed,
-            setInfoCard,
-            setLoading
-        })
-    }
-
-    const handleCleanFilter = async () => {
-        setDate({ start: parseDate(new Date(`${year}/${month}/${yesterday}`).toISOString().split('T')[0]), end: parseDate(new Date().toISOString().split('T')[0]), })
-        setFilterStatus('todos')
-
-        await fetchBillsToReceive({
-            token,
-            dateInit: `${year}/${month}/${yesterday}`,
-            dateEnd: today,
-            filterStatus,
-            setReceipts,
-            setReceiptsInOpen: setReceipsInOpen,
-            setReceiptsInPayed: setReceiptsInPayed,
-            setInfoCard,
-            setLoading
-        })
-    }
 
     return (
-        <>
+        <div className="flex flex-col">
             <InfoCard data={infoCard} />
             <Container>
-                <ToolBar title="Contas a receber" handleRefreshClick={handleRefresh} dateRange={date} handleDateRangePicker={handleDateRangePicker} setFilterStatus={setFilterStatus} handleCleanFilter={handleCleanFilter} descriptionHref="Grafico" href="/billstoreceive"/>
-                <Table collumns={columns} renderCell={renderCell} data={filterStatus === 'todos' ? receipts : filterStatus === 'paga' ? receiptsInPayed : receiptsInOpen} loading={loading} />
+                <ToolBar
+                    title="Contas a receber"
+                    descriptionHref="Visualizar em Gráfico"
+                    href="/billstoreceive"
+                    handleRefreshClick={() => handleRefresh({ date, token, setLoading, setBillsToReceive, setOpenBills })}
+                    handleCleanFilter={() => handleCleanFilter({ date, token, setDate, setLoading, setBillsToReceive, setOpenBills })}
+                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, token, setDate, setLoading, setBillsToReceive, setOpenBills })}
+                    dateRange={date}
+                />
+                <Table data={openBills} columns={columns} renderCell={renderCell} loading={loading} />
             </Container>
-        </>
+        </div>
     )
 }

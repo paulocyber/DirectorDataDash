@@ -1,4 +1,4 @@
-// Next - Framework
+// Next
 import { cookies } from "next/headers";
 import { Metadata } from "next";
 
@@ -6,18 +6,17 @@ import { Metadata } from "next";
 import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/date/currentDate";
-import { sellersQueries } from "@/utils/queries/employees/sellers";
-import { goalsQueries } from "@/utils/queries/goals";
+import getCurrentDateDetails from "@/utils/getDate";
 import { salesQueries } from "@/utils/queries/sales";
-import { convertToNumeric } from "@/utils/convertToNumeric";
-import { TotalSum } from "@/utils/functionSum";
+import { calculateTotalByKey } from "@/utils/functions/sumValues";
+import { goalsQueries } from "@/utils/queries/goals";
+import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
 
 // Componentes
-import UiSales from './../../../components/layouts/salesUi/index';
+import LayoutSalesGoal from "@/components/layouts/salesGoal";
 
 // Tipagem
-import { topClientsPlusBuyData, topSalesData } from "@/types/sales";
+import { ItemsTopSellers } from "@/types/sales";
 
 export const metadata: Metadata = {
     title: "Relatório de vendas",
@@ -26,69 +25,41 @@ export const metadata: Metadata = {
 
 export default async function SalesPage() {
     const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+    const token = (await cookieStore).get('@nextauth.token')?.value;
 
-    const api = setupApiClient(token as string);
-    const { year, month, today } = getDate();
+    const api = setupApiClient(token)
 
-    const { sales, topSellers, profitsFromSale } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, month, year, emp: "1, 2, 3, 4, 5" })
-    const { sales: relatorySales } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, month, year, emp: "1, 2, 3, 4, 5" })
-    const { topClientsPlusBuy } = salesQueries({ dateInit: today, dateEnd: today, emp: '1' })
-    const { storeGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: "1, 2, 3, 4, 5" })
-    const { storeGoals: relatoryStoreGoals, } = goalsQueries({ month, year, dateInit: `${year}/${month}/01`, emp: '1, 2, 3, 4, 5' })
-    const sellers = sellersQueries({ dateInit: `${year}/${month}/01` })
-    
-    const [respSales, respTopSellers, respGoals, respSellers, respTopClientBuy, respProfitFromSale, respRelatorySales, respRelatoryStoreGoals] = await Promise.all([
+    const { year, month, today } = getCurrentDateDetails()
+    const { sales, topSellers, profitsFromSale } = salesQueries({ dateInit: `${year}/${month}/01`, year, month, dateEnd: today, company: ["1, 2, 3, 4, 5"] })
+    const { storeGoals } = goalsQueries({ month, year, company: ['1, 2, 3, 4, 5'] })
+
+    const [salesResponse, topSellersResponse, storeGoalsResponse, profitFromSaleResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: sales }),
         api.post("/v1/find-db-query", { query: topSellers }),
         api.post("/v1/find-db-query", { query: storeGoals }),
-        api.post("/v1/find-db-query", { query: sellers }),
-        api.post("/v1/find-db-query", { query: topClientsPlusBuy }),
-        api.post("/v1/find-db-query", { query: profitsFromSale }),
-        api.post("/v1/find-db-query", { query: relatorySales }),
-        api.post("/v1/find-db-query", { query: relatoryStoreGoals }),
-    ])
+        api.post("/v1/find-db-query", { query: profitsFromSale })
+    ]);
 
-    const salesValue = respSales.data.returnObject?.body[0]?.VALOR_LIQUIDO ?
-        TotalSum(respSales.data.returnObject?.body, 'VALOR_LIQUIDO') : 0
+    const totalSalesValue = calculateTotalByKey(salesResponse.data.returnObject.body, (item) => (item as any).VALOR_LIQUIDO)
+    const totalGoalsValue = calculateTotalByKey(storeGoalsResponse.data.returnObject.body, (item) => (item as any).VALOR_MTA)
+    const totalProfitValue = calculateTotalByKey(profitFromSaleResponse.data.returnObject.body, (item) => (item as any).VALOR_LUCRO)
 
-    const salesRelatory = TotalSum(respRelatorySales.data.returnObject.body, 'VALOR_LIQUIDO')
-    const profitValueReport = TotalSum(respRelatorySales.data.returnObject.body, 'VALOR_LUCRO')
+    const salesProgressData = [
+        { name: "Sales", value: totalSalesValue },
+        { name: "Lucro", value: totalProfitValue },
+        { name: "Goals", value: totalGoalsValue },
+    ];
 
-    const goalsRelatory = TotalSum(respRelatoryStoreGoals.data.returnObject.body, 'VALOR_MTA')
-
-    const goalsValue = respGoals.data?.returnObject?.body[0]?.VALOR_MTA ?
-        convertToNumeric(respGoals.data.returnObject?.body, ['VALOR_MTA'])[0].VALOR_MTA : 0;
-
-    const salesProgress = [
-        { name: "Vendas", value: salesValue },
-        { name: "Metas", value: goalsRelatory }
-    ]
-
-    const progressSalesRelatory = [
-        { name: "Vendas", value: salesRelatory },
-        { name: "Lucro", value: profitValueReport },
-        { name: "Meta grupo play", value: goalsRelatory }
-    ]
-
-    const formattedTopSeller = convertToNumeric<topSalesData>(
-        respTopSellers.data.returnObject.body,
+    const convertedTopSellers = convertFieldsToNumber<ItemsTopSellers>(
+        topSellersResponse.data.returnObject.body,
         ['VALOR_LIQUIDO']
-    )
-
-    const topClients = convertToNumeric<topClientsPlusBuyData>(
-        respTopClientBuy.data.returnObject.body,
-        ['VALOR_LIQUIDO']
-    )
+    );
 
     return (
-        <UiSales
-            salesProgressData={salesProgress}
-            sellersData={respSellers.data.returnObject.body}
-            topSalesData={formattedTopSeller}
-            topClientsData={topClients}
-            salesAndGoalsRelatoryData={respProfitFromSale.data.returnObject.body}
-            progressSalesRelatoryData={progressSalesRelatory}
+        <LayoutSalesGoal
+            goalProgress={salesProgressData}
+            topSellersData={convertedTopSellers}
+            profitSalesData={profitFromSaleResponse.data.returnObject.body}
             year={year}
             month={month}
             today={today}

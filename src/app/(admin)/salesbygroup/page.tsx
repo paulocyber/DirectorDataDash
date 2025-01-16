@@ -1,4 +1,4 @@
-// Next - Framework
+// Next
 import { cookies } from "next/headers";
 import { Metadata } from "next";
 
@@ -6,52 +6,40 @@ import { Metadata } from "next";
 import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/date/currentDate";
-import { salesQueries } from "@/utils/queries/sales";
-import { stockQueries } from "@/utils/queries/stock";
-import { groupSumBy } from "@/utils/filters/sumsByGroup";
-import { convertToNumeric } from "@/utils/convertToNumeric";
+import getCurrentDateDetails from "@/utils/getDate";
+import { StockQueries } from "@/utils/queries/stock";
+import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
 
 // Componentes
-import UiSalesByGroup from "@/components/layouts/salesByGroupUi";
+import LayoutSalesByGroup from "@/components/layouts/salesByGroup";
 
-// MetaDados
+// Tipagem
+import { ItemsTopProducts } from "@/types/stock";
+
 export const metadata: Metadata = {
     title: "Relatório de vendas por grupo",
     description: "Informação sobre sade das vendas do produto",
 };
 
-// Tipagem
-import { TopProducts } from "@/types/stock";
-
 export default async function SalesByGroupPage() {
     const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+    const token = (await cookieStore).get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
 
-    const { today, year, month, day, startOfWeek, endOfWeek } = getDate();
-    const { salesByGroup } = salesQueries({ dateInit: today, dateEnd: today })
-    const { stockByGroup, topsProductsByBrand } = stockQueries({ dateInit: today, dateEnd: today, brands: ['36'], emp: '1' })
+    const { today } = getCurrentDateDetails()
+    const { topsProductsByBrand } = StockQueries({ dateInit: today, dateEnd: today, brands: ["36"], company: ['1'] })
 
-    const [respSalesByGroup, respStockByGroup, respTopsProductsByBrand] = await Promise.all([api.post("/v1/find-db-query", { query: salesByGroup }), api.post("/v1/find-db-query", { query: stockByGroup }), api.post("/v1/find-db-query", { query: topsProductsByBrand })])
-    const sumByStock = groupSumBy(respStockByGroup.data.returnObject.body, { key: 'GRUPO', valueKey: 'TOTAL_VALOR_COMPRA' })
+    const [responseTopsProducts] = await Promise.all([
+        api.post("/v1/find-db-query", { query: topsProductsByBrand }),
+    ])
 
-    const formattedTopProducts = convertToNumeric<TopProducts>(
-        respTopsProductsByBrand.data.returnObject.body,
+    const topProducts = convertFieldsToNumber<ItemsTopProducts>(
+        responseTopsProducts.data.returnObject.body,
         ['VALOR_CUSTO', 'VALOR_LIQUIDO']
     )
 
     return (
-        <UiSalesByGroup
-            listStockByGroup={sumByStock}
-            listTopProducts={formattedTopProducts}
-            year={year}
-            month={month}
-            day={day}
-            today={today}
-            startOfWeek={startOfWeek}
-            endOfWeek={endOfWeek}
-        />
+        <LayoutSalesByGroup topProducts={topProducts} />
     )
 }

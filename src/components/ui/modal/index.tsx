@@ -1,44 +1,47 @@
 // Bibliotecas
-import { Modal as ModalUi, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { ModalBody, ModalContent, ModalFooter, ModalHeader, Modal as ModalUI } from '@nextui-org/react';
 
 // React
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 // Tipagem
 interface ModalProps {
     title: string;
-    isOpen: boolean;
-    onClose: () => void;
-    width?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "full" | undefined;
-    displayFooter?: boolean;
+    isopen: boolean;
     children: ReactNode;
+    displayFooter?: boolean;
     footerTitle?: string;
     value?: string;
+    onOpenChange: () => void;
 }
 
-export function Modal({ title, isOpen, onClose, children, width, displayFooter, value, footerTitle }: ModalProps) {
+export default function Modal({
+    title,
+    isopen,
+    children,
+    displayFooter,
+    footerTitle,
+    value,
+    onOpenChange,
+}: ModalProps) {
     return (
-        <ModalUi
-            size={width ? width : "4xl"}
-            isOpen={isOpen}
-            onClose={onClose}
-            classNames={{ closeButton: 'text-white hover:text-gray-800' }}
-            scrollBehavior="inside"
-        >
+        <ModalUI isOpen={isopen} size="lg" onOpenChange={onOpenChange} scrollBehavior='inside'>
             <ModalContent>
-                <ModalHeader className="text-xl font-bold text-white flex flex-col gap-2 rounded-lg bg-blue-700 p-5 shadow-md">{title}</ModalHeader>
-                <ModalBody>
-                    {children}
-                </ModalBody>
+                <ModalHeader className="flex items-center justify-between gap-2 border-b pb-3">
+                    <h2 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h2>
+                </ModalHeader>
+                <ModalBody>{children}</ModalBody>
                 {displayFooter && (
                     <ModalFooter>
-                        <div className="flex w-full flex justify-between">
-                            <h2 className="mb-0 text-base font-bold  dark:text-white dark:opacity-60">{footerTitle}</h2>
-                            <span className="mb-0 text-sm font-bold text-emerald-600">{value}</span>
+                        <div className="flex w-full justify-between items-center">
+                            <h2 className="text-base font-semibold text-gray-700 dark:text-white">
+                                {footerTitle}
+                            </h2>
+                            <span className="text-lg font-bold text-emerald-600">{value}</span>
                         </div>
                     </ModalFooter>
                 )}
-            </ModalContent >
-        </ModalUi >
-    )
+            </ModalContent>
+        </ModalUI>
+    );
 }

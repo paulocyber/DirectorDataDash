@@ -3,37 +3,43 @@
 // React
 import { ReactNode, useEffect, useRef, useState } from "react";
 
-// Dados
-import permission from "@/data/permissions/ruleByUser.json";
+// Componentes
+import { SideNav } from "../menu/sideNav";
+import { HeaderNav } from "../menu/headerNav";
+import Modal from "../modal";
+import { SettingsBillsToPay } from "../settings/billsToPay"
+import { SettingsSalesByBrand } from "../settings/salesByBrand";
+import { SettingsSales } from "../settings/salesGoal";
 
-// Next Framework
+// Dados
+import rules from "@/data/router/settings/ruleByUser.json"
+
+// Next
+import { useDisclosure } from "@nextui-org/react";
+
+// Next
 import { usePathname } from "next/navigation";
 
-// Componente
-import { SideNav } from "../menu/sideNav";
-import { HeaderNav } from './../menu/headerNav/index';
-import { useDisclosure } from "@nextui-org/react";
-import { Modal } from "../modal";
-import { Settings } from "../settings";
-
 // Tipagem
-import { BrandData } from "@/types/brands";
 type RoleType = 'vendedor' | 'diretoria' | 'tecnologia';
 type PermissionType = {
     [key in RoleType]: {
-        router: { name: string; path: string }[];
-    };
-};
+        router: { name: string; path: string; icon: string }[]
+    }
+}
 
 interface LayoutProps {
     children: ReactNode;
     role?: string;
-    brands?: BrandData[];
+    enterprises?: { ID_EMP: string, SIGLA_EMP: string }[]
+    suppliers?: { ID_MRC: string, DESCRICAO_MRC: string, STATUS_MRC: string }[]
 }
 
-export function Layout({ children, role, brands }: LayoutProps) {
+export function Layout({ children, role, enterprises, suppliers }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
+
     const menuRef = useRef<HTMLDivElement>(null);
+    const routes = (role && (rules as PermissionType)[role as RoleType]?.router) || [];
     const router = usePathname()
 
     useEffect(() => {
@@ -58,26 +64,45 @@ export function Layout({ children, role, brands }: LayoutProps) {
         };
     }, []);
 
-    const routes = (role && (permission as PermissionType)[role as RoleType]?.router) || [];
-    const { isOpen: isopenModal, onOpen, onClose } = useDisclosure();
-
-    const canOpenSettings = (role === 'tecnologia' || role === 'diretoria') && router === '/salesbybrand';
+    const { isOpen: openSettings, onOpen, onOpenChange } = useDisclosure();
 
     return (
         <>
-            <Modal title="Configuração de filtros" isOpen={isopenModal} onClose={onClose} children={<Settings brands={brands ? brands : []} />} />
-            <div className="relative bg-[#edf3fb] h-screen flex flex-col w-full overflow-hidden">
+            <div className="relative bg-[#edf3fb] max-h-screen flex flex-col w-full overflow-hidden">
                 {isOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50" />
                 )}
                 <div ref={menuRef}>
-                    <SideNav toggleMenuState={isOpen} Close={setIsopen} routes={routes} />
+                    <SideNav toggleMenuState={isOpen} close={setIsopen} routes={routes} />
                 </div>
-                <HeaderNav open={setIsopen} openModal={canOpenSettings ? onOpen : undefined} toggleMenuState={isOpen} />
-                <main className="p-4 overflow-auto xl:ml-80 z-20">
+                <HeaderNav
+                    open={setIsopen}
+                    openModal={router === "/billstopay/table" ?
+                        onOpen :
+                        router === "/salesbybrand" ?
+                            onOpen :
+                            router === "/salesgoal" ?
+                                onOpen :
+                                undefined
+                    }
+                    toogleMenuState={isOpen}
+                />
+                <main className="p-4 overflow-auto h-screen xl:ml-72 z-20">
                     {children}
                 </main>
             </div>
+            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal") && (
+                <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange}>
+                    {router === "/billstopay/table" ?
+                        <SettingsBillsToPay /> :
+                        router === "/salesbybrand" ?
+                            <SettingsSalesByBrand suppliers={suppliers} /> :
+                            router === "/salesgoal" ?
+                                <SettingsSales enterprises={enterprises} /> :
+                                <>nenhum</>
+                    }
+                </Modal>
+            )}
         </>
-    );
+    )
 }

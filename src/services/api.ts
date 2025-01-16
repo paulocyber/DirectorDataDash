@@ -6,10 +6,8 @@ export function setupApiClient(ctx?: string) {
     baseURL: "https://sistema-suporte-play-uljpe.ondigitalocean.app",
   });
 
-  // Interceptador para adicionar o token, se existir
   api.interceptors.request.use(
     (config) => {
-      // Se o token estiver disponível, adicione-o ao cabeçalho
       if (ctx) {
         config.headers.Authorization = `Bearer ${ctx}`;
       }

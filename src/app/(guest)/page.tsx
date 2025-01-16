@@ -1,85 +1,111 @@
 'use client'
 
-// React
-import { AuthContext } from "@/contexts/AuthContext"
-import { SyntheticEvent, useContext, useState } from "react"
+// Next
+import Image from "next/image";
 
-// Bibliotecas
-import { toast } from "react-toastify"
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5"
+// Imagens
+import slogan from "../../../public/assets/playcell.png"
 
 // Componentes
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-export default function SignInPage() {
-    const [name, seName] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [loading, setLoading] = useState<boolean>(false)
-    const [isVisible, setIsVisible] = useState<boolean>(false)
-    const [error, setError] = useState<boolean>()
+// Biblioteca
+import { IoEyeOutline } from "react-icons/io5";
+import { FiEyeOff } from "react-icons/fi";
 
-    const { signIn } = useContext(AuthContext)
+// React
+import { SyntheticEvent, useContext, useState } from "react";
+import { AuthContext } from "@/contexts/auth";
+import { toast } from "react-toastify";
 
-    async function handleSignIn(e: SyntheticEvent) {
-        e.preventDefault()
+export default function SigInPage() {
+  const [name, setName] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
+  const [isVisible, setIsVisible] = useState<boolean>(false)
 
-        setLoading(true)
+  const { signIn } = useContext(AuthContext)
 
-        if (name === '' && password === '') {
-            toast.error("Por Favor, insirar seu email e senha.")
-            setError(true)
-        }
+  async function handleSignIn(e: SyntheticEvent) {
+    e.preventDefault()
 
-        await signIn({ username: name, password })
+    setLoading(true)
 
-        setLoading(false)
+    if (name === '' && password === '') {
+      toast.error("Por Favor, insirar seu email e senha.")
+      setError(true)
     }
 
-    return (
-        <div className="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-            <div className="relative py-3 sm:w-96 mx-auto text-center">
-                <h2 className="text-2xl font-bold ">Login</h2>
-                <div className="mt-4 bg-white shadow-md rounded-lg text-left">
-                    <div className={`h-2 ${loading ? 'bg-green-500' : 'bg-blue-500'} rounded-t-md`}></div>
-                    <form onSubmit={handleSignIn} className="px-10 py-8 ">
-                        <Input
-                            type="text"
-                            label="Nome: "
-                            labelPlacement="outside"
-                            placeholder="exemplo"
-                            isClearable
-                            value={name}
-                            onChange={(e) => seName(e.target.value)}
-                            onClear={() => seName('')}
-                            isInvalid={error}
-                        />
-                        <div className="pt-3">
-                            <Input
-                                type={isVisible ? "text" : "password"}
-                                label="Senha: "
-                                labelPlacement="outside"
-                                placeholder="Digite sua senha"
-                                endContent={
-                                    <button className="focus:outline-none" type="button" onClick={() => setIsVisible(!isVisible)}>
-                                        {isVisible ? (
-                                            <IoEyeOutline className="text-2xl text-default-400 pointer-events-none" />
-                                        ) : (
-                                            <IoEyeOffOutline className="text-2xl text-default-400 pointer-events-none" />
-                                        )}
-                                    </button>
-                                }
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                isInvalid={error}
-                            />
-                        </div>
-                        <div className="pt-3">
-                            <Button type="submit" isLoading={loading} color="primary" >Entrar</Button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    setError(false)
+    await signIn({ username: name, password })
+    setLoading(false)
+  }
+
+  return (
+    <div className="min-h-screen bg-[#F2F2F2] flex flex-col justify-center sm:py-12">
+      <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
+        <div className="w-full flex items-center justify-center py-4">
+          <Image
+            src={slogan}
+            alt="Logo PlayCell"
+            quality={100}
+            priority={true}
+            className="w-40"
+          />
         </div>
-    )
+
+        <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
+          <form onSubmit={handleSignIn} className="px-5 py-7">
+            <div className="pb-5">
+              <Input
+                type="text"
+                label="Nome: "
+                labelPlacement="outside"
+                radius="md"
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Digite seu nome"
+                isInvalid={error}
+              />
+            </div>
+            <div className="pb-5">
+              <Input
+                type={isVisible ? "text" : "password"}
+                label="Senha: "
+                labelPlacement="outside"
+                radius="md"
+                id="name"
+                name="name"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Digite seu nome"
+                isInvalid={error}
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setIsVisible(!isVisible)}
+                  >
+                    {isVisible ? (
+                      <IoEyeOutline className="text-lg text-default-400 pointer-events-none" />
+                    ) : (
+                      <FiEyeOff className="text-lg text-default-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
+              />
+            </div>
+            <div>
+              <Button type="submit" isLoading={loading} color="primary">Entrar</Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }

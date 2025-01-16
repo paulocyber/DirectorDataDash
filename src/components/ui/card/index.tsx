@@ -1,13 +1,13 @@
-// Componentes
-import { Button } from "../button";
-import Container from "../container";
+// Componentes;
+import { Button } from '@/components/ui/button';
+import Container from '../container';
 
 // Bibliotecas
 import { IoIosArrowDown } from "react-icons/io";
 import { FaFlag } from "react-icons/fa";
 
 // Utils
-import { getMonthName } from "@/utils/mask/date";
+import { getMonthName } from "@/utils/mask/date"
 
 // Tipagem
 interface CardProps {

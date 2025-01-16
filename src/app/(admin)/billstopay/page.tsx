@@ -1,4 +1,4 @@
-// Framework - next
+// Next
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -6,16 +6,15 @@ import { cookies } from "next/headers";
 import { setupApiClient } from "@/services/api";
 
 // Utils
-import getDate from "@/utils/date/currentDate";
-import { billsToPayQueries } from "@/utils/queries/billstoPay";
+import getCurrentDateDetails from "@/utils/getDate";
+import { billsToPayQueries } from "@/utils/queries/billsToPay";
 
 // Tipagem
-import { BillsToPayData } from "@/types/billsToPay/index";
+import { ItemsBillsToPay } from "@/types/billsToPay";
 
 // Componentes
-import UiBillsToPay from "@/components/layouts/billsToPayUi";
+import LayoutBillsToPay from "@/components/layouts/billsToPay";
 
-// MetasDados
 export const metadata: Metadata = {
     title: "Relatório das Contas a Pagar",
     description: "Relatório Detalhado das Contas a Pagar",
@@ -23,39 +22,34 @@ export const metadata: Metadata = {
 
 export default async function BillsToPayPage() {
     const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+    const token = (await cookieStore).get('@nextauth.token')?.value;
 
-    const api = setupApiClient(token as string)
-    const { year, month, today, yesterday, monthExpired } = getDate()
+    const api = setupApiClient(token)
 
-    const { expiredBilletAll, billetPaidAndOpen } = billsToPayQueries({
-        dateInit: `${year}/${month}/01`,
-        dateEnd: today,
-        year,
-        month: monthExpired,
-        day: yesterday,
-    });
+    const { year, month, today, yesterday } = getCurrentDateDetails()
+    const { allBillet } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
+    const { expiredBillet } = billsToPayQueries({ dateInit: `${year}/01/01`, dateEnd: yesterday })
 
-    const [respExpiredBillet, respBilletPaidAndOpen] = await Promise.all([
-        api.post("/v1/find-db-query", { query: expiredBilletAll }),
-        api.post("/v1/find-db-query", { query: billetPaidAndOpen }),
-    ]);
+    const [allBillsResponse, overdueBillsResponse] = await Promise.all([
+        api.post("/v1/find-db-query", { query: allBillet }),
+        api.post("/v1/find-db-query", { query: expiredBillet })
+    ])
 
-    const allBillets: BillsToPayData[] = respBilletPaidAndOpen.data.returnObject.body;
-    const filterBilletInOpen = allBillets.filter((billet) => billet.STATUS_PGM === "1" || billet.STATUS_PGM === "4")
-    const filterBilletPaid = allBillets.filter((billet) => billet.STATUS_PGM === "2")
+    const openBills = allBillsResponse.data.returnObject.body.filter(
+        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
+    );
+    const paidBills = allBillsResponse.data.returnObject.body.filter(
+        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
+    );
 
     return (
-        <UiBillsToPay
-            allBillets={allBillets}
-            listBilletInOpen={filterBilletInOpen}
-            listBilletPaid={filterBilletPaid}
-            listOfExpiredInvoices={respExpiredBillet.data.returnObject.body}
-            month={month}
+        <LayoutBillsToPay
+            allBilletsData={allBillsResponse.data.returnObject.body}
+            openBillsData={openBills}
+            paidBillsData={paidBills}
+            overdueBillsData={overdueBillsResponse.data.returnObject.body}
             year={year}
-            today={today}
-            monthExpired={monthExpired}
-            yesterday={yesterday}
+            month={month}
         />
     )
 }

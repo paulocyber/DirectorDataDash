@@ -1,164 +1,133 @@
 'use client'
 
-// React
-import { useContext, useState } from "react"
-import { AuthContext } from "@/contexts/AuthContext"
-
 // Componentes
-import Container from "@/components/ui/container"
-import ToolBar from "@/components/ui/toolbar"
-import GraphicContainer from "@/components/ui/sciences/graphics/GraphicContainer"
-import BarChart from "@/components/ui/sciences/graphics/BarChart"
-import BarChartComparison from "@/components/ui/sciences/graphics/BarChart/BarChartComparison"
-
-// Bibliotecas
-import { useRecoilState, useRecoilValue } from "recoil"
-
-// Atoms
-import { brandsAtom } from "@/atom/brandsAtom"
+import Container from "@/components/ui/container";
+import BarChart from "@/components/ui/Sciences/BarChart";
+import GraphicContainer from "@/components/ui/Sciences/GraphicContainer";
+import ToolBar from "@/components/ui/toolBar";
+import { Button } from "@/components/ui/button";
+import BarChartComparison from "@/components/ui/Sciences/BarChart/BarChartComparison";
 
 // Dados
-import highLightColor from "@/data/palettes/highlightedColor.json"
+import highLightColor from "@/data/pallets/highLigh.json"
+
+// React
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "@/contexts/auth";
 
 // Utils
-import { fetchSalesByBrand } from "@/utils/data/fetchData/refresh/fetchSalesByBrand"
-import getDate from "@/utils/date/currentDate"
+import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/salesByBrand";
+
+// Atom
+import { suppliersAtoms } from "@/atom/suppliers";
+
+// Biblioteca
+import { DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
+import { useAtom } from "jotai";
 
 // Tipagem
-import { SalesByBrandType } from "@/types/salesByBrand"
-import { StockByBrand } from "@/types/stock"
-import { DateRangePicker, DateValue, RangeValue } from "@nextui-org/react"
-import { parseDate } from '@internationalized/date';
+import { ItemsGroupBySumSales } from "@/types/salesByBrand";
+import { ItemsStockByBrand } from "@/types/stock";
 
-enum DateRange {
-    Day = 'day',
-    Week = 'week',
-    Month = 'month',
-    MonthYesterday = 'month yesterday',
-    others = 'others',
-    Year = 'year'
+interface SalesByBrandProps {
+    salesByBrandData: ItemsGroupBySumSales[];
+    stockAndDebtData: ItemsStockByBrand[];
 }
 
-type DateRangeState = {
-    start: string;
-    end: string;
-};
+export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData }: SalesByBrandProps) {
+    const [brandSales, setBrandSales] = useState(salesByBrandData);
+    const [brandStockAndDebt, setBrandStockAndDebt] = useState(stockAndDebtData);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [selectedPeriod, setSelectedPeriod] = useState<string>('Dia');
+    const [brands] = useAtom(suppliersAtoms)
+    const [date, setDate] = useState<RangeValue<DateValue> | null>(null);
 
-interface SalesByBrandPageProps {
-    listSalesByBrand: SalesByBrandType[];
-    listStockByBrand: StockByBrand[];
-}
-
-export default function UiSalesByBrand({ listSalesByBrand, listStockByBrand }: SalesByBrandPageProps) {
-    const [salesByBrand, setSalesByBrand] = useState(listSalesByBrand || [])
-    const [stockByBrand, setStockByBrand] = useState(listStockByBrand || [])
-    const [selectedDateRange, setSelectedDateRange] = useState<string>('day');
-    const [brands, setBrands] = useRecoilState(brandsAtom)
-    const [showDatePicker, setShowDatePicker] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(false)
-
-    const { today, year, month, startOfWeek, endOfWeek } = getDate()
-    const [date, setDate] = useState<DateRangeState>({
-        start: today,
-        end: today
-    });
     const { token } = useContext(AuthContext)
-    const handleRefresh = async () => {
-        await fetchSalesByBrand({ token, dateInit: date.start, dateEnd: date.end, setLoading, setSalesByBrand, setStockByBrand, brands })
-    }
-
-    const handleCleanFilter = async () => {
-        setSelectedDateRange('day')
-        setBrands(['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA', 'HREBOS'])
-
-        await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA', 'HREBOS'] })
-    }
-
-    const handleData = async (date: string) => {
-        setSelectedDateRange(date);
-        switch (date) {
-            case DateRange.Day:
-                setDate({ start: today, end: today })
-                setShowDatePicker(false)
-                await fetchSalesByBrand({ token, dateInit: today, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
-                break;
-
-            case DateRange.Week:
-                setDate({ start: startOfWeek, end: endOfWeek })
-                setShowDatePicker(false)
-                await fetchSalesByBrand({ token, dateInit: startOfWeek, dateEnd: endOfWeek, setLoading, setSalesByBrand, setStockByBrand, brands })
-                break;
-
-            case DateRange.Month:
-                setDate({ start: `${year}/${month}/01`, end: today })
-                setShowDatePicker(false)
-                await fetchSalesByBrand({ token, dateInit: `${year}/${month}/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
-                break;
-
-            case DateRange.MonthYesterday:
-                setDate({ start: `${year}/${month - 1}/01`, end: today });
-                setShowDatePicker(false)
-                await fetchSalesByBrand({ token, dateInit: `${year}/${month - 1}/01`, dateEnd: `${year}/${month - 1}/30`, setLoading, setSalesByBrand, setStockByBrand, brands })
-                break;
-
-            case DateRange.others:
-                setShowDatePicker(true)
-                break;
-
-            case DateRange.Year:
-                setDate({ start: `${year}/01/01`, end: today })
-                setShowDatePicker(false)
-                await fetchSalesByBrand({ token, dateInit: `${year}/01/01`, dateEnd: today, setLoading, setSalesByBrand, setStockByBrand, brands })
-                break;
-        }
-    }
-
-    const handleDateRangeChange = async (selected: RangeValue<DateValue> | null) => {
-        if (selected?.start && selected?.end) {
-            const start = selected.start.toString(); // Converte para string
-            const end = selected.end.toString(); // Converte para string
-
-            setDate({ start, end });
-            await fetchSalesByBrand({
-                token,
-                dateInit: start,
-                dateEnd: end,
-                setLoading,
-                setSalesByBrand,
-                setStockByBrand,
-                brands
-            });
-        }
-    };
 
     return (
         <>
             <Container>
-                <ToolBar title="Vendas por marcas" handleRefreshClick={handleRefresh} handleCleanFilter={handleCleanFilter} handleDate={handleData} selectedDateRange={selectedDateRange} displayFormOfPayment={true} />
-                <div className="px-6">
-                    <DateRangePicker
-                        className="max-w-xs"
-                        classNames={{
-                            inputWrapper: `lg:flex bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500`,
-                            base: `text-white  ${!showDatePicker && 'hidden'}`,
-                            innerWrapper: "py-[0.2em] text-white ",
-                            segment: "text-white",
-                            selectorIcon: "text-center text-white",
-                        }}
-                        onChange={handleDateRangeChange}
-                    />
+                <ToolBar
+                    title="Vendas por Marcas"
+                    handleRefreshClick={() => handleRefresh({ selectedPeriod, token, brands, setLoading, setBrandSales, setBrandStockAndDebt })}
+                    handleCleanFilter={() => handleCleanFilter({ token, brands, setSelectedPeriod, setLoading, setBrandSales, setBrandStockAndDebt })}
+                />
+
+                <div className="w-full flex flex-wrap justify-between items-center px-4 gap-4 my-2">
+                    <div className="flex flex-wrap gap-2">
+                        {["Dia", "Semana", "Mês", "Ano"].map((label) => (
+                            <Button
+                                key={label}
+                                onPress={() => { setSelectedPeriod(label); handleRefresh({ selectedPeriod: label, token, brands, setLoading, setBrandSales, setBrandStockAndDebt }) }}
+                                className={`font-bold h-8 px-4 text-xs ${selectedPeriod === label
+                                    ? "bg-[#006fee] text-white"
+                                    : "bg-white text-gray-800 border border-gray-300"
+                                    } rounded-md transition-colors hover:bg-[#006fee] hover:text-white min-w-[80px] md:min-w-[100px]`}
+                            >
+                                {label}
+                            </Button>
+                        ))}
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Button
+                                    onPress={() => setSelectedPeriod("Outros")}
+                                    className={`font-bold h-8 px-4 text-xs ${selectedPeriod === "Outros"
+                                        ? "bg-[#006fee] text-white"
+                                        : "bg-white text-gray-800 border border-gray-300"
+                                        } rounded-md transition-colors hover:bg-[#006fee] hover:text-white min-w-[80px] md:min-w-[100px]`}
+
+                                >
+                                    Outros
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem isReadOnly key='RangePicker'>
+                                    <DateRangePicker
+                                        aria-label="filtro de data"
+                                        size="sm"
+                                        classNames={{
+                                            inputWrapper: `bg-blue-700 hover:bg-blue-700 text-white focus-within:hover:bg-white-500`,
+                                            innerWrapper: "py-[0.2em] text-white ",
+                                            segment: "text-white",
+                                            selectorIcon: "text-center text-white",
+                                        }}
+                                        value={date}
+                                        onChange={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, token, brands, setDate, setLoading, setBrandSales, setBrandStockAndDebt })}
+                                    />
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                        {["À Vista", "Outros", "Todas"].map((label) => (
+                            <Button key={label} className={`font-bold h-8 px-4 text-xs bg-white text-gray-800 border border-gray-300 rounded-md transition-colors hover:bg-[#006fee] hover:text-white min-w-[80px] md:min-w-[100px]`}>
+                                {label}
+                            </Button>
+                        ))}
+                    </div>
                 </div>
-                <GraphicContainer loading={loading} children={<BarChart data={salesByBrand} dataKey="value" dataKeyXAxis="brand" displayXAxis={true} displayCartesianGrid={true} palette={highLightColor} LabelListProps={true}/>} />
+
+                <div className="w-full px-4">
+                    <GraphicContainer loading={loading}>
+                        <BarChart
+                            data={brandSales}
+                            dataKey="value"
+                            dataKeyXAxis="brand"
+                            displayXAxis={true}
+                            displayCartesianGrid={true}
+                            palette={highLightColor}
+                            LabelListProps={true}
+                        />
+                    </GraphicContainer>
+                </div>
             </Container>
             <Container>
-                <h1 className="font-bold md:text-lg text-sm p-5">Estoque em valor X Endividamento por marca</h1>
-                <GraphicContainer
-                    loading={false}
-                    children={
-                        <BarChartComparison data={stockByBrand} xKey="brand" dataKeyOne="valueInStock" dataKeyTwo="debtValue" nameKeyOne="Estoque" nameKeyTwo="Dívida" />
-                    }
-                />
+                <h1 className="font-bold md:text-lg text-sm py-3 px-4">Estoque em valor X Endividamento por marca</h1>
+                <GraphicContainer loading={loading}>
+                    <BarChartComparison data={brandStockAndDebt} xKey="brand" dataKeyOne="valueInStock" dataKeyTwo="debtValue" nameKeyOne="Estoque" nameKeyTwo="Dívida" />
+                </GraphicContainer>
             </Container>
         </>
-    )
+    );
 }

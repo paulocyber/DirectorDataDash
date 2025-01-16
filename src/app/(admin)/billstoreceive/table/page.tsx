@@ -1,57 +1,50 @@
-// Next - Framework
+// Next
 import { cookies } from "next/headers";
-import { Metadata } from "next";
 
-// Dados
-import InFoCardFromBillsToReceive from "@/data/infoCard/billsToReceive";
-
-// Componentes
-import UiBillsToReceiveTable from "@/components/layouts/billsToReceive/table";
+// Bibliotecas
+import { setupApiClient } from "@/services/api";
 
 // Utils
-import { setupApiClient } from "@/services/api";
+import getCurrentDateDetails from "@/utils/getDate";
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
-import getDate from "@/utils/date/currentDate";
+import { calculateTotalByKey } from "@/utils/functions/sumValues";
+import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
+
+// Componentes
+import LayoutBillsToReceiveTable from "@/components/layouts/billsToReceive/table";
+
+// Next
+import { Metadata } from "next";
 
 // Tipagem
-import { BillsToReceiveData } from "@/types/billsToReceive";
+import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
 
 export const metadata: Metadata = {
     title: "Relatório dos Contas a receber",
     description: "Informações o que tem a receber",
 };
 
-export default async function BillsToReceivePage() {
+export default async function BillsToReceiveTablePage() {
     const cookieStore = cookies();
-    const token = cookieStore.get('@nextauth.token')?.value;
+    const token = (await cookieStore).get('@nextauth.token')?.value;
 
     const api = setupApiClient(token as string)
+    const { year, today } = getCurrentDateDetails()
+    const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: '2023/01/01', dateEnd: today })
 
-    const { yesterday, month, monthExpired, year, today } = getDate()
-    const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: `${year}/${monthExpired}/${yesterday}`, dateEnd: today })
+    const [allBillsResponse] = await Promise.all([
+        api.post("/v1/find-db-query", { query: billsToReceiveAll }),
+    ]);
 
-    const [respBillsToReceive] = await Promise.all([
-        api.post("/v1/find-db-query", { query: billsToReceiveAll })
-    ])
-
-    const lateBillsToReceive: BillsToReceiveData[] = respBillsToReceive.data.returnObject.body
-    const infoCard = InFoCardFromBillsToReceive({ billsToReceiveData: respBillsToReceive.data.returnObject.body })
-
-    const filterBillsToReceiveInOpen = lateBillsToReceive.filter((receive) =>
-        (receive.STATUS_RCB === "1" || receive.STATUS_RCB === "4") &&
-        parseInt(receive.ATRASO_RCB) === 0
+    const openBills = allBillsResponse.data.returnObject.body.filter(
+        (bill: ItemsBillsToReceiveData) =>
+            (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4")
     );
-    const filterBillsToReceiveInPaid = lateBillsToReceive.filter((receive) => receive.STATUS_RCB === "2")
 
     return (
-        <UiBillsToReceiveTable
-            infoCardData={infoCard}
-            receiveData={respBillsToReceive.data.returnObject.body}
-            receiptsInOpenData={filterBillsToReceiveInOpen}
-            receiptsInPayedData={filterBillsToReceiveInPaid}
-            year={year}
-            month={monthExpired}
-            yesterday={yesterday}
+        <LayoutBillsToReceiveTable
+            allBillsData={allBillsResponse.data.returnObject.body}
+            openBillsData={openBills}
             today={today}
         />
     )

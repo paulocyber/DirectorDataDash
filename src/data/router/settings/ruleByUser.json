@@ -1,0 +1,153 @@
+{
+  "vendedor": {
+    "router": [
+      { "name": "Vendas e Metas", "path": "/sales", "icon": "dash" },
+      { "name": "Clientes em atraso", "path": "/latecustomer", "icon": "table" }
+    ]
+  },
+  "vendedora": {
+    "router": [
+      { "name": "Vendas e Metas", "path": "/sales", "icon": "dash" },
+      { "name": "Clientes em atraso", "path": "/latecustomer", "icon": "table" }
+    ]
+  },
+
+
+
+  
+  "diretoria": {
+    "router": [
+      { "name": "Relatório de DAV's", "path": "/davs", "icon": "table" },
+      {
+        "name": "Contas a pagar",
+        "path": "/billstopay",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a pagar",
+            "path": "/billstopay/table",
+            "icon": "table"
+          }
+        ]
+      },
+      {
+        "name": "Contas a receber",
+        "path": "/billstoreceive",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a receber",
+            "path": "/billstoreceive/table",
+            "icon": "table"
+          }
+        ]
+      },
+      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "" },
+      {
+        "name": "Vendas e Metas",
+        "path": "/salesgoal",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Clientes em atraso",
+            "path": "/salesgoal/latecustomer",
+            "icon": "table"
+          }
+        ]
+      }
+    ]
+  },
+
+  "financeiro": {
+    "router": [
+      { "name": "Relatório de DAV's", "path": "/davs", "icon": "table" },
+      {
+        "name": "Contas a pagar",
+        "path": "/billstopay",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a pagar",
+            "path": "/billstopay/table",
+            "icon": "table"
+          }
+        ]
+      },
+      {
+        "name": "Contas a receber",
+        "path": "/billstoreceive",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a receber",
+            "path": "/billstoreceive/table",
+            "icon": "table"
+          }
+        ]
+      },
+      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
+      {
+        "name": "Vendas e Metas",
+        "path": "/salesgoal",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Clientes em atraso",
+            "path": "/salesgoal/latecustomer",
+            "icon": "table"
+          }
+        ]
+      }
+    ]
+  },
+
+  "tecnologia": {
+    "router": [
+      {
+        "name": "Relatório de DAV's",
+        "path": "/davs",
+        "icon": "table"
+      },
+      {
+        "name": "Contas a pagar",
+        "path": "/billstopay",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a pagar",
+            "path": "/billstopay/table",
+            "icon": "table"
+          }
+        ]
+      },
+      {
+        "name": "Contas a receber",
+        "path": "/billstoreceive",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Contas a receber",
+            "path": "/billstoreceive/table",
+            "icon": "table"
+          }
+        ]
+      },
+      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
+      {
+        "name": "Vendas e Metas",
+        "path": "/salesgoal",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Clientes em atraso",
+            "path": "/salesgoal/latecustomer",
+            "icon": "table"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -6,12 +6,12 @@ import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css';
 
 // React
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/auth";
+import { Providers } from "@/contexts/recoil";
 
 // Biblioteca
 import { ToastContainer } from "react-toastify";
 import NextTopLoader from "nextjs-toploader";
-import { Recoil } from "@/contexts/Recoil";
 
 export const metadata: Metadata = {
   title: "Login - Sistema de Gestão",
@@ -33,9 +33,9 @@ export default function RootLayout({
             color="#ef4444"
           />
           <ToastContainer autoClose={3000} />
-          <Recoil>
+          <Providers>
             {children}
-          </Recoil>
+          </Providers>
         </AuthProvider>
       </body>
     </html>

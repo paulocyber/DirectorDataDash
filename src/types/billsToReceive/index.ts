@@ -1,7 +1,8 @@
-export type BillsToReceiveData = {
+export type ItemsBillsToReceiveData = {
   ID_PSS: string;
   ID_RCB: string;
   ID_ORIGEM: string;
+  DATA_LANCAMENTO: string;
   DATA_VENCIMENTO_RCB: string;
   VALOR_RCB: string;
   RESTANTE_RCB: string;
