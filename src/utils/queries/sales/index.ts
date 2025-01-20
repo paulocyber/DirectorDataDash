@@ -58,7 +58,7 @@ export const salesQueries = ({
   THEN perc_comissao2_ale WHEN 3 THEN perc_comissao3_ale ELSE 0.00 END /100 as comissao from saidas_itens sdi inner join produtos prd on prd.id_prd = sdi.id_prd inner join saidas sds on sds.id_sds = sdi.id_sds inner 
   join almoxarifados_estoque ale on ale.id_prd = sdi.id_prd and ale.id_alm = sdi.id_alm inner join v_funcionarios_consulta fnc on fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc) inner join empresas emp on emp.id_emp = 
   sds.id_emp left join fornecedores_produtos frp on frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' where sds.status_sds = '2' and sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' 
-  and sds.id_emp in (1, 2, 3) AND sds.tipo_sds = '4' and sdi.id_tbl in (1, 2) ${sellerFilter}`;
+  and sds.id_emp in (1, 2, 3, 4) AND sds.tipo_sds = '4' and sdi.id_tbl in (1, 2) ${sellerFilter}`;
 
   let topClientsPlusBuy = `select ${
     sellerSurname && idSeller ? "fnc.ID_PSS AS id_vendedor," : ""
