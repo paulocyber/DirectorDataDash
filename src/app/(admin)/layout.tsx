@@ -14,6 +14,7 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import { companyQueries } from "@/utils/queries/employees";
 import { suppliersQueries } from "@/utils/queries/suppliers";
+import { PeopleQueries } from "@/utils/queries/people";
 
 export default async function AdminRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
@@ -27,10 +28,12 @@ export default async function AdminRouter({ children }: { children: ReactNode })
 
     const enterpriseQuery = companyQueries()
     const suppliers = suppliersQueries()
+    const people = PeopleQueries()
 
-    const [responseCompany, responseSuppliers] = await Promise.all([
+    const [responseCompany, responseSuppliers, responsePeople] = await Promise.all([
         api.post("/v1/find-db-query", { query: enterpriseQuery }),
         api.post("/v1/find-db-query", { query: suppliers }),
+        api.post("/v1/find-db-query", { query: people }),
     ])
 
     return (
@@ -38,6 +41,7 @@ export default async function AdminRouter({ children }: { children: ReactNode })
             role={role}
             enterprises={responseCompany.data.returnObject.body}
             suppliers={responseSuppliers.data.returnObject.body}
+            people={responsePeople.data.returnObject.body}
         >
             {children}
         </Layout>

@@ -7,8 +7,7 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
-import { calculateTotalByKey } from "@/utils/functions/sumValues";
-import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
+import { PeopleQueries } from "@/utils/queries/people";
 
 // Componentes
 import LayoutBillsToReceiveTable from "@/components/layouts/billsToReceive/table";
@@ -30,10 +29,12 @@ export default async function BillsToReceiveTablePage() {
 
     const api = setupApiClient(token as string)
     const { year, today } = getCurrentDateDetails()
+    const people = PeopleQueries()
     const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: '2023/01/01', dateEnd: today })
 
-    const [allBillsResponse] = await Promise.all([
+    const [allBillsResponse, peopleResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveAll }),
+        api.post("/v1/find-db-query", { query: people }),
     ]);
 
     const openBills = allBillsResponse.data.returnObject.body.filter(
@@ -45,6 +46,7 @@ export default async function BillsToReceiveTablePage() {
         <LayoutBillsToReceiveTable
             allBillsData={allBillsResponse.data.returnObject.body}
             openBillsData={openBills}
+            peopleData={peopleResponse.data.returnObject.body}
             today={today}
         />
     )

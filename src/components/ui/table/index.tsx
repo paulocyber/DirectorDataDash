@@ -22,7 +22,7 @@ interface ContainerTableProps<T> {
     columns: Itemscolumns[];
     data: T[];
     loading: boolean;
-    detail?: (value: string) => void;
+    detail?: (idOrigem: string, idPss?: string) => void;
     renderCell: (item: T, columnUid: string) => React.ReactNode;
 }
 
@@ -80,7 +80,12 @@ export default function Table<T>({ columns, data, loading, renderCell, detail }:
                             >
                                 {columns.map((column) => (
                                     <TableCell
-                                        onClick={() => detail && detail((item as any).ID_SDS)}
+                                        onClick={() => {
+                                            const idOrigem = (item as any).ID_ORIGEM;
+                                            const idPss = (item as any).ID_PSS;
+
+                                            detail && detail(idOrigem, idPss);
+                                        }}
                                         key={`${(item as any).ID_SDS}-${column.uid}`} // Garante unicidade
                                         className="text-center text-sm text-gray-600 hover:text-gray-800 transition duration-150 ease-in-out"
                                     >

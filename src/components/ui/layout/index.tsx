@@ -10,6 +10,7 @@ import Modal from "../modal";
 import { SettingsBillsToPay } from "../settings/billsToPay"
 import { SettingsSalesByBrand } from "../settings/salesByBrand";
 import { SettingsSales } from "../settings/salesGoal";
+import { SettingsBillsToReceive } from "../settings/billsToReceive/indext";
 
 // Dados
 import rules from "@/data/router/settings/ruleByUser.json"
@@ -33,9 +34,10 @@ interface LayoutProps {
     role?: string;
     enterprises?: { ID_EMP: string, SIGLA_EMP: string }[]
     suppliers?: { ID_MRC: string, DESCRICAO_MRC: string, STATUS_MRC: string }[]
+    people?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
 }
 
-export function Layout({ children, role, enterprises, suppliers }: LayoutProps) {
+export function Layout({ children, role, enterprises, suppliers, people }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -83,7 +85,9 @@ export function Layout({ children, role, enterprises, suppliers }: LayoutProps) 
                             onOpen :
                             router === "/salesgoal" ?
                                 onOpen :
-                                undefined
+                                router === "/billstoreceive/table" ?
+                                    onOpen :
+                                    undefined
                     }
                     toogleMenuState={isOpen}
                 />
@@ -91,7 +95,7 @@ export function Layout({ children, role, enterprises, suppliers }: LayoutProps) 
                     {children}
                 </main>
             </div>
-            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal") && (
+            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table") && (
                 <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange}>
                     {router === "/billstopay/table" ?
                         <SettingsBillsToPay /> :
@@ -99,7 +103,9 @@ export function Layout({ children, role, enterprises, suppliers }: LayoutProps) 
                             <SettingsSalesByBrand suppliers={suppliers} /> :
                             router === "/salesgoal" ?
                                 <SettingsSales enterprises={enterprises} /> :
-                                <>nenhum</>
+                                router === "/billstoreceive/table" ?
+                                    <SettingsBillsToReceive people={people} /> :
+                                    <>nenhum</>
                     }
                 </Modal>
             )}

@@ -11,6 +11,7 @@ interface fetchBillsToReceiveTableProps {
   dateInit: string;
   dateEnd: string;
   token: string;
+  people?: string[];
   setLoading: (value: boolean) => void;
   setBillsToReceive: (value: ItemsBillsToReceiveData[]) => void;
   setOpenBills: (value: ItemsBillsToReceiveData[]) => void;
@@ -20,6 +21,7 @@ export async function fetchBillsToReceiveTable({
   dateInit,
   dateEnd,
   token,
+  people,
   setLoading,
   setBillsToReceive,
   setOpenBills,
@@ -29,6 +31,7 @@ export async function fetchBillsToReceiveTable({
   const { billsToReceiveAll } = billsToReceiveQueries({
     dateInit,
     dateEnd,
+    idPeople: people,
   });
 
   let allBillsToReceive: any[] = [];

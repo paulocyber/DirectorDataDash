@@ -11,15 +11,19 @@ import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
 interface BillsToReceiveHandlersProps {
   date?: RangeValue<DateValue> | null;
   token: string;
+  people?: string[];
+  setPeople?: (value: string[]) => void;
   setDate?: (value: RangeValue<DateValue>) => void;
   setLoading: (value: boolean) => void;
   setBillsToReceive: (value: ItemsBillsToReceiveData[]) => void;
   setOpenBills: (value: ItemsBillsToReceiveData[]) => void;
+  setDetailDav?: (value: undefined) => void;
 }
 
 export async function handleRefresh({
   date,
   token,
+  people,
   setLoading,
   setBillsToReceive,
   setOpenBills,
@@ -30,6 +34,7 @@ export async function handleRefresh({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
+    people: people?.length === 0 ? undefined : people,
     setLoading,
     setBillsToReceive,
     setOpenBills,
@@ -38,12 +43,17 @@ export async function handleRefresh({
 
 export async function handleCleanFilter({
   token,
+  setPeople,
   setDate,
   setLoading,
   setBillsToReceive,
   setOpenBills,
+  setDetailDav,
 }: BillsToReceiveHandlersProps) {
-  if (!setDate) return;
+  if (!setDate || !setPeople || !setDetailDav) return;
+
+  setPeople([]);
+  setDetailDav(undefined);
 
   const { today, year } = getCurrentDateDetails();
 
@@ -65,19 +75,24 @@ export async function handleCleanFilter({
 export async function handleDateFilter({
   date,
   token,
+  people,
+  setPeople,
   setDate,
   setLoading,
   setBillsToReceive,
   setOpenBills,
+  setDetailDav
 }: BillsToReceiveHandlersProps) {
-  if (!date || !setDate) return;
+  if (!date || !setDate || !setDetailDav) return;
 
+  setDetailDav(undefined)
   setDate(date);
 
   await fetchBillsToReceiveTable({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
+    people: people?.length === 0 ? undefined : people,
     setLoading,
     setBillsToReceive,
     setOpenBills,
