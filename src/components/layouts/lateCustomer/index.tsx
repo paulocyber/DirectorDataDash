@@ -10,6 +10,7 @@ import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell, renderCellAdmin } from "@/components/cells/lateCustomer";
+import Modal from "@/components/ui/modal";
 
 // Biblioteca
 import { useAtom } from "jotai";
@@ -27,16 +28,18 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
+import { SettingsLateCustomer } from "@/components/ui/settings/lateCustomer";
 interface LayoutCustomerProps {
     openBills: ItemsBillsToReceiveData[];
     overdueBills: ItemsBillsToReceiveData[];
+    employeesData?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
     today: string;
     admin?: boolean;
 }
 
-export default function LayoutCustomer({ openBills, overdueBills, today, admin }: LayoutCustomerProps) {
+export default function LayoutCustomer({ openBills, overdueBills, today, employeesData, admin }: LayoutCustomerProps) {
     const [openBillsData, setOpenBillsData] = useState(openBills);
     const [overdueBillsData, setOverdueBillsData] = useState(overdueBills);
     const [loading, setLoading] = useState<boolean>(false)
@@ -47,6 +50,7 @@ export default function LayoutCustomer({ openBills, overdueBills, today, admin }
     })
 
     const { token, user } = useContext(AuthContext)
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const infoCard = InfoCardFromLateCustomer({ openBillsData, overdueBillsData })
 
     return (
@@ -59,9 +63,13 @@ export default function LayoutCustomer({ openBills, overdueBills, today, admin }
                     dateRange={date}
                     handleCleanFilter={() => handleCleanFilter({ sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate, setPeople })}
                     handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate })}
+                    handleFilters={onOpen}
                 />
                 <Table data={openBillsData} columns={admin ? columnsAdmin : columns} loading={loading} renderCell={admin ? renderCellAdmin : renderCell} />
             </Container>
+            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange}>
+                <SettingsLateCustomer employees={employeesData} />
+            </Modal>
         </>
     )
 }

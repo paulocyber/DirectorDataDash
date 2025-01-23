@@ -35,7 +35,7 @@ export function SettingsLateCustomer({ employees }: SettingsLateCustomerProps) {
     return (
         <main className="w-full">
             <section className="mb-4">
-                <h3 className="text-gray-700 font-medium text-base">Clientes</h3>
+                <h3 className="text-gray-700 font-medium text-base">Vendedores</h3>
             </section>
 
             <div className="w-full flex-grow">
