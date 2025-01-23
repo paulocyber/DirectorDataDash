@@ -13,7 +13,7 @@ export const renderCell = (item: ItemsDavProductsResponse, columnKey: string) =>
         case "quantidade":
             return <div className="lg:w-full w-40 truncate"><span className="text-gray-600 font-semibold ">{item.QTDE_SDI}</span></div>
         case "valorBruto":
-            return <div className="lg:w-full w-40 truncate"><span className="text-gray-600 font-semibold ">{item.VALOR_BRUTO_SDI}</span></div>
+            return <div className="lg:w-full w-40 truncate"><span className="text-gray-600 font-semibold ">{formatCurrency(Number(item.VALOR_BRUTO_SDI))}</span></div>
         case "valorPago":
             return (
                 <span className="text-green-600 font-bold">

@@ -57,7 +57,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     const infoCard = InFoCardFromBillsToReceive({ allBillsData: billsToReceive, filter: people })
     const { token } = useContext(AuthContext)
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    
+
     async function handleDetailDav(ID_ORIGEM: string, ID_PSS?: string) {
         setPeople([`${ID_PSS}`])
 
