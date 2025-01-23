@@ -11,6 +11,8 @@ interface salesHandlersProps {
   date?: RangeValue<DateValue> | null;
   sellerSurname: string | undefined;
   token: string;
+  people?: string[];
+  setPeople?: (value: string[]) => void;
   setDate?: (value: RangeValue<DateValue>) => void;
   setLoading: (value: boolean) => void;
   setOpenBillsData: (value: ItemsBillsToReceiveData[]) => void;
@@ -21,6 +23,7 @@ export async function handleRefresh({
   date,
   sellerSurname,
   token,
+  people,
   setLoading,
   setOpenBillsData,
   setOverdueBillsData,
@@ -32,6 +35,7 @@ export async function handleRefresh({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     sellerSurname,
     token,
+    people: people?.length === 0 ? undefined : people,
     setLoading,
     setOpenBillsData,
     setOverdueBillsData,
@@ -41,18 +45,18 @@ export async function handleRefresh({
 export async function handleCleanFilter({
   sellerSurname,
   token,
+  setPeople,
   setLoading,
   setOpenBillsData,
   setOverdueBillsData,
   setDate,
 }: salesHandlersProps) {
-  if (!setDate) return;
+  if (!setDate || !setPeople) return;
   const { yesterday, year, month } = getCurrentDateDetails();
 
+  setPeople([]);
   setDate({
-    start: parseDate(
-      new Date(`2023/01/01`).toISOString().split("T")[0]
-    ),
+    start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
     end: parseDate(new Date(yesterday).toISOString().split("T")[0]),
   });
 
@@ -70,6 +74,7 @@ export async function handleCleanFilter({
 export async function handleDateFilter({
   date,
   sellerSurname,
+  people,
   token,
   setLoading,
   setOpenBillsData,
@@ -83,6 +88,7 @@ export async function handleDateFilter({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     sellerSurname,
+    people: people?.length === 0 ? undefined : people,
     token,
     setLoading,
     setOpenBillsData,

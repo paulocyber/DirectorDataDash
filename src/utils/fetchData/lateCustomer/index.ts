@@ -10,6 +10,7 @@ interface fetchLateCustomer {
   dateInit: string;
   dateEnd: string;
   sellerSurname: string | undefined;
+  people?: string[];
   setLoading: (value: boolean) => void;
   setOpenBillsData: (value: ItemsBillsToReceiveData[]) => void;
   setOverdueBillsData: (value: ItemsBillsToReceiveData[]) => void;
@@ -20,6 +21,7 @@ export async function fetchLateCustomer({
   dateEnd,
   sellerSurname,
   token,
+  people,
   setLoading,
   setOpenBillsData,
   setOverdueBillsData,
@@ -32,12 +34,14 @@ export async function fetchLateCustomer({
     dateInit,
     dateEnd,
     sellerSurname,
+    idSeller: people,
   });
 
   const { billsToReceiveInOpen: billsToReceiveLate } = billsToReceiveQueries({
     dateInit: dateInit,
     dateEnd: dateEnd,
     sellerSurname,
+    idSeller: people,
   });
 
   const queries = [
@@ -52,7 +56,7 @@ export async function fetchLateCustomer({
       setData: (data) => setOverdueBillsData(data),
     }),
   ];
-  console.log("Query: ", billsToReceiveInOpen);
+  
   await Promise.all(queries);
 
   setLoading(false);

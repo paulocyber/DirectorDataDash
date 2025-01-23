@@ -32,8 +32,6 @@ export default async function LateCustomerPage() {
         api.post("/v1/find-db-query", { query: billsToReceiveLate }),
     ])
 
-    console.log("Query servidor: ", billsToReceiveInOpen)
-
     return (
         <LayoutCustomer
             openBills={openBillsData.data.returnObject.body}

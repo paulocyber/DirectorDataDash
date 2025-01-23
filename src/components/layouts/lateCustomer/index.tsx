@@ -11,6 +11,12 @@ import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell, renderCellAdmin } from "@/components/cells/lateCustomer";
 
+// Biblioteca
+import { useAtom } from "jotai";
+
+// Atom
+import { peopleAtom } from "@/atom/people";
+
 // Dados
 import InfoCardFromLateCustomer from "@/data/infoCards/lateCustomer";
 import columns from "@/data/columns/lateCustomer/columns.json"
@@ -34,6 +40,7 @@ export default function LayoutCustomer({ openBills, overdueBills, today, admin }
     const [openBillsData, setOpenBillsData] = useState(openBills);
     const [overdueBillsData, setOverdueBillsData] = useState(overdueBills);
     const [loading, setLoading] = useState<boolean>(false)
+    const [people, setPeople] = useAtom(peopleAtom)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
         end: parseDate(new Date(today).toISOString().split('T')[0]),
@@ -48,10 +55,10 @@ export default function LayoutCustomer({ openBills, overdueBills, today, admin }
             <Container>
                 <ToolBar
                     title="Clientes em atraso"
-                    handleRefreshClick={() => handleRefresh({ date, sellerSurname: admin ? undefined : user, token, setLoading, setOpenBillsData, setOverdueBillsData })}
+                    handleRefreshClick={() => handleRefresh({ date, sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData })}
                     dateRange={date}
-                    handleCleanFilter={() => handleCleanFilter({ sellerSurname: admin ? undefined : user, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate })}
-                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, sellerSurname: admin ? undefined : user, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate })}
+                    handleCleanFilter={() => handleCleanFilter({ sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate, setPeople })}
+                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData, setDate })}
                 />
                 <Table data={openBillsData} columns={admin ? columnsAdmin : columns} loading={loading} renderCell={admin ? renderCellAdmin : renderCell} />
             </Container>

@@ -3,3 +3,10 @@ export const PeopleQueries = () => {
 
   return people
 };
+
+
+export const employeesQueries = () => {
+  let employees = `select fnc.ID_PSS, fnc.NOME_PSS, fnc.APELIDO_PSS from v_funcionarios fnc` 
+
+  return employees
+}

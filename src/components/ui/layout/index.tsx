@@ -11,6 +11,7 @@ import { SettingsBillsToPay } from "../settings/billsToPay"
 import { SettingsSalesByBrand } from "../settings/salesByBrand";
 import { SettingsSales } from "../settings/salesGoal";
 import { SettingsBillsToReceive } from "../settings/billsToReceive/indext";
+import { SettingsLateCustomer } from "../settings/lateCustomer";
 
 // Dados
 import rules from "@/data/router/settings/ruleByUser.json"
@@ -35,9 +36,10 @@ interface LayoutProps {
     enterprises?: { ID_EMP: string, SIGLA_EMP: string }[]
     suppliers?: { ID_MRC: string, DESCRICAO_MRC: string, STATUS_MRC: string }[]
     people?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
+    employees?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
 }
 
-export function Layout({ children, role, enterprises, suppliers, people }: LayoutProps) {
+export function Layout({ children, role, enterprises, suppliers, people, employees }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
@@ -87,7 +89,9 @@ export function Layout({ children, role, enterprises, suppliers, people }: Layou
                                 onOpen :
                                 router === "/billstoreceive/table" ?
                                     onOpen :
-                                    undefined
+                                    router === "/salesgoal/latecustomer" ?
+                                        onOpen :
+                                        undefined
                     }
                     toogleMenuState={isOpen}
                 />
@@ -95,7 +99,7 @@ export function Layout({ children, role, enterprises, suppliers, people }: Layou
                     {children}
                 </main>
             </div>
-            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table") && (
+            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer") && (
                 <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange}>
                     {router === "/billstopay/table" ?
                         <SettingsBillsToPay /> :
@@ -105,7 +109,9 @@ export function Layout({ children, role, enterprises, suppliers, people }: Layou
                                 <SettingsSales enterprises={enterprises} /> :
                                 router === "/billstoreceive/table" ?
                                     <SettingsBillsToReceive people={people} /> :
-                                    <>nenhum</>
+                                    router === "/salesgoal/latecustomer" ?
+                                        <SettingsLateCustomer employees={employees}/> :
+                                        <>nenhum</>
                     }
                 </Modal>
             )}
