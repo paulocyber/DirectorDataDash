@@ -23,7 +23,7 @@ export default function InFoCardFromBillsToReceive({ allBillsData, filter }: InF
             (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4") &&
             parseInt(bill.ATRASO_RCB) > 0
     );
-
+    
     const totalPendingAmount = calculateTotalByKey(overdueBills, (bill) => bill.RESTANTE_RCB);
     const totalOpenAmount = calculateTotalByKey(openBills, (bill) => bill.RESTANTE_RCB);
     const totalReceivedAmount = calculateTotalByKey(paidBills, (bill) => bill.VALOR_PAGO_RCB)
@@ -32,18 +32,18 @@ export default function InFoCardFromBillsToReceive({ allBillsData, filter }: InF
     const infoCardData = [
         {
             icon: <ImWarning className="w-5 h-5" />,
-            title: "Total de Valores Pendentes",
-            value: formatCurrency(totalPendingAmount),
+            title: "Notas em aberto",
+            value: formatCurrency(totalOpenAmount),
         },
         {
             icon: <GiTakeMyMoney className="w-5 h-5" />,
-            title: "Valor Total Recebido",
-            value: formatCurrency(totalReceivedAmount),
+            title: "Notas vencidas",
+            value: formatCurrency(totalPendingAmount),
         },
         {
             icon: <IoIosPeople className="w-5 h-5" />,
-            title: filter?.length === 0 ? "Clientes com Pagamento Concluído" : "Valor que ainda falta a receber ",
-            value: filter?.length === 0 ? totalCompletedPayments.toString() : formatCurrency(totalOpenAmount),
+            title: filter?.length === 0 ? "Clientes com Pagamento Concluído" : "Valor recebido",
+            value: filter?.length === 0 ? totalCompletedPayments.toString() : formatCurrency(totalReceivedAmount),
         },
     ];
 

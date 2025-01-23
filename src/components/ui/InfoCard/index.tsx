@@ -44,7 +44,7 @@ export default function InfoCard({ data }: { data: { icon: ReactNode; title: str
                         <div className="p-5 pt-12">
                             <p className="text-sm font-medium text-gray-500">{info.title}</p>
                             <h4
-                                className={`mt-2 text-xl font-bold ${info.title === "Valores vencidos" || info.title === "Total de Valores Atrasados"
+                                className={`mt-2 text-xl font-bold ${info.title === "Valores vencidos" || info.title === "Total de Valores Atrasados" || info.title === "Notas vencidas"
                                     ? "text-red-500"
                                     : "text-gray-800"
                                     }`}

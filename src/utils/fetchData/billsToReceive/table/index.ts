@@ -35,7 +35,7 @@ export async function fetchBillsToReceiveTable({
   });
 
   let allBillsToReceive: any[] = [];
-
+  console.log("Query: ", billsToReceiveAll);
   const queries = [
     fetchData({
       ctx: token,
