@@ -25,7 +25,7 @@ export default function Modal({
     onOpenChange,
 }: ModalProps) {
     return (
-        <ModalUI isOpen={isopen} size="lg" onOpenChange={onOpenChange} scrollBehavior='inside'>
+        <ModalUI isOpen={isopen} size="2xl" onOpenChange={onOpenChange} scrollBehavior='inside'>
             <ModalContent>
                 <ModalHeader className="flex items-center justify-between gap-2 border-b pb-3">
                     <h2 className="text-xl font-bold text-gray-800 dark:text-white">{title}</h2>

@@ -6,7 +6,7 @@ import { Input } from "../../input"
 
 // Bibliotecas
 import { CiSearch } from "react-icons/ci"
-import { Checkbox } from "@nextui-org/react"
+import { Checkbox, Tooltip } from "@nextui-org/react"
 import { useAtom } from "jotai"
 
 // Atom
@@ -32,7 +32,7 @@ export function SettingsBillsToReceive({ people }: SettingsBillsToReceiveProps) 
         }
     };
 
-    const filterSearch = searchFilter({ data: people || [], search: search })
+    const filterSearch = searchFilter({ data: people || [], search })
 
     const handleCheckboxChange = (people: string) => {
         setPeopleSelect((prevSelected) => {
@@ -69,14 +69,16 @@ export function SettingsBillsToReceive({ people }: SettingsBillsToReceiveProps) 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 h-full max-h-[240px] py-2 overflow-auto">
                             {filterSearch?.slice(0, limit).map((people) => (
                                 <div key={people.ID_PSS} className="flex items-center transition-all duration-300 ease-in-out">
-                                    <Checkbox
-                                        classNames={{ label: "truncate w-[6.4em] truncate text-gray-700 text-sm font-medium" }}
-                                        className="rounded-lg"
-                                        isSelected={peopleSelect.includes(people.ID_PSS)}
-                                        onChange={() => handleCheckboxChange(people.ID_PSS)}
-                                    >
-                                        {people.APELIDO_PSS && /^\*\*$/.test(people.APELIDO_PSS) ? people.APELIDO_PSS : people.NOME_PSS}
-                                    </Checkbox>
+                                    <Tooltip content={`${people.ID_PSS} - ${people.APELIDO_PSS}`}>
+                                        <Checkbox
+                                            classNames={{ label: "truncate w-[10em] truncate text-gray-700 text-sm font-medium" }}
+                                            className="rounded-lg"
+                                            isSelected={peopleSelect.includes(people.ID_PSS)}
+                                            onChange={() => handleCheckboxChange(people.ID_PSS)}
+                                        >
+                                            {people.APELIDO_PSS && /^\*\*$/.test(people.APELIDO_PSS) ? people.APELIDO_PSS : people.NOME_PSS}
+                                        </Checkbox>
+                                    </Tooltip>
                                 </div>
                             ))}
                             <InfiniteScroll fetchMore={fetchMore} />

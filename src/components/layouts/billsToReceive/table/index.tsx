@@ -72,7 +72,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     }
 
     const generatePdf = () => {
-        BillsToReceivePdf({ allBillsData: billsToReceive, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
+        BillsToReceivePdf({ allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
 
     return (

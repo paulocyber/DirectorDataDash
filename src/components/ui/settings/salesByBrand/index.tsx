@@ -58,7 +58,7 @@ export function SettingsSalesByBrand({ suppliers }: SettingsSalesByBrandProps) {
                         {filterSearch?.map((supplier) => (
                             <div key={supplier.ID_MRC} className="flex items-center transition-all duration-300 ease-in-out">
                                 <Checkbox
-                                    classNames={{ label: "truncate w-[6.4em] truncate text-gray-700 text-sm font-medium" }}
+                                    classNames={{ label: "truncate w-[10em] truncate text-gray-700 text-sm font-medium" }}
                                     className="rounded-lg"
                                     isSelected={suppliersSelect.includes(supplier.DESCRICAO_MRC)}
                                     onChange={() => handleCheckboxChange(supplier.DESCRICAO_MRC)}

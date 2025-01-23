@@ -28,12 +28,14 @@ type CreatePdf = {
 
 interface BillsToReceiveProps {
   allBillsData: ItemsBillsToReceiveData[];
+  openBillsData: ItemsBillsToReceiveData[];
   dateStart: string;
   dateEnd: string;
 }
 
 export default function BillsToReceivePdf({
   allBillsData,
+  openBillsData,
   dateStart,
   dateEnd,
 }: BillsToReceiveProps) {
@@ -107,7 +109,7 @@ export default function BillsToReceivePdf({
         fillColor: "#1d4ed8",
       },
     ],
-    ...allBillsData.map((bill, index) => [
+    ...openBillsData.map((bill, index) => [
       {
         text: bill.ID_ORIGEM,
         fontSize: 7,
@@ -189,32 +191,23 @@ export default function BillsToReceivePdf({
       {
         columns: [
           {
-            text: `Total de Valores Pendentes: ${formatCurrency(
-              totalPendingAmount
-            )}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-          },
-          {
-            text: `Valor Total Recebido: ${formatCurrency(
-              totalReceivedAmount
-            )}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-            color: "red",
-          },
-          {
-            text: `Valor que ainda falta a receber: ${formatCurrency(
+            text: `Notas em abertos: ${formatCurrency(
               totalOpenAmount
             )}`,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
             alignment: "center",
+          },
+          {
+            text: `Notas vencidas: ${formatCurrency(
+              totalPendingAmount
+            )}`,
+            fontSize: 10,
+            bold: true,
+            margin: [0, 10, 0, 5],
+            alignment: "center",
+            color: 'red'
           },
         ],
         columnGap: 10, // Espaçamento entre os "cards"
