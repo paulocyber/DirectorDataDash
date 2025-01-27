@@ -44,6 +44,7 @@ export const StockQueries = ({
       AND sdi.id_item_sdi > 0 
       AND sdi.produtopai_kit_sdi IS FALSE 
       AND mrc.id_mrc IN (${formattedBrands}) 
+      AND ale.id_alm = sds.id_emp
       AND ale.id_alm = ${company} 
       GROUP BY sdi.id_prd, prd.codigo_prd, prd.descricao_prd, prd.referencia_prd, 
       prd.unidade_compra_prd, prd.unidade_venda_prd, sdi.id_prd || ' - ' || prd.descricao_prd, 

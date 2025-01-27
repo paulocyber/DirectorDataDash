@@ -12,9 +12,6 @@
     ]
   },
 
-
-
-  
   "diretoria": {
     "router": [
       { "name": "Relatório de DAV's", "path": "/davs", "icon": "table" },
@@ -43,7 +40,6 @@
         ]
       },
       { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
-      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "" },
       {
         "name": "Vendas e Metas",
         "path": "/salesgoal",
@@ -87,7 +83,6 @@
         ]
       },
       { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
-      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
       {
         "name": "Vendas e Metas",
         "path": "/salesgoal",
