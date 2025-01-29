@@ -39,7 +39,18 @@
           }
         ]
       },
-      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      {
+        "name": "Vendas por marcas",
+        "path": "/salesbybrand",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Entradas x Vendas",
+            "path": "/salesbybrand/entriesxsales",
+            "icon": "table"
+          }
+        ]
+      },
       {
         "name": "Vendas e Metas",
         "path": "/salesgoal",
@@ -82,7 +93,18 @@
           }
         ]
       },
-      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      {
+        "name": "Vendas por marcas",
+        "path": "/salesbybrand",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Entradas x Vendas",
+            "path": "/salesbybrand/entriesxsales",
+            "icon": "table"
+          }
+        ]
+      },
       {
         "name": "Vendas e Metas",
         "path": "/salesgoal",
@@ -129,7 +151,18 @@
           }
         ]
       },
-      { "name": "Vendas por marcas", "path": "/salesbybrand", "icon": "dash" },
+      {
+        "name": "Vendas por marcas",
+        "path": "/salesbybrand",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Entradas x Vendas",
+            "path": "/salesbybrand/entriesxsales",
+            "icon": "table"
+          }
+        ]
+      },
       { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
       {
         "name": "Vendas e Metas",

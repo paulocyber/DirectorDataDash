@@ -4,6 +4,7 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
+import { groupSumBy } from "@/utils/filters/groupSumBy";
 
 // Tipagem
 import { ItemsBillsToPay } from "@/types/billsToPay";
@@ -51,6 +52,61 @@ export default function BillsToPayPdf({
     (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
   );
 
+  const aggregatedPayByBrand = groupSumBy(billetFilter, {
+    key: "CENTRO_CUSTO",
+    valueKey: "VALOR_PAGO_PGM",
+  }).sort((a, b) => b.value - a.value);
+
+  const summaryTable = {
+    table: {
+      headerRows: 1,
+      widths: ["20%", "20%"],
+      body: [
+        [
+          {
+            text: "Centro de Custo",
+            bold: true,
+            alignment: "center",
+            fillColor: "#1d4ed8",
+            color: "#ffffff",
+            fontSize: 8,
+          },
+          {
+            text: "Valor Pago",
+            bold: true,
+            alignment: "center",
+            fillColor: "#1d4ed8",
+            color: "#ffffff",
+            fontSize: 8,
+          },
+        ],
+        ...aggregatedPayByBrand.map((item, index) => [
+          {
+            text: item.brand,
+            fontSize: 7,
+            alignment: "left",
+            fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+          },
+          {
+            text: formatCurrency(item.value),
+            fontSize: 7,
+            alignment: "right",
+            fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+          },
+        ]),
+      ],
+    },
+    layout: {
+      hLineWidth: () => 0.5,
+      vLineWidth: () => 0.5,
+      hLineColor: () => "#CCCCCC",
+      vLineColor: () => "#CCCCCC",
+      paddingTop: () => 3,
+      paddingBottom: () => 3,
+    },
+    margin: [0, 10, 0, 10],
+  };
+
   const tableBody = [
     [
       {
@@ -94,7 +150,7 @@ export default function BillsToPayPdf({
         fillColor: "#1d4ed8",
       },
       {
-        text: "Categoria Da Despesa",
+        text: "Fornecedores",
         bold: true,
         fontSize: 8,
         alignment: "center",
@@ -203,32 +259,6 @@ export default function BillsToPayPdf({
       {
         columns: [
           {
-            text: `Valores em Aberto: ${formatCurrency(
-              openBills.reduce(
-                (acc, bill) => acc + Number(bill.VALOR_PGM.replace(",", ".")),
-                0
-              )
-            )}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-          },
-          {
-            text: `Valores Vencidos: ${formatCurrency(
-              overdueBills.reduce(
-                (acc, bill) =>
-                  acc + Number(bill.RESTANTE_PGM.replace(",", ".")),
-                0
-              )
-            )}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-            color: "red",
-          },
-          {
             text: `Valores Pagos: ${formatCurrency(
               paidBills.reduce(
                 (acc, bill) =>
@@ -268,6 +298,7 @@ export default function BillsToPayPdf({
         alignment: "center",
         margin: [0, 0, 0, 0],
       },
+      summaryTable,
     ],
     footer: (currentPage: number, pageCount: number) => [
       {

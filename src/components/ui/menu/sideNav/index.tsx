@@ -11,7 +11,6 @@ import Image from "next/image";
 
 // Biblioteca
 import { IoClose } from "react-icons/io5";
-import { IoChevronDown, IoChevronUp } from "react-icons/io5"; // Importando as setas
 import { motion } from 'framer-motion';
 import { ActiveLink } from "../activeLink";
 

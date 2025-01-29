@@ -10,7 +10,6 @@ import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell } from "@/components/cells/billsToPay";
-import { searchFilter } from "@/utils/filters/searchFilter";
 import Modal from "@/components/ui/modal";
 import { SettingsBillsToPay } from "@/components/ui/settings/billsToPay";
 
@@ -21,6 +20,7 @@ import columns from "@/data/columns/billsToPay/columns.json"
 // Utils
 import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/billsToPay";
 import BillsToPayPdf from "@/utils/relatorys/billsToPay";
+import { searchFilter } from "@/utils/filters/searchFilter";
 
 // Biblioteca
 import { useAtom } from "jotai";
@@ -32,6 +32,7 @@ import { statusAtom } from "@/atom/status";
 import { ItemsBillsToPay } from "@/types/billsToPay";
 import { parseDate } from "@internationalized/date";
 import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
+
 interface LayoutBillsToPayTable {
     allBilletsData: ItemsBillsToPay[];
     openBillsData: ItemsBillsToPay[];
