@@ -30,6 +30,7 @@ interface BillsToPayPdfProps {
   allBillets: ItemsBillsToPay[];
   overdueBills: ItemsBillsToPay[];
   billetFilter: ItemsBillsToPay[];
+  status: string[];
   dateStart: string;
   dateEnd: string;
 }
@@ -38,6 +39,7 @@ export default function BillsToPayPdf({
   allBillets,
   overdueBills,
   billetFilter,
+  status,
   dateStart,
   dateEnd,
 }: BillsToPayPdfProps) {
@@ -54,13 +56,13 @@ export default function BillsToPayPdf({
 
   const aggregatedPayByBrand = groupSumBy(billetFilter, {
     key: "CENTRO_CUSTO",
-    valueKey: "VALOR_PAGO_PGM",
+    valueKey: status.includes("Em aberto") ? "VALOR_PGM" : "VALOR_PAGO_PGM",
   }).sort((a, b) => b.value - a.value);
 
   const summaryTable = {
     table: {
       headerRows: 1,
-      widths: ["20%", "20%"],
+      widths: ["30%", "30%"],
       body: [
         [
           {
@@ -104,7 +106,7 @@ export default function BillsToPayPdf({
       paddingTop: () => 3,
       paddingBottom: () => 3,
     },
-    margin: [0, 10, 0, 10],
+    margin: [0, 10, 0, 0],
   };
 
   const tableBody = [
@@ -257,31 +259,6 @@ export default function BillsToPayPdf({
     ],
     content: [
       {
-        columns: [
-          {
-            text: `Valores Pagos: ${formatCurrency(
-              paidBills.reduce(
-                (acc, bill) =>
-                  acc + Number(bill.VALOR_PAGO_PGM.replace(",", ".")),
-                0
-              )
-            )}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-          },
-          {
-            text: `Total de boletos pagos: ${paidBills.length}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-          },
-        ],
-        columnGap: 10, // Espaçamento entre os "cards"
-      },
-      {
         table: {
           headerRows: 1,
           widths: [38, 42, 45, "*", "*", "*", "*"],
@@ -296,9 +273,28 @@ export default function BillsToPayPdf({
           paddingBottom: () => 2,
         },
         alignment: "center",
-        margin: [0, 0, 0, 0],
+        margin: [0, 10, 0, 0],
       },
-      summaryTable,
+      {
+        columns: [
+          summaryTable,
+          {
+            text: `Valores Pagos: ${formatCurrency(
+              paidBills.reduce(
+                (acc, bill) =>
+                  acc + Number(bill.VALOR_PAGO_PGM.replace(",", ".")),
+                0
+              )
+            )} \n
+            Total de boletos pagos: ${paidBills.length}`,
+            fontSize: 10,
+            bold: true,
+            margin: [0, 10, 0, 0],
+            alignment: "left",
+            width: 100,
+          },
+        ],
+      },
     ],
     footer: (currentPage: number, pageCount: number) => [
       {

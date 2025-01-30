@@ -26,11 +26,11 @@ import { DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, Dropd
 import { useAtom } from "jotai";
 
 // Tipagem
-import { ItemsGroupBySumSales } from "@/types/salesByBrand";
+import { ItemsSalesByBuy } from "@/types/salesByBrand";
 import { ItemsStockByBrand } from "@/types/stock";
 
 interface SalesByBrandProps {
-    salesByBrandData: ItemsGroupBySumSales[];
+    salesByBrandData: ItemsSalesByBuy[];
     stockAndDebtData: ItemsStockByBrand[];
 }
 
@@ -48,7 +48,7 @@ export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData 
         <>
             <Container>
                 <ToolBar
-                    title="Vendas por Marcas"
+                    title="Vendas x Compras"
                     handleRefreshClick={() => handleRefresh({ selectedPeriod, token, brands, setLoading, setBrandSales, setBrandStockAndDebt })}
                     handleCleanFilter={() => handleCleanFilter({ token, brands, setSelectedPeriod, setLoading, setBrandSales, setBrandStockAndDebt })}
                 />
@@ -110,7 +110,8 @@ export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData 
 
                 <div className="w-full px-4">
                     <GraphicContainer loading={loading}>
-                        <BarChart
+                        <BarChartComparison data={brandSales} xKey="brand" dataKeyOne="valueSales" dataKeyTwo="buyValue" nameKeyOne="Vendas" nameKeyTwo="Compras" />
+                        {/* <BarChart
                             data={brandSales}
                             dataKey="value"
                             dataKeyXAxis="brand"
@@ -118,7 +119,7 @@ export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData 
                             displayCartesianGrid={true}
                             palette={highLightColor}
                             LabelListProps={true}
-                        />
+                        /> */}
                     </GraphicContainer>
                 </div>
             </Container>

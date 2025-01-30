@@ -35,14 +35,16 @@ export default async function SalesByBrandPage() {
     const { SalesByBrand: playCovers } = salesQueries({ dateInit: today, dateEnd: today, company: ["4"], brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { stockByBrand } = StockQueries({ dateInit: '', dateEnd: '', brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { debtBySuppliers } = billsToPayQueries({ year, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
+    const { buyBySuppliers } = billsToPayQueries({ dateInit: today, dateEnd: today, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
 
-    const [responsePlayCell, responsePlayCustom, responsePlayUp, responsePlayCovers, responseStock, responseDebt] = await Promise.all([
+    const [responsePlayCell, responsePlayCustom, responsePlayUp, responsePlayCovers, responseStock, responseDebt, responseBuy] = await Promise.all([
         api.post("/v1/find-db-query", { query: playCell }),
         api.post("/v1/find-db-query", { query: playCustom }),
         api.post("/v1/find-db-query", { query: playUp }),
         api.post("/v1/find-db-query", { query: playCovers }),
         api.post("/v1/find-db-query", { query: stockByBrand }),
-        api.post("/v1/find-db-query", { query: debtBySuppliers })
+        api.post("/v1/find-db-query", { query: debtBySuppliers }),
+        api.post("/v1/find-db-query", { query: buyBySuppliers })
     ])
 
     const salesData = [...responsePlayCell.data.returnObject.body, ...responsePlayCustom.data.returnObject.body, ...responsePlayUp.data.returnObject.body, ...responsePlayCovers.data.returnObject.body]
@@ -67,9 +69,22 @@ export default async function SalesByBrandPage() {
         })
         .sort((a, b) => b.valueInStock - a.valueInStock);
 
+    const salesAndBuy = aggregatedSalesByBrand
+        .map((sales) => {
+            const matchedSales = responseBuy.data.returnObject.body.find(
+                (buy: any) => buy.APELIDO_PSS === sales.brand
+            );
+
+            return {
+                brand: sales.brand,
+                valueSales: sales.value,
+                buyValue: matchedSales ? parseFloat(matchedSales.VALOR_PGM.replace(",", ".")) : 0,
+            };
+        })
+    
     return (
         <LayoutSalesByBrand
-            salesByBrandData={aggregatedSalesByBrand}
+            salesByBrandData={salesAndBuy}
             stockAndDebtData={stockByBrandList}
         />
     )

@@ -25,5 +25,10 @@ export const billsToPayQueries = ({
   AND pgm.id_emp IN (1, 2, 3, 4, 5, 100)  GROUP BY  CASE WHEN pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA') THEN UPPER('inova') ELSE 
   pgm.apelido_pss END ORDER BY apelido_pss`;
 
-  return { allBillet, expiredBillet, debtBySuppliers };
+  let buyBySuppliers = `select CASE WHEN pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA')  THEN UPPER('inova') ELSE pgm.apelido_pss
+  END AS apelido_pss, SUM(pgm.valor_pgm) AS valor_pgm  FROM v_pagamentos pgm WHERE  CAST(pgm.datahora_lancamento_pgm AS DATE) BETWEEN '${dateInit}' AND '${dateEnd}'  AND (pgm.status_pgm = 1  OR pgm.status_pgm = 4)  
+  AND pgm.apelido_pss IN (${formattedBrands}) AND pgm.id_emp IN (1, 2, 3, 4, 5, 100)  GROUP BY  CASE WHEN pgm.apelido_pss IN ('BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA',
+  'MIA', 'TOMY INOVA') THEN UPPER('inova') ELSE pgm.apelido_pss END ORDER BY apelido_pss`;
+
+  return { allBillet, expiredBillet, debtBySuppliers, buyBySuppliers };
 };

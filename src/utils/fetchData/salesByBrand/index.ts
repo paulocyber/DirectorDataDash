@@ -6,7 +6,7 @@ import { fetchData } from "..";
 import { groupSumBy } from "@/utils/filters/groupSumBy";
 
 // Tipagem
-import { ItemsGroupBySumSales } from "@/types/salesByBrand";
+import { ItemsSalesByBuy } from "@/types/salesByBrand";
 import { ItemsStockByBrand } from "@/types/stock";
 interface FetchSalesByBrandProps {
   token: string;
@@ -15,7 +15,7 @@ interface FetchSalesByBrandProps {
   year: number;
   brands: string[];
   setLoading: (value: boolean) => void;
-  setBrandSales: (value: ItemsGroupBySumSales[]) => void;
+  setBrandSales: (value: ItemsSalesByBuy[]) => void;
   setBrandStockAndDebt: (value: ItemsStockByBrand[]) => void;
 }
 
@@ -62,6 +62,11 @@ export async function fetchSalesByBrand({
     year,
     brands,
   });
+  const { buyBySuppliers } = billsToPayQueries({
+    dateInit,
+    dateEnd,
+    brands,
+  });
 
   let playCellSales: any[] = [];
   let playCustomSales: any[] = [];
@@ -69,6 +74,7 @@ export async function fetchSalesByBrand({
   let playCoversSales: any[] = [];
   let stock: any[] = [];
   let deby: any[] = [];
+  let buy: any[] = [];
 
   const queries = [
     fetchData({
@@ -100,6 +106,11 @@ export async function fetchSalesByBrand({
       ctx: token,
       query: debtBySuppliers,
       setData: (data) => (deby = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: buyBySuppliers,
+      setData: (data) => (buy = data),
     }),
   ];
 
@@ -137,7 +148,19 @@ export async function fetchSalesByBrand({
     })
     .sort((a, b) => b.valueInStock - a.valueInStock);
 
+  const salesAndBuy = aggregatedSalesByBrand.map((sales) => {
+    const matchedSales = buy.find(
+      (buy: any) => buy.APELIDO_PSS === sales.brand
+    );
+
+    return {
+      brand: sales.brand,
+      valueSales: sales.value,
+      buyValue: matchedSales ? parseFloat(matchedSales.VALOR_PGM.replace(",", ".")) : 0,
+    }
+  });
+
   setLoading(false);
-  setBrandSales(aggregatedSalesByBrand);
+  setBrandSales(salesAndBuy);
   setBrandStockAndDebt(stockByBrandList);
 }

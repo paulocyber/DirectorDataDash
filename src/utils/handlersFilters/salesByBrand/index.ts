@@ -6,7 +6,7 @@ import getCurrentDateDetails from "@/utils/getDate";
 import { DateValue, RangeValue } from "@nextui-org/react";
 
 // Tipagem
-import { ItemsGroupBySumSales } from "@/types/salesByBrand";
+import { ItemsSalesByBuy } from "@/types/salesByBrand";
 import { ItemsStockByBrand } from "@/types/stock";
 interface SalesByBrandHandlersProps {
   date?: RangeValue<DateValue> | null;
@@ -16,7 +16,7 @@ interface SalesByBrandHandlersProps {
   setDate?: (value: RangeValue<DateValue>) => void;
   setSelectedPeriod?: (value: string) => void;
   setLoading: (value: boolean) => void;
-  setBrandSales: (value: ItemsGroupBySumSales[]) => void;
+  setBrandSales: (value: ItemsSalesByBuy[]) => void;
   setBrandStockAndDebt: (value: ItemsStockByBrand[]) => void;
 }
 

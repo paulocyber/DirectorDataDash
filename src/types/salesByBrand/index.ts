@@ -16,3 +16,10 @@ export type ItemsGroupBySumSales = {
   brand: string;
   value: number;
 };
+
+
+export type ItemsSalesByBuy = {
+  brand: string;
+  valueSales: number;
+  buyValue: number;
+};
