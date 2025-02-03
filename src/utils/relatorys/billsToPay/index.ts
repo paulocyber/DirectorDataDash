@@ -285,8 +285,18 @@ export default function BillsToPayPdf({
                   acc + Number(bill.VALOR_PAGO_PGM.replace(",", ".")),
                 0
               )
-            )} \n
-            Total de boletos pagos: ${paidBills.length}`,
+            )}
+            
+            Total de boletos pagos: ${paidBills.length}
+
+            Valores a pagar: ${formatCurrency(
+              openBills.reduce(
+                (acc, bill) =>
+                  acc + Number(bill.VALOR_PGM.replace(",", ".")),
+                0
+              )
+            )}
+            `,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 0],
