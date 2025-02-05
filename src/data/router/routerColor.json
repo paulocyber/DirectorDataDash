@@ -7,5 +7,6 @@
   "/latecustomer": "table",
   "/salesgoal/latecustomer": "table",
   "/billstoreceive": "dashboard",
-  "/billstoreceive/table": "table"
+  "/billstoreceive/table": "table",
+  "/salesbybrand/entriesxsales": "table"
 }

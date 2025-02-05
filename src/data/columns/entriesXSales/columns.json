@@ -1,0 +1,7 @@
+[
+  { "name": "ID", "uid": "id" },
+  { "name": "Descrição do Produto", "uid": "descricao" },
+  { "name": "Marca", "uid": "marca" },
+  { "name": "Compra", "uid": "compra" },
+  { "name": "Venda", "uid": "venda" }
+]

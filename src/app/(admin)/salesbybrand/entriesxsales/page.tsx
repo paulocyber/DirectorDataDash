@@ -9,12 +9,10 @@ import { setupApiClient } from "@/services/api";
 import getCurrentDateDetails from "@/utils/getDate";
 import { StockQueries } from "@/utils/queries/stock";
 import { salesQueries } from "@/utils/queries/sales";
+import { formatCurrency } from "@/utils/mask/money";
 
-// Imagem
-import manuntencion from "../../../../../public/assets/engenheiro.png"
-
-// Next
-import Image from "next/image";
+// Componetes
+import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales/page";
 
 export const metadata: Metadata = {
     title: "Vendas x Estoque em valor",
@@ -26,20 +24,28 @@ export default async function EntriesXSalesPage() {
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
 
-    const { today } = getCurrentDateDetails()
-    const { buyHistory } = StockQueries({ dateInit: '2025/01/01', dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
-    const { sellHistory } = salesQueries({ dateInit: '2025/01/01', dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { today, year } = getCurrentDateDetails()
+    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
 
     const [responseBuyHistory, responseSellHistory] = await Promise.all([
         api.post("/v1/find-db-query", { query: buyHistory }),
         api.post("/v1/find-db-query", { query: sellHistory }),
     ])
 
+    const entriesXSales = responseBuyHistory.data.returnObject.body
+        .map((buyHistory: any) => {
+            const matched = responseSellHistory.data.returnObject.body.find(
+                (sellHistory: any) => sellHistory.ID_PRD === buyHistory.ID_PRD
+            );
+
+            return {
+                ...buyHistory,
+                sellValue: matched ? formatCurrency(matched.VALOR_FINAL) : formatCurrency(0),
+            };
+        });
+
     return (
-        <div className="w-full max-h-screen h-full flex flex-col items-center justify-center text-center p-4">
-            <Image src={manuntencion} alt="Página em Construção" width={300} height={300} />
-            <h1 className="text-3xl font-bold mt-4">Página em Construção</h1>
-            <p className="text-lg text-gray-600 mt-2">Estamos trabalhando para trazer novidades em breve. Fique ligado! 😶‍🌫️</p>
-        </div>
+        <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} />
     )
 }

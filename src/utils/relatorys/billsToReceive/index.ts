@@ -62,7 +62,7 @@ export default function BillsToReceivePdf({
     (bill) => bill.RESTANTE_RCB
   );
   const totalReceivedAmount = calculateTotalByKey(
-    paidBills,
+    openBills,
     (bill) => bill.VALOR_PAGO_RCB
   );
 
@@ -208,6 +208,15 @@ export default function BillsToReceivePdf({
             margin: [0, 10, 0, 5],
             alignment: "center",
             color: 'red'
+          },
+          {
+            text: `Notas vencidas: ${formatCurrency(
+              totalReceivedAmount
+            )}`,
+            fontSize: 10,
+            bold: true,
+            margin: [0, 10, 0, 5],
+            alignment: "center",
           },
         ],
         columnGap: 10, // Espaçamento entre os "cards"

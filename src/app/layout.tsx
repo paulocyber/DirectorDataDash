@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 // Css
 import "./globals.css";
 import 'react-toastify/dist/ReactToastify.css';
+import img from "./favicon.ico"
 
 // React
 import { AuthProvider } from "@/contexts/auth";
@@ -12,11 +13,6 @@ import { Providers } from "@/contexts/recoil";
 // Biblioteca
 import { ToastContainer } from "react-toastify";
 import NextTopLoader from "nextjs-toploader";
-
-export const metadata: Metadata = {
-  title: "Login - Sistema de Gestão",
-  description: "Acesse sua conta para entrar no sistema e gerenciar suas informações.",
-};
 
 export default function RootLayout({
   children,

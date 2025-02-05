@@ -128,10 +128,10 @@ export const salesQueries = ({
   AND '${dateEnd} 23:59:59' AND sdi.id_emp = ale.ID_ALM GROUP BY sdi.ID_pss, fnc.apelido_pss) AS lucro INNER JOIN (SELECT mti.ID_FNC, mti.VALOR_INDIVIDUAL_MTI FROM metas_vendas mtv INNER JOIN metas_vendas_itens mti ON
   mtv.ID_MTA = mti.ID_MTA WHERE CAST(mtv.DATA_INICIO_MTA AS DATE) = '${year}/${month}/01') AS metas ON lucro.id_vendedor = metas.ID_FNC ORDER BY lucro.id_vendedor`;
 
-  let sellHistory = `select vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc as marcas, SUM(vhisProd.QUANTIDADE) AS QUANTIDADE, AVG(vhisProd.VALOR_UNITARIO) AS VALOR_BRUTO, AVG(vhisProd.VALOR_UNITARIO_LIQUIDO)
-  AS VALOR_LIQUIDO, SUM(vhisProd.VALOR_UNITARIO_LIQUIDO * vhisProd.QUANTIDADE) AS VALOR_FINAL FROM v_historico_venda_produto vhisProd INNER JOIN produtos prd ON prd.id_prd = vhisProd.id_prd LEFT JOIN marcas mrc ON 
-  mrc.id_mrc = prd.id_mrc WHERE vhisProd.data BETWEEN '${dateInit} 00:00:00' AND '${dateInit} 23:59:59' AND mrc.id_mrc IN (${formattedBrands}) AND vhisProd.id_emp in (1, 2, 3, 4, 5, 100) GROUP BY vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc, 
-  vhisProd.DATA`;
+  let sellHistory = `select vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc AS marcas, SUM(vhisProd.QUANTIDADE) AS QUANTIDADE, AVG(vhisProd.VALOR_UNITARIO) AS VALOR_BRUTO, 
+  AVG(vhisProd.VALOR_UNITARIO_LIQUIDO) AS VALOR_LIQUIDO, SUM(vhisProd.VALOR_UNITARIO_LIQUIDO * vhisProd.QUANTIDADE) AS VALOR_FINAL FROM v_historico_venda_produto vhisProd INNER JOIN produtos prd ON prd.id_prd = 
+  vhisProd.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vhisProd.data BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) AND vhisProd.id_emp IN 
+  (1, 2, 3, 4, 5, 100) GROUP BY vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc`;
 
   return {
     sales,

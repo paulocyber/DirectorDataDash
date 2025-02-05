@@ -15,7 +15,7 @@ import { StockQueries } from "@/utils/queries/stock";
 import { billsToPayQueries } from '@/utils/queries/billstoPay';
 
 // Componentes
-import LayoutSalesByBrand from "@/components/layouts/salesByBrand";
+import MainTence from "@/components/ui/maintenance";
 
 // MetasDados
 export const metadata: Metadata = {
@@ -81,11 +81,12 @@ export default async function SalesByBrandPage() {
                 buyValue: matchedSales ? parseFloat(matchedSales.VALOR_PGM.replace(",", ".")) : 0,
             };
         })
-    
+
     return (
-        <LayoutSalesByBrand
-            salesByBrandData={salesAndBuy}
-            stockAndDebtData={stockByBrandList}
-        />
+        // <LayoutSalesByBrand
+        //     salesByBrandData={salesAndBuy}
+        //     stockAndDebtData={stockByBrandList}
+        // />
+        <MainTence />
     )
 }

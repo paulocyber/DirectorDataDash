@@ -57,9 +57,9 @@ export const StockQueries = ({
   AS VALOR_FINAL FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN produtos prd ON prd.id_prd = vcomp.ID_PRD LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vcomp.ID_EMP = ${company} AND vcomp.DATA BETWEEN 
   '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' GROUP BY prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc`;
 
-  let buyHistory = `select vcomp.DATA, vcomp.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc AS marcas, SUM(vcomp.QUANTIDADE) AS QUANTIDADE, AVG(vcomp.VALOR_UNITARIO) AS VALOR_UNITARIO, SUM(vcomp.VALOR_UNITARIO * 
-  vcomp.QUANTIDADE) AS VALOR_FINAL FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN produtos prd ON prd.id_prd = vcomp.ID_PRD LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vcomp.ID_EMP in (1, 2, 3, 4, 5, 100)
-  AND MRC.DESCRICAO_MRC != '' AND vcomp.TIPO = 'M' AND vcomp.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.id_mrc IN (${formattedBrands}) GROUP BY prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc, vcomp.DATA, vcomp.id_prd`;
+  let buyHistory = `select vcomp.DATA, prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc AS marcas, SUM(vcomp.QUANTIDADE) AS QUANTIDADE, AVG(vcomp.VALOR_UNITARIO) AS VALOR_UNITARIO, SUM(vcomp.VALOR_UNITARIO * 
+  vcomp.QUANTIDADE) AS VALOR_FINAL  FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN produtos prd ON prd.id_prd = vcomp.ID_PRD LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE  vcomp.ID_EMP IN 
+  (1, 2, 3, 4, 5, 100) AND COALESCE(mrc.descricao_mrc, '') <> '' AND vcomp.TIPO = 'M' AND vcomp.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  vcomp.DATA,  prd.id_prd,  prd.DESCRICAO_PRD,  mrc.descricao_mrc`;
 
-  return { stockByBrand, topsProductsByBrand, stockPurchases, buyHistory };
+  return { stockByBrand, topsProductsByBrand, stockPurchases, buyHistory }; 
 };

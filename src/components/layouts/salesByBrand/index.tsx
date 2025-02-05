@@ -2,17 +2,13 @@
 
 // Componentes
 import Container from "@/components/ui/container";
-import BarChart from "@/components/ui/sciences/BarChart";
 import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
 import ToolBar from "@/components/ui/toolbar";
 import { Button } from "@/components/ui/button";
 import BarChartComparison from "@/components/ui/sciences/BarChart/BarChartComparison";
 
-// Dados
-import highLightColor from "@/data/pallets/highLigh.json"
-
 // React
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Utils
