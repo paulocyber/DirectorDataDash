@@ -74,7 +74,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     const generatePdf = () => {
         BillsToReceivePdf({ allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
-
+    console.log("Dados: ", billsToReceive)
     return (
         <div className="flex flex-col">
             <InfoCard data={infoCard} />

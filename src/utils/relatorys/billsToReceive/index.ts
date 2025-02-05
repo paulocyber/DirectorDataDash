@@ -191,28 +191,22 @@ export default function BillsToReceivePdf({
       {
         columns: [
           {
-            text: `Notas em abertos: ${formatCurrency(
-              totalOpenAmount
-            )}`,
+            text: `Notas em abertos: ${formatCurrency(totalOpenAmount)}`,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
             alignment: "center",
           },
           {
-            text: `Notas vencidas: ${formatCurrency(
-              totalPendingAmount
-            )}`,
+            text: `Notas vencidas: ${formatCurrency(totalPendingAmount)}`,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
             alignment: "center",
-            color: 'red'
+            color: "red",
           },
           {
-            text: `Notas vencidas: ${formatCurrency(
-              totalReceivedAmount
-            )}`,
+            text: `Notas vencidas: ${formatCurrency(totalReceivedAmount)}`,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
@@ -237,6 +231,21 @@ export default function BillsToReceivePdf({
         },
         alignment: "center",
         margin: [0, 0, 0, 0],
+      },
+      {
+        columns: [
+          {
+            text: `${openBills[0].DATAHORA_PAGAMENTO_RCB.split(" ")}
+             Notas em abertos: \n ${formatCurrency(totalOpenAmount)}
+             Notas pagas: \n ${formatCurrency(totalReceivedAmount)}
+             `,
+            fontSize: 10,
+            bold: true,
+            margin: [0, 10, 0, 0],
+            alignment: "left",
+            width: 100,
+          },
+        ],
       },
     ],
     footer: (currentPage: number, pageCount: number) => [

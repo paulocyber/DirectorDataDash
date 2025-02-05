@@ -4,6 +4,7 @@ export type ItemsBillsToReceiveData = {
   ID_ORIGEM: string;
   DATA_LANCAMENTO: string;
   DATA_VENCIMENTO_RCB: string;
+  DATAHORA_PAGAMENTO_RCB: string;
   VALOR_RCB: string;
   RESTANTE_RCB: string;
   JUROS_RCB: string;
