@@ -191,26 +191,12 @@ export default function BillsToReceivePdf({
       {
         columns: [
           {
-            text: `Notas em abertos: ${formatCurrency(totalOpenAmount)}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
-          },
-          {
             text: `Notas vencidas: ${formatCurrency(totalPendingAmount)}`,
             fontSize: 10,
             bold: true,
             margin: [0, 10, 0, 5],
             alignment: "center",
             color: "red",
-          },
-          {
-            text: `Notas vencidas: ${formatCurrency(totalReceivedAmount)}`,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 5],
-            alignment: "center",
           },
         ],
         columnGap: 10, // Espaçamento entre os "cards"
