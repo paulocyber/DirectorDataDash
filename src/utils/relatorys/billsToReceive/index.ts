@@ -5,6 +5,9 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { calculateTotalByKey } from "@/utils/functions/sumValues";
+import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
+import { fetchData } from "@/utils/fetchData";
+import getCurrentDateDetails from "@/utils/getDate";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
@@ -27,13 +30,20 @@ type CreatePdf = {
 };
 
 interface BillsToReceiveProps {
+  token: string;
   allBillsData: ItemsBillsToReceiveData[];
   openBillsData: ItemsBillsToReceiveData[];
   dateStart: string;
   dateEnd: string;
 }
 
-export default function BillsToReceivePdf({
+const parseDate = (dateStr: string) => {
+  const [day, month, year] = dateStr.split(" ")[0].split("/");
+  return new Date(`${year}-${month}-${day}T00:00:00`);
+};
+
+export default async function BillsToReceivePdf({
+  token,
   allBillsData,
   openBillsData,
   dateStart,
@@ -41,12 +51,23 @@ export default function BillsToReceivePdf({
 }: BillsToReceiveProps) {
   pdfMake.vfs = pdfFonts.vfs;
 
+  const { today } = getCurrentDateDetails();
+
   const openBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
   );
   const paidBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
   );
+
+  const mostRecentPaidBill = paidBills.reduce((latest, bill) => {
+    return parseDate(bill.DATA_VENCIMENTO_RCB) >
+      parseDate(latest.DATA_VENCIMENTO_RCB)
+      ? bill
+      : latest;
+  }, paidBills[0]);
+
+  console.log("Dados: ", mostRecentPaidBill);
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -60,10 +81,6 @@ export default function BillsToReceivePdf({
   const totalOpenAmount = calculateTotalByKey(
     openBills,
     (bill) => bill.RESTANTE_RCB
-  );
-  const totalReceivedAmount = calculateTotalByKey(
-    openBills,
-    (bill) => bill.VALOR_PAGO_RCB
   );
 
   const tableBody = [
@@ -221,9 +238,19 @@ export default function BillsToReceivePdf({
       {
         columns: [
           {
-            text: `${openBills[0].DATAHORA_PAGAMENTO_RCB.split(" ")}
+            text: `
              Notas em abertos: \n ${formatCurrency(totalOpenAmount)}
-             Notas pagas: \n ${formatCurrency(totalReceivedAmount)}
+
+             Notas pagas: \n ${formatCurrency(
+               Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
+             )}
+
+             Saldo á pagar: \n ${formatCurrency(
+               Number(
+                 totalOpenAmount -
+                   Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
+               )
+             )}
              `,
             fontSize: 10,
             bold: true,

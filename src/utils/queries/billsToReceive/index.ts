@@ -5,6 +5,7 @@ import { QueryProps } from "@/types/queires";
 import getCurrentDateDetails from "@/utils/getDate";
 
 export const billsToReceiveQueries = ({
+  id,
   dateInit,
   dateEnd,
   year,
@@ -40,6 +41,8 @@ export const billsToReceiveQueries = ({
   from v_recebimentos a where a.id_emp in(1, 2, 3, 4, 5, 100) and a.DATA_VENCIMENTO_RCB between date '${dateInit}' and '${dateEnd}' and a.STATUS_PSS = 'A' and a.status_rcb in (1, 2, 4) ${peopleFilter} and coalesce(a.insolvente_rcb,'N') = 'N' order by a.id_emp,
   a.data_vencimento_rcb,nome_pss`;
 
+  let receipts = `select rs.ID_RCB, rs.VALOR_RCB, rs.VALOR_PAGO_RCB from v_recebimentos_sintetico rs where rs.ID_PSS = '${id}' ORDER BY rs.data_vencimento_rcb DESC`;
+
   let topClientLate = `select a.id_pss, a.id_origem, a.data_vencimento_rcb, a.restante_rcb, a.VALOR_PAGO_RCB, a.apelido_pss, a.apelido_fnc as vendedor,a.status_rcb, a.atraso_rcb from v_recebimentos a 
   where a.id_emp in(1, 2, 3, 4, 5, 100) AND (a.status_rcb = 1 OR a.status_rcb = 4) and a.DATA_VENCIMENTO_RCB between date '2023/01/01' and '${year}/12/31' and a.status_rcb in (1, 2, 4) and coalesce
   (a.insolvente_rcb,'N') = 'N' and a.atraso_rcb > 0 order by a.id_emp, a.data_vencimento_rcb,nome_pss, a.atraso_rcb rows 5`;
@@ -56,6 +59,7 @@ export const billsToReceiveQueries = ({
   return {
     billsToReceiveInOpen,
     billsToReceiveAll,
+    receipts,
     topClientLate,
     summaryReceive,
     summaryReceiveRelease,

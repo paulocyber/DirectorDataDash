@@ -1,9 +1,7 @@
-// Bibliotecas
-import { RangeValue, DateValue } from "@nextui-org/react";
-
 // Utils
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
 import { fetchData } from "../..";
+import { calculateTotalByKey } from "@/utils/functions/sumValues";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
@@ -35,7 +33,7 @@ export async function fetchBillsToReceiveTable({
   });
 
   let allBillsToReceive: any[] = [];
-  
+
   const queries = [
     fetchData({
       ctx: token,

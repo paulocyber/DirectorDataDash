@@ -47,6 +47,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     const [billsToReceive, setBillsToReceive] = useState(allBillsData);
     const [openBills, setOpenBills] = useState(openBillsData)
     const [detailDav, setDetailDav] = useState<any[] | undefined>(undefined);
+    const [receipt, setReceipt] = useState<number>(0)
     const [people, setPeople] = useAtom(peopleAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
@@ -72,9 +73,9 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     }
 
     const generatePdf = () => {
-        BillsToReceivePdf({ allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
+        BillsToReceivePdf({ token, allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
-    console.log("Dados: ", billsToReceive)
+
     return (
         <div className="flex flex-col">
             <InfoCard data={infoCard} />
