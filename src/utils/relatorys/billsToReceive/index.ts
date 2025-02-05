@@ -67,7 +67,7 @@ export default async function BillsToReceivePdf({
       : latest;
   }, paidBills[0]);
 
-  console.log("Dados: ", mostRecentPaidBill);
+  console.log("Dados: ", openBillsData);
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -77,6 +77,10 @@ export default async function BillsToReceivePdf({
   const totalPendingAmount = calculateTotalByKey(
     overdueBills,
     (bill) => bill.RESTANTE_RCB
+  );
+  const totalReceipt = calculateTotalByKey(
+    openBills,
+    (bill) => bill.VALOR_RCB
   );
   const totalOpenAmount = calculateTotalByKey(
     openBills,
@@ -239,18 +243,13 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
-             Notas em abertos: \n ${formatCurrency(totalOpenAmount)}
+             Notas em abertos: \n ${formatCurrency(totalReceipt)}
 
              Notas pagas: \n ${formatCurrency(
                Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
              )}
 
-             Saldo á pagar: \n ${formatCurrency(
-               Number(
-                 totalOpenAmount -
-                   Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
-               )
-             )}
+             Saldo á pagar: \n ${formatCurrency(totalOpenAmount)}
              `,
             fontSize: 10,
             bold: true,
