@@ -243,9 +243,9 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
-             Notas em abertos: \n ${formatCurrency(totalReceipt)}
+             Valor da Compra: \n ${formatCurrency(totalReceipt)}
 
-             Notas pagas: \n ${formatCurrency(
+             Valor pago: \n ${formatCurrency(
                Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
              )}
 
