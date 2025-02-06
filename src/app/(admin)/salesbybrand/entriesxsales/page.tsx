@@ -13,6 +13,7 @@ import { formatCurrency } from "@/utils/mask/money";
 
 // Componetes
 import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales/page";
+import MainTence from "@/components/ui/maintenance";
 
 export const metadata: Metadata = {
     title: "Vendas x Estoque em valor",
@@ -46,6 +47,7 @@ export default async function EntriesXSalesPage() {
         });
 
     return (
-        <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} />
+        // <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} />
+        <MainTence />
     )
 }
