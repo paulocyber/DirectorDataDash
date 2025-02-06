@@ -16,6 +16,9 @@ export const renderCell = (item: EntriesXSales, columnKey: string) => {
         case "marca":
             return <span className="text-gray-600">{item.MARCAS}</span>;
 
+        case "entrada":
+            return <span className="text-gray-600">{item.DATA.split(' ')[0]}</span>;
+
         case "compra":
             return <span className="text-gray-600">{formatCurrency(Number(item.VALOR_FINAL.replace(",", ".")))}</span>;
 

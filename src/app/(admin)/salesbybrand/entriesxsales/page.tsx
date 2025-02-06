@@ -1,6 +1,6 @@
 // MetaDados
 import { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 // Bibliotecas
 import { setupApiClient } from "@/services/api";
@@ -24,10 +24,14 @@ export default async function EntriesXSalesPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
+    const headersList = headers();
+    const host = (await headersList).get("host") || "";
+
+    const isLocalhost = host.includes("localhost");
 
     const { today, year } = getCurrentDateDetails()
-    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
-    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING'] })
+    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING'] })
 
     const [responseBuyHistory, responseSellHistory] = await Promise.all([
         api.post("/v1/find-db-query", { query: buyHistory }),
@@ -47,7 +51,8 @@ export default async function EntriesXSalesPage() {
         });
 
     return (
-        // <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} />
-        <MainTence />
+        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} /> : <MainTence />
+        // 
+        //
     )
 }
