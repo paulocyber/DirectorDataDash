@@ -16,6 +16,7 @@ import { billsToPayQueries } from '@/utils/queries/billstoPay';
 
 // Componentes
 import MainTence from "@/components/ui/maintenance";
+import LayoutSalesByBrand from "@/components/layouts/salesByBrand";
 
 // MetasDados
 export const metadata: Metadata = {
@@ -83,10 +84,9 @@ export default async function SalesByBrandPage() {
         })
 
     return (
-        // <LayoutSalesByBrand
-        //     salesByBrandData={salesAndBuy}
-        //     stockAndDebtData={stockByBrandList}
-        // />
-        <MainTence />
+        <LayoutSalesByBrand
+            salesByBrandData={salesAndBuy}
+            stockAndDebtData={stockByBrandList}
+        />
     )
 }
