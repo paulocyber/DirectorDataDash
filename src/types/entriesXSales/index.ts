@@ -6,5 +6,8 @@ export type EntriesXSales = {
   QUANTIDADE: string;
   VALOR_UNITARIO: string;
   VALOR_FINAL: string;
-  sellValue: string;
+  VALOR_LIQUIDO: string;
+  VALOR_VENDA: string;
+  PECAS_FALTANTES: number;
+  PRECO_VENDA: string;
 };

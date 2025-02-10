@@ -30,8 +30,8 @@ export default async function EntriesXSalesPage() {
     const isLocalhost = host.includes("localhost");
 
     const { today, year } = getCurrentDateDetails()
-    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING'] })
-    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING'] })
+    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
 
     const [responseBuyHistory, responseSellHistory] = await Promise.all([
         api.post("/v1/find-db-query", { query: buyHistory }),
@@ -46,13 +46,12 @@ export default async function EntriesXSalesPage() {
 
             return {
                 ...buyHistory,
-                sellValue: matched ? formatCurrency(matched.VALOR_FINAL) : formatCurrency(0),
+                VALOR_LIQUIDO: matched?.VALOR_LIQUIDO || 0,
+                VALOR_VENDA: matched?.VALOR_FINAL || '0',
             };
         });
 
     return (
         isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} /> : <MainTence />
-        // 
-        //
     )
 }

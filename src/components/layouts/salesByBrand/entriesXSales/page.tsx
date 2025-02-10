@@ -25,17 +25,17 @@ export default function LayoutEntriesXSalesPage({ entriesSalesData }: LayoutEntr
     const fakeInfoCardData = [
         {
             icon: <CgShoppingCart />,
-            title: "Total Purchase",
+            title: "Total Compra",
             value: "75000"
         },
         {
             icon: <FaDollarSign />,
-            title: "Total Sales",
+            title: "Total Venda",
             value: "150000"
         },
         {
             icon: <BiTrendingUp />,
-            title: "Total Cost",
+            title: "Total Custo",
             value: "500000"
         }
     ];
