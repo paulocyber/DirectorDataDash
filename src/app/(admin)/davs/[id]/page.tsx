@@ -11,6 +11,7 @@ import { davsQueries } from "@/utils/queries/dav";
 // Next
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 // MetasDados
 export const metadata: Metadata = {
@@ -21,6 +22,11 @@ export const metadata: Metadata = {
 export default async function DetailDavsPage({ params }: { params: Promise<{ id: string }> }) {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
+
+    if (!token || ['estoque'].includes(role)) {
+        redirect('/salesbybrand')
+    }
 
     const api = setupApiClient(token)
 

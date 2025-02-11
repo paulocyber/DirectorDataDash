@@ -58,8 +58,9 @@ export const StockQueries = ({
   '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' GROUP BY prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc`;
 
   let buyHistory = `select vcomp.DATA, prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc AS marcas, SUM(vcomp.QUANTIDADE) AS QUANTIDADE, AVG(vcomp.VALOR_UNITARIO) AS VALOR_UNITARIO, SUM(vcomp.VALOR_UNITARIO * 
-  vcomp.QUANTIDADE) AS VALOR_FINAL  FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN produtos prd ON prd.id_prd = vcomp.ID_PRD LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE  vcomp.ID_EMP IN 
-  (1, 2, 3, 4, 5, 100) AND COALESCE(mrc.descricao_mrc, '') <> '' AND vcomp.TIPO = 'M' AND vcomp.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  vcomp.DATA,  prd.id_prd,  prd.DESCRICAO_PRD,  mrc.descricao_mrc`;
+  vcomp.QUANTIDADE) AS VALOR_FINAL, vcomp.ID_EMP, ale.preco_custo_ale AS preco_custo, SUM(vcomp.QUANTIDADE) * AVG(ale.preco_custo_ale) AS TOTAL_CUSTO FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN produtos prd ON prd.id_prd = vcomp.ID_PRD LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc INNER 
+  JOIN almoxarifados_estoque ale ON ale.id_prd = vcomp.id_prd WHERE  vcomp.ID_EMP IN (1, 2, 3, 4, 5, 100) AND VCOMP.ID_EMP = ale.id_alm AND COALESCE(mrc.descricao_mrc, '') <> '' AND vcomp.TIPO = 'M' AND vcomp.DATA 
+  BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  vcomp.DATA,  prd.id_prd,  prd.DESCRICAO_PRD, mrc.descricao_mrc, vcomp.ID_EMP, ale.preco_custo_ale`;
 
-  return { stockByBrand, topsProductsByBrand, stockPurchases, buyHistory }; 
+  return { stockByBrand, topsProductsByBrand, stockPurchases, buyHistory };
 };

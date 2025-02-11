@@ -9,7 +9,9 @@ import { setupApiClient } from "@/services/api";
 import getCurrentDateDetails from "@/utils/getDate";
 import { StockQueries } from "@/utils/queries/stock";
 import { salesQueries } from "@/utils/queries/sales";
-import { formatCurrency } from "@/utils/mask/money";
+
+// Dados
+import InfoCardFromEntriesXSales from "@/data/infoCards/entriesXSales";
 
 // Componetes
 import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales/page";
@@ -29,9 +31,9 @@ export default async function EntriesXSalesPage() {
 
     const isLocalhost = host.includes("localhost");
 
-    const { today, year } = getCurrentDateDetails()
+    const { today, year, month } = getCurrentDateDetails()
     const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
-    const { sellHistory } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { sellHistory } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
 
     const [responseBuyHistory, responseSellHistory] = await Promise.all([
         api.post("/v1/find-db-query", { query: buyHistory }),
@@ -52,6 +54,6 @@ export default async function EntriesXSalesPage() {
         });
 
     return (
-        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} /> : <MainTence />
+        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} /> : <MainTence />
     )
 }

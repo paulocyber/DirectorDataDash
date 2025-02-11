@@ -177,5 +177,21 @@
         ]
       }
     ]
+  },
+  "estoque": {
+    "router": [
+      {
+        "name": "Vendas por marcas",
+        "path": "/salesbybrand",
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Entradas x Vendas",
+            "path": "/salesbybrand/entriesxsales",
+            "icon": "table"
+          }
+        ]
+      }
+    ]
   }
 }

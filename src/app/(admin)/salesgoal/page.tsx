@@ -1,6 +1,7 @@
 // Next
 import { cookies } from "next/headers";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 // Bibliotecas
 import { setupApiClient } from "@/services/api";
@@ -26,6 +27,11 @@ export const metadata: Metadata = {
 export default async function SalesPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
+    
+    if (!token || ['estoque'].includes(role)) {
+        redirect('/salesbybrand')
+    }
 
     const api = setupApiClient(token)
 

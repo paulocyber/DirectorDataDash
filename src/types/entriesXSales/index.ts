@@ -8,6 +8,5 @@ export type EntriesXSales = {
   VALOR_FINAL: string;
   VALOR_LIQUIDO: string;
   VALOR_VENDA: string;
-  PECAS_FALTANTES: number;
-  PRECO_VENDA: string;
+  TOTAL_CUSTO: string;
 };

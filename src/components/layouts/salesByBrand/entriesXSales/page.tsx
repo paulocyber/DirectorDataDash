@@ -7,48 +7,41 @@ import { renderCell } from "@/components/cells/entriesXSales"
 import Table from "@/components/ui/table"
 import InfoCard from "@/components/ui/InfoCard"
 
-// Biblioteca
-import { CgShoppingCart } from "react-icons/cg"
-import { FaDollarSign } from "react-icons/fa"
-import { BiTrendingUp } from "react-icons/bi"
-
 // Dados
 import columns from "@/data/columns/entriesXSales/columns.json"
+import InfoCardFromEntriesXSales from "@/data/infoCards/entriesXSales"
+
+// React
+import { useState } from "react"
 
 // Tipagem
 import { EntriesXSales } from "@/types/entriesXSales"
+import { DateValue, RangeValue } from "@nextui-org/react"
+import { parseDate } from "@internationalized/date"
 interface LayoutEntriesXSalesProps {
-    entriesSalesData: EntriesXSales[]
+    entriesSalesData: EntriesXSales[];
+    dateInit: string;
+    dateEnd: string;
 }
 
-export default function LayoutEntriesXSalesPage({ entriesSalesData }: LayoutEntriesXSalesProps) {
-    const fakeInfoCardData = [
-        {
-            icon: <CgShoppingCart />,
-            title: "Total Compra",
-            value: "75000"
-        },
-        {
-            icon: <FaDollarSign />,
-            title: "Total Venda",
-            value: "150000"
-        },
-        {
-            icon: <BiTrendingUp />,
-            title: "Total Custo",
-            value: "500000"
-        }
-    ];
+export default function LayoutEntriesXSalesPage({ entriesSalesData, dateInit, dateEnd }: LayoutEntriesXSalesProps) {
+    const [date, setDate] = useState<RangeValue<DateValue>>({
+        start: parseDate(new Date(`${dateInit}`).toISOString().split('T')[0]),
+        end: parseDate(new Date(`${dateEnd}`).toISOString().split('T')[0]),
+    })
 
+    const infoCard = InfoCardFromEntriesXSales({ entriesSalesData: entriesSalesData })
 
     return (
         <div className="flex flex-col">
-            <InfoCard data={fakeInfoCardData} />
+            <InfoCard data={infoCard} />
             <Container>
                 <ToolBar
                     title="Entrada X Saída"
                     handleRefreshClick={() => console.log("Ativou  ")}
                     handleCleanFilter={() => console.log("Ativou")}
+                    dateRange={date}
+                    handleFilters={() => console.log("Filtro")}
                 />
                 <Table data={entriesSalesData} columns={columns} renderCell={renderCell} loading={false} />
             </Container>

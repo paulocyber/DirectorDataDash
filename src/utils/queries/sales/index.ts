@@ -136,7 +136,7 @@ export const salesQueries = ({
   let sellHistory = `select  EXTRACT(YEAR FROM vhisProd.DATA) AS ANO, EXTRACT(MONTH FROM vhisProd.DATA) AS MES, vhisProd.id_prd,  prd.DESCRICAO_PRD, mrc.descricao_mrc AS MARCAS,  SUM(vhisProd.QUANTIDADE) AS 
   QUANTIDADE,  MAX(vhisProd.VALOR_UNITARIO) AS VALOR_BRUTO,  MAX(vhisProd.VALOR_UNITARIO_LIQUIDO) AS VALOR_LIQUIDO, SUM(vhisProd.VALOR_UNITARIO_LIQUIDO * vhisProd.QUANTIDADE) AS VALOR_FINAL  FROM 
   v_historico_venda_produto vhisProd INNER JOIN produtos prd ON prd.id_prd = vhisProd.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vhisProd.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59'
-  AND mrc.descricao_mrc IN ('PEINING')  AND vhisProd.id_emp IN (1, 2, 3, 4, 5, 100) GROUP BY ANO, MES, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc ORDER BY ANO, MES`;
+  AND mrc.descricao_mrc IN ('PEINING')  AND vhisProd.id_emp IN (1, 2, 3, 4, 5) GROUP BY ANO, MES, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc ORDER BY ANO, MES`;
 
   return {
     sales,

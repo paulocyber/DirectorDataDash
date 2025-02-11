@@ -14,6 +14,7 @@ import LayoutBillsToReceiveTable from "@/components/layouts/billsToReceive/table
 
 // Next
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
@@ -26,6 +27,11 @@ export const metadata: Metadata = {
 export default async function BillsToReceiveTablePage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
+    
+    if (!token || ['estoque'].includes(role)) {
+        redirect('/salesbybrand')
+    }
 
     const api = setupApiClient(token as string)
     const { year, today } = getCurrentDateDetails()
