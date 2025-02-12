@@ -29,10 +29,6 @@ export default async function EntriesXSalesPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
-    const headersList = headers();
-    const host = (await headersList).get("host") || "";
-
-    const isLocalhost = host.includes("localhost");
 
     const { today, year, month } = getCurrentDateDetails()
     const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
@@ -59,6 +55,6 @@ export default async function EntriesXSalesPage() {
         });
 
     return (
-        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} suppliers={responseSuppliers.data.returnObject.body} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} /> : <MainTence />
+        <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} suppliers={responseSuppliers.data.returnObject.body} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} />
     )
 }
