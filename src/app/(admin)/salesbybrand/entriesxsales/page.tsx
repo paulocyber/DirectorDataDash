@@ -13,8 +13,11 @@ import { salesQueries } from "@/utils/queries/sales";
 // Dados
 import InfoCardFromEntriesXSales from "@/data/infoCards/entriesXSales";
 
+// Utils
+import { suppliersQueries } from "@/utils/queries/suppliers";
+
 // Componetes
-import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales/page";
+import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales";
 import MainTence from "@/components/ui/maintenance";
 
 export const metadata: Metadata = {
@@ -34,10 +37,12 @@ export default async function EntriesXSalesPage() {
     const { today, year, month } = getCurrentDateDetails()
     const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
     const { sellHistory } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const suppliers = suppliersQueries()
 
-    const [responseBuyHistory, responseSellHistory] = await Promise.all([
+    const [responseBuyHistory, responseSellHistory, responseSuppliers] = await Promise.all([
         api.post("/v1/find-db-query", { query: buyHistory }),
         api.post("/v1/find-db-query", { query: sellHistory }),
+        api.post("/v1/find-db-query", { query: suppliers }),
     ])
 
     const entriesXSales = responseBuyHistory.data.returnObject.body
@@ -54,6 +59,6 @@ export default async function EntriesXSalesPage() {
         });
 
     return (
-        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} /> : <MainTence />
+        isLocalhost ? <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} suppliers={responseSuppliers.data.returnObject.body} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} /> : <MainTence />
     )
 }

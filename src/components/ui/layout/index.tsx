@@ -91,7 +91,9 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                                     onOpen :
                                     router === "/salesgoal/latecustomer" ?
                                         onOpen :
-                                        undefined
+                                        router === "/salesbybrand/entriesxsales" ?
+                                            onOpen :
+                                            undefined
                     }
                     toogleMenuState={isOpen}
                 />
@@ -99,7 +101,7 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                     {children}
                 </main>
             </div>
-            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer") && (
+            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer" || router === "/salesbybrand/entriesxsales") && (
                 <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange}>
                     {router === "/billstopay/table" ?
                         <SettingsBillsToPay /> :
@@ -110,8 +112,10 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                                 router === "/billstoreceive/table" ?
                                     <SettingsBillsToReceive people={people} /> :
                                     router === "/salesgoal/latecustomer" ?
-                                        <SettingsLateCustomer employees={employees}/> :
-                                        <>nenhum</>
+                                        <SettingsLateCustomer employees={employees} /> :
+                                        router === "/salesbybrand/entriesxsales" ?
+                                            <SettingsSalesByBrand suppliers={suppliers} /> :
+                                            <>nenhum</>
                     }
                 </Modal>
             )}
