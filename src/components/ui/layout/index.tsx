@@ -22,6 +22,12 @@ import { useDisclosure } from "@nextui-org/react";
 // Next
 import { usePathname } from "next/navigation";
 
+// Atom
+import { refreshAtom } from "@/atom/refresh";
+
+// Bibliotecas
+import { useAtom } from "jotai";
+
 // Tipagem
 type RoleType = 'vendedor' | 'diretoria' | 'tecnologia';
 type PermissionType = {
@@ -41,6 +47,7 @@ interface LayoutProps {
 
 export function Layout({ children, role, enterprises, suppliers, people, employees }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
 
     const menuRef = useRef<HTMLDivElement>(null);
     const routes = (role && (rules as PermissionType)[role as RoleType]?.router) || [];
@@ -85,7 +92,7 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                         onOpen :
                         router === "/salesbybrand" ?
                             onOpen :
-                            router === "/salesgoal" ?
+                            router === "/salesgoal" ?   
                                 onOpen :
                                 router === "/billstoreceive/table" ?
                                     onOpen :
@@ -102,7 +109,7 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                 </main>
             </div>
             {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer" || router === "/salesbybrand/entriesxsales") && (
-                <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange}>
+                <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange} setActiveRefresh={router === "/billstopay/table" ? undefined : setActiveRefresh}>
                     {router === "/billstopay/table" ?
                         <SettingsBillsToPay /> :
                         router === "/salesbybrand" ?

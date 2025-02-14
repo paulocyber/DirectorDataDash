@@ -14,7 +14,7 @@ import columns from "@/data/columns/entriesXSales/columns.json"
 import InfoCardFromEntriesXSales from "@/data/infoCards/entriesXSales"
 
 // React
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "@/contexts/auth"
 
 // Bibliotecas
@@ -26,6 +26,7 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 
 // Atom
 import { suppliersAtoms } from "@/atom/suppliers"
+import { refreshAtom } from "@/atom/refresh"
 
 // Tipagem
 import { EntriesXSales } from "@/types/entriesXSales"
@@ -41,6 +42,7 @@ export default function LayoutEntriesXSalesPage({ entriesSalesData, suppliers, d
     const [entriesSales, setEntriesSales] = useState(entriesSalesData)
     const [loading, setLoading] = useState<boolean>(false)
     const [brands, setBrands] = useAtom(suppliersAtoms)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${dateInit}`).toISOString().split('T')[0]),
         end: parseDate(new Date(`${dateEnd}`).toISOString().split('T')[0]),
@@ -50,6 +52,13 @@ export default function LayoutEntriesXSalesPage({ entriesSalesData, suppliers, d
 
     const { token } = useContext(AuthContext)
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ date, token, brands, setLoading, setEntriesSales })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
 
     return (
         <div className="flex flex-col">

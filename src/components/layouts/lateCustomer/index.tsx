@@ -1,7 +1,7 @@
 'use client'
 
 // React
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Componentes
@@ -11,12 +11,14 @@ import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell, renderCellAdmin } from "@/components/cells/lateCustomer";
 import Modal from "@/components/ui/modal";
+import { SettingsLateCustomer } from "@/components/ui/settings/lateCustomer";
 
 // Biblioteca
 import { useAtom } from "jotai";
 
 // Atom
 import { peopleAtom } from "@/atom/people";
+import { refreshAtom } from "@/atom/refresh";
 
 // Dados
 import InfoCardFromLateCustomer from "@/data/infoCards/lateCustomer";
@@ -30,7 +32,6 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
 import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
-import { SettingsLateCustomer } from "@/components/ui/settings/lateCustomer";
 interface LayoutCustomerProps {
     openBills: ItemsBillsToReceiveData[];
     overdueBills: ItemsBillsToReceiveData[];
@@ -44,6 +45,7 @@ export default function LayoutCustomer({ openBills, overdueBills, today, employe
     const [overdueBillsData, setOverdueBillsData] = useState(overdueBills);
     const [loading, setLoading] = useState<boolean>(false)
     const [people, setPeople] = useAtom(peopleAtom)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
         end: parseDate(new Date(today).toISOString().split('T')[0]),
@@ -52,6 +54,13 @@ export default function LayoutCustomer({ openBills, overdueBills, today, employe
     const { token, user } = useContext(AuthContext)
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const infoCard = InfoCardFromLateCustomer({ openBillsData, overdueBillsData })
+
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ date, sellerSurname: admin ? undefined : user, people, token, setLoading, setOpenBillsData, setOverdueBillsData })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
 
     return (
         <>

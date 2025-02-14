@@ -18,7 +18,6 @@ import LayoutSalesGoal from "@/components/layouts/salesGoal";
 
 // Tipagem
 import { ItemsTopSellers } from "@/types/sales";
-
 export const metadata: Metadata = {
     title: "Relatório de vendas",
     description: "Informações sobre vendas e metas",

@@ -1,7 +1,7 @@
 'use client'
 
 // React
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Biblioteca
@@ -32,6 +32,7 @@ import { SettingsBillsToReceive } from "@/components/ui/settings/billsToReceive/
 
 // Atom
 import { peopleAtom } from "@/atom/people";
+import { refreshAtom } from "@/atom/refresh";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
@@ -47,8 +48,8 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     const [billsToReceive, setBillsToReceive] = useState(allBillsData);
     const [openBills, setOpenBills] = useState(openBillsData)
     const [detailDav, setDetailDav] = useState<any[] | undefined>(undefined);
-    const [receipt, setReceipt] = useState<number>(0)
     const [people, setPeople] = useAtom(peopleAtom)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
@@ -76,6 +77,13 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
         BillsToReceivePdf({ token, allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
 
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ date, token, people, setLoading, setBillsToReceive, setOpenBills })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
+
     return (
         <div className="flex flex-col">
             <InfoCard data={infoCard} />
@@ -93,7 +101,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
                 />
                 <Table data={openBills} columns={columnsBillsToReceive} renderCell={cellReceive} detail={handleDetailDav} loading={loading} />
             </Container>
-            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange}>
+            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange} setActiveRefresh={setActiveRefresh}>
                 <SettingsBillsToReceive people={peopleData} />
             </Modal>
             {detailDav && detailDav.length > 0 && (

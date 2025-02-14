@@ -1,7 +1,7 @@
 'use client'
 
 // React
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Componentes
@@ -27,6 +27,7 @@ import { useAtom } from "jotai";
 
 // Atom
 import { enterprisesAtom } from "@/atom/employees";
+import { refreshAtom } from "@/atom/refresh";
 
 // Next
 import Link from "next/link";
@@ -57,6 +58,7 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
     const [profitSales, setProfitSales] = useState(profitSalesData);
     const [filterSellers, setFilterSellers] = useState<string>('');
     const [company, setCompany] = useAtom(enterprisesAtom)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
@@ -92,6 +94,13 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
             profitSales: profitSales,
         })
     }
+
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ token, date, company, sellers: filterSellers, setLoading, setSalesProgress, setTopSellers, setProfitSales })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
 
     return (
         <>

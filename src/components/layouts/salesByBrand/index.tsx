@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import BarChartComparison from "@/components/ui/sciences/BarChart/BarChartComparison";
 
 // React
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Utils
@@ -16,6 +16,7 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 
 // Atom
 import { suppliersAtoms } from "@/atom/suppliers";
+import { refreshAtom } from "@/atom/refresh";
 
 // Biblioteca
 import { DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
@@ -36,9 +37,17 @@ export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData 
     const [loading, setLoading] = useState<boolean>(false);
     const [selectedPeriod, setSelectedPeriod] = useState<string>('Dia');
     const [brands] = useAtom(suppliersAtoms)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [date, setDate] = useState<RangeValue<DateValue> | null>(null);
 
     const { token } = useContext(AuthContext)
+
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ selectedPeriod, token, brands, setLoading, setBrandSales, setBrandStockAndDebt })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
 
     return (
         <>
