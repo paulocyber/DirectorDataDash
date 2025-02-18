@@ -6,15 +6,10 @@ import { Metadata } from "next";
 import { setupApiClient } from "@/services/api";
 
 // Utils
-import getCurrentDateDetails from "@/utils/getDate";
 import { StockQueries } from "@/utils/queries/stock";
-import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
 
 // Componentes
 import LayoutSalesByGroup from "@/components/layouts/salesByGroup";
-
-// Tipagem
-import { ItemsTopProducts } from "@/types/stock";
 
 export const metadata: Metadata = {
     title: "Relatório de vendas por grupo",
@@ -27,19 +22,18 @@ export default async function SalesByGroupPage() {
 
     const api = setupApiClient(token as string)
 
-    const { today } = getCurrentDateDetails()
-    const { topsProductsByBrand } = StockQueries({ dateInit: today, dateEnd: today, brands: ["36"], company: ['1'] })
+    const { stockByGroup } = StockQueries({
+       groups: ['PELICULA', 'FOSCA 3D PELICULA',
+            'PELICULAS DE CAMERA', 'PELICULA CERAMICA FOSCA PRIV', 'PELICULA 3D PRIVACIDADE', 'PELICULA 3D FINA', 'PELICULAS PLAY UP', 'CAPAS', 'SUA CAPA', 'CAPA ORIGINAL', 'CAPA RIGIDA LISA', 'CAPA SOFT', 'CAPA TRANSPARANTE',
+            'CAPAS DIVERSAS', 'CAPA RIGIDA FOSCA', 'CAPA REVESTIDA', 'CAPA REVESTIDA MAGSAFE', 'CAPA AVELUDADO', 'CAPA SPACE 2', 'CAPA SAPECE', 'ACRILICA']
+    })
 
-    const [responseTopsProducts] = await Promise.all([
-        api.post("/v1/find-db-query", { query: topsProductsByBrand }),
+    const [responseStockByGroup] = await Promise.all([
+        api.post("/v1/find-db-query", { query: stockByGroup }),
     ])
-
-    const topProducts = convertFieldsToNumber<ItemsTopProducts>(
-        responseTopsProducts.data.returnObject.body,
-        ['VALOR_CUSTO', 'VALOR_LIQUIDO']
-    )
-
+    
     return (
-        <LayoutSalesByGroup topProducts={topProducts} />
+        <>Teste</>
+        // <LayoutSalesByGroup topProducts={topProducts} />
     )
 }

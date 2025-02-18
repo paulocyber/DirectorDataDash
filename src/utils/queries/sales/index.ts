@@ -10,6 +10,7 @@ export const salesQueries = ({
   sellerSurname,
   idSeller,
   brands,
+  groups,
 }: QueryProps) => {
   const sellerFilter =
     idSeller || sellerSurname
@@ -34,6 +35,10 @@ export const salesQueries = ({
     : "";
   const formattedCompanys = Array.isArray(company)
     ? company.map((brand) => `${brand}`).join(", ")
+    : "";
+
+  const formattedGroups = Array.isArray(groups)
+    ? groups.map((group) => `${group}`).join(", ")
     : "";
 
   let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO , sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_custo,
@@ -105,7 +110,7 @@ export const salesQueries = ({
         AND sdi.id_emp in (1, 2, 3) 
         AND ale.id_alm in (1, 2, 3) 
         AND prd.status_prd = 'A' 
-        AND (grp.nome_grp IN ('relogio', 'BATERIA PORTATIL', 'SMARTWATCH') OR (grp.nome_grp = 'FONE BLUETOOTH' AND prd.descricao_prd LIKE '%tws%')) 
+        AND grp.nome_grp IN (${formattedGroups})
         ORDER BY sdi.id_prd, prd.descricao_prd`;
 
   // Querys observação possivelmente errada

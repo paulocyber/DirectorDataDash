@@ -6,9 +6,13 @@ export const StockQueries = ({
   dateEnd,
   company,
   brands,
+  groups,
 }: QueryProps) => {
   const formattedBrands = Array.isArray(brands)
     ? brands.map((brand) => `'${brand}'`).join(", ")
+    : "";
+  const formattedGroups = Array.isArray(groups)
+    ? groups.map((group) => `'${group}'`).join(", ")
     : "";
 
   let stockByBrand = `select mrc.id_mrc AS id_marca, COALESCE(mrc.descricao_mrc, 'SEM MARCA') AS marca, 
@@ -20,6 +24,10 @@ export const StockQueries = ({
     AND mrc.descricao_mrc IN (${formattedBrands}) 
     AND prd.status_prd = 'A' 
     ORDER BY mrc.id_mrc, mrc.descricao_mrc`;
+
+  let stockByGroup = `select grp.id_grp, grp.nome_grp, SUM(ale.quantidade_atual_ale * ale.preco_compra_ale) AS total_valor_compra FROM produtos prd INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
+  INNER JOIN grupos_produtos grp ON grp.id_grp = prd.id_grp LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE  ale.id_alm IN (1, 2, 3, 4, 5, 100) AND grp.nome_grp IN (${formattedGroups}) AND prd.status_prd = 'A' 
+  GROUP BY grp.id_grp, grp.nome_grp`;
 
   let topsProductsByBrand = `select sdi.id_prd AS id_produto, prd.descricao_prd AS produto, 
       mrc.descricao_mrc as marca, 
@@ -62,5 +70,5 @@ export const StockQueries = ({
   JOIN almoxarifados_estoque ale ON ale.id_prd = vcomp.id_prd WHERE  vcomp.ID_EMP IN (1, 2, 3, 4, 5, 100) AND VCOMP.ID_EMP = ale.id_alm AND COALESCE(mrc.descricao_mrc, '') <> '' AND vcomp.TIPO = 'M' AND vcomp.DATA 
   BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  vcomp.DATA,  prd.id_prd,  prd.DESCRICAO_PRD, mrc.descricao_mrc, vcomp.ID_EMP, ale.preco_custo_ale`;
 
-  return { stockByBrand, topsProductsByBrand, stockPurchases, buyHistory };
+  return { stockByBrand, stockByGroup, topsProductsByBrand, stockPurchases, buyHistory };
 };

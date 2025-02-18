@@ -9,7 +9,6 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
 import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
-import { companyQueries } from "@/utils/queries/employees";
 
 // Componentes
 import LayoutCustomer from "@/components/layouts/lateCustomer";

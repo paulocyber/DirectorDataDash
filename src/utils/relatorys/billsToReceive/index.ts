@@ -56,7 +56,7 @@ export default async function BillsToReceivePdf({
   const openBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
   );
-  const paidBills = allBillsData.filter(
+  const paidBills = openBillsData.filter(
     (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
   );
 
@@ -67,8 +67,6 @@ export default async function BillsToReceivePdf({
       : latest;
   }, paidBills[0]);
 
-  console.log("Dados: ", openBillsData);
-
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
       (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4") &&
@@ -78,10 +76,7 @@ export default async function BillsToReceivePdf({
     overdueBills,
     (bill) => bill.RESTANTE_RCB
   );
-  const totalReceipt = calculateTotalByKey(
-    openBills,
-    (bill) => bill.VALOR_RCB
-  );
+  const totalReceipt = calculateTotalByKey(openBills, (bill) => bill.VALOR_RCB);
   const totalOpenAmount = calculateTotalByKey(
     openBills,
     (bill) => bill.RESTANTE_RCB
@@ -161,7 +156,11 @@ export default async function BillsToReceivePdf({
         fillColor: index % 2 === 0 ? "#f2f6fa" : null,
       },
       {
-        text: formatCurrency(Number(bill.VALOR_PAGO_RCB.replace(",", "."))),
+        text: formatCurrency(
+          Number(
+            bill.VALOR_PAGO_RCB ? bill.VALOR_PAGO_RCB.replace(",", ".") : 0
+          )
+        ),
         fontSize: 7,
         alignment: "center",
         color: "green",
@@ -246,7 +245,7 @@ export default async function BillsToReceivePdf({
              Valor da Compra: \n ${formatCurrency(totalReceipt)}
 
              Valor pago: \n ${formatCurrency(
-               Number(mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", "."))
+               Number(mostRecentPaidBill ? mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", ".") : 0)
              )}
 
              Saldo á pagar: \n ${formatCurrency(totalOpenAmount)}
