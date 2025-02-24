@@ -33,7 +33,7 @@ export default async function BillsToPayTablePage() {
     const api = setupApiClient(token)
 
     const { year, month, today, yesterday } = getCurrentDateDetails()
-    const { allBillet } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
+    const { allBillet,  } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
     const { expiredBillet } = billsToPayQueries({ dateInit: `${year}/01/01`, dateEnd: yesterday })
 
     const [allBillsResponse, overdueBillsResponse] = await Promise.all([
