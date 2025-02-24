@@ -24,7 +24,7 @@ interface LayoutSalesByGroupProps {
 
 export default function LayoutSalesByGroup({ currentSalesData, lastSalesData }: LayoutSalesByGroupProps) {
     const [currentSales, setCurrentSalesData] = useState(currentSalesData)
-    const [lastSales, setLastSalesData] = useState(currentSalesData)
+    const [lastSales, setLastSalesData] = useState(lastSalesData)
     const [loading, setLoading] = useState<boolean>(false)
 
     const { token } = useContext(AuthContext)
