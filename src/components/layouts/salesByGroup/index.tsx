@@ -48,14 +48,14 @@ export default function LayoutSalesByGroup({ currentSalesData, lastSalesData }: 
                                     <DescriptionGraphic data={lastSalesData} dataKey="brand" />
                                 </div>
                                 <PieChart
-                                    data={currentSalesData}
+                                    data={currentSales}
                                     dataKey="value"
                                     displayToolTip={true}
                                     ToolTipComponent={(props) => (
                                         <Tooltip {...props} dataKey='brand' valueKey="value" />
                                     )}
                                     label={(props) => (
-                                        <ExternalPieLabel {...props} data={currentSalesData} />
+                                        <ExternalPieLabel {...props} data={currentSales} />
                                     )}
                                 />
                             </GraphicContainer>
@@ -66,20 +66,20 @@ export default function LayoutSalesByGroup({ currentSalesData, lastSalesData }: 
                 <div className="w-full">
                     <Container>
                         <div className="bg-white shadow-lg rounded-lg p-6">
-                            <h2 className="text-xl font-bold text-gray-800 mb-4">Mês Atual</h2>
+                            <h2 className="text-xl font-bold text-gray-800 mb-4">Mês Passado</h2>
                             <GraphicContainer loading={loading}>
                                 <div className="flex-col flex items-center justify-center w-[102px] overflow-auto">
-                                    <DescriptionGraphic data={lastSalesData} dataKey="brand" />
+                                    <DescriptionGraphic data={lastSales} dataKey="brand" />
                                 </div>
                                 <PieChart
-                                    data={lastSalesData}
+                                    data={lastSales}
                                     dataKey="value"
                                     displayToolTip={true}
                                     ToolTipComponent={(props) => (
                                         <Tooltip {...props} dataKey='brand' valueKey="value" />
                                     )}
                                     label={(props) => (
-                                        <ExternalPieLabel {...props} data={currentSalesData} />
+                                        <ExternalPieLabel {...props} data={lastSales} />
                                     )}
                                 />
                             </GraphicContainer>
