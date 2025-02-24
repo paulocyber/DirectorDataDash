@@ -11,7 +11,7 @@ interface DataItem {
 
 export const ExternalPieLabel = (props: PieLabelRenderProps & { data: DataItem[] }): JSX.Element => {
     const radian = Math.PI / 180;
-    const { cx, cy, midAngle, startAngle, endAngle, payload, outerRadius, value, data } = props;
+    const { cx, cy, midAngle, startAngle, endAngle, payload, outerRadius, value, data, index } = props;
 
     const cxNumber = typeof cx === 'number' ? cx : 0;
     const cyNumber = typeof cy === 'number' ? cy : 0;
@@ -27,8 +27,20 @@ export const ExternalPieLabel = (props: PieLabelRenderProps & { data: DataItem[]
     const ey = my;
     const textAnchor = cos >= 0 ? 'start' : 'end';
 
-    const totalValue = (data || []).reduce((acc: number, cur: { value: number }) => acc + cur.value, 0);
-    const percentage = totalValue > 0 ? `${((value / totalValue) * 100).toFixed(1)}%` : '0%';
+    const totalValue = (data || []).reduce((acc: number, cur: DataItem) => acc + cur.value, 0);
+    
+    // Cálculo padrão do percentual
+    let computedPercentage = totalValue > 0 ? (value / totalValue) * 100 : 0;
+    
+    // Se houver exatamente 2 itens, define o segundo como complemento para 100%
+    if (data.length === 2 && typeof index !== 'undefined') {
+        if (index === 1) {
+            const firstPercentage = data[0].value / totalValue * 100;
+            computedPercentage = 100 - firstPercentage;
+        }
+    }
+
+    const percentage = `${computedPercentage.toFixed(1)}%`;
 
     return (
         <g>
@@ -55,7 +67,7 @@ export const ExternalPieLabel = (props: PieLabelRenderProps & { data: DataItem[]
                 fill="text-gray-600"
                 className="font-bold text-[11px]"
             >
-                {`${percentage}%`}
+                {percentage}
             </text>
         </g>
     );

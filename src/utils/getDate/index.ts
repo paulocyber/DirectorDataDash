@@ -18,6 +18,12 @@ export default function getCurrentDateDetails() {
 
   const yesterdayDate = new Date(year, month - 1, yesterday);
 
+  // Calcular mês anterior
+  const firstDayPrevMonth = new Date(year, month - 2, 1);
+
+  // Calcular o último dia do mês anterior
+  const lastDayPrevMonth = new Date(year, month - 1, 0);
+
   // Calcular o início da semana (segunda-feira)
   const startOfWeekDate = new Date(today);
   const dayOfWeek = startOfWeekDate.getDay();
@@ -36,5 +42,7 @@ export default function getCurrentDateDetails() {
     yesterday: formatDate(yesterdayDate),
     startOfWeek: formatDate(startOfWeekDate),
     endOfWeek: formatDate(endOfWeekDate),
+    firstDayPrevMonth: formatDate(firstDayPrevMonth),
+    lastDayPrevMonth: formatDate(lastDayPrevMonth),
   };
 }

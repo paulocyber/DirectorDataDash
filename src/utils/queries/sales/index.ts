@@ -38,7 +38,7 @@ export const salesQueries = ({
     : "";
 
   const formattedGroups = Array.isArray(groups)
-    ? groups.map((group) => `${group}`).join(", ")
+    ? groups.map((group) => `'${group}'`).join(", ")
     : "";
 
   let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO , sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_custo,
@@ -94,24 +94,13 @@ export const salesQueries = ({
           AND mrc.descricao_mrc in (${formattedBrands})
           ORDER BY sdi.id_prd, prd.descricao_prd`;
 
-  let salesByGroup = `select sdi.id_prd AS id_produto, prd.descricao_prd AS produto, mrc.id_mrc AS id_marca, 
-          COALESCE(mrc.descricao_mrc, 'SEM MARCA') AS marcas, grp.id_grp AS id_grupo, 
-          COALESCE(grp.nome_grp, 'SEM GRUPO') AS grupo, sdi.preco_custo_sdi, sdi.preco_sdi, 
-          sdi.valor_bruto_sdi, ale.quantidade_atual_ale AS quantidade_almox, ale.preco_custo_ale AS preco_custo 
-        FROM saidas sds 
-        INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds 
-        INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd 
-        LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc 
-        LEFT JOIN grupos_produtos grp ON grp.id_grp = prd.id_grp 
-        INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
-        WHERE sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' 
-        AND sds.status_sds = '2' 
-        AND sds.tipo_sds IN ('4', '5', '9') 
-        AND sdi.id_emp in (1, 2, 3) 
-        AND ale.id_alm in (1, 2, 3) 
-        AND prd.status_prd = 'A' 
-        AND grp.nome_grp IN (${formattedGroups})
-        ORDER BY sdi.id_prd, prd.descricao_prd`;
+  let salesByGroup = `select grp.id_grp AS id_grupo, COALESCE(CASE WHEN grp.nome_grp IN ('SUA CAPA', 'CAPA ORIGINAL', 'CAPA RIGIDA LISA', 'CAPA SOFT', 'CAPA TRANSPARANTE', 'CAPAS DIVERSAS', 'CAPA RIGIDA FOSCA', 
+  'CAPA REVESTIDA', 'CAPA REVESTIDA MAGSAFE', 'CAPA AVELUDADO', 'CAPA SPACE 2', 'CAPA SAPECE ACRILICA') THEN 'CAPAS'WHEN grp.nome_grp IN ('pelicula', 'fosca 3D pelicula', 'pelicula de camera', 
+  'pelicula cerâmica fosca', 'pelicula ceramica fosca priv', 'pelicula 3d grossa', 'pelicula 3d privacidade', 'pelicula 3d fina', 'pelicula play up' ) THEN 'PELICULA' ELSE grp.nome_grp END, 'SEM GRUPO') AS grupo, 
+  SUM(sdi.VALOR_LIQUIDO_SDI) AS valor_liquido,  SUM(sdi.valor_bruto_sdi) AS valor_bruto,  SUM(sdi.preco_custo_sdi) AS preco_custo,  SUM(ale.quantidade_atual_ale * ale.preco_compra_ale) AS total_valor_compra FROM 
+  saidas sds INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd  INNER JOIN grupos_produtos grp ON grp.id_grp = prd.id_grp INNER JOIN almoxarifados_estoque ale 
+  ON ale.id_prd = prd.id_prd WHERE sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.status_sds = '2' AND sds.tipo_sds IN ('4', '5', '9') AND sdi.id_emp = ale.id_alm AND 
+  prd.status_prd = 'A' AND grp.nome_grp IN (${formattedGroups}) GROUP BY grp.id_grp, grupo ORDER BY grp.id_grp`;
 
   // Querys observação possivelmente errada
   // let topSellers = `select tbv.id, tbv.vendedor, tbv.valor_total_liquido AS VALOR_LIQUIDO FROM ( SELECT sds.id_fnc AS id, fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS valor_total_liquido FROM

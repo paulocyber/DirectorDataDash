@@ -15,7 +15,6 @@ import { StockQueries } from "@/utils/queries/stock";
 import { billsToPayQueries } from '@/utils/queries/billstoPay';
 
 // Componentes
-import MainTence from "@/components/ui/maintenance";
 import LayoutSalesByBrand from "@/components/layouts/salesByBrand";
 
 // MetasDados

@@ -6,7 +6,9 @@ import { Metadata } from "next";
 import { setupApiClient } from "@/services/api";
 
 // Utils
-import { StockQueries } from "@/utils/queries/stock";
+import { salesQueries } from "@/utils/queries/sales";
+import getCurrentDateDetails from "@/utils/getDate";
+import { groupSumBy } from "@/utils/filters/groupSumBy";
 
 // Componentes
 import LayoutSalesByGroup from "@/components/layouts/salesByGroup";
@@ -22,18 +24,35 @@ export default async function SalesByGroupPage() {
 
     const api = setupApiClient(token as string)
 
-    const { stockByGroup } = StockQueries({
-       groups: ['PELICULA', 'FOSCA 3D PELICULA',
-            'PELICULAS DE CAMERA', 'PELICULA CERAMICA FOSCA PRIV', 'PELICULA 3D PRIVACIDADE', 'PELICULA 3D FINA', 'PELICULAS PLAY UP', 'CAPAS', 'SUA CAPA', 'CAPA ORIGINAL', 'CAPA RIGIDA LISA', 'CAPA SOFT', 'CAPA TRANSPARANTE',
-            'CAPAS DIVERSAS', 'CAPA RIGIDA FOSCA', 'CAPA REVESTIDA', 'CAPA REVESTIDA MAGSAFE', 'CAPA AVELUDADO', 'CAPA SPACE 2', 'CAPA SAPECE', 'ACRILICA']
+    const { firstDayPrevMonth, lastDayPrevMonth, year, month, today } = getCurrentDateDetails()
+
+    const { salesByGroup: currentMonthSales } = salesQueries({
+        dateInit: `${year}/${month}/01`,
+        dateEnd: today,
+        groups: ['CAPAS', 'SUA CAPA', 'CAPA ORIGINAL', 'CAPA RIGIDA LISA', 'CAPA SOFT', 'CAPA TRANSPARANTE', 'CAPAS DIVERSAS', 'CAPA RIGIDA FOSCA', 'CAPA REVESTIDA', 'CAPA REVESTIDA MAGSAFE', 'CAPA AVELUDADO',
+            'CAPA SPACE 2', 'CAPA SAPECE ACRILICA', 'pelicula', 'fosca 3D pelicula', 'película de camera', 'pelicula cerâmica fosca', 'pelicula ceramica fosca priv', 'pelicula 3d grossa', 'pelicula 3d privacidade',
+            'pelicula 3d fina', 'pelicula play up']
+    })
+    const { salesByGroup: lastMonthSales } = salesQueries({
+        dateInit: firstDayPrevMonth,
+        dateEnd: lastDayPrevMonth,
+        groups: ['CAPAS', 'SUA CAPA', 'CAPA ORIGINAL', 'CAPA RIGIDA LISA', 'CAPA SOFT', 'CAPA TRANSPARANTE', 'CAPAS DIVERSAS', 'CAPA RIGIDA FOSCA', 'CAPA REVESTIDA', 'CAPA REVESTIDA MAGSAFE', 'CAPA AVELUDADO',
+            'CAPA SPACE 2', 'CAPA SAPECE ACRILICA', 'pelicula', 'fosca 3D pelicula', 'película de camera', 'pelicula cerâmica fosca', 'pelicula ceramica fosca priv', 'pelicula 3d grossa', 'pelicula 3d privacidade',
+            'pelicula 3d fina', 'pelicula play up']
     })
 
-    const [responseStockByGroup] = await Promise.all([
-        api.post("/v1/find-db-query", { query: stockByGroup }),
+    const [currentMonthSalesResponse, lastMonthSalesResponse] = await Promise.all([
+        api.post("/v1/find-db-query", { query: currentMonthSales }),
+        api.post("/v1/find-db-query", { query: lastMonthSales }),
     ])
-    
+
+    const currentMonthAggregatedSales = groupSumBy(currentMonthSalesResponse.data.returnObject.body, { key: 'GRUPO', valueKey: 'TOTAL_VALOR_COMPRA' })
+    const lastMonthAggregatedSales = groupSumBy(lastMonthSalesResponse.data.returnObject.body, { key: 'GRUPO', valueKey: 'TOTAL_VALOR_COMPRA' })
+
     return (
-        <>Teste</>
-        // <LayoutSalesByGroup topProducts={topProducts} />
+        <LayoutSalesByGroup
+            currentSalesData={currentMonthAggregatedSales}
+            lastSalesData={lastMonthAggregatedSales}
+        />
     )
 }
