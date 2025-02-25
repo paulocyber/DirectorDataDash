@@ -59,10 +59,15 @@ export default function BillsToPayPdf({
     valueKey: status.includes("Em aberto") ? "VALOR_PGM" : "VALOR_PAGO_PGM",
   }).sort((a, b) => b.value - a.value);
 
+  const fullPaymentMethod = groupSumBy(allBillets, {
+    key: "DESCRICAO_FRM",
+    valueKey: "VALOR_PAGO_PGM",
+  });
+
   const summaryTable = {
     table: {
       headerRows: 1,
-      widths: ["30%", "30%"],
+      widths: ["40%", "40%"],
       body: [
         [
           {
@@ -83,6 +88,56 @@ export default function BillsToPayPdf({
           },
         ],
         ...aggregatedPayByBrand.map((item, index) => [
+          {
+            text: item.brand,
+            fontSize: 7,
+            alignment: "left",
+            fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+          },
+          {
+            text: formatCurrency(item.value),
+            fontSize: 7,
+            alignment: "right",
+            fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+          },
+        ]),
+      ],
+    },
+    layout: {
+      hLineWidth: () => 0.5,
+      vLineWidth: () => 0.5,
+      hLineColor: () => "#CCCCCC",
+      vLineColor: () => "#CCCCCC",
+      paddingTop: () => 3,
+      paddingBottom: () => 3,
+    },
+    margin: [0, 10, 0, 0],
+  };
+
+  const paymentMethodTable = {
+    table: {
+      headerRows: 1,
+      widths: ["40%", "40%"],
+      body: [
+        [
+          {
+            text: "Forma de Pagamento",
+            bold: true,
+            alignment: "center",
+            fillColor: "#1d4ed8",
+            color: "#ffffff",
+            fontSize: 8,
+          },
+          {
+            text: "Valor Pago",
+            bold: true,
+            alignment: "center",
+            fillColor: "#1d4ed8",
+            color: "#ffffff",
+            fontSize: 8,
+          },
+        ],
+        ...fullPaymentMethod.map((item, index) => [
           {
             text: item.brand,
             fontSize: 7,
@@ -293,6 +348,7 @@ export default function BillsToPayPdf({
       {
         columns: [
           summaryTable,
+          paymentMethodTable,
           {
             text: `Valores Pagos: ${formatCurrency(
               paidBills.reduce(
@@ -306,11 +362,11 @@ export default function BillsToPayPdf({
 
             Valores a pagar: ${formatCurrency(
               openBills.reduce(
-                (acc, bill) =>
-                  acc + Number(bill.VALOR_PGM.replace(",", ".")),
+                (acc, bill) => acc + Number(bill.VALOR_PGM.replace(",", ".")),
                 0
               )
             )}
+           
             `,
             fontSize: 10,
             bold: true,
