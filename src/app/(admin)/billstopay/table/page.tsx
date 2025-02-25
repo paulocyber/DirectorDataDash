@@ -47,7 +47,7 @@ export default async function BillsToPayTablePage() {
     const paidBills = allBillsResponse.data.returnObject.body.filter(
         (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
     );
-
+    
     return (
         <LayoutBillsToPayTable
             allBilletsData={allBillsResponse.data.returnObject.body}

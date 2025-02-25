@@ -167,6 +167,14 @@ export default function BillsToPayPdf({
         color: "#ffffff",
         fillColor: "#1d4ed8",
       },
+      {
+        text: "Forma de pagamento",
+        bold: true,
+        fontSize: 8,
+        alignment: "center",
+        color: "#ffffff",
+        fillColor: "#1d4ed8",
+      },
     ],
     ...billetFilter.map((bill, index) => [
       {
@@ -218,6 +226,13 @@ export default function BillsToPayPdf({
         padding: [5, 5],
         fillColor: index % 2 === 0 ? "#f2f6fa" : null,
       },
+      {
+        text: bill.DESCRICAO_FRM,
+        fontSize: 7,
+        alignment: "left",
+        padding: [5, 5],
+        fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+      },
     ]),
   ];
 
@@ -261,7 +276,7 @@ export default function BillsToPayPdf({
       {
         table: {
           headerRows: 1,
-          widths: [38, 42, 45, "*", "*", "*", "*"],
+          widths: [40, 42, 45, "*", "*", "*", "*", "*"],
           body: tableBody,
         },
         layout: {
