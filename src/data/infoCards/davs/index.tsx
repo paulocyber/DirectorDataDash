@@ -20,7 +20,7 @@ interface InfoCardFromDavProps {
 
 export default function InfoCardFromDav({ davs, detail }: InfoCardFromDavProps) {
     const grossValue = calculateTotalByKey(davs, (item) => item.VALOR_BRUTO_SDS)
-    const netValue = calculateTotalByKey(davs, (item) => item.VALOR_LIQUIDO_TOTAL)
+    const netValue = calculateTotalByKey(davs, (item) => item.VALOR_LIQUIDO_SDS)
     let client = ""
 
     davs.forEach((items) => {

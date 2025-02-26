@@ -11,6 +11,7 @@ interface salesHandlersProps {
   token: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setDavs: (data: ItemsDavData[]) => void;
+  setPaymentMethods: (data: { brand: string; value: number }[]) => void;
   setLoading: (value: boolean) => void;
 }
 
@@ -18,6 +19,7 @@ export async function handleRefresh({
   date,
   token,
   setDavs,
+  setPaymentMethods,
   setLoading,
 }: salesHandlersProps) {
   if (!date) return;
@@ -27,6 +29,7 @@ export async function handleRefresh({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
     setDavs,
+    setPaymentMethods,
     setLoading,
   });
 }
@@ -36,6 +39,7 @@ export async function handleCleanFilter({
   token,
   setDate,
   setDavs,
+  setPaymentMethods,
   setLoading,
 }: salesHandlersProps) {
   if (!setDate) return;
@@ -51,6 +55,7 @@ export async function handleCleanFilter({
     dateEnd: today,
     token,
     setDavs,
+    setPaymentMethods,
     setLoading,
   });
 }
@@ -60,6 +65,7 @@ export async function handleDateFilter({
   token,
   setDate,
   setDavs,
+  setPaymentMethods,
   setLoading,
 }: salesHandlersProps) {
   if (!date || !setDate) return;
@@ -70,6 +76,7 @@ export async function handleDateFilter({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
     setDavs,
+    setPaymentMethods,
     setLoading,
   });
 }

@@ -14,7 +14,7 @@
 
   "diretoria": {
     "router": [
-      { "name": "Relatório de DAV's", "path": "/davs", "icon": "table" },
+      { "name": "Relatório de DAV's", "path": "/davs", "icon": "dash" },
       {
         "name": "Contas a pagar",
         "path": "/billstopay",
@@ -68,7 +68,7 @@
 
   "financeiro": {
     "router": [
-      { "name": "Relatório de DAV's", "path": "/davs", "icon": "table" },
+      { "name": "Relatório de DAV's", "path": "/davs", "icon": "dash" },
       {
         "name": "Contas a pagar",
         "path": "/billstopay",
@@ -125,7 +125,7 @@
       {
         "name": "Relatório de DAV's",
         "path": "/davs",
-        "icon": "table"
+        "icon": "dash"
       },
       {
         "name": "Contas a pagar",

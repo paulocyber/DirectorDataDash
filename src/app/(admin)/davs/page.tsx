@@ -9,9 +9,14 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
 import { davsQueries } from "@/utils/queries/dav";
+import { groupSumBy } from "@/utils/filters/groupSumBy";
 
 // Componentes
 import LayoutDav from "@/components/layouts/dav";
+import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
+
+// Tipagem
+import { ItemsDavData } from "@/types/dav";
 
 export const metadata: Metadata = {
     title: "Relatório das Dav's",
@@ -30,11 +35,29 @@ export default async function DavPage() {
     const api = setupApiClient(token)
     const { today } = getCurrentDateDetails()
 
-    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today })
+    const { davFinished, topSellersByDebitPix } = davsQueries({ dateInit: today, dateEnd: today })
 
-    const davResponse = await api.post("/v1/find-db-query", { query: davFinished });
+    const [davResponse, topSellersByDebitPixResponse] = await Promise.all([
+        api.post("/v1/find-db-query", { query: davFinished }),
+        api.post("/v1/find-db-query", { query: topSellersByDebitPix }),
+    ])
+
+    const sortedPaymentMethods = groupSumBy(
+        davResponse.data.returnObject.body,
+        { key: 'FORMAPAGAMENTO', valueKey: 'VALOR_LIQUIDO_SDS' }
+    ).sort((a, b) => b.value - a.value);
+
+    const convertedTopDebitPixSellers  = convertFieldsToNumber<ItemsDavData>(
+        topSellersByDebitPixResponse.data.returnObject.body,
+        ['TOTAL_VENDAS']
+    )
 
     return (
-        <LayoutDav davsData={davResponse.data.returnObject.body} today={today} />
+        <LayoutDav
+            davsData={davResponse.data.returnObject.body}
+            topSellersByDebitPixData={convertedTopDebitPixSellers}
+            paymentMethodsData={sortedPaymentMethods}
+            today={today}
+        />
     )
 }

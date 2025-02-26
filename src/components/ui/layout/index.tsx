@@ -92,7 +92,7 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                         onOpen :
                         router === "/salesbybrand" ?
                             onOpen :
-                            router === "/salesgoal" ?   
+                            router === "/salesgoal" ?
                                 onOpen :
                                 router === "/billstoreceive/table" ?
                                     onOpen :
