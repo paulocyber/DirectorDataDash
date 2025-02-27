@@ -28,6 +28,7 @@ type CreatePdf = {
 
 interface BillsToPayPdfProps {
   allBillets: ItemsBillsToPay[];
+  paidBillets: ItemsBillsToPay[];
   overdueBills: ItemsBillsToPay[];
   billetFilter: ItemsBillsToPay[];
   status: string[];
@@ -38,6 +39,7 @@ interface BillsToPayPdfProps {
 export default function BillsToPayPdf({
   allBillets,
   overdueBills,
+  paidBillets,
   billetFilter,
   status,
   dateStart,
@@ -50,9 +52,9 @@ export default function BillsToPayPdf({
       bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
   );
 
-  const paidBills = allBillets.filter(
-    (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
-  );
+  // const paidBills = allBillets.filter(
+  //   (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2" || bill.STATUS_PGM === "4"
+  // );
 
   const aggregatedPayByBrand = groupSumBy(billetFilter, {
     key: "CENTRO_CUSTO",
@@ -351,14 +353,14 @@ export default function BillsToPayPdf({
           paymentMethodTable,
           {
             text: `Valores Pagos: ${formatCurrency(
-              paidBills.reduce(
+              paidBillets.reduce(
                 (acc, bill) =>
                   acc + Number(bill.VALOR_PAGO_PGM.replace(",", ".")),
                 0
               )
             )}
             
-            Total de boletos pagos: ${paidBills.length}
+            Total de boletos pagos: ${paidBillets.length}
 
             Valores a pagar: ${formatCurrency(
               openBills.reduce(

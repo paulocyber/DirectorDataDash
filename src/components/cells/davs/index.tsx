@@ -14,12 +14,10 @@ export const renderCell = (item: ItemsDavData, columnKey: string) => {
             return <span className="text-gray-600">{item.VENDEDOR}</span>
         case "valorBruto":
             return <span className="text-gray-600">{formatCurrency(Number(item.VALOR_BRUTO_SDS.replace(",", ".")))}</span>
-        case "custoMercadoria":
-            return <span className="text-gray-600">{formatCurrency(Number(item.PRECO_CUSTO_ALE.replace(",", ".")))}</span>
-        case "lucroTotal":
-            return <span className="text-green-600 font-bold">{formatCurrency(Number(item.LUCRO.replace(",", ".")))}</span>
         case "dataFinalização":
             return <span className="text-gray-600">{item.DATAHORA_FINALIZACAO_SDS.split(' ')[0]}</span>
+        case "frmPagamento":
+            return <span className="text-gray-600">{item.FORMAPAGAMENTO}</span>
         default:
             return null;
     }

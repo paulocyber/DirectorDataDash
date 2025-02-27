@@ -125,7 +125,14 @@
       {
         "name": "Relatório de DAV's",
         "path": "/davs",
-        "icon": "dash"
+        "icon": "dash",
+        "children": [
+          {
+            "name": "Relatório de DAV's",
+            "path": "/davs/table",
+            "icon": "table"
+          }
+        ]
       },
       {
         "name": "Contas a pagar",

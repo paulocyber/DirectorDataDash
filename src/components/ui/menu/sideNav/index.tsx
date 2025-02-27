@@ -73,7 +73,7 @@ export function SideNav({ toggleMenuState, close, routes }: SideNavProps) {
             <div className="border-b border-white m-3"></div>
 
             <div className="m-4 max-h-[calc(100vh-268px)] overflow-y-auto scrollable">
-                <ul className="mb-4 flex flex-col gap-4">
+                <ul className="mb-4 px-2 flex flex-col gap-4">
                     {routes.map((route, index) => (
                         <li className="space-y-2" key={index}>
                             <ActiveLink content={route.name} href={route.path} icon={route.icon} />

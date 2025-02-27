@@ -47,10 +47,10 @@ export default async function DavPage() {
         { key: 'FORMAPAGAMENTO', valueKey: 'VALOR_LIQUIDO_SDS' }
     ).sort((a, b) => b.value - a.value);
 
-    const convertedTopDebitPixSellers  = convertFieldsToNumber<ItemsDavData>(
+    const convertedTopDebitPixSellers = convertFieldsToNumber<ItemsDavData>(
         topSellersByDebitPixResponse.data.returnObject.body,
         ['TOTAL_VENDAS']
-    )
+    ).sort((a, b) => (b as any).TOTAL_VENDAS - (a as any).TOTAL_VENDAS)
 
     return (
         <LayoutDav

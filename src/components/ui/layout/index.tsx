@@ -12,6 +12,7 @@ import { SettingsSalesByBrand } from "../settings/salesByBrand";
 import { SettingsSales } from "../settings/salesGoal";
 import { SettingsBillsToReceive } from "../settings/billsToReceive/indext";
 import { SettingsLateCustomer } from "../settings/lateCustomer";
+import { SettingsDavs } from "../settings/davs";
 
 // Dados
 import rules from "@/data/router/settings/ruleByUser.json"
@@ -43,9 +44,10 @@ interface LayoutProps {
     suppliers?: { ID_MRC: string, DESCRICAO_MRC: string, STATUS_MRC: string }[]
     people?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
     employees?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
+    formOfPayments?: { ID_FRM: string, DESCRICAO_FRM: string }[]
 }
 
-export function Layout({ children, role, enterprises, suppliers, people, employees }: LayoutProps) {
+export function Layout({ children, role, enterprises, suppliers, people, employees, formOfPayments }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
     const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
 
@@ -100,7 +102,9 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                                         onOpen :
                                         router === "/salesbybrand/entriesxsales" ?
                                             onOpen :
-                                            undefined
+                                            router === "/davs/table" ?
+                                                onOpen :
+                                                undefined
                     }
                     toogleMenuState={isOpen}
                 />
@@ -108,7 +112,7 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                     {children}
                 </main>
             </div>
-            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer" || router === "/salesbybrand/entriesxsales") && (
+            {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer" || router === "/salesbybrand/entriesxsales" || router === "/davs/table") && (
                 <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange} setActiveRefresh={router === "/billstopay/table" ? undefined : setActiveRefresh}>
                     {router === "/billstopay/table" ?
                         <SettingsBillsToPay /> :
@@ -122,7 +126,9 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                                         <SettingsLateCustomer employees={employees} /> :
                                         router === "/salesbybrand/entriesxsales" ?
                                             <SettingsSalesByBrand suppliers={suppliers} /> :
-                                            <>nenhum</>
+                                            router === "/davs/table" ?
+                                                <SettingsDavs formOfPaymentsData={formOfPayments} /> :
+                                                <>nenhum</>
                     }
                 </Modal>
             )}

@@ -32,7 +32,7 @@ export async function fetchBillsToPay({
 
   const { year, month, yesterday } = getCurrentDateDetails();
 
-  const { allBillet } = billsToPayQueries({
+  const { allBillet, billetPaid } = billsToPayQueries({
     dateInit: dateInit,
     dateEnd: dateEnd,
   });
@@ -48,6 +48,11 @@ export async function fetchBillsToPay({
       ctx: token,
       query: allBillet,
       setData: (data) => (allBilletData = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: billetPaid,
+      setData: (data) => (setPaidBills(data)),
     }),
     fetchData({
       ctx: token,
@@ -68,7 +73,7 @@ export async function fetchBillsToPay({
   
   setAllBillets(allBilletData);
   setOpenBills(openBills);
-  setPaidBills(paidBills);
+  // setPaidBills(paidBills);
 
   setLoading(false);
 }

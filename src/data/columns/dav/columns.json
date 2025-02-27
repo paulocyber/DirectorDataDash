@@ -1,9 +1,8 @@
-[
+ [
   { "name": "Número da Dav", "uid": "nDav" },
   { "name": "Cliente", "uid": "cliente" },
   { "name": "Vendedor", "uid": "vendedor" },
   { "name": "Valor Bruto", "uid": "valorBruto" },
-  { "name": "Custo Total da Mercadoria", "uid": "custoMercadoria" },
-  { "name": "Lucro Total", "uid": "lucroTotal" },
-  { "name": "Data Finalização", "uid": "dataFinalização" }
+  { "name": "Data Finalização", "uid": "dataFinalização" },
+  { "name": "Forma de pagamento", "uid": "frmPagamento" }
 ]

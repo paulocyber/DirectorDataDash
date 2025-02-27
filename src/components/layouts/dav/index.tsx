@@ -1,27 +1,23 @@
 'use client'
 
-// Next
-import { useRouter } from "next/navigation";
-
 // React
 import { useContext, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Dados
 import InfoCardFromDav from "@/data/infoCards/davs";
-import columns from "@/data/columns/dav/columns.json"
+import vibrantPalette from '@/data/pallets/vibrant.json';
 
 // Componentes
 import InfoCard from "@/components/ui/InfoCard";
 import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
-import Table from "@/components/ui/table";
-import { renderCell } from "@/components/cells/davs";
 import GraphicContainer from "@/components/ui/sciences/GraphicContainer";
 import PieChart from "@/components/ui/sciences/PieChart";
 import { Tooltip } from "@/components/ui/sciences/toolTip";
 import { ExternalPieLabel } from "@/components/ui/sciences/labelChart/ExternalPieLabel";
 import DescriptionGraphic from "@/components/ui/sciences/description";
+import BarChart from "@/components/ui/sciences/BarChart";
 
 // Utils
 import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/davs";
@@ -30,8 +26,6 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 import { ItemsDavData } from "@/types/dav";
 import { DateValue, RangeValue } from "@nextui-org/react";
 import { parseDate } from '@internationalized/date';
-import BarChart from "@/components/ui/sciences/BarChart";
-import vibrantPalette from '@/data/pallets/vibrant.json';
 
 interface LayoutDavProps {
   paymentMethodsData: { brand: string, value: number }[];
@@ -50,12 +44,7 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
   });
 
   const { token } = useContext(AuthContext)
-  const router = useRouter()
   const infoCard = InfoCardFromDav({ davs })
-
-  const handleDetailDav = (ID_ORIGEM: string) => {
-    router.push(`/davs/${ID_ORIGEM}`)
-  }
 
   return (
     <>
@@ -67,6 +56,8 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
           handleRefreshClick={() => handleRefresh({ date, token, setDavs, setPaymentMethods, setLoading })}
           handleCleanFilter={() => handleCleanFilter({ token, setDate, setDavs, setPaymentMethods, setLoading })}
           handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ token, date: newDate, setDate, setDavs, setPaymentMethods, setLoading })}
+          href="/davs/table"
+          descriptionHref="Visualizar em Table"
         />
         <div className="flex p-2 overflow-auto border-t rounded-lg">
           <DescriptionGraphic
@@ -79,7 +70,7 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
         <div className="w-full">
           <Container>
-            <h1 className="font-bold text-xl p-2 text-gray-800">Formas de Pagamento</h1>
+            <h1 className="font-semibold text-xl p-3 text-gray-800">Formas de Pagamento</h1>
             <GraphicContainer loading={loading}>
               <PieChart
                 data={paymentMethods}
@@ -98,12 +89,12 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
 
         <div className="w-full">
           <Container>
-            <h1 className="font-bold text-xl p-2 text-gray-800">Melhores Vendedores nas Formas de Pagamento mais Rentáveis</h1>
+            <h1 className="font-semibold text-xl p-3 text-gray-800">Top Vendedores por Forma de Pagamento do dia</h1>
             <GraphicContainer loading={loading}>
               <BarChart
                 data={topSellersByDebitPixData}
                 displayCartesianGrid={true}
-                dataKey="VALOR_TOTAL_VENDAS"
+                dataKey="TOTAL_VENDAS"
                 palette={vibrantPalette}
                 displayToolTip={true}
                 ToolTipComponent={(props) => (

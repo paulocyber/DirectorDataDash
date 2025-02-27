@@ -15,6 +15,7 @@ import { setupApiClient } from "@/services/api";
 import { companyQueries } from "@/utils/queries/employees";
 import { suppliersQueries } from "@/utils/queries/suppliers";
 import { employeesQueries, PeopleQueries } from "@/utils/queries/people";
+import { formOfPaymentsQueries } from './../../utils/queries/formOfPayments/index';
 
 export default async function AdminRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
@@ -30,12 +31,14 @@ export default async function AdminRouter({ children }: { children: ReactNode })
     const suppliers = suppliersQueries()
     const people = PeopleQueries()
     const employees = employeesQueries()
+    const formOfPayments = formOfPaymentsQueries()
 
-    const [responseCompany, responseSuppliers, responsePeople, responseEmployees] = await Promise.all([
+    const [responseCompany, responseSuppliers, responsePeople, responseEmployees, responseFormOfPayments] = await Promise.all([
         api.post("/v1/find-db-query", { query: enterpriseQuery }),
         api.post("/v1/find-db-query", { query: suppliers }),
         api.post("/v1/find-db-query", { query: people }),
         api.post("/v1/find-db-query", { query: employees }),
+        api.post("/v1/find-db-query", { query: formOfPayments }),
     ])
 
     return (
@@ -45,6 +48,7 @@ export default async function AdminRouter({ children }: { children: ReactNode })
             suppliers={responseSuppliers.data.returnObject.body}
             people={responsePeople.data.returnObject.body}
             employees={responseEmployees.data.returnObject.body}
+            formOfPayments={responseFormOfPayments.data.returnObject.body}
         >
             {children}
         </Layout>

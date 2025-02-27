@@ -33,26 +33,24 @@ export default async function BillsToPayTablePage() {
     const api = setupApiClient(token)
 
     const { year, month, today, yesterday } = getCurrentDateDetails()
-    const { allBillet,  } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
+    const { allBillet, billetPaid } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
     const { expiredBillet } = billsToPayQueries({ dateInit: `${year}/01/01`, dateEnd: yesterday })
 
-    const [allBillsResponse, overdueBillsResponse] = await Promise.all([
+    const [allBillsResponse, overdueBillsResponse, paidBillsResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: allBillet }),
-        api.post("/v1/find-db-query", { query: expiredBillet })
+        api.post("/v1/find-db-query", { query: expiredBillet }),
+        api.post("/v1/find-db-query", { query: billetPaid })
     ])
 
     const openBills = allBillsResponse.data.returnObject.body.filter(
-        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
+        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1"
     );
-    const paidBills = allBillsResponse.data.returnObject.body.filter(
-        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
-    );
-    
+
     return (
         <LayoutBillsToPayTable
             allBilletsData={allBillsResponse.data.returnObject.body}
             openBillsData={openBills}
-            paidBillsData={paidBills}
+            paidBillsData={paidBillsResponse.data.returnObject.body}
             overdueBillsData={overdueBillsResponse.data.returnObject.body}
             year={year}
             month={month}
