@@ -10,6 +10,10 @@ import { searchFilter } from "@/utils/filters/searchFilter";
 // Biblioteca
 import { CiSearch } from "react-icons/ci";
 import { Checkbox } from "@nextui-org/react";
+import { useAtom } from "jotai";
+
+// Atom
+import { MethodsOfPayments } from "@/atom/MethodsOfPayments";
 
 // Tipagem
 interface SettingsDavsProps {
@@ -19,8 +23,19 @@ interface SettingsDavsProps {
 export function SettingsDavs({ formOfPaymentsData }: SettingsDavsProps) {
     const [search, setSearch] = useState<string>('')
     const [formOfPayments, setFormOfPayments] = useState(formOfPaymentsData)
+    const [selectingMethodsPayment, setSelectingMethodsPayment] = useAtom(MethodsOfPayments)
 
     const filterSearch = searchFilter({ data: formOfPayments || [], search: search })
+
+    const handleCheckboxChange = (methodsPayments: string) => {
+        setSelectingMethodsPayment((prevSelected) => {
+            if (prevSelected.includes(methodsPayments)) {
+                return prevSelected.filter((description) => description !== methodsPayments);
+            } else {
+                return [...prevSelected, methodsPayments];
+            }
+        });
+    };
 
     return (
         <main className="w-full">
@@ -48,8 +63,8 @@ export function SettingsDavs({ formOfPaymentsData }: SettingsDavsProps) {
                                 <Checkbox
                                     classNames={{ label: "truncate w-[10em] truncate text-gray-700 text-sm font-medium" }}
                                     className="rounded-lg"
-                                // isSelected={suppliersSelect.includes(supplier.DESCRICAO_MRC)}
-                                // onChange={() => handleCheckboxChange(supplier.DESCRICAO_MRC)}
+                                    isSelected={selectingMethodsPayment.includes(supplier.DESCRICAO_FRM)}
+                                    onChange={() => handleCheckboxChange(supplier.DESCRICAO_FRM)}
                                 >
                                     {supplier.DESCRICAO_FRM}
                                 </Checkbox>

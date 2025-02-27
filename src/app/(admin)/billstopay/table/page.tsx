@@ -43,14 +43,18 @@ export default async function BillsToPayTablePage() {
     ])
 
     const openBills = allBillsResponse.data.returnObject.body.filter(
-        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1"
+        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
+    );
+
+    const paidBills = allBillsResponse.data.returnObject.body.filter(
+        (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2" || bill.STATUS_PGM === "4"
     );
 
     return (
         <LayoutBillsToPayTable
             allBilletsData={allBillsResponse.data.returnObject.body}
             openBillsData={openBills}
-            paidBillsData={paidBillsResponse.data.returnObject.body}
+            paidBillsData={paidBills}
             overdueBillsData={overdueBillsResponse.data.returnObject.body}
             year={year}
             month={month}

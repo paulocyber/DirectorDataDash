@@ -22,6 +22,13 @@ import BarChart from "@/components/ui/sciences/BarChart";
 // Utils
 import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/davs";
 
+// Atom
+import { useAtom } from "jotai";
+import { MethodsOfPayments } from "@/atom/MethodsOfPayments";
+
+// Next
+import { redirect } from "next/navigation";
+
 // Tipagem
 import { ItemsDavData } from "@/types/dav";
 import { DateValue, RangeValue } from "@nextui-org/react";
@@ -37,6 +44,7 @@ interface LayoutDavProps {
 export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDebitPixData, today }: LayoutDavProps) {
   const [davs, setDavs] = useState(davsData);
   const [paymentMethods, setPaymentMethods] = useState(paymentMethodsData);
+  const [methods, setMethods] = useAtom(MethodsOfPayments)
   const [loading, setLoading] = useState<boolean>(false)
   const [date, setDate] = useState<RangeValue<DateValue>>({
     start: parseDate(new Date(today).toISOString().split('T')[0]),
@@ -45,6 +53,12 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
 
   const { token } = useContext(AuthContext)
   const infoCard = InfoCardFromDav({ davs })
+
+  function handleSelectingPayments(payments: string) {
+    setMethods([payments])
+    
+    redirect(`/davs/table?${payments}`)
+  }
 
   return (
     <>
@@ -62,6 +76,7 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
         <div className="flex p-2 overflow-auto border-t rounded-lg">
           <DescriptionGraphic
             data={paymentMethodsData}
+            handleSelection={handleSelectingPayments}
             dataKey="brand"
           />
         </div>

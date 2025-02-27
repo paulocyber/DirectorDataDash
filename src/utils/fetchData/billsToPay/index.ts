@@ -30,12 +30,13 @@ export async function fetchBillsToPay({
 }: FetchBillsToPayProps) {
   setLoading(true);
 
-  const { year, month, yesterday } = getCurrentDateDetails();
+  const { year, yesterday } = getCurrentDateDetails();
 
-  const { allBillet, billetPaid } = billsToPayQueries({
+  const { allBillet } = billsToPayQueries({
     dateInit: dateInit,
     dateEnd: dateEnd,
   });
+
   const { expiredBillet } = billsToPayQueries({
     dateInit: `${year}/01/01`,
     dateEnd: clear ? `${yesterday}` : dateEnd,
@@ -51,11 +52,6 @@ export async function fetchBillsToPay({
     }),
     fetchData({
       ctx: token,
-      query: billetPaid,
-      setData: (data) => (setPaidBills(data)),
-    }),
-    fetchData({
-      ctx: token,
       query: expiredBillet,
       setData: (data) => setOverdueBills(data),
     }),
@@ -64,16 +60,16 @@ export async function fetchBillsToPay({
   await Promise.all(queries);
 
   const openBills = allBilletData.filter(
-    (bill: ItemsBillsToPay) =>
-      bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
+    (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
   );
   const paidBills = allBilletData.filter(
-    (bill: ItemsBillsToPay) => bill.STATUS_PGM === "2"
+    (bill: ItemsBillsToPay) =>
+      bill.STATUS_PGM === "2" || bill.STATUS_PGM === "4"
   );
-  
+
   setAllBillets(allBilletData);
   setOpenBills(openBills);
-  // setPaidBills(paidBills);
+  setPaidBills(paidBills);
 
   setLoading(false);
 }

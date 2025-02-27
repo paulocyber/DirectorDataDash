@@ -7,6 +7,8 @@ export const davsQueries = ({
   id,
   formsOfPayments,
 }: QueryProps) => {
+
+
   // let davFinished = `select sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, SUM(ale.PRECO_CUSTO_ALE)
   // AS preco_custo_ale, MAX(sds.valor_bruto_sds) AS valor_bruto_sds, MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, MAX(sds.valor_liquido_sds -
   // COALESCE(sds.valor_troca_sds, 0.00)) AS valor_liquido_total, (MAX(sds.valor_liquido_sds) - SUM(ale.PRECO_CUSTO_ALE)) AS lucro FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN saidas_itens
