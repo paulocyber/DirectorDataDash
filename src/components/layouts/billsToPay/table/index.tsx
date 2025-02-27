@@ -69,7 +69,7 @@ export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, p
                 : paidBills,
         search
     });
-console.log("Dados: ", filterSearch)
+
     const generatePdf = () => {
         BillsToPayPdf({ allBillets, paidBillets: paidBills, overdueBills, status, billetFilter: status.includes('Em aberto') && status.includes('Pago') ? allBillets : status.includes('Em aberto') ? openBills : paidBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
