@@ -45,9 +45,10 @@ export default async function DetailDavsPage({ params }: { params: Promise<{ id:
     }
 
     return (
-        <LayoutDetail
-            davDetailData={davDetailsResponse.data.returnObject.body}
-            davProductsData={davProductsResponse.data.returnObject.body}
-        />
+        <>teste</>
+        // <LayoutDetail
+        //     davDetailData={davDetailsResponse.data.returnObject.body}
+        //     davProductsData={davProductsResponse.data.returnObject.body}
+        // />
     )
 }
