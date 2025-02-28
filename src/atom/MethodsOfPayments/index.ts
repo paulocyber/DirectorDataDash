@@ -1,4 +1,4 @@
 // Biblioteca
 import { atom } from "jotai";
 
-export const MethodsOfPayments = atom<string[]>([''])
+export const MethodsOfPayments = atom<string[]>([])

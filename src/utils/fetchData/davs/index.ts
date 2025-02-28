@@ -28,7 +28,7 @@ export async function fetchDavs({
   setLoading(true);
 
   const { davFinished } = davsQueries({ dateInit, dateEnd, formsOfPayments });
-
+console.log("Query: ", davFinished)
   let davsData: any[] = [];
 
   const queries = [
