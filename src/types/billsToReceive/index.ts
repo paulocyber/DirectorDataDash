@@ -1,5 +1,6 @@
 export type ItemsBillsToReceiveData = {
   ID_PSS: string;
+  ID_SDS: string;
   ID_RCB: string;
   ID_ORIGEM: string;
   DATA_LANCAMENTO: string;

@@ -28,7 +28,7 @@ export default async function BillsToReceiveTablePage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const role = (await cookieStore).get('@nextauth.role')?.value || "";
-    
+
     if (!token || ['estoque'].includes(role)) {
         redirect('/salesbybrand')
     }
@@ -47,7 +47,7 @@ export default async function BillsToReceiveTablePage() {
         (bill: ItemsBillsToReceiveData) =>
             (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4")
     );
-    
+
     return (
         <LayoutBillsToReceiveTable
             allBillsData={allBillsResponse.data.returnObject.body}
