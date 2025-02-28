@@ -25,11 +25,13 @@ export default async function TableDavPage({ searchParams }: { searchParams: Pro
     const api = setupApiClient(token)
     const { today } = getCurrentDateDetails()
 
-    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today, formsOfPayments: paymentMethod })
+    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today, formsOfPayments: paymentMethod.length > 0 ? paymentMethod : undefined })
 
     const [davResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: davFinished }),
     ])
+
+    console.log("Dados: ", paymentMethod.length)
 
     return (
         <LayoutDavTable

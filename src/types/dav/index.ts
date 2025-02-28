@@ -9,6 +9,13 @@ export type ItemsDavData = {
   FORMAPAGAMENTO: string;
   TOTAL_VENDAS: string;
   VALOR_TOTAL_VENDAS: string | number;
+  VALOR_LIQUIDO_TOTAL: string;
+  EMPRESA: string;
+  DATAHORA_SDS: string;
+  ALMOXARIFADO: string;
+  VALOR_DESCONTO_SDS: string;
+  TIPO_VENDA_SDS: string;
+  STATUS_SDS: string;
 };
 
 export type ItemsDavProductsResponse = {

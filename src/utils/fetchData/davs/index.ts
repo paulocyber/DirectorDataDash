@@ -9,8 +9,9 @@ interface fetchDavsProps {
   token: string;
   dateInit: string;
   dateEnd: string;
+  formsOfPayments?: string[];
   setDavs: (value: ItemsDavData[]) => void;
-  setPaymentMethods: (data: { brand: string; value: number }[]) => void;
+  setPaymentMethods?: (data: { brand: string; value: number }[]) => void;
   setLoading: (value: boolean) => void;
 }
 
@@ -18,13 +19,15 @@ export async function fetchDavs({
   token,
   dateInit,
   dateEnd,
+  formsOfPayments,
   setDavs,
   setPaymentMethods,
   setLoading,
 }: fetchDavsProps) {
+
   setLoading(true);
 
-  const { davFinished } = davsQueries({ dateInit, dateEnd });
+  const { davFinished } = davsQueries({ dateInit, dateEnd, formsOfPayments });
 
   let davsData: any[] = [];
 
@@ -44,6 +47,6 @@ export async function fetchDavs({
   }).sort((a, b) => b.value - a.value);
 
   setDavs(davsData);
-  setPaymentMethods(sortedPaymentMethods);
+  setPaymentMethods && setPaymentMethods(sortedPaymentMethods);
   setLoading(false);
 }

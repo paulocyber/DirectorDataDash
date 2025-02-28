@@ -1,22 +1,26 @@
 // Utils
-import { ItemsDavData } from "@/types/dav";
 import { fetchDavs } from "@/utils/fetchData/davs";
 import getCurrentDateDetails from "@/utils/getDate";
+
+// Tipagem
+import { ItemsDavData } from "@/types/dav";
 import { parseDate } from "@internationalized/date";
 
 // Tipagem
 import { DateValue, RangeValue } from "@nextui-org/react";
 interface salesHandlersProps {
   date?: RangeValue<DateValue> | null;
+  formsOfPayments?: string[];
   token: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setDavs: (data: ItemsDavData[]) => void;
-  setPaymentMethods: (data: { brand: string; value: number }[]) => void;
+  setPaymentMethods?: (data: { brand: string; value: number }[]) => void;
   setLoading: (value: boolean) => void;
 }
 
 export async function handleRefresh({
   date,
+  formsOfPayments,
   token,
   setDavs,
   setPaymentMethods,
@@ -27,6 +31,7 @@ export async function handleRefresh({
   await fetchDavs({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
+    formsOfPayments,
     token,
     setDavs,
     setPaymentMethods,
@@ -36,6 +41,7 @@ export async function handleRefresh({
 
 export async function handleCleanFilter({
   date,
+  formsOfPayments,
   token,
   setDate,
   setDavs,
@@ -53,6 +59,7 @@ export async function handleCleanFilter({
   await fetchDavs({
     dateInit: today,
     dateEnd: today,
+    formsOfPayments,
     token,
     setDavs,
     setPaymentMethods,
@@ -62,6 +69,7 @@ export async function handleCleanFilter({
 
 export async function handleDateFilter({
   date,
+  formsOfPayments,
   token,
   setDate,
   setDavs,
@@ -74,6 +82,7 @@ export async function handleDateFilter({
   await fetchDavs({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
+    formsOfPayments,
     token,
     setDavs,
     setPaymentMethods,

@@ -81,7 +81,7 @@ export default function Table<T>({ columns, data, loading, renderCell, detail }:
                                 {columns.map((column) => (
                                     <TableCell
                                         onClick={() => {
-                                            const idOrigem = (item as any).ID_ORIGEM;
+                                            const idOrigem = (item as any).ID_SDS;
                                             const idPss = (item as any).ID_PSS;
 
                                             detail && detail(idOrigem, idPss);

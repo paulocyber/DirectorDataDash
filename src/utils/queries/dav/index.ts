@@ -7,8 +7,6 @@ export const davsQueries = ({
   id,
   formsOfPayments,
 }: QueryProps) => {
-
-
   // let davFinished = `select sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, SUM(ale.PRECO_CUSTO_ALE)
   // AS preco_custo_ale, MAX(sds.valor_bruto_sds) AS valor_bruto_sds, MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, MAX(sds.valor_liquido_sds -
   // COALESCE(sds.valor_troca_sds, 0.00)) AS valor_liquido_total, (MAX(sds.valor_liquido_sds) - SUM(ale.PRECO_CUSTO_ALE)) AS lucro FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN saidas_itens
@@ -22,13 +20,22 @@ export const davsQueries = ({
     ? formsOfPayments.map((payment) => `'${payment}'`).join(", ")
     : "";
 
-  let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, MAX(sds.valor_bruto_sds) AS valor_bruto_sds, 
-  MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, frm.descricao_frm AS formapagamento FROM   saidas sds INNER JOIN pessoas pss ON 
-  pss.id_pss = sds.id_pss INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON 
-  frm.id_frm = ftr.id_frm WHERE  sds.tipo_sds = '4' AND sds.id_emp IN (1, 2, 3, 4, 5, 100) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP '${dateInit} 00:00:00' AND TIMESTAMP '${dateEnd} 23:59:59' ${
+  // let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, MAX(sds.valor_bruto_sds) AS valor_bruto_sds,
+  // MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, frm.descricao_frm AS formapagamento FROM   saidas sds INNER JOIN pessoas pss ON
+  // pss.id_pss = sds.id_pss INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON
+  // frm.id_frm = ftr.id_frm WHERE  sds.tipo_sds = '4' AND sds.id_emp IN (1, 2, 3, 4) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP '${dateInit} 00:00:00' AND TIMESTAMP '${dateEnd} 23:59:59' ${
+  //   formsOfPayments ? `and frm.descricao_frm in (${formsOfPaymentsFilter})` : ""
+  // } GROUP BY
+  // sds.id_sds, sds.datahora_finalizacao_sds, pss.nome_pss, fnc.apelido_pss, frm.descricao_frm, sds.datahora_sds ORDER BY  sds.datahora_sds, sds.id_sds`;
+
+  let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, MAX(sds.valor_bruto_sds) AS 
+  valor_bruto_sds, MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, LIST(DISTINCT frm.descricao_frm) AS formapagamento FROM saidas sds INNER JOIN pessoas pss 
+  ON pss.id_pss = sds.id_pss INNER JOIN empresas emp ON emp.id_emp = sds.id_emp INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc LEFT JOIN pessoas prf ON 
+  prf.id_pss = sds.id_prf INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON frm.id_frm = ftr.id_frm WHERE  sds.tipo_sds IN ('4', '5', '9') AND sds.status_sds IN ('2') AND 
+  sds.id_emp IN (1, 2, 3, 4) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' ${
     formsOfPayments ? `and frm.descricao_frm in (${formsOfPaymentsFilter})` : ""
-  } GROUP BY 
-  sds.id_sds, sds.datahora_finalizacao_sds, pss.nome_pss, fnc.apelido_pss, frm.descricao_frm, sds.datahora_sds ORDER BY  sds.datahora_sds, sds.id_sds`;
+  } GROUP BY sds.id_sds,emp.sigla_emp,sds.datahora_sds,sds.datahora_finalizacao_sds,
+  pss.apelido_pss, pss.nome_pss,fnc.apelido_pss,sds.id_alm,alm.descricao_alm,sds.tipo_venda_sds,sds.status_sds ORDER BY sds.datahora_sds,sds.id_sds`;
 
   let davFinalizationDetail = `select sds.id_sds, sds.valor_liquido_sds - coalesce(sds.valor_troca_sds, 0.00) as valor_liquido_total, emp.sigla_emp as empresa, cast(sds.datahora_sds as date) as datahora_sds, cast(sds.datahora_finalizacao_sds as date) as 
   datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss as cliente, sds.id_fnc || ' - ' || fnc.apelido_pss as vendedor, sds.id_alm || ' - ' || alm.descricao_alm 

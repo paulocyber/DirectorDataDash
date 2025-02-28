@@ -41,8 +41,7 @@ export default function LayoutDetail({ davDetailData, davProductsData }: LayoutD
 
     return (
         <>
-        teste
-            {/* <InfoCard data={infoCard} />
+            <InfoCard data={infoCard} />
             <Container>
                 <div className="flex flex-col items-center w-full">
                     <div className="w-full flex justify-between items-center p-5 border-b">
@@ -63,8 +62,8 @@ export default function LayoutDetail({ davDetailData, davProductsData }: LayoutD
                                 <div key={item.ID_SDS} className="mb-6">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
                                         <InfoField label="Número da DAV" value={item.ID_SDS} />
-                                        <InfoField label="Empresa" value={item.e} />
-                                        <InfoField label="Apelido" value={item.APELIDO_PSS} />
+                                        <InfoField label="Empresa" value={item.EMPRESA} />
+                                        <InfoField label="Apelido" value={item.CLIENTE} />
                                         <InfoField label="Tipo de venda" value={item.TIPO_VENDA_SDS} />
                                     </div>
 
@@ -113,7 +112,7 @@ export default function LayoutDetail({ davDetailData, davProductsData }: LayoutD
                     </div>
                     <Table columns={collumns} data={davProductsData} renderCell={renderCell} loading={false} />
                 </div>
-            </Container> */}
+            </Container>
         </>
     );
 }
