@@ -1,5 +1,5 @@
 // Bibliotecas
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 
 // Utils
 import { fetchSales } from "@/utils/fetchData/sales/(admin)";

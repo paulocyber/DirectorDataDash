@@ -1,5 +1,5 @@
 // Bibliotecas
-import { Checkbox } from "@nextui-org/react"
+import { Checkbox } from "@heroui/react"
 import { useAtom } from "jotai"
 
 // Atom

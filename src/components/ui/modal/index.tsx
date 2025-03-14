@@ -1,4 +1,4 @@
-import { ModalBody, ModalContent, ModalFooter, ModalHeader, Modal as ModalUI } from "@nextui-org/react";
+import { ModalBody, ModalContent, ModalFooter, ModalHeader, Modal as ModalUI } from "@heroui/react";
 import { GoSync } from "react-icons/go";
 import { ReactNode } from "react";
 import { Button } from "../button";

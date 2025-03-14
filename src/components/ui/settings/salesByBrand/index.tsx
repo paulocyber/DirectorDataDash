@@ -4,7 +4,7 @@ import { Input } from "../../input";
 // Biblioteca
 import { CiSearch } from "react-icons/ci";
 import { useAtom } from "jotai";
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox } from "@heroui/react";
 
 // React
 import { useState } from "react";

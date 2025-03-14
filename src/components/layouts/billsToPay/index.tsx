@@ -24,7 +24,7 @@ import { FilterSelecting, SelectingCostCenter } from "@/utils/handlersFilters/bi
 import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/handlersFilters/billsToPay";
 
 // Tipagem
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 import { ItemsBillsToPay } from "@/types/billsToPay";
 import { parseDate } from '@internationalized/date';
 interface LayoutBillsToPayProps {

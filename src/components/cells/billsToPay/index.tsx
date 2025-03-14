@@ -5,7 +5,7 @@ import { formatCurrency } from "@/utils/mask/money";
 import { ItemsBillsToPay } from "@/types/billsToPay";
 
 // Componentes
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 
 export const renderCell = (item: ItemsBillsToPay, columnKey: string) => {
     switch (columnKey) {

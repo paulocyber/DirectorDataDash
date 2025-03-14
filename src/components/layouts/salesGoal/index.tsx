@@ -37,7 +37,7 @@ import vibrantPalette from '@/data/pallets/vibrant.json';
 
 // Tipagem
 import { DateValue, parseDate } from "@internationalized/date";
-import { RangeValue } from "@nextui-org/react"
+import { RangeValue } from "@heroui/react"
 import { ItemsGoalProgress, ItemsProfitsFromSale, ItemsTopSellers } from "@/types/sales";
 interface LayoutSalesGoalProps {
     goalProgress: ItemsGoalProgress[];

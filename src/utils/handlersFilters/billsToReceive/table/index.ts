@@ -1,5 +1,5 @@
 // Bibliotecas
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 
 // Utils

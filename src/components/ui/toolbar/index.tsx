@@ -7,7 +7,7 @@ import {
     DropdownMenu,
     DropdownTrigger,
     RangeValue
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { BsTable } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";

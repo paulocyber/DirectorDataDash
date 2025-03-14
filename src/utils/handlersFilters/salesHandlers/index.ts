@@ -2,7 +2,7 @@
 import { fetchSales } from "@/utils/fetchData/sales";
 
 // Tipagem
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 import { ItemsGoalProgress, ItemsTopClientsPlusBuyData } from "@/types/sales";
 import { parseDate } from "@internationalized/date";
 

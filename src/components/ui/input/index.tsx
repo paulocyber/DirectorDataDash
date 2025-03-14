@@ -1,7 +1,7 @@
 'use client'
 
 // Bibliotecas
-import { Input as Inpt } from '@nextui-org/react';
+import { Input as Inpt } from "@heroui/react";
 
 // React
 import { ComponentProps } from 'react';

@@ -2,7 +2,7 @@
 import { formatCurrency } from "@/utils/mask/money";
 
 // Biblioteca
-import { Tooltip } from "@nextui-org/react";
+import { Tooltip } from "@heroui/react";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";

@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Biblioteca
-import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
+import { DateValue, RangeValue, useDisclosure } from "@heroui/react";
 import { parseDate } from '@internationalized/date';
 import { useAtom } from "jotai";
 
@@ -72,6 +72,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
 
         await Promise.all(queries)
     }
+    
     const generatePdf = () => {
         BillsToReceivePdf({ token, allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }

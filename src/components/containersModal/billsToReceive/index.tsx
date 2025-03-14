@@ -2,7 +2,7 @@ import { formatCurrency } from "@/utils/mask/money";
 import { calculateTotalByKey } from "@/utils/functions/sumValues";
 
 // Biblioteca
-import { ScrollShadow, Tab, Tabs } from "@nextui-org/react";
+import { ScrollShadow, Tab, Tabs } from "@heroui/react";
 
 // React
 import { useState } from "react";

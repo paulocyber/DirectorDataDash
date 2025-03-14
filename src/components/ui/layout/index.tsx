@@ -18,7 +18,7 @@ import { SettingsDavs } from "../settings/davs";
 import rules from "@/data/router/settings/ruleByUser.json"
 
 // Next
-import { useDisclosure } from "@nextui-org/react";
+import { useDisclosure } from "@heroui/react";
 
 // Next
 import { usePathname } from "next/navigation";

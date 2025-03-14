@@ -1,5 +1,5 @@
 // Biblioteca
-import { Button as Btn } from "@nextui-org/react";
+import { Button as Btn } from "@heroui/react";
 
 // React
 import { ComponentProps, ReactNode } from "react";

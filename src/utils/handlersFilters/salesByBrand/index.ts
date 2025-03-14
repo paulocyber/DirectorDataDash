@@ -3,7 +3,7 @@ import { fetchSalesByBrand } from "@/utils/fetchData/salesByBrand";
 import getCurrentDateDetails from "@/utils/getDate";
 
 // Bilioteca
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 
 // Tipagem
 import { ItemsSalesByBuy } from "@/types/salesByBrand";

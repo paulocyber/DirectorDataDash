@@ -4,7 +4,7 @@
 import { useState } from "react";
 
 // Biblioteca
-import { TableBody, TableCell, TableColumn, TableHeader, TableRow, Table as TableUi } from "@nextui-org/react";
+import { TableBody, TableCell, TableColumn, TableHeader, TableRow, Table as TableUi } from "@heroui/react";
 
 // Utils
 import { InfiniteScroll } from './../../../utils/infiniteScroll/index';

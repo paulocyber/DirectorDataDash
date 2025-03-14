@@ -19,7 +19,7 @@ import { suppliersAtoms } from "@/atom/suppliers";
 import { refreshAtom } from "@/atom/refresh";
 
 // Biblioteca
-import { DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@nextui-org/react";
+import { DateRangePicker, DateValue, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, RangeValue } from "@heroui/react";
 import { useAtom } from "jotai";
 
 // Tipagem

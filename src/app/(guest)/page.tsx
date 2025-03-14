@@ -13,11 +13,11 @@ import { Button } from "@/components/ui/button";
 // Biblioteca
 import { IoEyeOutline } from "react-icons/io5";
 import { FiEyeOff } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 // React
 import { SyntheticEvent, useContext, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
-import { toast } from "react-toastify";
 
 export default function SigInPage() {
   const [name, setName] = useState<string>('')

@@ -31,7 +31,7 @@ import Link from "next/link";
 // Tipagem
 import { parseDate } from '@internationalized/date';
 import { ItemsGoalProgress, ItemsTopClientsPlusBuyData } from "@/types/sales";
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 interface LayoutSellersProps {
     goalProgressData: ItemsGoalProgress[];
     topClientsData: ItemsTopClientsPlusBuyData[];

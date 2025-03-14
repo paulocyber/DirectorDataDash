@@ -31,7 +31,7 @@ import { statusAtom } from "@/atom/status";
 // Tipagem
 import { ItemsBillsToPay } from "@/types/billsToPay";
 import { parseDate } from "@internationalized/date";
-import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react";
+import { DateValue, RangeValue, useDisclosure } from "@heroui/react";
 
 interface LayoutBillsToPayTable {
     allBilletsData: ItemsBillsToPay[];

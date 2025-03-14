@@ -2,7 +2,7 @@
 import { fetchSalesByGroup } from "@/utils/fetchData/salesByGroup";
 
 // Tipagem
-import { RangeValue, DateValue } from "@nextui-org/react";
+import { RangeValue, DateValue } from "@heroui/react";
 interface SalesByGroupProps {
   token: string;
   setLoading: (value: boolean) => void;

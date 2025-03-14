@@ -3,7 +3,7 @@ import { Input } from "../../input"
 
 // Bibliotecas
 import { CiSearch } from "react-icons/ci"
-import { Checkbox, Tooltip } from "@nextui-org/react"
+import { Checkbox, Tooltip } from "@heroui/react"
 import { useAtom } from "jotai"
 import { peopleAtom } from "@/atom/people"
 
@@ -37,7 +37,6 @@ export function SettingsLateCustomer({ employees }: SettingsLateCustomerProps) {
             <section className="mb-4">
                 <h3 className="text-gray-700 font-medium text-base">Vendedores</h3>
             </section>
-
             <div className="w-full flex-grow">
                 <div className="flex flex-col mb-4">
                     <div className="flex items-center">
@@ -77,5 +76,5 @@ export function SettingsLateCustomer({ employees }: SettingsLateCustomerProps) {
                 )}
             </div>
         </main >
-    )
+    );
 }

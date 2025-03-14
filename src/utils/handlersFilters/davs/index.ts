@@ -7,7 +7,7 @@ import { ItemsDavData } from "@/types/dav";
 import { parseDate } from "@internationalized/date";
 
 // Tipagem
-import { DateValue, RangeValue } from "@nextui-org/react";
+import { DateValue, RangeValue } from "@heroui/react";
 interface salesHandlersProps {
   date?: RangeValue<DateValue> | null;
   formsOfPayments?: string[];

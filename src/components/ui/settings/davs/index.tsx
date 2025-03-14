@@ -9,7 +9,7 @@ import { searchFilter } from "@/utils/filters/searchFilter";
 
 // Biblioteca
 import { CiSearch } from "react-icons/ci";
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox } from "@heroui/react";
 import { useAtom } from "jotai";
 
 // Atom

@@ -4,7 +4,7 @@ import getCurrentDateDetails from "@/utils/getDate";
 
 // Tipagem
 import { EntriesXSales } from "@/types/entriesXSales";
-import { RangeValue, DateValue } from "@nextui-org/react";
+import { RangeValue, DateValue } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
 interface EntriesXSalesProps {
   date?: RangeValue<DateValue> | null;

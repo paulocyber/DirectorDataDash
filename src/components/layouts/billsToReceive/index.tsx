@@ -27,7 +27,7 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive"
-import { DateValue, RangeValue, useDisclosure } from "@nextui-org/react"
+import { DateValue, RangeValue, useDisclosure } from "@heroui/react"
 import { parseDate } from '@internationalized/date';
 
 interface LayoutBillsToReceiveProps {

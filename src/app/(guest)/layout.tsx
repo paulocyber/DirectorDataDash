@@ -5,6 +5,14 @@ import { ReactNode } from "react"
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+// Next
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Sistema de Relatório",
+    description: "Relatório de vendas por marcas e Stock",
+};
+
 export default async function GuestRouter({ children }: { children: ReactNode }) {
     const cookieStore = cookies();
 

@@ -56,16 +56,34 @@ export default async function BillsToReceivePdf({
   const openBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
   );
-  const paidBills = openBillsData.filter(
-    (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
-  );
 
-  const mostRecentPaidBill = paidBills.reduce((latest, bill) => {
-    return parseDate(bill.DATA_VENCIMENTO_RCB) >
-      parseDate(latest.DATA_VENCIMENTO_RCB)
-      ? bill
-      : latest;
-  }, paidBills[0]);
+  const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
+    const today = new Date();
+    const paidBills = bills.filter(
+      (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
+    );
+
+    if (paidBills.length === 0) return [];
+
+    // Ordena por proximidade da data atual
+    const sortedBills = paidBills.sort((a, b) => {
+      const dateA = parseDate(a.DATA_VENCIMENTO_RCB);
+      const dateB = parseDate(b.DATA_VENCIMENTO_RCB);
+      return (
+        Math.abs(today.getTime() - dateA.getTime()) -
+        Math.abs(today.getTime() - dateB.getTime())
+      );
+    });
+
+    const closestDate = parseDate(sortedBills[0].DATA_VENCIMENTO_RCB);
+    return sortedBills.filter(
+      (bill) =>
+        parseDate(bill.DATA_VENCIMENTO_RCB).getTime() === closestDate.getTime()
+    );
+  };
+
+  const recentPaidBills = getMostRecentPaidBills(allBillsData);
+  
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -81,6 +99,7 @@ export default async function BillsToReceivePdf({
     openBills,
     (bill) => bill.RESTANTE_RCB
   );
+  const totalPaid = calculateTotalByKey(recentPaidBills, (bill) => bill.VALOR_PAGO_RCB)
 
   const tableBody = [
     [
@@ -244,9 +263,7 @@ export default async function BillsToReceivePdf({
             text: `
              Valor da Compra: \n ${formatCurrency(totalReceipt)}
 
-             Valor pago: \n ${formatCurrency(
-               Number(mostRecentPaidBill ? mostRecentPaidBill.VALOR_PAGO_RCB.replace(",", ".") : 0)
-             )}
+             Valor pago: \n ${formatCurrency(totalPaid)}
 
              Saldo á pagar: \n ${formatCurrency(totalOpenAmount)}
              `,
