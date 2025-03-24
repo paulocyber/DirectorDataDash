@@ -31,8 +31,6 @@ export default async function TableDavPage({ searchParams }: { searchParams: Pro
         api.post("/v1/find-db-query", { query: davFinished }),
     ])
 
-    console.log("Dados: ", paymentMethod.length)
-
     return (
         <LayoutDavTable
             davsData={davResponse.data.returnObject.body}

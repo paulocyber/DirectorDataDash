@@ -40,7 +40,7 @@ export default async function EntriesXSalesPage() {
         api.post("/v1/find-db-query", { query: sellHistory }),
         api.post("/v1/find-db-query", { query: suppliers }),
     ])
-
+    
     const entriesXSales = responseBuyHistory.data.returnObject.body
         .map((buyHistory: any) => {
             const matched = responseSellHistory.data.returnObject.body.find(
@@ -53,7 +53,7 @@ export default async function EntriesXSalesPage() {
                 VALOR_VENDA: matched?.VALOR_FINAL || '0',
             };
         });
-
+    
     return (
         <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} suppliers={responseSuppliers.data.returnObject.body} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} />
     )

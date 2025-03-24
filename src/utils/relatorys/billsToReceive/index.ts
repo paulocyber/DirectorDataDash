@@ -82,8 +82,7 @@ export default async function BillsToReceivePdf({
     );
   };
 
-  const recentPaidBills = getMostRecentPaidBills(allBillsData);
-  
+  const recentPaidBills = getMostRecentPaidBills(openBillsData);
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
