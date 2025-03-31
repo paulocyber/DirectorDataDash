@@ -1,5 +1,4 @@
 // Utils
-import { salesQueries } from "@/utils/queries/sales";
 import { StockQueries } from "@/utils/queries/stock";
 import { fetchData } from "..";
 
@@ -24,47 +23,39 @@ export async function fetchEntriesXSales({
 }: FetchEntriesXSalesProps) {
   setLoading(true);
 
-  const { buyHistory } = StockQueries({
-    dateInit: dateInit,
-    dateEnd: dateEnd,
-    brands,
-  });
-  const { sellHistory } = salesQueries({
+  const { entriesXExits, buyHistory } = StockQueries({
     dateInit: dateInit,
     dateEnd: dateEnd,
     brands,
   });
 
-  let buyData: any[] = [];
-  let sellData: any[] = [];
+  let entriesXExitsData: any[] = [];
+  let buyHistoryData: any[] = [];
 
   const queries = [
     fetchData({
       ctx: token,
-      query: buyHistory,
-      setData: (data) => (buyData = data),
+      query: entriesXExits,
+      setData: (data) => (entriesXExitsData = data),
     }),
     fetchData({
       ctx: token,
-      query: sellHistory,
-      setData: (data) => (sellData = data),
+      query: buyHistory,
+      setData: (data) => (buyHistoryData = data),
     }),
   ];
 
   await Promise.all(queries);
 
-  const entriesXSales = buyData.map((buyHistory: any) => {
-    const matched = sellData.find(
-      (sellHistory: any) => sellHistory.ID_PRD === buyHistory.ID_PRD
+  const mergedData = entriesXExitsData.map((entry: EntriesXSales) => {
+    const matchedBuy = buyHistoryData.find(
+      (buy: any[]) => (buy as any).ID_PRD === (entry as any).ID_PRD
     );
-
-    return {
-      ...buyHistory,
-      VALOR_LIQUIDO: matched?.VALOR_LIQUIDO || 0,
-      VALOR_VENDA: matched?.VALOR_FINAL || "0",
-    };
+    return matchedBuy
+      ? { ...entry, PRECO_UNITARIO: matchedBuy.PRECO_VENDA }
+      : entry;
   });
 
-  setEntriesSales(entriesXSales);
+  setEntriesSales(mergedData);
   setLoading(false);
 }

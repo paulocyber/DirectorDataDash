@@ -64,7 +64,7 @@ export default function LayoutEntriesXSalesPage({ entriesSalesData, suppliers, d
         <div className="flex flex-col">
             <InfoCard data={infoCard} />
             <Container>
-                <ToolBar
+                <ToolBar    
                     title="Entrada X Saída"
                     handleRefreshClick={() => handleRefresh({ date, token, brands, setLoading, setEntriesSales })}
                     handleCleanFilter={() => handleCleanFilter({ token, brands, setBrands, setDate, setLoading, setEntriesSales })}
@@ -74,9 +74,9 @@ export default function LayoutEntriesXSalesPage({ entriesSalesData, suppliers, d
                 />
                 <Table data={entriesSales} columns={columns} renderCell={renderCell} loading={loading} />
             </Container>
-            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange}>
+            {/* <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange}>
                 <SettingsSalesByBrand suppliers={suppliers} />
-            </Modal>
+            </Modal> */}
         </div>
     )
 }   

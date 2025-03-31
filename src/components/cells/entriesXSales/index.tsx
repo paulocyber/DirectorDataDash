@@ -8,21 +8,14 @@ import { Tooltip } from "@heroui/react";
 import { EntriesXSales } from "@/types/entriesXSales"
 
 export const renderCell = (item: EntriesXSales, columnKey: string) => {
-    const priceDifference = Number(item.VALOR_VENDA.replace(",", ".")) - Number(item.VALOR_FINAL)
-    const unitPrice = Number(item.VALOR_LIQUIDO) ? Number(item.VALOR_LIQUIDO) : Number(item.VALOR_UNITARIO.replace(",", "."))
-    const unitsToCoverCost = unitPrice !== 0 ? Math.abs(priceDifference) / unitPrice : 0
+    const entries = Number(item.ENTRADA.replace(',', '.'));
+    const exits = Number(item.SAIDA.replace(',', '.'));
+
+    const priceDifference = exits - entries;
+    const unitPrice = exits ? exits : Number(item.PRECO_UNITARIO.replace(',', '.'));
+    const unitsToCoverCost = unitPrice !== 0 ? Math.abs(priceDifference) / unitPrice : 0;
 
     switch (columnKey) {
-        case "cobriu":
-            return (
-                <Tooltip content={unitsToCoverCost > 0 ? "NEGATIVO" : "COBRIU O CUSTO" as any}>
-                    <div
-                        className={`flex items-center justify-center w-4 h-4 rounded-full ${unitsToCoverCost > 0 ? "bg-red-500" : "bg-green-500"
-                            }`}
-                    ></div>
-                </Tooltip>
-            );
-
         case "id":
             return <span className="text-gray-600">{item.ID_PRD}</span>;
 
@@ -30,26 +23,30 @@ export const renderCell = (item: EntriesXSales, columnKey: string) => {
             return <span className="text-gray-600">{item.DESCRICAO_PRD}</span>;
 
         case "marca":
-            return <span className="text-gray-600">{item.MARCAS}</span>;
+            return <span className="text-gray-600">{item.MARCA}</span>;
 
         case "entrada":
-            return <span className="text-gray-600">{item.DATA.split(' ')[0]}</span>;
+            return <span className="text-gray-600">{item.DATA}</span>;
 
         case "compra":
-            return <span className="text-gray-600">{formatCurrency(Number(item.VALOR_FINAL.replace(",", ".")))}</span>;
+            return <span className="text-gray-600">{formatCurrency(Number(item.ENTRADA.replace(',', '.')))}</span>;
 
         case "venda":
-            return <span className="text-gray-600">{formatCurrency(Number(item.VALOR_VENDA.replace(",", ".")))}</span>;
+            return <span className="text-gray-600">{formatCurrency(Number(item.SAIDA.replace(',', '.')))}</span>;
 
         case "diferenca":
-            return <span className="text-gray-600">{formatCurrency(Number(item.VALOR_VENDA.replace(",", ".")) - Number(item.VALOR_FINAL))}</span>;
+            return <span className="text-gray-600">{formatCurrency(Number(item.SAIDA.replace(",", ".")) - Number(item.ENTRADA.replace(",", ".")))}</span>;
 
         case "qtsPeca":
-            return (
-                <span className="text-gray-600">
-                    {unitsToCoverCost.toFixed(0)}
-                </span>
-            );
+            if (item.ENTRADA === '0') {
+                return <span className="text-gray-600">Já cobriu</span>;
+            } else {
+                return (
+                    <span className="text-gray-600">
+                        {unitsToCoverCost.toFixed(2)}
+                    </span>
+                );
+            }
 
         default:
             return null;

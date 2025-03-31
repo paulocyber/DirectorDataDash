@@ -1,5 +1,4 @@
 [
-  { "name": "#", "uid": "cobriu" },
   { "name": "ID", "uid": "id" },
   { "name": "Descrição do Produto", "uid": "descricao" },
   { "name": "Marca", "uid": "marca" },
@@ -7,5 +6,5 @@
   { "name": "Compra", "uid": "compra" },
   { "name": "Venda", "uid": "venda" },
   { "name": "Diferença", "uid": "diferenca" },
-  { "name": "Qtd. p/ Cobrir Custo", "uid": "qtsPeca" }
+  { "name": "Qtd. P/Cobrir Custo", "uid": "qtsPeca" }
 ]

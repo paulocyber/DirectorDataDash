@@ -8,17 +8,12 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
 import { StockQueries } from "@/utils/queries/stock";
-import { salesQueries } from "@/utils/queries/sales";
-
-// Dados
-import InfoCardFromEntriesXSales from "@/data/infoCards/entriesXSales";
 
 // Utils
 import { suppliersQueries } from "@/utils/queries/suppliers";
 
 // Componetes
 import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales";
-import MainTence from "@/components/ui/maintenance";
 
 export const metadata: Metadata = {
     title: "Vendas x Estoque em valor",
@@ -31,30 +26,31 @@ export default async function EntriesXSalesPage() {
     const api = setupApiClient(token as string)
 
     const { today, year, month } = getCurrentDateDetails()
-    const { buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
-    const { sellHistory } = salesQueries({ dateInit: `${year}/${month}/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
+    const { entriesXExits, buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
     const suppliers = suppliersQueries()
 
-    const [responseBuyHistory, responseSellHistory, responseSuppliers] = await Promise.all([
+    const [responseEntries, responseBuyHistory, responseSuppliers] = await Promise.all([
+        api.post("/v1/find-db-query", { query: entriesXExits }),
         api.post("/v1/find-db-query", { query: buyHistory }),
-        api.post("/v1/find-db-query", { query: sellHistory }),
         api.post("/v1/find-db-query", { query: suppliers }),
     ])
-    
-    const entriesXSales = responseBuyHistory.data.returnObject.body
-        .map((buyHistory: any) => {
-            const matched = responseSellHistory.data.returnObject.body.find(
-                (sellHistory: any) => sellHistory.ID_PRD === buyHistory.ID_PRD
-            );
 
-            return {
-                ...buyHistory,
-                VALOR_LIQUIDO: matched?.VALOR_LIQUIDO || 0,
-                VALOR_VENDA: matched?.VALOR_FINAL || '0',
-            };
-        });
-    
+    const entries = responseEntries.data.returnObject.body;
+    const buys = responseBuyHistory.data.returnObject.body;
+
+    const mergedData = entries.map((entry: any[]) => {
+        const matchedBuy = buys.find((buy: any[]) => (buy as any).ID_PRD === (entry as any).ID_PRD);
+        return matchedBuy
+            ? { ...entry, PRECO_UNITARIO: matchedBuy.PRECO_VENDA }
+            : entry;
+    });
+
     return (
-        <LayoutEntriesXSalesPage entriesSalesData={entriesXSales} suppliers={responseSuppliers.data.returnObject.body} dateInit={`${year}/01/01`} dateEnd={`${year}/${month}/01`} />
+        <LayoutEntriesXSalesPage
+            entriesSalesData={mergedData}
+            suppliers={responseSuppliers.data.returnObject.body}
+            dateInit={`${year}/01/01`}
+            dateEnd={today}
+        />
     )
 }

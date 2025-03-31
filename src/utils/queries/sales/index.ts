@@ -127,10 +127,12 @@ export const salesQueries = ({
   // vhisProd.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vhisProd.data BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) AND vhisProd.id_emp IN
   // (1, 2, 3, 4, 5, 100) GROUP BY vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc`;
 
-  let sellHistory = `select  EXTRACT(YEAR FROM vhisProd.DATA) AS ANO, EXTRACT(MONTH FROM vhisProd.DATA) AS MES, vhisProd.id_prd,  prd.DESCRICAO_PRD, mrc.descricao_mrc AS MARCAS,  SUM(vhisProd.QUANTIDADE) AS 
-  QUANTIDADE,  MAX(vhisProd.VALOR_UNITARIO) AS VALOR_BRUTO,  MAX(vhisProd.VALOR_UNITARIO_LIQUIDO) AS VALOR_LIQUIDO, SUM(vhisProd.VALOR_UNITARIO_LIQUIDO * vhisProd.QUANTIDADE) AS VALOR_FINAL  FROM 
-  v_historico_venda_produto vhisProd INNER JOIN produtos prd ON prd.id_prd = vhisProd.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vhisProd.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59'
-  AND mrc.descricao_mrc IN ('PEINING')  AND vhisProd.id_emp IN (1, 2, 3, 4, 5) GROUP BY ANO, MES, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc ORDER BY ANO, MES`;
+  let sellHistory = `select (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 
+  THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)) AS data, prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc, 
+  SUM(sdi.VALOR_LIQUIDO_SDI) AS saidas FROM saidas sds INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc INNER 
+  JOIN almoxarifados alm ON alm.id_alm = sds.id_alm WHERE CAST(sds.DATAHORA_FINALIZACAO_SDS AS DATE) BETWEEN '${dateInit}' AND '${dateEnd}' AND sds.tipo_sds IN ('4', '5', '9') AND sds.status_sds = '2' AND 
+  alm.tipo_alm = '1' GROUP BY (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 
+  8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)), prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc rows 10`;
 
   return {
     sales,

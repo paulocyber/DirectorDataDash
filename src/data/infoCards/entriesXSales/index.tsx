@@ -18,17 +18,17 @@ export default function InfoCardFromEntriesXSales({ entriesSalesData }: InfoCard
         {
             icon: <CgShoppingCart className="w-5 h-5" />,
             title: "Total Compra",
-            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.VALOR_FINAL)),
+            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.ENTRADA)),
         },
         {
             icon: <FaDollarSign className="w-5 h-5" />,
             title: "Total Venda",
-            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.VALOR_VENDA)),
+            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.SAIDA)),
         },
         {
             icon: <BiTrendingUp className="w-5 h-5" />,
             title: "Total Custo",
-            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.TOTAL_CUSTO)),
+            value: formatCurrency(calculateTotalByKey(entriesSalesData, (data) => data.CUSTO)),
         },
     ];
 
