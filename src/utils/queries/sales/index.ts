@@ -11,6 +11,7 @@ export const salesQueries = ({
   idSeller,
   brands,
   groups,
+  tables,
 }: QueryProps) => {
   const sellerFilter =
     idSeller || sellerSurname
@@ -39,6 +40,10 @@ export const salesQueries = ({
 
   const formattedGroups = Array.isArray(groups)
     ? groups.map((group) => `'${group}'`).join(", ")
+    : "";
+
+  const formattedTables = Array.isArray(tables)
+    ? tables.map((table) => `'${table}'`).join(", ")
     : "";
 
   let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO , sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_custo,
@@ -113,7 +118,9 @@ export const salesQueries = ({
   sdi.qtde_sdi) AS valor_lucro FROM saidas_itens sdi INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd INNER JOIN saidas sds ON sds.id_sds = sdi.id_sds INNER JOIN almoxarifados_estoque ale ON ale.id_prd = sdi.id_prd
   AND ale.id_alm = sdi.id_alm INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc) LEFT JOIN ( SELECT DISTINCT ID_FNC FROM metas_vendas_itens ) mti ON mti.ID_FNC = fnc.id_pss INNER 
   JOIN empresas emp ON emp.id_emp = sds.id_emp LEFT JOIN fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' WHERE sds.status_sds = '2' and fnc.id_pss = mti.ID_FNC  AND 
-  sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.id_emp IN (${formattedCompanys})  AND sds.tipo_sds = '4'  AND sdi.id_tbl IN (1, 2) GROUP BY fnc.id_pss, fnc.apelido_pss ORDER BY VALOR_LIQUIDO DESC`;
+  sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.id_emp IN (${formattedCompanys})  AND sds.tipo_sds = '4' ${
+    tables ? ` AND sdi.id_tbl IN (${formattedTables})` : ""
+  } GROUP BY fnc.id_pss, fnc.apelido_pss ORDER BY VALOR_LIQUIDO DESC`;
 
   let profitsFromSale = `select lucro.id_vendedor, lucro.apelido_pss, lucro.valor_liquido, lucro.valor_lucro, COALESCE(metas.VALOR_INDIVIDUAL_MTI, '') AS meta_individual, case WHEN valor_liquido <> 0 then valor_lucro
   / valor_liquido else 0 end as margem_lucro FROM (SELECT sdi.ID_pss AS id_vendedor, fnc.apelido_pss, SUM(sdi.valor_liquido_sdi) AS valor_liquido, SUM(sdi.QTDE_SDI * sdi.preco_custo_sdi) AS valor_custo, 

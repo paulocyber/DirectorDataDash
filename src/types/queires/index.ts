@@ -10,6 +10,7 @@ export interface QueryProps {
   idSeller?: string[] | string;
   brands?: string[];
   groups?: string[];
+  tables?: string[];
   formsOfPayments?: string[];
   id?: string;
 }

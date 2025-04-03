@@ -28,6 +28,7 @@ import { useAtom } from "jotai";
 // Atom
 import { enterprisesAtom } from "@/atom/employees";
 import { refreshAtom } from "@/atom/refresh";
+import { tablesAtom } from "@/atom/tables";
 
 // Next
 import Link from "next/link";
@@ -37,12 +38,15 @@ import vibrantPalette from '@/data/pallets/vibrant.json';
 
 // Tipagem
 import { DateValue, parseDate } from "@internationalized/date";
-import { RangeValue } from "@heroui/react"
+import { RangeValue, useDisclosure } from "@heroui/react"
 import { ItemsGoalProgress, ItemsProfitsFromSale, ItemsTopSellers } from "@/types/sales";
+import Modal from "@/components/ui/modal";
+import { SettingsSales } from "@/components/ui/settings/salesGoal";
 interface LayoutSalesGoalProps {
     goalProgress: ItemsGoalProgress[];
     topSellersData: ItemsTopSellers[]
     profitSalesData: ItemsProfitsFromSale[];
+    enterprises: { ID_EMP: string, SIGLA_EMP: string }[]
     year: number;
     month: number;
     today: string;
@@ -52,13 +56,14 @@ const getLastDayOfMonth = (year: number, month: number) => {
     return new Date(year, month, 0).getDate();
 };
 
-export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSalesData, year, month, today }: LayoutSalesGoalProps) {
+export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSalesData, enterprises, year, month, today }: LayoutSalesGoalProps) {
     const [salesProgress, setSalesProgress] = useState(goalProgress);
     const [topSellers, setTopSellers] = useState(topSellersData);
     const [profitSales, setProfitSales] = useState(profitSalesData);
     const [filterSellers, setFilterSellers] = useState<string>('');
     const [company, setCompany] = useAtom(enterprisesAtom)
     const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
+    const [tables, setTables] = useAtom(tablesAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
@@ -66,10 +71,11 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
     });
 
     const { token } = useContext(AuthContext)
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     function selection(description: string) {
         setFilterSellers(description)
-        handleRefresh({ token, date, company, sellers: description, setLoading, setSalesProgress, setTopSellers, setProfitSales })
+        handleRefresh({ token, date, company, sellers: description, tables, setLoading, setSalesProgress, setTopSellers, setProfitSales })
     }
 
     function getGroupName(company: string[]): string {
@@ -97,21 +103,22 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
 
     useEffect(() => {
         if (activeRefresh) {
-            handleRefresh({ token, date, company, sellers: filterSellers, setLoading, setSalesProgress, setTopSellers, setProfitSales })
+            handleRefresh({ token, date, company, sellers: filterSellers, tables, setLoading, setSalesProgress, setTopSellers, setProfitSales })
             setActiveRefresh(false);
         }
     }, [activeRefresh]);
-
+console.log("Empresas: ", enterprises)
     return (
         <>
             <Container>
                 <ToolBar
                     title={`Metas de ${getMonthName(date.start.month)}`}
-                    handleRefreshClick={() => handleRefresh({ token, date, company, sellers: filterSellers, setLoading, setSalesProgress, setTopSellers, setProfitSales })}
-                    handleDateRangePicker={(date: RangeValue<DateValue> | null) => handleDateFilter({ token, date: date, company, setDate, setLoading, setSalesProgress, setTopSellers, setProfitSales })}
+                    handleRefreshClick={() => handleRefresh({ token, date, company, sellers: filterSellers, tables, setLoading, setSalesProgress, setTopSellers, setProfitSales })}
+                    handleDateRangePicker={(date: RangeValue<DateValue> | null) => handleDateFilter({ token, date: date, company, tables, setDate, setLoading, setSalesProgress, setTopSellers, setProfitSales })}
                     handleCleanFilter={() => handleCleanFilter({ token, company, setFilterSellers, setDate, setLoading, setSalesProgress, setTopSellers, setProfitSales, setCompany })}
                     dateRange={date}
                     exportToPDF={generatePdf}
+                    handleFilters={onOpen}
                 />
                 <div className="w-full flex-col px-7 py-2">
                     <ProgressBar minValue={salesProgress[0].value} maxValue={salesProgress[2].value} />
@@ -168,6 +175,9 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
                     </Container>
                 </div >
             </div >
+            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange} setActiveRefresh={setActiveRefresh}>
+                <SettingsSales enterprises={enterprises} />
+            </Modal>
         </>
     )
 }

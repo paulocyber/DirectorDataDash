@@ -16,6 +16,7 @@ interface SalesHandlersProps {
   token: string;
   date?: RangeValue<DateValue> | null;
   company: string[];
+  tables?: string[];
   sellers?: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setFilterSellers?: (value: string) => void;
@@ -30,6 +31,7 @@ export async function handleRefresh({
   token,
   date,
   company,
+  tables,
   sellers,
   setLoading,
   setSalesProgress,
@@ -46,6 +48,7 @@ export async function handleRefresh({
     month: date.start.month,
     company,
     sellers,
+    tables,
     setLoading,
     setSalesProgress,
     setTopSellers,
@@ -98,6 +101,7 @@ export async function handleDateFilter({
   token,
   date,
   company,
+  tables,
   setFilterSellers,
   setDate,
   setLoading,
@@ -115,6 +119,7 @@ export async function handleDateFilter({
     year: date.start.year,
     month: date.start.month,
     company,
+    tables,
     setLoading,
     setSalesProgress,
     setTopSellers,

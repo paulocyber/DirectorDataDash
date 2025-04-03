@@ -18,6 +18,7 @@ interface FetchSalesProps {
   month: number;
   year: number;
   company: string[];
+  tables?: string[];
   sellers?: string;
   setLoading: (loading: boolean) => void;
   setSalesProgress: (value: ItemsGoalProgress[]) => void;
@@ -32,6 +33,7 @@ export async function fetchSales({
   month,
   year,
   company,
+  tables,
   sellers,
   setLoading,
   setSalesProgress,
@@ -45,8 +47,9 @@ export async function fetchSales({
     dateEnd,
     company,
     idSeller: sellers,
+    tables,
     year,
-    month
+    month,
   });
   const { storeGoals, individualGoals } = goalsQueries({
     month,
@@ -110,5 +113,5 @@ export async function fetchSales({
   setLoading(false);
   setSalesProgress(salesProgressData);
   setTopSellers(convertedTopSellers);
-  setProfitSales(profitSalesData)
+  setProfitSales(profitSalesData);
 }
