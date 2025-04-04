@@ -12,9 +12,10 @@ export default async function TaxBilling() {
     const { today, year, month } = getCurrentDateDetails()
     const { nfce, nfe } = TaxQueries({ dateInit: today, dateEnd: `${year}/${month}/01` })
 
-    // const [responseNfce, responseNfe] = await Promise.all([
-
-    // ])
+    const [responseNfce, responseNfe] = await Promise.all([
+        api.post("/v1/find-db-query", { query: nfce }),
+        api.post("/v1/find-db-query", { query: nfe }),
+    ])
 
     return (
         <h1>Teste</h1>

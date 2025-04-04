@@ -15,15 +15,9 @@ export const StockQueries = ({
     ? groups.map((group) => `'${group}'`).join(", ")
     : "";
 
-  let stockByBrand = `select mrc.id_mrc AS id_marca, COALESCE(mrc.descricao_mrc, 'SEM MARCA') AS marca, 
-    ale.quantidade_atual_ale * ale.preco_compra_ale AS total_valor_compra 
-    FROM produtos prd 
-    INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
-    LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc 
-    WHERE ale.id_alm IN (1, 2, 3, 4, 5, 100) 
-    AND mrc.descricao_mrc IN (${formattedBrands}) 
-    AND prd.status_prd = 'A' 
-    ORDER BY mrc.id_mrc, mrc.descricao_mrc`;
+  let stockByBrand = `select mrc.id_mrc AS id_marca, ale.id_prd, IIF(ale.quantidade_atual_ale < 0, 0, ale.quantidade_atual_ale) AS quantidade_atual_ale, ale.PRECO_CUSTO_ALE, COALESCE(mrc.descricao_mrc, 'SEM MARCA') 
+  AS marca, IIF(ale.quantidade_atual_ale < 0, 0, ale.quantidade_atual_ale) * ale.PRECO_CUSTO_ALE AS total_valor_compra FROM produtos prd INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd LEFT JOIN 
+  marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE ale.id_alm IN (1, 2, 3, 4, 5, 100) AND mrc.descricao_mrc IN (${formattedBrands}) AND prd.status_prd = 'A' ORDER BY mrc.id_mrc, mrc.descricao_mrc`;
 
   let stockByGroup = `select grp.id_grp, grp.nome_grp, SUM(ale.quantidade_atual_ale * ale.preco_compra_ale) AS total_valor_compra FROM produtos prd INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
   INNER JOIN grupos_produtos grp ON grp.id_grp = prd.id_grp LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE  ale.id_alm IN (1, 2, 3, 4, 5, 100) AND grp.nome_grp IN (${formattedGroups}) AND prd.status_prd = 'A' 

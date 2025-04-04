@@ -91,7 +91,7 @@ export default async function SalesByBrandPage() {
                 buyValue: matchedSales ? parseFloat(matchedSales.VALOR_PGM.replace(",", ".")) : 0,
             };
         })
-
+// console.log("Query: ", stockByBrand)
     return (
         <LayoutSalesByBrand
             salesByBrandData={salesAndBuy}
