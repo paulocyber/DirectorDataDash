@@ -27,9 +27,13 @@ export default async function BillsToReceivePage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const role = (await cookieStore).get('@nextauth.role')?.value || "";
-    
-    if (!token || ['estoque'].includes(role)) {
+
+    if (!token || ['estoque'].includes(role) || ['rh'].includes(role)) {
         redirect('/salesbybrand')
+    }
+
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
     }
 
     const api = setupApiClient(token as string)

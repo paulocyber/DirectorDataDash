@@ -22,6 +22,10 @@ export default async function TableDavPage({ searchParams }: { searchParams: Pro
         redirect('/salesbybrand')
     }
 
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
+
     const api = setupApiClient(token)
     const { today } = getCurrentDateDetails()
 

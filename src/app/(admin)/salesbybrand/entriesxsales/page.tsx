@@ -12,6 +12,9 @@ import { StockQueries } from "@/utils/queries/stock";
 // Utils
 import { suppliersQueries } from "@/utils/queries/suppliers";
 
+// Next
+import { redirect } from "next/navigation";
+
 // Componetes
 import LayoutEntriesXSalesPage from "@/components/layouts/salesByBrand/entriesXSales";
 
@@ -24,10 +27,15 @@ export default async function EntriesXSalesPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
 
     const { today, year, month } = getCurrentDateDetails()
     const { entriesXExits, buyHistory } = StockQueries({ dateInit: `${year}/01/01`, dateEnd: today, brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS'] })
     const suppliers = suppliersQueries()
+
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
 
     const [responseEntries, responseBuyHistory, responseSuppliers] = await Promise.all([
         api.post("/v1/find-db-query", { query: entriesXExits }),

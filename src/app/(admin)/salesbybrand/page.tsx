@@ -1,6 +1,7 @@
 // Next
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import { redirect } from 'next/navigation';
 
 // Biblioteca
 import { setupApiClient } from "@/services/api";
@@ -27,6 +28,7 @@ export default async function SalesByBrandPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const api = setupApiClient(token as string)
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
 
     const { today, year } = getCurrentDateDetails()
     const { SalesByBrand: playCell } = salesQueries({ dateInit: today, dateEnd: today, company: ["1"], brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
@@ -36,6 +38,14 @@ export default async function SalesByBrandPage() {
     const { stockByBrand } = StockQueries({ dateInit: '', dateEnd: '', brands: ['PEINING', 'KIMASTER', 'B-MAX', 'INOVA', 'DEVIA', 'HREBOS',] })
     const { debtBySuppliers } = billsToPayQueries({ year, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
     const { buyBySuppliers } = billsToPayQueries({ dateInit: today, dateEnd: today, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
+
+    if (!token || ['estoque'].includes(role)) {
+        redirect('/salesbybrand')
+    }
+
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
 
     const [responsePlayCell, responsePlayCustom, responsePlayUp, responsePlayCovers, responseStock, responseDebt, responseBuy] = await Promise.all([
         api.post("/v1/find-db-query", { query: playCell }),

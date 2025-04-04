@@ -20,7 +20,7 @@ export const StockQueries = ({
     FROM produtos prd 
     INNER JOIN almoxarifados_estoque ale ON ale.id_prd = prd.id_prd 
     LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc 
-    WHERE ale.id_alm IN (1, 2, 3, 100) 
+    WHERE ale.id_alm IN (1, 2, 3, 4, 5, 100) 
     AND mrc.descricao_mrc IN (${formattedBrands}) 
     AND prd.status_prd = 'A' 
     ORDER BY mrc.id_mrc, mrc.descricao_mrc`;

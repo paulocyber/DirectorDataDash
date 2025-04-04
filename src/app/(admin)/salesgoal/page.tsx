@@ -62,7 +62,7 @@ export default async function SalesPage() {
         topSellersResponse.data.returnObject.body,
         ['VALOR_LIQUIDO']
     );
-console.log("Empresas: ", companyRessponse.data.returnObject.body)
+
     return (
         <LayoutSalesGoal
             goalProgress={salesProgressData}

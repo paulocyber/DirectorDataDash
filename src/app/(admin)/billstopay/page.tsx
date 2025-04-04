@@ -30,6 +30,10 @@ export default async function BillsToPayPage() {
         redirect('/salesbybrand')
     }
 
+    if(!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
+
     const api = setupApiClient(token)
 
     const { year, month, today, yesterday } = getCurrentDateDetails()

@@ -28,6 +28,10 @@ export default async function DetailDavsPage({ params }: { params: Promise<{ id:
         redirect('/salesbybrand')
     }
 
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
+
     const api = setupApiClient(token)
 
     const { id } = await params
@@ -43,7 +47,7 @@ export default async function DetailDavsPage({ params }: { params: Promise<{ id:
             <NotFound href="/davs" />
         );
     }
-    
+
     return (
         <LayoutDetail
             davDetailData={davDetailsResponse.data.returnObject.body}
