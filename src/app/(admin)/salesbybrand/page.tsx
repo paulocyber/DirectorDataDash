@@ -39,10 +39,6 @@ export default async function SalesByBrandPage() {
     const { debtBySuppliers } = billsToPayQueries({ year, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
     const { buyBySuppliers } = billsToPayQueries({ dateInit: today, dateEnd: today, brands: ['BASIC INOVA', 'INOVA HENRIQUE', 'INOVA COMPRA DE MERCADORIA', 'ITO INOVA', 'LEANDRO INOVA', 'MIA', 'TOMY INOVA', 'KIMASTER', 'PEINING', 'DEVIA', 'B-MAX', 'INOVA'] })
 
-    if (!token || ['estoque'].includes(role)) {
-        redirect('/salesbybrand')
-    }
-
     if (!token || ['rh'].includes(role)) {
         redirect('/salesgoal')
     }
@@ -91,7 +87,7 @@ export default async function SalesByBrandPage() {
                 buyValue: matchedSales ? parseFloat(matchedSales.VALOR_PGM.replace(",", ".")) : 0,
             };
         })
-// console.log("Query: ", stockByBrand)
+
     return (
         <LayoutSalesByBrand
             salesByBrandData={salesAndBuy}

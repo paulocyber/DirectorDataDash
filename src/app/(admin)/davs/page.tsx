@@ -28,11 +28,11 @@ export default async function DavPage() {
     const token = (await cookieStore).get('@nextauth.token')?.value;
     const role = (await cookieStore).get('@nextauth.role')?.value || "";
 
-    if (!token || ['estoque'].includes(role) || ['rh'].includes(role)) {
+    if (!token || ['estoque'].includes(role)) {
         redirect('/salesbybrand')
     }
 
-    if (!token || ['rh'].includes(role)) {
+    if (!token || ['rh'].includes(role)) { 
         redirect('/salesgoal')
     }
 
