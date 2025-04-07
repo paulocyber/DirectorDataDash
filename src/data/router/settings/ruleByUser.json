@@ -62,7 +62,8 @@
             "icon": "table"
           }
         ]
-      }
+      },
+      { "name": "Faturamento fiscal", "path": "/taxbilling", "icon": "dash" }
     ]
   },
 
@@ -116,7 +117,8 @@
             "icon": "table"
           }
         ]
-      }
+      },
+      { "name": "Faturamento fiscal", "path": "/taxbilling", "icon": "dash" }
     ]
   },
 
