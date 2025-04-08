@@ -34,7 +34,7 @@ export default async function TaxBilling() {
     ])
     const notesByCompany = [...responseNfce.data.returnObject.body, ...responseNfe.data.returnObject.body]
     const billingByCompany = groupSumBy(notesByCompany, { key: "EMPRESA", valueKey: 'VALOR_LIQUIDO_SDS' }).sort((a, b) => b.value - a.value)
-
+    
     return (
         <LayoutTaxBilling
             taxInvoicingData={billingByCompany}

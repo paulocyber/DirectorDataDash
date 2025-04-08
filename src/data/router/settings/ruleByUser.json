@@ -63,6 +63,7 @@
           }
         ]
       },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
       { "name": "Faturamento fiscal", "path": "/taxbilling", "icon": "dash" }
     ]
   },
@@ -118,6 +119,7 @@
           }
         ]
       },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" },
       { "name": "Faturamento fiscal", "path": "/taxbilling", "icon": "dash" }
     ]
   },
@@ -201,7 +203,8 @@
             "icon": "table"
           }
         ]
-      }
+      },
+      { "name": "Vendas por grupo", "path": "/salesbygroup", "icon": "dash" }
     ]
   },
   "rh": {
