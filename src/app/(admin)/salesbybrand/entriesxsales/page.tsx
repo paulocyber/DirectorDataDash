@@ -37,6 +37,10 @@ export default async function EntriesXSalesPage() {
         redirect('/salesgoal')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const [responseEntries, responseBuyHistory, responseSuppliers] = await Promise.all([
         api.post("/v1/find-db-query", { query: entriesXExits }),
         api.post("/v1/find-db-query", { query: buyHistory }),

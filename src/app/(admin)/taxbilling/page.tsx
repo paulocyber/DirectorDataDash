@@ -10,6 +10,12 @@ import LayoutTaxBilling from "@/components/layouts/taxBilling";
 // Next
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Relatório de Faturamento fiscal",
+    description: "Informações sobre faturamento fiscal",
+};
 
 export default async function TaxBilling() {
     const cookieStore = cookies();
@@ -34,7 +40,7 @@ export default async function TaxBilling() {
     ])
     const notesByCompany = [...responseNfce.data.returnObject.body, ...responseNfe.data.returnObject.body]
     const billingByCompany = groupSumBy(notesByCompany, { key: "EMPRESA", valueKey: 'VALOR_LIQUIDO_SDS' }).sort((a, b) => b.value - a.value)
-    
+
     return (
         <LayoutTaxBilling
             taxInvoicingData={billingByCompany}

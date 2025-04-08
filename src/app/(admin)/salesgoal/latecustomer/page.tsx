@@ -23,9 +23,13 @@ export default async function LateCustomerPage() {
     const cookieStore = cookies()
     const token = (await cookieStore).get('@nextauth.token')?.value
     const role = (await cookieStore).get('@nextauth.role')?.value || "";
-    
+
     if (!token || ['estoque'].includes(role)) {
         redirect('/salesbybrand')
+    }
+
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
     }
 
     const api = setupApiClient(token)

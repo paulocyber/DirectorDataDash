@@ -215,5 +215,10 @@
         "icon": "dash"
       }
     ]
+  },
+  "Fiscal": {
+    "router": [
+      { "name": "Faturamento fiscal", "path": "/taxbilling", "icon": "dash" }
+    ]
   }
 }

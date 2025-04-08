@@ -26,6 +26,10 @@ export default async function TableDavPage({ searchParams }: { searchParams: Pro
         redirect('/salesgoal')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const api = setupApiClient(token)
     const { today } = getCurrentDateDetails()
 

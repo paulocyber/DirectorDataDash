@@ -36,6 +36,10 @@ export default async function DavPage() {
         redirect('/salesgoal')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const api = setupApiClient(token)
     const { today } = getCurrentDateDetails()
 

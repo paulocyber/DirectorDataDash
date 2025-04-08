@@ -33,6 +33,10 @@ export default async function SalesPage() {
         redirect('/salesbybrand')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const api = setupApiClient(token)
 
     const { year, month, today } = getCurrentDateDetails()

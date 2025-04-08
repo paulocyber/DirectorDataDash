@@ -37,6 +37,10 @@ export default async function BillsToReceiveTablePage() {
         redirect('/salesgoal')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const api = setupApiClient(token as string)
     const { year, today } = getCurrentDateDetails()
     const people = PeopleQueries()

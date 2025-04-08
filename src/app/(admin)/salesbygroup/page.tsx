@@ -1,6 +1,7 @@
 // Next
 import { cookies } from "next/headers";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 // Bibliotecas
 import { setupApiClient } from "@/services/api";
@@ -21,10 +22,19 @@ export const metadata: Metadata = {
 export default async function SalesByGroupPage() {
     const cookieStore = cookies();
     const token = (await cookieStore).get('@nextauth.token')?.value;
+    const role = (await cookieStore).get('@nextauth.role')?.value || "";
 
     const api = setupApiClient(token as string)
 
     const { firstDayPrevMonth, lastDayPrevMonth, year, month, today } = getCurrentDateDetails()
+
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
+    if (!token || ['rh'].includes(role)) {
+        redirect('/salesgoal')
+    }
 
     const { salesByGroup: currentMonthSales } = salesQueries({
         dateInit: `${year}/${month}/01`,

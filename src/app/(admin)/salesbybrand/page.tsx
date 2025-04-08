@@ -43,6 +43,10 @@ export default async function SalesByBrandPage() {
         redirect('/salesgoal')
     }
 
+    if (!token || ['Fiscal'].includes(role)) {
+        redirect('/taxbilling')
+    }
+
     const [responsePlayCell, responsePlayCustom, responsePlayUp, responsePlayCovers, responseStock, responseDebt, responseBuy] = await Promise.all([
         api.post("/v1/find-db-query", { query: playCell }),
         api.post("/v1/find-db-query", { query: playCustom }),
