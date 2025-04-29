@@ -1,7 +1,7 @@
 'use client'
 
 // React
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/auth";
 
 // Componentes
@@ -27,6 +27,8 @@ import { useAtom } from "jotai";
 
 // Atom
 import { statusAtom } from "@/atom/status";
+import { costCenterAtom } from "@/atom/costCenter";
+import { refreshAtom } from "@/atom/refresh";
 
 // Tipagem
 import { ItemsBillsToPay } from "@/types/billsToPay";
@@ -38,18 +40,21 @@ interface LayoutBillsToPayTable {
     openBillsData: ItemsBillsToPay[];
     paidBillsData: ItemsBillsToPay[];
     overdueBillsData: ItemsBillsToPay[];
+    costsCentersData: { ID_CNT: string, DESCRICAO_CNT: string }[],
     year: number;
     month: number;
 }
 
-export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, paidBillsData, overdueBillsData, year, month }: LayoutBillsToPayTable) {
+export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, paidBillsData, overdueBillsData, costsCentersData, year, month }: LayoutBillsToPayTable) {
     const [allBillets, setAllBillets] = useState(allBilletsData)
     const [openBills, setOpenBills] = useState(openBillsData)
     const [paidBills, setPaidBills] = useState(paidBillsData)
     const [overdueBills, setOverdueBills] = useState(overdueBillsData)
     const [clearFilter, setClearFilter] = useState<boolean>(false)
     const [search, setSearch] = useState<string>('')
-    const [status, setStatus] = useAtom<string[]>(statusAtom)
+    const [status,] = useAtom<string[]>(statusAtom)
+    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
+    const [costsCenters, setCostsCenters] = useAtom(costCenterAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
         start: parseDate(new Date(`${year}/${month}/01`).toISOString().split('T')[0]),
@@ -74,6 +79,13 @@ export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, p
         BillsToPayPdf({ allBillets, status, billetFilter: status.includes('Em aberto') && status.includes('Pago') ? allBillets : status.includes('Em aberto') ? openBills : paidBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }
 
+    useEffect(() => {
+        if (activeRefresh) {
+            handleRefresh({ date, token, costsCenters, setLoading, setAllBillets, setOpenBills, setOverdueBills, setPaidBills, clear: clearFilter })
+            setActiveRefresh(false);
+        }
+    }, [activeRefresh]);
+
     return (
         <div className="flex flex-col">
             <InfoCard data={infoCard} />
@@ -82,9 +94,9 @@ export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, p
                     title="Contas a Pagar"
                     descriptionHref="Visualizar em Gráfico"
                     href="/billstopay"
-                    handleRefreshClick={() => handleRefresh({ date, token, setLoading, setAllBillets, setOpenBills, setOverdueBills, setPaidBills, clear: clearFilter })}
-                    handleCleanFilter={() => handleCleanFilter({ date, token, setClear: setClearFilter, setLoading, setDate, setAllBillets, setOpenBills, setOverdueBills, setPaidBills })}
-                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, token, setClear: setClearFilter, setLoading, setDate, setAllBillets, setOpenBills, setOverdueBills, setPaidBills })}
+                    handleRefreshClick={() => handleRefresh({ date, token, costsCenters, setLoading, setAllBillets, setOpenBills, setOverdueBills, setPaidBills, clear: clearFilter })}
+                    handleCleanFilter={() => handleCleanFilter({ date, token, setClear: setClearFilter, setCostsCenters, setLoading, setDate, setAllBillets, setOpenBills, setOverdueBills, setPaidBills })}
+                    handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ date: newDate, token, costsCenters, setClear: setClearFilter, setLoading, setDate, setAllBillets, setOpenBills, setOverdueBills, setPaidBills })}
                     handleFilters={onOpen}
                     dateRange={date}
                     search={search}
@@ -93,8 +105,8 @@ export default function LayoutBillsToPayTable({ allBilletsData, openBillsData, p
                 />
                 <Table data={filterSearch} columns={columns} renderCell={renderCell} loading={loading} />
             </Container>
-            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange}>
-                <SettingsBillsToPay />
+            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange} displayFooter={true} setActiveRefresh={setActiveRefresh}>
+                <SettingsBillsToPay costCenter={costsCentersData} />
             </Modal>
         </div>
     )

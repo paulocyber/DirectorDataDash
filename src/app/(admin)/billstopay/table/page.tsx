@@ -9,6 +9,7 @@ import { setupApiClient } from "@/services/api";
 // Utils
 import getCurrentDateDetails from "@/utils/getDate";
 import { billsToPayQueries } from "@/utils/queries/billstoPay";
+import { CostCenterQueries } from "@/utils/queries/costCenter";
 
 // Componentes
 import LayoutBillsToPayTable from "@/components/layouts/billsToPay/table";
@@ -41,13 +42,15 @@ export default async function BillsToPayTablePage() {
     const api = setupApiClient(token)
 
     const { year, month, today, yesterday } = getCurrentDateDetails()
+    const costsCenters = CostCenterQueries()
     const { allBillet, billetPaid } = billsToPayQueries({ dateInit: `${year}/${month}/01`, dateEnd: today })
     const { expiredBillet } = billsToPayQueries({ dateInit: `${year}/01/01`, dateEnd: yesterday })
 
-    const [allBillsResponse, overdueBillsResponse, paidBillsResponse] = await Promise.all([
+    const [allBillsResponse, overdueBillsResponse, paidBillsResponse, costsCentersResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: allBillet }),
         api.post("/v1/find-db-query", { query: expiredBillet }),
-        api.post("/v1/find-db-query", { query: billetPaid })
+        api.post("/v1/find-db-query", { query: billetPaid }),
+        api.post("/v1/find-db-query", { query: costsCenters }),
     ])
 
     const openBills = allBillsResponse.data.returnObject.body.filter(
@@ -64,6 +67,7 @@ export default async function BillsToPayTablePage() {
             openBillsData={openBills}
             paidBillsData={paidBills}
             overdueBillsData={overdueBillsResponse.data.returnObject.body}
+            costsCentersData={costsCentersResponse.data.returnObject.body}
             year={year}
             month={month}
         />

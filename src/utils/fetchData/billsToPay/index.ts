@@ -10,6 +10,7 @@ interface FetchBillsToPayProps {
   clear?: boolean;
   dateInit: string;
   dateEnd: string;
+  costsCenters?: string[];
   setLoading: (value: boolean) => void;
   setAllBillets: (value: ItemsBillsToPay[]) => void;
   setOpenBills: (value: ItemsBillsToPay[]) => void;
@@ -22,6 +23,7 @@ export async function fetchBillsToPay({
   clear,
   dateInit,
   dateEnd,
+  costsCenters,
   setLoading,
   setAllBillets,
   setOpenBills,
@@ -35,6 +37,7 @@ export async function fetchBillsToPay({
   const { allBillet } = billsToPayQueries({
     dateInit: dateInit,
     dateEnd: dateEnd,
+    costsCenters,
   });
 
   const { expiredBillet } = billsToPayQueries({
@@ -60,7 +63,8 @@ export async function fetchBillsToPay({
   await Promise.all(queries);
 
   const openBills = allBilletData.filter(
-    (bill: ItemsBillsToPay) => bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
+    (bill: ItemsBillsToPay) =>
+      bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
   );
   const paidBills = allBilletData.filter(
     (bill: ItemsBillsToPay) =>

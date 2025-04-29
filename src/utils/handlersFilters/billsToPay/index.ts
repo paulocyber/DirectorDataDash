@@ -9,8 +9,10 @@ import { parseDate } from "@internationalized/date";
 interface BillsToPayHandlersProps {
   date?: RangeValue<DateValue> | null;
   clear?: boolean;
+  costsCenters?: string[];
   token: string;
   setLoading: (value: boolean) => void;
+  setCostsCenters?: (value: string[]) => void;
   setDate?: (value: RangeValue<DateValue>) => void;
   setClear?: (value: boolean) => void;
   setFilters?: (value: SelectionDescription[]) => void;
@@ -30,6 +32,7 @@ export async function handleRefresh({
   date,
   clear,
   token,
+  costsCenters,
   setLoading,
   setAllBillets,
   setOpenBills,
@@ -43,6 +46,7 @@ export async function handleRefresh({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
     clear,
+    costsCenters,
     setLoading,
     setAllBillets,
     setOpenBills,
@@ -54,6 +58,8 @@ export async function handleRefresh({
 export async function handleCleanFilter({
   date,
   token,
+  costsCenters,
+  setCostsCenters,
   setClear,
   setDate,
   setLoading,
@@ -63,7 +69,7 @@ export async function handleCleanFilter({
   setOverdueBills,
   setPaidBills,
 }: BillsToPayHandlersProps) {
-  if (!date || !setDate || !setClear) return;
+  if (!date || !setDate || !setClear || !setCostsCenters) return;
 
   const { today, year, month } = getCurrentDateDetails();
 
@@ -74,6 +80,7 @@ export async function handleCleanFilter({
     end: parseDate(new Date().toISOString().split("T")[0]),
   });
   setClear(true);
+  setCostsCenters([]);
   setFilters && setFilters([]);
 
   await fetchBillsToPay({
@@ -92,6 +99,7 @@ export async function handleCleanFilter({
 export async function handleDateFilter({
   date,
   token,
+  costsCenters,
   setDate,
   setClear,
   setLoading,
@@ -101,7 +109,7 @@ export async function handleDateFilter({
   setOverdueBills,
   setPaidBills,
 }: BillsToPayHandlersProps) {
-  if (!date || !setDate || !setClear ) return;
+  if (!date || !setDate || !setClear) return;
 
   setDate(date);
   setClear(false);
@@ -111,6 +119,7 @@ export async function handleDateFilter({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
+    costsCenters,
     clear: false,
     setLoading,
     setAllBillets,

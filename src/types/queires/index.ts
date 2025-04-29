@@ -11,6 +11,7 @@ export interface QueryProps {
   brands?: string[];
   groups?: string[];
   tables?: string[];
+  costsCenters?: string[];
   formsOfPayments?: string[];
   id?: string;
 }

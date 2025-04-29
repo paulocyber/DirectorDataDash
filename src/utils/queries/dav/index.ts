@@ -21,8 +21,6 @@ export const davsQueries = ({
       ? formsOfPayments.map((payment) => `'${payment}'`).join(", ")
       : "";
 
-  console.log("Formas: ", formsOfPayments?.length);
-
   // let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS datahora_finalizacao_sds, pss.nome_pss AS cliente, fnc.apelido_pss AS vendedor, MAX(sds.valor_bruto_sds) AS valor_bruto_sds,
   // MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS valor_liquido_sds, frm.descricao_frm AS formapagamento FROM   saidas sds INNER JOIN pessoas pss ON
   // pss.id_pss = sds.id_pss INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON

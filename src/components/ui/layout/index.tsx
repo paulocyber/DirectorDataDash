@@ -45,11 +45,12 @@ interface LayoutProps {
     people?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
     employees?: { ID_PSS: string, NOME_PSS: string, APELIDO_PSS: string }[]
     formOfPayments?: { ID_FRM: string, DESCRICAO_FRM: string }[]
+    costCenter?: { ID_CNT: string, DESCRICAO_CNT: string }[]
 }
 
-export function Layout({ children, role, enterprises, suppliers, people, employees, formOfPayments }: LayoutProps) {
+export function Layout({ children, role, enterprises, suppliers, people, employees, formOfPayments, costCenter }: LayoutProps) {
     const [isOpen, setIsopen] = useState<boolean>(false);
-    const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
+    const [, setActiveRefresh] = useAtom(refreshAtom)
 
     const menuRef = useRef<HTMLDivElement>(null);
     const routes = (role && (rules as PermissionType)[role as RoleType]?.router) || [];
@@ -113,9 +114,9 @@ export function Layout({ children, role, enterprises, suppliers, people, employe
                 </main>
             </div>
             {(router === "/billstopay/table" || router === "/salesbybrand" || router === "/salesgoal" || router === "/billstoreceive/table" || router === "/salesgoal/latecustomer" || router === "/salesbybrand/entriesxsales" || router === "/davs/table") && (
-                <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange} setActiveRefresh={router === "/billstopay/table" ? undefined : setActiveRefresh}>
+                <Modal title="Configurações de Filtros" isopen={openSettings} onOpenChange={onOpenChange} setActiveRefresh={setActiveRefresh}>
                     {router === "/billstopay/table" ?
-                        <SettingsBillsToPay /> :
+                        <SettingsBillsToPay costCenter={costCenter} /> :
                         router === "/salesbybrand" ?
                             <SettingsSalesByBrand suppliers={suppliers} /> :
                             router === "/salesgoal" ?
