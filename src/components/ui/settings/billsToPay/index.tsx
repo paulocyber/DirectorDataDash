@@ -79,7 +79,7 @@ export function SettingsBillsToPay({ costCenter }: SettingsBillsToPayProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-h-[220px] h-full overflow-auto">
                     {filteredCenters.length > 0 ? (
                         filteredCenters.map(cc => (
-                            <Tooltip key={cc.ID_CNT} content={`${cc.ID_CNT} - ${cc.DESCRICAO_CNT}`}>
+                            <Tooltip key={cc.ID_CNT} content={`${cc.ID_CNT} - ${cc.DESCRICAO_CNT}`} closeDelay={50}>
                                 <Checkbox
                                     key={cc.ID_CNT}
                                     isSelected={selectedCenters.includes(cc.ID_CNT)}
