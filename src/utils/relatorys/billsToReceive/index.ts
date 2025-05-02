@@ -59,6 +59,7 @@ export default async function BillsToReceivePdf({
 
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
     const today = new Date();
+
     const paidBills = bills.filter(
       (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
     );
@@ -67,22 +68,23 @@ export default async function BillsToReceivePdf({
 
     // Ordena por proximidade da data atual
     const sortedBills = paidBills.sort((a, b) => {
-      const dateA = parseDate(a.DATA_VENCIMENTO_RCB);
-      const dateB = parseDate(b.DATA_VENCIMENTO_RCB);
+      const dateA = parseDate(a.DATAHORA_PAGAMENTO_RCB);
+      const dateB = parseDate(b.DATAHORA_PAGAMENTO_RCB);
       return (
         Math.abs(today.getTime() - dateA.getTime()) -
         Math.abs(today.getTime() - dateB.getTime())
       );
     });
 
-    const closestDate = parseDate(sortedBills[0].DATA_VENCIMENTO_RCB);
+    const closestDate = parseDate(sortedBills[0].DATAHORA_PAGAMENTO_RCB);
     return sortedBills.filter(
       (bill) =>
-        parseDate(bill.DATA_VENCIMENTO_RCB).getTime() === closestDate.getTime()
+        parseDate(bill.DATAHORA_PAGAMENTO_RCB).getTime() ===
+        closestDate.getTime()
     );
   };
 
-  const recentPaidBills = getMostRecentPaidBills(openBillsData);
+  const recentPaidBills = getMostRecentPaidBills(allBillsData);
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -98,7 +100,10 @@ export default async function BillsToReceivePdf({
     openBills,
     (bill) => bill.RESTANTE_RCB
   );
-  const totalPaid = calculateTotalByKey(recentPaidBills, (bill) => bill.VALOR_PAGO_RCB)
+  const totalPaid = calculateTotalByKey(
+    recentPaidBills,
+    (bill) => bill.VALOR_PAGO_RCB
+  );
 
   const tableBody = [
     [

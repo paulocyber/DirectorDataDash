@@ -72,7 +72,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
 
         await Promise.all(queries)
     }
-    
+
     const generatePdf = () => {
         BillsToReceivePdf({ token, allBillsData: billsToReceive, openBillsData: openBills, dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`, dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}` })
     }

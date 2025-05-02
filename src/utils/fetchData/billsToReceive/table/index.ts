@@ -33,7 +33,7 @@ export async function fetchBillsToReceiveTable({
   });
 
   let allBillsToReceive: any[] = [];
-
+  
   const queries = [
     fetchData({
       ctx: token,
@@ -48,7 +48,7 @@ export async function fetchBillsToReceiveTable({
     (bill: ItemsBillsToReceiveData) =>
       bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
   );
-
+  console.log("Query: ", billsToReceiveAll);
   setLoading(false);
   setBillsToReceive(allBillsToReceive);
   setOpenBills(openBills);

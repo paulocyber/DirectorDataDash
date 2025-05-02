@@ -37,9 +37,13 @@ export const billsToReceiveQueries = ({
   a.descricao_frm as forma_pagamento, a.atraso_rcb from v_recebimentos a  where  a.id_emp in(1, 2, 3, 4, 5, 100) and a.STATUS_PSS = 'A' and a.DATA_VENCIMENTO_RCB between date '${dateInit}' and '${dateEnd}' and a.status_rcb in (1 ,4) and coalesce(
   a.insolvente_rcb,'N') = 'N' ${sellerFilter} ${peopleFilter} order by a.id_emp,a.data_vencimento_rcb,nome_pss`;
 
-  let billsToReceiveAll = `select a.id_rcb, a.id_origem as ID_SDS, a.data_vencimento_rcb, a.DATAHORA_PAGAMENTO_RCB, a.valor_rcb, a.restante_rcb, a.VALOR_PAGO_RCB, a.id_pss, a.id_pss || ' - ' || a.apelido_pss as apelido_pss,  a.id_fnc  || ' - ' || a.apelido_fnc as vendedor,a.status_rcb, a.atraso_rcb 
-  from v_recebimentos a where a.id_emp in(1, 2, 3, 4, 5, 100) and a.DATA_VENCIMENTO_RCB between date '${dateInit}' and '${dateEnd}' and a.STATUS_PSS = 'A' and a.status_rcb in (1, 2, 4) ${peopleFilter} and coalesce(a.insolvente_rcb,'N') = 'N' order by a.id_emp,
-  a.data_vencimento_rcb,nome_pss`;
+  // let billsToReceiveAll = `select a.id_rcb, a.id_origem as ID_SDS, a.data_vencimento_rcb, a.DATAHORA_PAGAMENTO_RCB, a.valor_rcb, a.restante_rcb, a.VALOR_PAGO_RCB, a.id_pss, a.id_pss || ' - ' || a.apelido_pss as apelido_pss,  a.id_fnc  || ' - ' || a.apelido_fnc as vendedor,a.status_rcb, a.atraso_rcb 
+  // from v_recebimentos a where a.id_emp in(1, 2, 3, 4, 5, 100) and a.DATA_VENCIMENTO_RCB between date '${dateInit}' and '${dateEnd}' and a.STATUS_PSS = 'A' and a.status_rcb in (1, 2, 4) ${peopleFilter} and coalesce(a.insolvente_rcb,'N') = 'N' order by a.id_emp,
+  // a.data_vencimento_rcb,nome_pss`;
+
+  let billsToReceiveAll = `select a.id_rcb, a.id_origem as ID_SDS, a.data_vencimento_rcb, a.DATAHORA_PAGAMENTO_RCB, a.valor_rcb, a.restante_rcb, a.VALOR_PAGO_RCB, a.id_pss, a.id_pss || ' - ' || a.apelido_pss as 
+  apelido_pss,  a.id_fnc  || ' - ' || a.apelido_fnc as vendedor,a.status_rcb, a.atraso_rcb from v_recebimentos a where a.id_emp in(1, 2, 3, 4, 100) and a.DATA_VENCIMENTO_RCB between date '${dateInit}' and '${dateEnd}'
+  ${peopleFilter} and a.STATUS_PSS = 'A' and a.status_rcb in (1, 2, 4)  and coalesce(a.insolvente_rcb,'N') = 'N' order by a.id_emp, a.data_vencimento_rcb,nome_pss`;
 
   let receipts = `select rs.ID_RCB, rs.VALOR_RCB, rs.VALOR_PAGO_RCB from v_recebimentos_sintetico rs where rs.ID_PSS = '${id}' ORDER BY rs.data_vencimento_rcb DESC`;
 
