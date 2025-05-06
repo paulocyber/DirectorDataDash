@@ -5,8 +5,6 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { calculateTotalByKey } from "@/utils/functions/sumValues";
-import { billsToReceiveQueries } from "@/utils/queries/billsToReceive";
-import { fetchData } from "@/utils/fetchData";
 import getCurrentDateDetails from "@/utils/getDate";
 
 // Tipagem
@@ -50,8 +48,7 @@ export default async function BillsToReceivePdf({
   dateEnd,
 }: BillsToReceiveProps) {
   pdfMake.vfs = pdfFonts.vfs;
-
-  const { today } = getCurrentDateDetails();
+  const { today, month, year } = getCurrentDateDetails();
 
   const openBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
@@ -60,16 +57,28 @@ export default async function BillsToReceivePdf({
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
     const today = new Date();
 
-    const paidBills = bills.filter(
-      (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
+    const paidBills = bills.filter((bill) => bill.STATUS_RCB === "2");
+
+    const outstandingPaidBills = bills.filter(
+      (bill) => bill.STATUS_RCB === "4"
     );
 
-    if (paidBills.length === 0) return [];
+    if (paidBills.length === 0 && outstandingPaidBills.length === 0) return [];
 
-    // Ordena por proximidade da data atual
     const sortedBills = paidBills.sort((a, b) => {
       const dateA = parseDate(a.DATAHORA_PAGAMENTO_RCB);
       const dateB = parseDate(b.DATAHORA_PAGAMENTO_RCB);
+
+      return (
+        Math.abs(today.getTime() - dateA.getTime()) -
+        Math.abs(today.getTime() - dateB.getTime())
+      );
+    });
+
+    const sortedInOpen = outstandingPaidBills.sort((a, b) => {
+      const dateA = parseDate(a.DATA_VENCIMENTO_RCB);
+      const dateB = parseDate(b.DATA_VENCIMENTO_RCB);
+
       return (
         Math.abs(today.getTime() - dateA.getTime()) -
         Math.abs(today.getTime() - dateB.getTime())
@@ -77,10 +86,13 @@ export default async function BillsToReceivePdf({
     });
 
     const closestDate = parseDate(sortedBills[0].DATAHORA_PAGAMENTO_RCB);
-    return sortedBills.filter(
+    const openDate = parseDate(sortedInOpen[0].DATA_VENCIMENTO_RCB);
+
+    return allBillsData.filter(
       (bill) =>
         parseDate(bill.DATAHORA_PAGAMENTO_RCB).getTime() ===
-        closestDate.getTime()
+          closestDate.getTime() ||
+        parseDate(bill.DATA_VENCIMENTO_RCB).getTime() === openDate.getTime()
     );
   };
 

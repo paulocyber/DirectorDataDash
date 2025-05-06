@@ -55,7 +55,7 @@ export default async function BillsToReceiveTablePage() {
         (bill: ItemsBillsToReceiveData) =>
             (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4")
     );
-
+    console.log("Query: ", billsToReceiveAll)
     return (
         <LayoutBillsToReceiveTable
             allBillsData={allBillsResponse.data.returnObject.body}
