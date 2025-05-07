@@ -81,11 +81,11 @@ export async function handleDateFilter({
   setLoading,
   setBillsToReceive,
   setOpenBills,
-  setDetailDav
+  setDetailDav,
 }: BillsToReceiveHandlersProps) {
   if (!date || !setDate || !setDetailDav) return;
 
-  setDetailDav(undefined)
+  setDetailDav(undefined);
   setDate(date);
 
   await fetchBillsToReceiveTable({

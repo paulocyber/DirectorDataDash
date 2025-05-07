@@ -57,17 +57,13 @@ export default async function BillsToReceivePdf({
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
     const today = new Date();
 
-    const paidBills = bills.filter((bill) => bill.STATUS_RCB === "2");
+    const paidBills = bills.filter((bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4");
 
-    const outstandingPaidBills = bills.filter(
-      (bill) => bill.STATUS_RCB === "4"
-    );
-
-    if (paidBills.length === 0 && outstandingPaidBills.length === 0) return [];
+    if (paidBills.length === 0) return [];
 
     const sortedBills = paidBills.sort((a, b) => {
-      const dateA = parseDate(a.DATAHORA_PAGAMENTO_RCB);
-      const dateB = parseDate(b.DATAHORA_PAGAMENTO_RCB);
+      const dateA = parseDate(a.DATA_RECEBIMENTO_RCI);
+      const dateB = parseDate(b.DATA_RECEBIMENTO_RCI);
 
       return (
         Math.abs(today.getTime() - dateA.getTime()) -
@@ -75,24 +71,11 @@ export default async function BillsToReceivePdf({
       );
     });
 
-    const sortedInOpen = outstandingPaidBills.sort((a, b) => {
-      const dateA = parseDate(a.DATA_VENCIMENTO_RCB);
-      const dateB = parseDate(b.DATA_VENCIMENTO_RCB);
+    const closestDate = parseDate(sortedBills[0].DATA_RECEBIMENTO_RCI);
 
-      return (
-        Math.abs(today.getTime() - dateA.getTime()) -
-        Math.abs(today.getTime() - dateB.getTime())
-      );
-    });
-
-    const closestDate = parseDate(sortedBills[0].DATAHORA_PAGAMENTO_RCB);
-    const openDate = parseDate(sortedInOpen[0].DATA_VENCIMENTO_RCB);
-
-    return allBillsData.filter(
+    return sortedBills.filter(
       (bill) =>
-        parseDate(bill.DATAHORA_PAGAMENTO_RCB).getTime() ===
-          closestDate.getTime() ||
-        parseDate(bill.DATA_VENCIMENTO_RCB).getTime() === openDate.getTime()
+        parseDate(bill.DATA_RECEBIMENTO_RCI).getTime() === closestDate.getTime()
     );
   };
 
