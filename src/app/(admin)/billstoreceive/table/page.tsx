@@ -42,7 +42,7 @@ export default async function BillsToReceiveTablePage() {
     }
 
     const api = setupApiClient(token as string)
-    const { year, today } = getCurrentDateDetails()
+    const { today } = getCurrentDateDetails()
     const people = PeopleQueries()
     const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: '2024/01/01', dateEnd: today })
 
@@ -55,7 +55,7 @@ export default async function BillsToReceiveTablePage() {
         (bill: ItemsBillsToReceiveData) =>
             (bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4")
     );
-    
+
     return (
         <LayoutBillsToReceiveTable
             allBillsData={allBillsResponse.data.returnObject.body}

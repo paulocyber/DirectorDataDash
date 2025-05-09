@@ -48,8 +48,6 @@ export default async function BillsToReceivePdf({
   dateEnd,
 }: BillsToReceiveProps) {
   pdfMake.vfs = pdfFonts.vfs;
-  const { today, month, year } = getCurrentDateDetails();
-
   const openBills = allBillsData.filter(
     (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
   );
@@ -57,7 +55,9 @@ export default async function BillsToReceivePdf({
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
     const today = new Date();
 
-    const paidBills = bills.filter((bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4");
+    const paidBills = bills.filter(
+      (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
+    );
 
     if (paidBills.length === 0) return [];
 
@@ -99,6 +99,13 @@ export default async function BillsToReceivePdf({
     recentPaidBills,
     (bill) => bill.VALOR_PAGO_RCB
   );
+
+  const sortedOpenBills = [...openBillsData].sort((a, b) => {
+    const dateA = parseDate(a.DATA_VENCIMENTO_RCB.split(" ")[0]);
+    const dataB = parseDate(b.DATA_VENCIMENTO_RCB.split(" ")[0]);
+
+    return dataB.getTime() - dateA.getTime();
+  });
 
   const tableBody = [
     [
@@ -143,7 +150,7 @@ export default async function BillsToReceivePdf({
         fillColor: "#1d4ed8",
       },
     ],
-    ...openBillsData.map((bill, index) => [
+    ...sortedOpenBills.map((bill, index) => [
       {
         text: bill.ID_ORIGEM,
         fontSize: 7,
