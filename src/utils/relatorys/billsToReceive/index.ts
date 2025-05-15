@@ -91,10 +91,12 @@ export default async function BillsToReceivePdf({
     (bill) => bill.RESTANTE_RCB
   );
   const totalReceipt = calculateTotalByKey(openBills, (bill) => bill.VALOR_RCB);
+
   const totalOpenAmount = calculateTotalByKey(
     openBills,
     (bill) => bill.RESTANTE_RCB
   );
+
   const totalPaid = calculateTotalByKey(
     recentPaidBills,
     (bill) => bill.VALOR_PAGO_RCB
@@ -267,7 +269,7 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
-             Valor da Compra: \n ${formatCurrency(totalReceipt)}
+             Valor da Compra: \n ${formatCurrency(totalReceipt + totalPaid)}
 
              Valor pago: \n ${formatCurrency(totalPaid)}
 
