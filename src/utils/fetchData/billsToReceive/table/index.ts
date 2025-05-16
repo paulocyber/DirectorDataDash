@@ -31,7 +31,7 @@ export async function fetchBillsToReceiveTable({
     dateEnd,
     idPeople: people,
   });
-  
+
   let allBillsToReceive: any[] = [];
 
   const queries = [
@@ -41,7 +41,7 @@ export async function fetchBillsToReceiveTable({
       setData: (data) => (allBillsToReceive = data || []),
     }),
   ];
-
+  
   await Promise.all(queries);
 
   const openBills = allBillsToReceive.filter(

@@ -36,7 +36,7 @@ import { refreshAtom } from "@/atom/refresh";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
-;
+
 interface LayoutBillsToReceiveProps {
     allBillsData: ItemsBillsToReceiveData[];
     openBillsData: ItemsBillsToReceiveData[];

@@ -269,7 +269,7 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
-             Valor da Compra: \n ${formatCurrency(totalReceipt + totalPaid)}
+             Valor da Compra: \n ${formatCurrency(totalReceipt)}
 
              Valor pago: \n ${formatCurrency(totalPaid)}
 
