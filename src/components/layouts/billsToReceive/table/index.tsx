@@ -52,7 +52,7 @@ export default function LayoutBillsToReceiveTable({ allBillsData, openBillsData,
     const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [loading, setLoading] = useState<boolean>(false)
     const [date, setDate] = useState<RangeValue<DateValue>>({
-        start: parseDate(new Date(`2024/01/01`).toISOString().split('T')[0]),
+        start: parseDate(new Date(`2023/01/01`).toISOString().split('T')[0]),
         end: parseDate(new Date(`${today}`).toISOString().split('T')[0]),
     })
 
