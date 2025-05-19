@@ -45,7 +45,7 @@ export default async function BillsToReceiveTablePage() {
     const { today } = getCurrentDateDetails()
     const people = PeopleQueries()
     const { billsToReceiveAll } = billsToReceiveQueries({ dateInit: '2023/01/01', dateEnd: today })
-
+    
     const [allBillsResponse, peopleResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: billsToReceiveAll }),
         api.post("/v1/find-db-query", { query: people }),

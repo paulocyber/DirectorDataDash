@@ -90,7 +90,7 @@ export default async function BillsToReceivePdf({
     overdueBills,
     (bill) => bill.RESTANTE_RCB
   );
-  const totalReceipt = calculateTotalByKey(openBills, (bill) => bill.VALOR_RCB);
+  const totalReceipt = calculateTotalByKey(openBills, (bill) => bill.RESTANTE_RCB);
 
   const totalOpenAmount = calculateTotalByKey(
     openBills,
@@ -108,6 +108,8 @@ export default async function BillsToReceivePdf({
 
     return dataB.getTime() - dateA.getTime();
   });
+
+
 
   const tableBody = [
     [
@@ -269,11 +271,11 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
-             Valor da Compra: \n ${formatCurrency(totalReceipt)}
+             Total da Mercadoria: \n ${formatCurrency(totalReceipt)}
 
              Valor pago: \n ${formatCurrency(totalPaid)}
 
-             Saldo á pagar: \n ${formatCurrency(totalOpenAmount)}
+             Saldo á pagar: \n ${formatCurrency(totalOpenAmount - totalPaid)}
              `,
             fontSize: 10,
             bold: true,
