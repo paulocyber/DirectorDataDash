@@ -90,7 +90,10 @@ export default async function BillsToReceivePdf({
     overdueBills,
     (bill) => bill.RESTANTE_RCB
   );
-  const totalReceipt = calculateTotalByKey(openBills, (bill) => bill.RESTANTE_RCB);
+  const totalReceipt = calculateTotalByKey(
+    openBills,
+    (bill) => bill.RESTANTE_RCB
+  );
 
   const totalOpenAmount = calculateTotalByKey(
     openBills,
@@ -101,15 +104,13 @@ export default async function BillsToReceivePdf({
     recentPaidBills,
     (bill) => bill.VALOR_PAGO_RCB
   );
-
+  console.log("Dados: ", recentPaidBills);
   const sortedOpenBills = [...openBillsData].sort((a, b) => {
     const dateA = parseDate(a.DATA_VENCIMENTO_RCB.split(" ")[0]);
     const dataB = parseDate(b.DATA_VENCIMENTO_RCB.split(" ")[0]);
 
     return dataB.getTime() - dateA.getTime();
   });
-
-
 
   const tableBody = [
     [
@@ -271,6 +272,10 @@ export default async function BillsToReceivePdf({
         columns: [
           {
             text: `
+             Data da última baixa: \n ${
+               recentPaidBills[0].DATA_RECEBIMENTO_RCI.split(" ")[0]
+             } 
+
              Total da Mercadoria: \n ${formatCurrency(totalReceipt)}
 
              Valor pago: \n ${formatCurrency(totalPaid)}
