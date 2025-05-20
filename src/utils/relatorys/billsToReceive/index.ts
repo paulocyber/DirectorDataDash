@@ -5,7 +5,6 @@ import * as pdfFonts from "pdfmake/build/vfs_fonts";
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { calculateTotalByKey } from "@/utils/functions/sumValues";
-import getCurrentDateDetails from "@/utils/getDate";
 
 // Tipagem
 import { ItemsBillsToReceiveData } from "@/types/billsToReceive";
@@ -55,13 +54,9 @@ export default async function BillsToReceivePdf({
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
     const today = new Date();
 
-    const paidBills = bills.filter(
-      (bill) => bill.STATUS_RCB === "2" || bill.STATUS_RCB === "4"
-    );
+    if (bills.length === 0) return [];
 
-    if (paidBills.length === 0) return [];
-
-    const sortedBills = paidBills.sort((a, b) => {
+    const sortedBills = bills.sort((a, b) => {
       const dateA = parseDate(a.DATA_RECEBIMENTO_RCI);
       const dateB = parseDate(b.DATA_RECEBIMENTO_RCI);
 
@@ -73,13 +68,16 @@ export default async function BillsToReceivePdf({
 
     const closestDate = parseDate(sortedBills[0].DATA_RECEBIMENTO_RCI);
 
-    return sortedBills.filter(
-      (bill) =>
-        parseDate(bill.DATA_RECEBIMENTO_RCI).getTime() === closestDate.getTime()
-    );
+    return sortedBills.length == 0
+      ? sortedBills.filter(
+          (bill) =>
+            parseDate(bill.DATA_RECEBIMENTO_RCI).getTime() ===
+            closestDate.getTime()
+        )
+      : bills;
   };
 
-  const recentPaidBills = getMostRecentPaidBills(allBillsData);
+  const recentPaidBills = getMostRecentPaidBills(openBills);
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -95,16 +93,6 @@ export default async function BillsToReceivePdf({
     (bill) => bill.RESTANTE_RCB
   );
 
-  const totalOpenAmount = calculateTotalByKey(
-    openBills,
-    (bill) => bill.RESTANTE_RCB
-  );
-
-  const totalPaid = calculateTotalByKey(
-    recentPaidBills,
-    (bill) => bill.VALOR_PAGO_RCB
-  );
-  console.log("Dados: ", recentPaidBills);
   const sortedOpenBills = [...openBillsData].sort((a, b) => {
     const dateA = parseDate(a.DATA_VENCIMENTO_RCB.split(" ")[0]);
     const dataB = parseDate(b.DATA_VENCIMENTO_RCB.split(" ")[0]);
@@ -200,6 +188,64 @@ export default async function BillsToReceivePdf({
     ]),
   ];
 
+  const paymentHistoryTable = [
+    [
+      {
+        text: "Valor",
+        bold: true,
+        fontSize: 8,
+        alignment: "center",
+        color: "#ffffff",
+        fillColor: "#1d4ed8",
+      },
+      {
+        text: "Data",
+        bold: true,
+        fontSize: 8,
+        alignment: "center",
+        color: "#ffffff",
+        fillColor: "#1d4ed8",
+      },
+      {
+        text: "Descrição",
+        bold: true,
+        fontSize: 8,
+        alignment: "center",
+        color: "#ffffff",
+        fillColor: "#1d4ed8",
+      },
+    ],
+    ...recentPaidBills.map((bill, index) => [
+      {
+        text:
+          Number(bill.STATUS_RCB) === 4
+            ? formatCurrency(Number(bill.VALOR_PAGO_RCB.replace(",", ".")))
+            : formatCurrency(Number(bill.RESTANTE_RCB.replace(",", "."))),
+        fontSize: 7,
+        alignment: "center",
+        padding: [5, 5],
+        fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+      },
+      {
+        text:
+          bill.DATA_RECEBIMENTO_RCI.length === 0
+            ? "Nenhuma data de baixa disponível"
+            : bill.DATA_RECEBIMENTO_RCI.split(" ")[0],
+        fontSize: 7,
+        alignment: "center",
+        padding: [5, 5],
+        fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+      },
+      {
+        text: Number(bill.STATUS_RCB) === 4 ? "Pago" : "Em aberto",
+        fontSize: 7,
+        alignment: "center",
+        padding: [5, 5],
+        fillColor: index % 2 === 0 ? "#f2f6fa" : null,
+      },
+    ]),
+  ];
+
   const docDefinition: CreatePdf = {
     pageSize: "A4",
     pageMargins: [40, 40, 40, 40],
@@ -269,26 +315,28 @@ export default async function BillsToReceivePdf({
         margin: [0, 0, 0, 0],
       },
       {
-        columns: [
-          {
-            text: `
-             Data da última baixa: \n ${
-               recentPaidBills[0].DATA_RECEBIMENTO_RCI.split(" ")[0]
-             } 
-
-             Total da Mercadoria: \n ${formatCurrency(totalReceipt)}
-
-             Valor pago: \n ${formatCurrency(totalPaid)}
-
-             Saldo á pagar: \n ${formatCurrency(totalOpenAmount - totalPaid)}
-             `,
-            fontSize: 10,
-            bold: true,
-            margin: [0, 10, 0, 0],
-            alignment: "left",
-            width: 100,
-          },
-        ],
+        table: {
+          headerRows: 1,
+          widths: [60, 120, 45, "*", "*", "*", "*", "*"],
+          body: paymentHistoryTable,
+        },
+        layout: {
+          fillColor: (rowIndex: any) => (rowIndex === 0 ? "#1d4ed8" : null),
+          hLineWidth: () => 0.1,
+          vLineWidth: () => 0.1,
+          hLineColor: () => "#CCCCCC",
+          paddingTop: () => 2,
+          paddingBottom: () => 2,
+        },
+        alignment: "center",
+        margin: [0, 10, 0, 0],
+      },
+      {
+        text: `Total do Recibo: ${formatCurrency(totalReceipt)}`,
+        alignment: "left",
+        fontSize: 10,
+        bold: true,
+        margin: [0, 5, 0, 0],
       },
     ],
     footer: (currentPage: number, pageCount: number) => [
