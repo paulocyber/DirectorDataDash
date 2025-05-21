@@ -48,7 +48,10 @@ export default async function BillsToReceivePdf({
 }: BillsToReceiveProps) {
   pdfMake.vfs = pdfFonts.vfs;
   const openBills = allBillsData.filter(
-    (bill) => bill.STATUS_RCB === "1" || bill.STATUS_RCB === "4"
+    (bill) =>
+      bill.STATUS_RCB === "1" ||
+      bill.STATUS_RCB === "2" ||
+      bill.STATUS_RCB === "4"
   );
 
   const getMostRecentPaidBills = (bills: ItemsBillsToReceiveData[]) => {
@@ -77,7 +80,23 @@ export default async function BillsToReceivePdf({
       : bills;
   };
 
-  const recentPaidBills = getMostRecentPaidBills(openBills);
+  const today = new Date();
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfYear = new Date(today.getFullYear(), 11, 31);
+
+  const filteredBills = openBills.filter((bill) => {
+    const dueDate = parseDate(bill.DATA_VENCIMENTO_RCB);
+    return dueDate >= startOfMonth && dueDate <= endOfYear;
+  });
+
+  const recentPaidBills = filteredBills.sort((a, b) => {
+    const dateA = parseDate(a.DATA_VENCIMENTO_RCB);
+    const dateB = parseDate(b.DATA_VENCIMENTO_RCB);
+    return (
+      Math.abs((today as any) - (dateA as any)) -
+      Math.abs((today as any) - (dateB as any))
+    );
+  });
 
   const overdueBills = allBillsData.filter(
     (bill: ItemsBillsToReceiveData) =>
@@ -218,7 +237,7 @@ export default async function BillsToReceivePdf({
     ...recentPaidBills.map((bill, index) => [
       {
         text:
-          Number(bill.STATUS_RCB) === 4
+          Number(bill.STATUS_RCB) === 2 || Number(bill.STATUS_RCB) === 4
             ? formatCurrency(Number(bill.VALOR_PAGO_RCB.replace(",", ".")))
             : formatCurrency(Number(bill.RESTANTE_RCB.replace(",", "."))),
         fontSize: 7,
@@ -237,7 +256,10 @@ export default async function BillsToReceivePdf({
         fillColor: index % 2 === 0 ? "#f2f6fa" : null,
       },
       {
-        text: Number(bill.STATUS_RCB) === 4 ? "Pago" : "Em aberto",
+        text:
+          Number(bill.STATUS_RCB) === 4 || Number(bill.STATUS_RCB) === 2
+            ? "Pago"
+            : "Em aberto",
         fontSize: 7,
         alignment: "center",
         padding: [5, 5],
