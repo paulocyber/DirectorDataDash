@@ -47,7 +47,7 @@ export default async function DetailDavsPage({ params }: { params: Promise<{ id:
             <NotFound href="/davs" />
         );
     }
-
+    
     return (
         <LayoutDetail
             davDetailData={davDetailsResponse.data.returnObject.body}

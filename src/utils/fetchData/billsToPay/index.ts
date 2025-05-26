@@ -62,10 +62,23 @@ export async function fetchBillsToPay({
 
   await Promise.all(queries);
 
-  const openBills = allBilletData.filter(
-    (bill: ItemsBillsToPay) =>
-      bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4"
-  );
+  const openBills = allBilletData.filter((bill: ItemsBillsToPay) => {
+    const billDateParts = bill.DATA_VENCIMENTO_PGM.split(" ")[0].split("/");
+    const billDate = new Date(
+      Number(billDateParts[2]),
+      Number(billDateParts[1]) - 1,
+      Number(billDateParts[0])
+    );
+
+    const dateInitObj = new Date(dateInit);
+    const dateEndObj = new Date(dateEnd);
+
+    const isStatusValid = bill.STATUS_PGM === "1" || bill.STATUS_PGM === "4";
+    const isDateInRange = billDate >= dateInitObj && billDate <= dateEndObj;
+
+    return isStatusValid && isDateInRange;
+  });
+
   const paidBills = allBilletData.filter(
     (bill: ItemsBillsToPay) =>
       bill.STATUS_PGM === "2" || bill.STATUS_PGM === "4"
