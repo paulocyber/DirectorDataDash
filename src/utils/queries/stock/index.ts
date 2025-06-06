@@ -65,22 +65,32 @@ export const StockQueries = ({
   p ON p.id_prd = vcomp.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = p.id_mrc WHERE vcomp.DATA BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND alm.tipo_alm = '1' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY (CASE EXTRACT(MONTH FROM vcomp.DATA) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 
   THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || EXTRACT(YEAR FROM vcomp.DATA)), vcomp.id_prd`;
 
-  let entriesXExits = `select data, id_prd, descricao_prd, marca, entrada, saida, custo FROM ( SELECT (CASE EXTRACT(MONTH FROM vcomp.DATA) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5
-  THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM vcomp.DATA) AS VARCHAR(4))) AS data,
-  vcomp.id_prd,   MAX(p.DESCRICAO_PRD) AS descricao_prd,   COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca,  SUM(vcomp.quantidade * vcomp.VALOR_UNITARIO) AS entrada,   0 AS saida,  CAST(NULL AS NUMERIC(15,3)) 
-  AS CUSTO, EXTRACT(YEAR FROM vcomp.DATA) AS ano, EXTRACT(MONTH FROM vcomp.DATA) AS mes FROM V_HISTORICO_COMPRA_PRODUTO vcomp  INNER JOIN almoxarifados_estoque ale ON ale.id_prd = vcomp.id_prd  INNER JOIN almoxarifados
-  alm ON alm.id_alm = ale.id_alm  LEFT JOIN produtos p ON p.id_prd = vcomp.id_prd  LEFT JOIN marcas mrc ON mrc.id_mrc = p.id_mrc  WHERE vcomp.DATA BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND alm.tipo_alm = '1'
-  AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  (CASE EXTRACT(MONTH FROM vcomp.DATA) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 
-  THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM vcomp.DATA) AS VARCHAR(4))), 
-  vcomp.id_prd, EXTRACT(YEAR FROM vcomp.DATA), EXTRACT(MONTH FROM vcomp.DATA) UNION ALL  SELECT (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 
-  THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)
-  AS VARCHAR(4))) AS data,  prd.id_prd,   MAX(prd.DESCRICAO_PRD) AS descricao_prd,  COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca,  0 AS entrada,  SUM(sdi.VALOR_LIQUIDO_SDI) AS saida,  
-  CAST(SUM(sdi.qtde_sdi * COALESCE(sdi.preco_custo_sdi, 0.00)) AS NUMERIC(15,3)) AS CUSTO, EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS) AS ano, EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) AS mes FROM saidas 
-  sds  INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds  INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd  INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm  LEFT JOIN marcas mrc ON mrc.id_mrc = 
-  prd.id_mrc  WHERE CAST(sds.DATAHORA_FINALIZACAO_SDS AS DATE) BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND sds.tipo_sds IN ('4','5','9') AND sds.status_sds = '2' AND alm.tipo_alm = '1' AND mrc.descricao_mrc 
-  IN (${formattedBrands}) GROUP BY  (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 
-  'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS) AS VARCHAR(4))),
-  prd.id_prd, EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS), EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) ) final  ORDER BY ano, mes, id_prd`;
+  // let entriesXExits = `select data, id_prd, descricao_prd, marca, entrada, saida, custo FROM ( SELECT (CASE EXTRACT(MONTH FROM vcomp.DATA) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5
+  // THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM vcomp.DATA) AS VARCHAR(4))) AS data,
+  // vcomp.id_prd,   MAX(p.DESCRICAO_PRD) AS descricao_prd,   COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca,  SUM(vcomp.quantidade * vcomp.VALOR_UNITARIO) AS entrada,   0 AS saida,  CAST(NULL AS NUMERIC(15,3))
+  // AS CUSTO, EXTRACT(YEAR FROM vcomp.DATA) AS ano, EXTRACT(MONTH FROM vcomp.DATA) AS mes FROM V_HISTORICO_COMPRA_PRODUTO vcomp  INNER JOIN almoxarifados_estoque ale ON ale.id_prd = vcomp.id_prd  INNER JOIN almoxarifados
+  // alm ON alm.id_alm = ale.id_alm  LEFT JOIN produtos p ON p.id_prd = vcomp.id_prd  LEFT JOIN marcas mrc ON mrc.id_mrc = p.id_mrc  WHERE vcomp.DATA BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND alm.tipo_alm = '1'
+  // AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY  (CASE EXTRACT(MONTH FROM vcomp.DATA) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5
+  // THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM vcomp.DATA) AS VARCHAR(4))),
+  // vcomp.id_prd, EXTRACT(YEAR FROM vcomp.DATA), EXTRACT(MONTH FROM vcomp.DATA) UNION ALL  SELECT (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4
+  // THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)
+  // AS VARCHAR(4))) AS data,  prd.id_prd,   MAX(prd.DESCRICAO_PRD) AS descricao_prd,  COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca,  0 AS entrada,  SUM(sdi.VALOR_LIQUIDO_SDI) AS saida,
+  // CAST(SUM(sdi.qtde_sdi * COALESCE(sdi.preco_custo_sdi, 0.00)) AS NUMERIC(15,3)) AS CUSTO, EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS) AS ano, EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) AS mes FROM saidas
+  // sds  INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds  INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd  INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm  LEFT JOIN marcas mrc ON mrc.id_mrc =
+  // prd.id_mrc  WHERE CAST(sds.DATAHORA_FINALIZACAO_SDS AS DATE) BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND sds.tipo_sds IN ('4','5','9') AND sds.status_sds = '2' AND alm.tipo_alm = '1' AND mrc.descricao_mrc
+  // IN (${formattedBrands}) GROUP BY  (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN
+  // 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || CAST(EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS) AS VARCHAR(4))),
+  // prd.id_prd, EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS), EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) ) final  ORDER BY ano, mes, id_prd`;
+
+  let entriesXExits = `select CAST(mes AS VARCHAR(2)) || '/' || CAST(ano AS VARCHAR(4)) AS data, id_prd, descricao_prd, marca, entrada, saida, custo FROM ( SELECT EXTRACT(YEAR FROM vcomp.DATA) AS ano, EXTRACT(MONTH 
+  FROM vcomp.DATA) AS mes, vcomp.id_prd, MAX(p.DESCRICAO_PRD) AS descricao_prd, COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca, SUM(vcomp.quantidade * vcomp.VALOR_UNITARIO) AS entrada, 0 AS saida, NULL AS 
+  custo FROM V_HISTORICO_COMPRA_PRODUTO vcomp INNER JOIN almoxarifados_estoque ale ON ale.id_prd = vcomp.id_prd INNER JOIN almoxarifados alm ON alm.id_alm = ale.id_alm LEFT JOIN produtos p ON p.id_prd = vcomp.id_prd 
+  LEFT JOIN marcas mrc ON mrc.id_mrc = p.id_mrc WHERE vcomp.DATA BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND alm.tipo_alm = '1' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY EXTRACT(YEAR FROM vcomp.DATA), EXTRACT(MONTH FROM vcomp.DATA), vcomp.id_prd UNION ALL SELECT EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS) AS ano, EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS)
+  AS mes, prd.id_prd, MAX(prd.DESCRICAO_PRD) AS descricao_prd, COALESCE(MAX(mrc.descricao_mrc), 'SEM MARCA') AS marca, 0 AS entrada, SUM(sdi.VALOR_LIQUIDO_SDI) AS saida, SUM(sdi.qtde_sdi * COALESCE(
+  sdi.preco_custo_sdi, 0.00)) AS custo FROM saidas sds INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm
+  LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE CAST(sds.DATAHORA_FINALIZACAO_SDS AS DATE) BETWEEN DATE '${dateInit}' AND DATE '${dateEnd}' AND sds.tipo_sds IN ('4','5','9') AND sds.status_sds = '2' AND 
+  alm.tipo_alm = '1' AND mrc.descricao_mrc IN (${formattedBrands}) GROUP BY EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS), EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS), 
+  prd.id_prd ) AS final ORDER BY ano, mes, id_prd`;
 
   return {
     stockByBrand,

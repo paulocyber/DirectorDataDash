@@ -11,6 +11,7 @@ import { davsQueries } from "@/utils/queries/dav";
 
 // Componentes
 import LayoutDavTable from "@/components/layouts/dav/table";
+import { formOfPaymentsQueries } from "@/utils/queries/formOfPayments";
 
 export default async function TableDavPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const cookieStore = cookies();
@@ -34,14 +35,17 @@ export default async function TableDavPage({ searchParams }: { searchParams: Pro
     const { today } = getCurrentDateDetails()
 
     const { davFinished } = davsQueries({ dateInit: today, dateEnd: today, formsOfPayments: paymentMethod.length > 0 ? paymentMethod : undefined })
+    const formOfpayments = formOfPaymentsQueries()
 
-    const [davResponse] = await Promise.all([
+    const [davResponse, formOfpaymentsResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: davFinished }),
+        api.post("/v1/find-db-query", { query: formOfpayments }),
     ])
 
     return (
         <LayoutDavTable
             davsData={davResponse.data.returnObject.body}
+            formOfPayments={formOfpaymentsResponse.data.returnObject.body}
             today={today}
         />
     )

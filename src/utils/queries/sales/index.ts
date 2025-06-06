@@ -107,13 +107,6 @@ export const salesQueries = ({
   ON ale.id_prd = prd.id_prd WHERE sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.status_sds = '2' AND sds.tipo_sds IN ('4', '5', '9') AND sdi.id_emp = ale.id_alm AND 
   prd.status_prd = 'A' AND grp.nome_grp IN (${formattedGroups}) GROUP BY grp.id_grp, grupo ORDER BY grp.id_grp`;
 
-  // Querys observação possivelmente errada
-  // let topSellers = `select tbv.id, tbv.vendedor, tbv.valor_total_liquido AS VALOR_LIQUIDO FROM ( SELECT sds.id_fnc AS id, fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS valor_total_liquido FROM
-  // saidas_itens sdi INNER JOIN saidas sds ON sds.id_sds = sdi.id_sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN metas_vendas_itens mti ON
-  // mti.id_fnc = sds.id_fnc INNER JOIN produtos prd ON sdi.id_prd = prd.id_prd INNER JOIN empresas emp ON emp.id_emp = sds.id_emp LEFT JOIN fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P'
-  // LEFT JOIN v_fornecedores frn ON frn.id_pss = frp.id_pss WHERE  sdi.id_sdi IS NOT NULL  AND sds.status_sds = '2' AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND
-  // sds.tipo_sds IN ('4','5','9') AND emp.id_emp IN (1, 2, 3, 4, 5) GROUP BY sds.id_fnc, fnc.apelido_pss) tbv ORDER BY tbv.valor_total_liquido DESC`;
-
   let topSellers = `select fnc.id_pss, fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO, SUM(ale.preco_custo_ale * sdi.qtde_sdi) AS valor_custo, SUM(sdi.valor_liquido_sdi) - SUM(ale.preco_custo_ale * 
   sdi.qtde_sdi) AS valor_lucro FROM saidas_itens sdi INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd INNER JOIN saidas sds ON sds.id_sds = sdi.id_sds INNER JOIN almoxarifados_estoque ale ON ale.id_prd = sdi.id_prd
   AND ale.id_alm = sdi.id_alm INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc) LEFT JOIN ( SELECT DISTINCT ID_FNC FROM metas_vendas_itens ) mti ON mti.ID_FNC = fnc.id_pss INNER 
@@ -129,11 +122,6 @@ export const salesQueries = ({
   AND '${dateEnd} 23:59:59' AND sdi.id_emp = ale.ID_ALM GROUP BY sdi.ID_pss, fnc.apelido_pss) AS lucro INNER JOIN (SELECT mti.ID_FNC, mti.VALOR_INDIVIDUAL_MTI FROM metas_vendas mtv INNER JOIN metas_vendas_itens mti ON
   mtv.ID_MTA = mti.ID_MTA WHERE CAST(mtv.DATA_INICIO_MTA AS DATE) = '${year}/${month}/01') AS metas ON lucro.id_vendedor = metas.ID_FNC ORDER BY lucro.id_vendedor`;
 
-  // let sellHistory = `select vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc AS marcas, SUM(vhisProd.QUANTIDADE) AS QUANTIDADE, AVG(vhisProd.VALOR_UNITARIO) AS VALOR_BRUTO,
-  // AVG(vhisProd.VALOR_UNITARIO_LIQUIDO) AS VALOR_LIQUIDO, SUM(vhisProd.VALOR_UNITARIO_LIQUIDO * vhisProd.QUANTIDADE) AS VALOR_FINAL FROM v_historico_venda_produto vhisProd INNER JOIN produtos prd ON prd.id_prd =
-  // vhisProd.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc WHERE vhisProd.data BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND mrc.descricao_mrc IN (${formattedBrands}) AND vhisProd.id_emp IN
-  // (1, 2, 3, 4, 5, 100) GROUP BY vhisProd.DATA, vhisProd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc`;
-
   let sellHistory = `select (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 8 
   THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)) AS data, prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc, 
   SUM(sdi.VALOR_LIQUIDO_SDI) AS saidas FROM saidas sds INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd LEFT JOIN marcas mrc ON mrc.id_mrc = prd.id_mrc INNER 
@@ -141,12 +129,18 @@ export const salesQueries = ({
   alm.tipo_alm = '1' GROUP BY (CASE EXTRACT(MONTH FROM sds.DATAHORA_FINALIZACAO_SDS) WHEN 1 THEN 'JAN' WHEN 2 THEN 'FEV' WHEN 3 THEN 'MAR' WHEN 4 THEN 'ABR' WHEN 5 THEN 'MAI' WHEN 6 THEN 'JUN' WHEN 7 THEN 'JUL' WHEN 
   8 THEN 'AGO' WHEN 9 THEN 'SET' WHEN 10 THEN 'OUT' WHEN 11 THEN 'NOV' WHEN 12 THEN 'DEZ' END || '/' || EXTRACT(YEAR FROM sds.DATAHORA_FINALIZACAO_SDS)), prd.id_prd, prd.DESCRICAO_PRD, mrc.descricao_mrc rows 10`;
 
+  let salesPerMonth = `select mes_ano, valor_liquido_sds FROM (SELECT LPAD(EXTRACT(MONTH FROM sds.datahora_finalizacao_sds), 2, '0') || '/' || EXTRACT(YEAR FROM sds.datahora_finalizacao_sds) AS mes_ano, SUM(
+  sds.valor_liquido_sds) AS valor_liquido_sds FROM saidas sds WHERE sds.tipo_sds IN ('4', '5', '9') AND sds.status_sds = '2' AND sds.id_emp IN (1, 2, 3, 4) AND sds.datahora_finalizacao_sds BETWEEN DATE '${dateInit}' AND
+  DATE '${dateEnd}' GROUP BY LPAD(EXTRACT(MONTH FROM sds.datahora_finalizacao_sds), 2, '0') || '/' || EXTRACT(YEAR FROM sds.datahora_finalizacao_sds)) AS subconsulta ORDER BY CAST(SUBSTRING(mes_ano FROM 4 FOR 4) AS 
+  INTEGER), CAST(SUBSTRING(mes_ano FROM 1 FOR 2) AS INTEGER)`;
+
   return {
     sales,
     commissionPerSalesPerson,
     topClientsPlusBuy,
     SalesByBrand,
     salesByGroup,
+    salesPerMonth,
     topSellers,
     profitsFromSale,
     sellHistory,

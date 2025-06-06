@@ -164,7 +164,7 @@ export default async function BillsToReceivePdf({
     ],
     ...sortedOpenBills.map((bill, index) => [
       {
-        text: bill.ID_ORIGEM,
+        text: bill.ID_SDS,
         fontSize: 7,
         alignment: "center",
         padding: [5, 5],

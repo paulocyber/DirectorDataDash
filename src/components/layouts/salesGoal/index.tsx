@@ -107,7 +107,7 @@ export default function LayoutSalesGoal({ goalProgress, topSellersData, profitSa
             setActiveRefresh(false);
         }
     }, [activeRefresh]);
-console.log("Empresas: ", enterprises)
+
     return (
         <>
             <Container>

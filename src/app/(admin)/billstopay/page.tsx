@@ -30,11 +30,11 @@ export default async function BillsToPayPage() {
         redirect('/salesbybrand')
     }
 
-    if(!token || ['rh'].includes(role)) {
+    if (!token || ['rh'].includes(role)) {
         redirect('/salesgoal')
     }
 
-    if(!token || ['Fiscal'].includes(role)) {
+    if (!token || ['Fiscal'].includes(role)) {
         redirect('/taxbilling')
     }
 

@@ -33,17 +33,19 @@ import { redirect } from "next/navigation";
 import { ItemsDavData } from "@/types/dav";
 import { DateValue, RangeValue } from "@heroui/react";
 import { parseDate } from '@internationalized/date';
+import { ItemsSalesPerMonth } from "@/types/sales";
 
 interface LayoutDavProps {
-  paymentMethodsData: { brand: string, value: number }[];
-  topSellersByDebitPixData: ItemsDavData[];
   davsData: ItemsDavData[];
+  paymentMethodsData: { brand: string, value: number }[];
+  salesPerMonthData: ItemsSalesPerMonth[];
   today: string;
 }
 
-export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDebitPixData, today }: LayoutDavProps) {
+export default function LayoutDav({ davsData, paymentMethodsData, salesPerMonthData, today }: LayoutDavProps) {
   const [davs, setDavs] = useState(davsData);
   const [paymentMethods, setPaymentMethods] = useState(paymentMethodsData);
+  const [salesPerMonth, setSalesPerMonth] = useState<ItemsSalesPerMonth[]>(salesPerMonthData)
   const [methods, setMethods] = useAtom(MethodsOfPayments)
   const [loading, setLoading] = useState<boolean>(false)
   const [date, setDate] = useState<RangeValue<DateValue>>({
@@ -56,7 +58,7 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
 
   function handleSelectingPayments(payments: string) {
     setMethods([payments])
-    
+
     redirect(`/davs/table?${payments}`)
   }
 
@@ -67,9 +69,9 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
         <ToolBar
           title="Resumo das Vendas"
           dateRange={date}
-          handleRefreshClick={() => handleRefresh({ date, token, setDavs, setPaymentMethods, setLoading })}
-          handleCleanFilter={() => handleCleanFilter({ token, setDate, setDavs, setPaymentMethods, setLoading })}
-          handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ token, date: newDate, setDate, setDavs, setPaymentMethods, setLoading })}
+          handleRefreshClick={() => handleRefresh({ date, token, setDavs, setSalesPerMonth, setPaymentMethods, setLoading })}
+          handleCleanFilter={() => handleCleanFilter({ token, setDate, setDavs, setPaymentMethods, setSalesPerMonth, setLoading })}
+          handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ token, date: newDate, setDate, setDavs, setPaymentMethods, setSalesPerMonth, setLoading })}
           href="/davs/table"
           descriptionHref="Visualizar em Table"
         />
@@ -80,7 +82,6 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
             dataKey="brand"
           />
         </div>
-        {/* <Table data={davs} columns={columns} renderCell={renderCell} loading={loading} detail={handleDetailDav} /> */}
       </Container>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
         <div className="w-full">
@@ -104,16 +105,18 @@ export default function LayoutDav({ davsData, paymentMethodsData, topSellersByDe
 
         <div className="w-full">
           <Container>
-            <h1 className="font-semibold text-xl p-3 text-gray-800">Top Vendedores por Forma de Pagamento do dia</h1>
+            <h1 className="font-semibold text-xl p-3 text-gray-800">Evolução das vendas por mês</h1>
             <GraphicContainer loading={loading}>
               <BarChart
-                data={topSellersByDebitPixData}
+                data={salesPerMonth}
                 displayCartesianGrid={true}
-                dataKey="TOTAL_VENDAS"
+                dataKey="VALOR_LIQUIDO_SDS"
+                displayXAxis={true}
+                dataKeyXAxis="MES_ANO"
                 palette={vibrantPalette}
                 displayToolTip={true}
                 ToolTipComponent={(props) => (
-                  <Tooltip {...props} dataKey={'VENDEDOR'} />
+                  <Tooltip {...props} dataKey={'MES_ANO'} valueKey="VALOR_LIQUIDO_SDS" />
                 )}
               />
             </GraphicContainer>

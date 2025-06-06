@@ -46,7 +46,7 @@ export default function LayoutDetail({ davDetailData, davProductsData }: LayoutD
                 <div className="flex flex-col items-center w-full">
                     <div className="w-full flex justify-between items-center p-5 border-b">
                         <h1 className="font-bold text-xl text-gray-800">Detalhes da DAV</h1>
-                        <Link href="/davs">
+                        <Link href="/davs/table">
                             <button className="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 transition-colors rounded-md shadow-md text-sm">
                                 <IoMdArrowBack className="w-4 h-4" />
                                 <span>Voltar</span>

@@ -16,7 +16,8 @@ import LayoutDav from "@/components/layouts/dav";
 import { convertFieldsToNumber } from "@/utils/convertStringToNumber";
 
 // Tipagem
-import { ItemsDavData } from "@/types/dav";
+import { salesQueries } from "@/utils/queries/sales";
+import { ItemsSalesPerMonth } from "@/types/sales";
 
 export const metadata: Metadata = {
     title: "Relatório das Dav's",
@@ -32,7 +33,7 @@ export default async function DavPage() {
         redirect('/salesbybrand')
     }
 
-    if (!token || ['rh'].includes(role)) { 
+    if (!token || ['rh'].includes(role)) {
         redirect('/salesgoal')
     }
 
@@ -41,13 +42,14 @@ export default async function DavPage() {
     }
 
     const api = setupApiClient(token)
-    const { today } = getCurrentDateDetails()
+    const { today, year } = getCurrentDateDetails()
 
-    const { davFinished, topSellersByDebitPix } = davsQueries({ dateInit: today, dateEnd: today })
+    const { davFinished } = davsQueries({ dateInit: today, dateEnd: today })
+    const { salesPerMonth } = salesQueries({ dateInit: `${year}/01/01`, dateEnd: today })
 
-    const [davResponse, topSellersByDebitPixResponse] = await Promise.all([
+    const [davResponse, salesPerMOnthResponse] = await Promise.all([
         api.post("/v1/find-db-query", { query: davFinished }),
-        api.post("/v1/find-db-query", { query: topSellersByDebitPix }),
+        api.post("/v1/find-db-query", { query: salesPerMonth }),
     ])
 
     const sortedPaymentMethods = groupSumBy(
@@ -55,15 +57,15 @@ export default async function DavPage() {
         { key: 'FORMAPAGAMENTO', valueKey: 'VALOR_LIQUIDO_SDS' }
     ).sort((a, b) => b.value - a.value);
 
-    const convertedTopDebitPixSellers = convertFieldsToNumber<ItemsDavData>(
-        topSellersByDebitPixResponse.data.returnObject.body,
-        ['TOTAL_VENDAS']
-    ).sort((a, b) => (b as any).TOTAL_VENDAS - (a as any).TOTAL_VENDAS)
+    const convertedSalesPerMonth = convertFieldsToNumber<ItemsSalesPerMonth>(
+        salesPerMOnthResponse.data.returnObject.body,
+        ['VALOR_LIQUIDO_SDS']
+    ).sort((a, b) => (b as any).MES_ANO - (a as any).MES_ANO)
 
     return (
         <LayoutDav
             davsData={davResponse.data.returnObject.body}
-            topSellersByDebitPixData={convertedTopDebitPixSellers}
+            salesPerMonthData={convertedSalesPerMonth}
             paymentMethodsData={sortedPaymentMethods}
             today={today}
         />

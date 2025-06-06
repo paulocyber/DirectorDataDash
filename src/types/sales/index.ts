@@ -24,3 +24,8 @@ export type ItemsProfitsFromSale = {
   META_INDIVIDUAL: string;
   MARGEM_LUCRO: string;
 };
+
+export type ItemsSalesPerMonth = {
+  MES_ANO: string;
+  VALOR_LIQUIDO_SDS: number;
+};

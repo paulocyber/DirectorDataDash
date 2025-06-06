@@ -15,6 +15,8 @@ import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolbar";
 import Table from "@/components/ui/table";
 import { renderCell } from "@/components/cells/davs";
+import Modal from "@/components/ui/modal";
+import { SettingsDavs } from "@/components/ui/settings/davs";
 
 // Atom
 import { refreshAtom } from "@/atom/refresh";
@@ -28,14 +30,15 @@ import { handleCleanFilter, handleDateFilter, handleRefresh } from "@/utils/hand
 
 // Tipagem
 import { ItemsDavData } from "@/types/dav";
-import { DateValue, RangeValue } from "@heroui/react";
+import { DateValue, RangeValue, useDisclosure } from "@heroui/react";
 import { parseDate } from '@internationalized/date';
 interface LayoutDavProps {
     davsData: ItemsDavData[];
+    formOfPayments: { ID_FRM: string, DESCRICAO_FRM: string }[]
     today: string;
 }
 
-export default function LayoutDavTable({ davsData, today }: LayoutDavProps) {
+export default function LayoutDavTable({ davsData, formOfPayments, today }: LayoutDavProps) {
     const [davs, setDavs] = useState(davsData);
     const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom)
     const [selectingMethodsPayment, setSelectingMethodsPayment] = useAtom(MethodsOfPayments)
@@ -46,6 +49,7 @@ export default function LayoutDavTable({ davsData, today }: LayoutDavProps) {
     });
 
     const { token } = useContext(AuthContext)
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const infoCard = InfoCardFromDav({ davs })
 
     useEffect(() => {
@@ -67,12 +71,15 @@ export default function LayoutDavTable({ davsData, today }: LayoutDavProps) {
                     title="Relatório de DAV's"
                     dateRange={date}
                     handleRefreshClick={() => handleRefresh({ date, token, formsOfPayments: selectingMethodsPayment, setDavs, setLoading })}
-                    handleCleanFilter={() => handleCleanFilter({ token, formsOfPayments: selectingMethodsPayment, setDate, setDavs, setLoading })}
+                    handleCleanFilter={() => handleCleanFilter({ token, formsOfPayments: selectingMethodsPayment, setDate, setFormsOfPayments: setSelectingMethodsPayment, setDavs, setLoading })}
                     handleDateRangePicker={(newDate: RangeValue<DateValue> | null) => handleDateFilter({ token, formsOfPayments: selectingMethodsPayment, date: newDate, setDate, setDavs, setLoading })}
+                    handleFilters={onOpen}
                 />
-
                 <Table data={davs} columns={columns} renderCell={renderCell} loading={loading} detail={handleDetailDav} />
             </Container>
+            <Modal title="Configurações de Filtros" isopen={isOpen} onOpenChange={onOpenChange} setActiveRefresh={setActiveRefresh}>
+                <SettingsDavs formOfPaymentsData={formOfPayments} />
+            </Modal>
         </>
     )
 }
