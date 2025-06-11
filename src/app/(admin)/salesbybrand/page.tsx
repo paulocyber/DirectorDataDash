@@ -56,7 +56,7 @@ export default async function SalesByBrandPage() {
         api.post("/v1/find-db-query", { query: debtBySuppliers }),
         api.post("/v1/find-db-query", { query: buyBySuppliers })
     ])
-
+    
     const salesData = [...responsePlayCell.data.returnObject.body, ...responsePlayCustom.data.returnObject.body, ...responsePlayUp.data.returnObject.body, ...responsePlayCovers.data.returnObject.body]
     const aggregatedSalesByBrand = groupSumBy(salesData, { key: 'MARCAS', valueKey: 'VALOR_BRUTO_SDI' })
         .sort((a, b) => b.value - a.value);
