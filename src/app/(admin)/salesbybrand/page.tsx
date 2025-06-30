@@ -62,7 +62,7 @@ export default async function SalesByBrandPage() {
         .sort((a, b) => b.value - a.value);
     const aggregatedStockByBrand = groupSumBy(responseStock.data.returnObject.body, { key: 'MARCA', valueKey: 'TOTAL_VALOR_COMPRA' })
         .sort((a, b) => b.value - a.value);
-
+console.log("Dados: ", )
     const stockByBrandList = aggregatedStockByBrand
         .map((stock) => {
             const matchedDebt = responseDebt.data.returnObject.body.find(

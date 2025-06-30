@@ -57,7 +57,6 @@ export default function LayoutSalesByBrand({ salesByBrandData, stockAndDebtData 
                     handleRefreshClick={() => handleRefresh({ selectedPeriod, token, brands, setLoading, setBrandSales, setBrandStockAndDebt })}
                     handleCleanFilter={() => handleCleanFilter({ token, brands, setSelectedPeriod, setLoading, setBrandSales, setBrandStockAndDebt })}
                 />
-
                 <div className="w-full flex flex-wrap justify-between items-center px-4 gap-4 my-2">
                     <div className="flex flex-wrap gap-2">
                         {["Dia", "Semana", "Mês", "Ano"].map((label) => (
