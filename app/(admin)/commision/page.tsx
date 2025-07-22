@@ -1,3 +1,3 @@
 export default async function ComissionPage() {
-  return <h1>1</h1>;
+  return <h1>1asfads</h1>;
 }
