@@ -1,8 +1,0 @@
-[
-  { "name": "Número da Dav", "uid": "nDav" },
-  { "name": "Nome do Produto", "uid": "produto" },
-  { "name": "Quantidade", "uid": "quantidade" },
-  { "name": "Valor Bruto", "uid": "valorBruto" },
-  { "name": "Valor Líquido ", "uid": "valorPago" },
-  { "name": "Quantidade no Estoque", "uid": "quantidadeEstoque" }
-]
