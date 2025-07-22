@@ -45,6 +45,13 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       icon: <AiFillDashboard className="w-5 h-5" />,
       color: "from-blue-600 to-blue-800",
     },
+    {
+      id: 4,
+      href: "/commision",
+      label: "Regras de comissão",
+      icon: <FaTable className="w-5 h-5" />,
+      color: "from-orange-400 to-orange-600",
+    },
   ];
 
   const salesSection = [
@@ -150,11 +157,18 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
     },
   ];
 
+  const filteredSellersSection = sellersSection.filter((item) => {
+    if (role.toLowerCase() === "financeiro" && item.id === 4) {
+      return false; // remove comissão para financeiro
+    }
+    return true;
+  });
+
   const settingsMenu: MenuSection[] = [
     {
       title: "Vendas",
       icon: <FaClipboardList className="w-5 h-5 text-gray-900" />,
-      items: sellersSection,
+      items: filteredSellersSection,
       allowedRoles: ["diretoria", "financeiro", "tecnologia", "admin"],
     },
     {

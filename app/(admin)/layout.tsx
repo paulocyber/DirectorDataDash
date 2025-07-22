@@ -15,6 +15,7 @@ import { suppliersQueries } from "@/utils/querys/suppliers";
 
 // Componentes
 import Layout from "@/components/ui/layout";
+import Unauthorized from "@/components/ui/unauthorized/page";
 
 // Config
 import { fontSans } from "@/config/fonts";
@@ -34,6 +35,7 @@ export default async function AdminRouter({
   const cookieStore = cookies();
   const token = (await cookieStore).get("@nextauth.token")?.value;
   const role = (await cookieStore).get("@nextauth.role")?.value || "";
+  const active = (await cookieStore).get("@nextauth.ativo")?.value || "";
   const api = setupApiClient(token);
 
   if (!token) {
@@ -41,6 +43,10 @@ export default async function AdminRouter({
   }
 
   if (["vendedor", "vendedora"].includes(role)) redirect("/sales");
+
+  if (active === "false") {
+    return <Unauthorized />;
+  }
 
   const formOfPayments = formOfPaymentsQueries();
   const suppliers = suppliersQueries();

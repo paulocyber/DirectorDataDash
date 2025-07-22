@@ -73,8 +73,18 @@ export default function SignIn() {
         color: "success",
       });
     } catch (err) {
-      console.log("Error: ", err);
-      loader.done();
+      console.log("Error: ", (err as any).status);
+
+      addToast({
+        title: "Autorização pendente",
+        description:
+          "Seu acesso ainda não foi autorizado. Um administrador precisa ativar sua conta. Por favor, aguarde ou entre em contato se achar que houve um engano.",
+        color: "warning",
+        icon: <TiWarning />,
+        promise,
+      });
+
+      loader.remove();
 
       setError(true);
     }

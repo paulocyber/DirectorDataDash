@@ -26,6 +26,7 @@ export default async function SalesByBrand() {
   if (
     role !== "admin" &&
     role !== "diretoria" &&
+    role !== "financeiro" &&
     role !== "estoque" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {

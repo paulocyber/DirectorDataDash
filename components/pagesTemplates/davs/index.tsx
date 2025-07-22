@@ -117,7 +117,7 @@ export default function LayoutDav({
             href="/davs/table"
             descriptionHref="Visualizar em Table"
           />
-          <div className="flex p-2 w-full items-center overflow-auto border-t rounded-2xl">
+          <div className="flex p-2 w-full items-center overflow-auto border-t border-gray-200 rounded-2xl">
             <DescriptionGraphic
               data={salesByPaymentMethod}
               dataKey="FORMA_PGMT"
