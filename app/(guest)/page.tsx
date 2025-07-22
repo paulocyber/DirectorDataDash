@@ -72,18 +72,6 @@ export default function SignIn() {
         description: "Login realizado com sucesso.",
         color: "success",
       });
-
-      if (["vendedor", "vendedora"].includes(role)) {
-        router.push("/sales");
-      } else if (["Fiscal"].includes(role)) {
-        router.push("/taxbilling");
-      } else if (["rh"].includes(role)) {
-        router.push("/salesgoal");
-      } else if (["estoque"].includes(role)) {
-        router.push("/salesbybrand");
-      } else {
-        router.push("/davs");
-      }
     } catch (err) {
       console.log("Error: ", err);
       loader.done();

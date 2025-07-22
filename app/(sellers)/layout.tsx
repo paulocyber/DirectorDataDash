@@ -9,11 +9,14 @@ import { ReactNode } from "react";
 
 // Componentes
 import Layout from "@/components/ui/layout";
+import Unauthorized from "@/components/ui/unauthorized/page";
 
 // Config
 import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 import { Metadata } from "next";
+
+// Utils
 import { setupApiClient } from "@/utils/fetchs/api";
 
 export const metadata: Metadata = {
@@ -29,11 +32,16 @@ export default async function SalesRouter({
   const cookieStore = cookies();
   const token = (await cookieStore).get("@nextauth.token")?.value;
   const role = (await cookieStore).get("@nextauth.role")?.value || "";
+  const active = (await cookieStore).get("@nextauth.active")?.value || "";
   const api = setupApiClient(token);
 
   if (!token) redirect("/");
 
   if (!["vendedor", "vendedora"].includes(role)) redirect("/");
+
+  if (active === "false") {
+    return <Unauthorized />;
+  }
 
   return (
     <div
