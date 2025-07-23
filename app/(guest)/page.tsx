@@ -37,6 +37,7 @@ export default function SignIn() {
 
   async function handleSignIn(e: SyntheticEvent) {
     e.preventDefault();
+
     setLoading(true);
     loader.start();
 
@@ -54,41 +55,17 @@ export default function SignIn() {
       return;
     }
 
-    const promise = signIn({ username: name, password });
-
     addToast({
       title: "Autenticando...",
       description: "Estamos verificando suas credenciais.",
       color: "primary",
       icon: <TiWarning />,
-      promise,
     });
 
-    try {
-      await promise;
+    await signIn({ username: name, password });
 
-      addToast({
-        title: `Bem-vindo de volta, ${name}!`,
-        description: "Login realizado com sucesso.",
-        color: "success",
-      });
-    } catch (err) {
-      console.log("Error: ", (err as any).status);
-
-      addToast({
-        title: "Autorização pendente",
-        description:
-          "Seu acesso ainda não foi autorizado. Um administrador precisa ativar sua conta. Por favor, aguarde ou entre em contato se achar que houve um engano.",
-        color: "warning",
-        icon: <TiWarning />,
-        promise,
-      });
-
-      loader.remove();
-
-      setError(true);
-    }
-
+    loader.done();
+    setError(true);
     setLoading(false);
   }
 

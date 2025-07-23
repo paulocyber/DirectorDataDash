@@ -1,0 +1,7 @@
+[
+  { "name": "Vendedor", "uid": "vendedor" },
+  { "name": "Metodo de Pagamento", "uid": "metodoPagamento" },
+  { "name": "Porcentagem de Comissão", "uid": "porcentagemComissão" },
+  { "name": "Valor por venda", "uid": "valorVenda" },
+  { "name": "Cliente", "uid": "cliente" }
+]

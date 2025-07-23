@@ -6,6 +6,8 @@ export type ItemsFilterSelecting = {
 };
 
 export type TypeFilterProps = {
+  id?: string;
+  username: string;
   ID_FRM?: string;
   ID_PSS?: string;
   ID_EMP?: string;

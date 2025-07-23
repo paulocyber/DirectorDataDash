@@ -16,7 +16,7 @@ import { FaChartPie, FaFilter, FaRegFilePdf } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 
 // React
-import { useContext, useMemo, useState } from "react";
+import { ReactNode, useContext, useMemo, useState } from "react";
 import { AuthContext } from "@/providers/auth";
 
 // Data
@@ -31,6 +31,7 @@ import { Input } from "../input";
 // Tipagem
 import { RangeValue } from "@react-types/shared";
 import type { DateValue } from "@internationalized/date";
+import { Button } from "@heroui/button";
 interface ToolBarProps {
   title: string;
   descriptionHref?: string;
@@ -106,12 +107,12 @@ export default function ToolBar({
           />
 
           {handleAdd && (
-            <button
+            <Button
               onClick={handleAdd}
-              className={`hidden md:inline-flex items-center px-4 py-2 rounded-lg text-white ${routeColor} hover:opacity-90 transition`}
+              className={`hidden md:inline-flex items-center text-white ${routeColor} hover:opacity-90 transition`}
             >
               {titleAdd}
-            </button>
+            </Button>
           )}
 
           <DateRangePicker

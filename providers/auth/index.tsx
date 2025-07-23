@@ -8,6 +8,8 @@ import { setupApiClient } from "@/utils/fetchs/api";
 
 // React
 import { createContext, ReactNode, useEffect, useState } from "react";
+import { addToast } from "@heroui/react";
+import { TiWarning } from "react-icons/ti";
 
 // Tipagem
 type SignInProps = {
@@ -58,6 +60,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       api.defaults.headers["Authorization"] = `Bearer ${access_token}`;
 
+      addToast({
+        title: `Bem-vindo de volta, ${username}!`,
+        description: "Login realizado com sucesso.",
+        color: "success",
+      });
+
       if (["vendedor", "vendedora"].includes(role)) {
         router.push("/sales");
       } else if (["Fiscal"].includes(role)) {
@@ -70,6 +78,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/davs");
       }
     } catch (err) {
+      addToast({
+        title: "Autorização pendente",
+        description:
+          "Seu acesso ainda não foi autorizado. Um administrador precisa ativar sua conta. Por favor, aguarde ou entre em contato se achar que houve um engano.",
+        color: "warning",
+        icon: <TiWarning />,
+      });
+
       console.log("Error: ", err);
     }
   }
