@@ -41,9 +41,10 @@ import { refreshAtom } from "@/atom/isActivateRefresh";
 import { parseDate } from "@internationalized/date";
 import { ItemsDavData } from "@/types/davs";
 import DrawerSettingsJson from "@/data/drawerSettings/sales";
+import { TypeFilterProps } from "@/types/filters/selecting";
 interface LayoutDavTableProps {
   davsData: ItemsDavData[];
-  paymentMethodData: { ID_FRM: string; DESCRICAO_FRM: string }[];
+  paymentMethodData: TypeFilterProps[];
   serachParams?: string[];
   today: string;
 }
