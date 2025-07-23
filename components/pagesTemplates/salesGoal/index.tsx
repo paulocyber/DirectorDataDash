@@ -57,12 +57,13 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { parseDate } from "@internationalized/date";
+import { TypeFilterProps } from "@/types/filters/selecting";
 interface LayoutSalesGoalsProps {
   salesProgressData: ItemsSalesProgress[];
   topSellersData?: ItemsTopSellers[];
   customerBuyMoreData?: ItemsCustomerBuyMore[];
   profitsFromSaleData?: ItemsProfitsFromSales[];
-  companiesData?: { ID_EMP: string; SIGLA_EMP: string }[];
+  companiesData?: TypeFilterProps[];
   seller?: string;
   valueCommissionData?: number;
   today: string;
