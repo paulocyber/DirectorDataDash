@@ -5,19 +5,36 @@ import Container from "@/components/ui/container";
 import { Input } from "@/components/ui/input";
 
 // Bibliotecas
-import { Button, Divider, Select, SelectItem, Tab, Tabs } from "@heroui/react";
+import {
+  addToast,
+  Button,
+  Divider,
+  Select,
+  SelectItem,
+  Tab,
+  Tabs,
+} from "@heroui/react";
 import { MdOutlineEmail } from "react-icons/md";
 import { BiPhone } from "react-icons/bi";
 import { IoArrowBack, IoDocument } from "react-icons/io5";
-import { FaMoneyBill, FaOrcid, FaRegUser } from "react-icons/fa";
+import { FaCheck, FaMoneyBill, FaOrcid, FaRegUser } from "react-icons/fa";
+import { FiSave } from "react-icons/fi";
+import { TiWarning } from "react-icons/ti";
 
 // React
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "@/providers/auth";
+
+// Utils
+import { FormatPhone } from "@/utils/mask/formatPhone";
+import { FormatCpf } from "@/utils/mask/formatCpf";
+
+// Next
+import Link from "next/link";
 
 // Tipagem
 import { TypeFilterProps } from "@/types/filters/selecting";
-import { FiSave } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
+import { setupApiClient } from "@/utils/fetchs/api";
 interface RegisterComissionProps {
   paymentMethodData: TypeFilterProps[];
   employeesData: TypeFilterProps[];
@@ -31,12 +48,68 @@ export default function RegisterComission({
 }: RegisterComissionProps) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { token } = useContext(AuthContext);
+
+  const api = setupApiClient(token);
 
   const sellerCode = employeesData.filter(
     (employee) =>
       employee.APELIDO_PSS?.toLocaleLowerCase() === String(name).toLowerCase()
   );
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+
+    // if (name.trim() === "") {
+    //   addToast({
+    //     title: "Campos obrigatórios",
+    //     description: "Por favor, preencha nome do vendedor.",
+    //     color: "danger",
+    //     icon: <TiWarning />,
+    //   });
+    // }
+
+    try {
+      await api.post("/v1/sellers", {
+        name: name,
+        email: email,
+        phone: phone,
+        cpf: cpf,
+        externalId: sellerCode[0].ID_PSS,
+        userId: id,
+      });
+
+      addToast({
+        title: "Vendedor cadastrado com sucesso!",
+        description: "O vendedor foi registrado na regra de comissão.",
+        color: "success",
+        icon: <FaCheck />,
+      });
+
+      setId("");
+      setName("");
+      setEmail("");
+      setCpf("");
+    } catch (err) {
+      console.log("Error: ", err);
+
+      addToast({
+        title: "Erro ao cadastrar vendedor",
+        description:
+          "Não foi possível registrar o vendedor. Verifique os dados e tente novamente.",
+        color: "danger",
+        icon: <TiWarning />,
+      });
+    }
+
+    setLoading(false);
+  }
 
   return (
     <Tabs aria-label="Options" variant="underlined">
@@ -53,13 +126,14 @@ export default function RegisterComission({
             </p>
           </div>
 
-          <form className="space-y-6 py-5 pb-4">
+          <form onSubmit={handleSubmit} className="space-y-6 py-5 pb-4">
             <div className="grid grid-cols-1 px-4 gap-6">
               <Select
                 labelPlacement="outside"
                 className="w-full"
                 label="Selecione Vendedor"
                 placeholder="Selecione Vendedor"
+                isRequired
                 startContent={<FaRegUser className="text-gray-400 text-ls" />}
                 variant="bordered"
                 selectedKeys={new Set(id ? [id] : [])}
@@ -82,8 +156,10 @@ export default function RegisterComission({
                 labelPlacement="outside"
                 variant="bordered"
                 name="email"
-                placeholder="Ex: setor@domain.com"
                 isRequired
+                placeholder="Ex: setor@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 classNames={{
                   input: "",
                 }}
@@ -94,12 +170,15 @@ export default function RegisterComission({
               <Input
                 label="Telefone"
                 labelPlacement="outside"
+                isRequired
                 variant="bordered"
                 name="phone"
                 placeholder="Ex: (85) 90000-0000"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                isRequired
+                onChange={(e) => {
+                  const formatted = FormatPhone(e.target.value);
+                  setPhone(formatted);
+                }}
                 classNames={{
                   input: "",
                 }}
@@ -107,11 +186,16 @@ export default function RegisterComission({
               />
               <Input
                 label="Cpf"
+                isRequired
                 labelPlacement="outside"
                 variant="bordered"
                 name="text"
                 placeholder="Ex: 000.000.000-00"
-                isRequired
+                value={cpf}
+                onChange={(e) => {
+                  const formatted = FormatCpf(e.target.value);
+                  setCpf(formatted);
+                }}
                 classNames={{
                   input: "",
                 }}
@@ -139,19 +223,27 @@ export default function RegisterComission({
             </div>
             <div className="px-4 justify-end space-x-4 flex">
               <Button
+                type="submit"
+                isLoading={loading}
                 className="w-56"
                 color="primary"
-                startContent={<FiSave className="text-gray-200 text-lg" />}
+                startContent={
+                  !loading && <FiSave className="text-gray-200 text-lg" />
+                }
               >
                 Salvar Vendedor
               </Button>
-              <Button
-                className="w-56"
-                variant="ghost"
-                startContent={<IoArrowBack className="text-gray-600 text-lg" />}
-              >
-                Voltar
-              </Button>
+              <Link href="/commision">
+                <Button
+                  className="w-56"
+                  variant="ghost"
+                  startContent={
+                    <IoArrowBack className="text-gray-600 text-lg" />
+                  }
+                >
+                  Voltar
+                </Button>
+              </Link>
             </div>
           </form>
         </Container>
