@@ -8,6 +8,7 @@ import { redirectMap } from "@/data/rulesByUsers";
 import { setupApiClient } from "@/utils/fetchs/api";
 import { employeesQueries } from "@/utils/querys/employees";
 import { formOfPaymentsQueries } from "@/utils/querys/paymentMethod";
+import { PeopleQueries } from "@/utils/querys/peoples";
 
 // Next
 import { cookies } from "next/headers";
@@ -30,21 +31,33 @@ export default async function RegisterPage() {
 
   const formOfPayments = formOfPaymentsQueries();
   const employees = employeesQueries();
+  const people = PeopleQueries();
 
-  const [paymentMethodResponse, employeesResponse, sellersResponse] =
-    await Promise.all([
-      api.post("/v1/find-db-query", { query: formOfPayments }),
-      api.post("/v1/find-db-query", { query: employees }),
-      api.get("/v1/users"),
-    ]);
+  const [
+    paymentMethodResponse,
+    employeesResponse,
+    peopleResponse,
+    sellersResponse,
+    commissionRegisteredSellers,
+  ] = await Promise.all([
+    api.post("/v1/find-db-query", { query: formOfPayments }),
+    api.post("/v1/find-db-query", { query: employees }),
+    api.post("/v1/find-db-query", { query: people }),
+    api.get("/v1/users"),
+    api.get("/v1/sellers"),
+  ]);
 
   return (
     <RegisterComission
       paymentMethodData={paymentMethodResponse.data.returnObject.body}
       employeesData={employeesResponse.data.returnObject.body}
+      peopleData={peopleResponse.data.returnObject.body}
       sellersData={sellersResponse.data.returnObject.body.filter(
         (user: any) => user.role === "vendedor"
       )}
+      commissionRegisteredSellersData={
+        commissionRegisteredSellers.data.returnObject.body
+      }
     />
   );
 }

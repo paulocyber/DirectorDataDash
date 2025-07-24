@@ -1,288 +1,61 @@
 "use client";
 
 // Componentes
-import Container from "@/components/ui/container";
-import { Input } from "@/components/ui/input";
+import RegisterSeller from "@/components/forms/registerSeller";
 
 // Bibliotecas
-import {
-  addToast,
-  Button,
-  Divider,
-  Select,
-  SelectItem,
-  Tab,
-  Tabs,
-} from "@heroui/react";
-import { MdOutlineEmail } from "react-icons/md";
-import { BiPhone } from "react-icons/bi";
-import { IoArrowBack, IoDocument } from "react-icons/io5";
-import { FaCheck, FaMoneyBill, FaOrcid, FaRegUser } from "react-icons/fa";
-import { FiSave } from "react-icons/fi";
-import { TiWarning } from "react-icons/ti";
+import { Tab, Tabs } from "@heroui/react";
 
 // React
 import { useContext, useState } from "react";
 import { AuthContext } from "@/providers/auth";
 
 // Utils
-import { FormatPhone } from "@/utils/mask/formatPhone";
-import { FormatCpf } from "@/utils/mask/formatCpf";
 
 // Next
-import Link from "next/link";
 
 // Tipagem
 import { TypeFilterProps } from "@/types/filters/selecting";
 import { setupApiClient } from "@/utils/fetchs/api";
+import RegisterRule from "@/components/forms/registerRule";
 interface RegisterComissionProps {
   paymentMethodData: TypeFilterProps[];
   employeesData: TypeFilterProps[];
+  peopleData: TypeFilterProps[];
   sellersData: TypeFilterProps[];
+  commissionRegisteredSellersData: TypeFilterProps[];
 }
 
 export default function RegisterComission({
   paymentMethodData,
   employeesData,
+  peopleData,
   sellersData,
+  commissionRegisteredSellersData,
 }: RegisterComissionProps) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   const { token } = useContext(AuthContext);
 
   const api = setupApiClient(token);
 
-  const sellerCode = employeesData.filter(
-    (employee) =>
-      employee.APELIDO_PSS?.toLocaleLowerCase() === String(name).toLowerCase()
-  );
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-
-    // if (name.trim() === "") {
-    //   addToast({
-    //     title: "Campos obrigatórios",
-    //     description: "Por favor, preencha nome do vendedor.",
-    //     color: "danger",
-    //     icon: <TiWarning />,
-    //   });
-    // }
-
-    try {
-      await api.post("/v1/sellers", {
-        name: name,
-        email: email,
-        phone: phone,
-        cpf: cpf,
-        externalId: sellerCode[0].ID_PSS,
-        userId: id,
-      });
-
-      addToast({
-        title: "Vendedor cadastrado com sucesso!",
-        description: "O vendedor foi registrado na regra de comissão.",
-        color: "success",
-        icon: <FaCheck />,
-      });
-
-      setId("");
-      setName("");
-      setEmail("");
-      setCpf("");
-    } catch (err) {
-      console.log("Error: ", err);
-
-      addToast({
-        title: "Erro ao cadastrar vendedor",
-        description:
-          "Não foi possível registrar o vendedor. Verifique os dados e tente novamente.",
-        color: "danger",
-        icon: <TiWarning />,
-      });
-    }
-
-    setLoading(false);
-  }
-
   return (
     <Tabs aria-label="Options" variant="underlined">
       <Tab key="sellers" title="Registrar Vendedores">
-        <Container>
-          <div className="p-4">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Cadastrar Vendedor
-            </h2>
-            <p className="text-gray-600 mt-1">
-              Primeiro cadastre o vendedor na regra de comissão. Só depois isso
-              estará pronto, aí sim você pode criar uma regra específica para
-              esse vendedor.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6 py-5 pb-4">
-            <div className="grid grid-cols-1 px-4 gap-6">
-              <Select
-                labelPlacement="outside"
-                className="w-full"
-                label="Selecione Vendedor"
-                placeholder="Selecione Vendedor"
-                isRequired
-                startContent={<FaRegUser className="text-gray-400 text-ls" />}
-                variant="bordered"
-                selectedKeys={new Set(id ? [id] : [])}
-                onSelectionChange={(keys: string | Set<React.Key>) => {
-                  const id = Array.from(keys)[0] as string;
-                  const name = sellersData.find(
-                    (seller) => String(seller.id) === id
-                  );
-
-                  setId(id);
-                  setName(name ? name.username : "");
-                }}
-              >
-                {sellersData.map((seller) => (
-                  <SelectItem key={seller.id}>{seller.username}</SelectItem>
-                ))}
-              </Select>
-              <Input
-                label="E-mail"
-                labelPlacement="outside"
-                variant="bordered"
-                name="email"
-                isRequired
-                placeholder="Ex: setor@domain.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                classNames={{
-                  input: "",
-                }}
-                startContent={
-                  <MdOutlineEmail className="text-gray-400 text-ls" />
-                }
-              />
-              <Input
-                label="Telefone"
-                labelPlacement="outside"
-                isRequired
-                variant="bordered"
-                name="phone"
-                placeholder="Ex: (85) 90000-0000"
-                value={phone}
-                onChange={(e) => {
-                  const formatted = FormatPhone(e.target.value);
-                  setPhone(formatted);
-                }}
-                classNames={{
-                  input: "",
-                }}
-                startContent={<BiPhone className="text-gray-400 text-ls" />}
-              />
-              <Input
-                label="Cpf"
-                isRequired
-                labelPlacement="outside"
-                variant="bordered"
-                name="text"
-                placeholder="Ex: 000.000.000-00"
-                value={cpf}
-                onChange={(e) => {
-                  const formatted = FormatCpf(e.target.value);
-                  setCpf(formatted);
-                }}
-                classNames={{
-                  input: "",
-                }}
-                startContent={<IoDocument className="text-gray-400 text-ls" />}
-              />
-              <Input
-                labelPlacement="outside"
-                className="w-full"
-                label="Código do vendedor"
-                placeholder="Código do venedor"
-                startContent={<FaOrcid className="text-gray-400 text-ls" />}
-                classNames={{
-                  input: "",
-                  description: "text-red-800 font-extrabold",
-                }}
-                variant="bordered"
-                isDisabled={true}
-                value={sellerCode.length > 0 ? sellerCode[0].ID_PSS : ""}
-                description="OBS: VERIFIQUE SE O CÓDIGO DO VENDEDOR ESTÁ IGUAL AO QUE CONSTA NO MULTSISTEM."
-              />
-            </div>
-
-            <div className="w-full px-4">
-              <Divider className="" />
-            </div>
-            <div className="px-4 justify-end space-x-4 flex">
-              <Button
-                type="submit"
-                isLoading={loading}
-                className="w-56"
-                color="primary"
-                startContent={
-                  !loading && <FiSave className="text-gray-200 text-lg" />
-                }
-              >
-                Salvar Vendedor
-              </Button>
-              <Link href="/commision">
-                <Button
-                  className="w-56"
-                  variant="ghost"
-                  startContent={
-                    <IoArrowBack className="text-gray-600 text-lg" />
-                  }
-                >
-                  Voltar
-                </Button>
-              </Link>
-            </div>
-          </form>
-        </Container>
+        <RegisterSeller
+          employeesData={employeesData}
+          sellersData={sellersData}
+        />
       </Tab>
       <Tab key="comissions" title="Registrar Regra">
-        <Container>
-          <div className="p-4">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Cadastrar Regra de Comissão
-            </h2>
-            <p className="text-gray-600 mt-1">
-              Configure as condições e taxas para cálculo de comissões
-            </p>
-          </div>
-
-          <form className="space-y-6 pb-4">
-            <div className="grid grid-cols-1 px-4 lg:grid-cols-2 gap-6">
-              {/* <Select className="max-w-xs" label="Select an animal">
-            {animals.map((animal) => (
-              <SelectItem key={animal.key}>{animal.label}</SelectItem>
-            ))}
-          </Select> */}
-              <Input
-                label="Metodo de pagamento"
-                name="mmetodo"
-                placeholder="Ex: PIX/TED"
-                isRequired
-                startContent={<FaMoneyBill className="text-gray-400" />}
-              />
-              <Input
-                label="Metodo de pagamento"
-                name="mmetodo"
-                placeholder="Ex: PIX/TED"
-                isRequired
-                startContent={<FaMoneyBill className="text-gray-400" />}
-              />
-            </div>
-          </form>
-        </Container>
+        <RegisterRule
+          commissionRegisteredSellersData={commissionRegisteredSellersData}
+          paymentMethodData={paymentMethodData}
+          peopleData={peopleData}
+          sellersData={sellersData}
+        />
       </Tab>
     </Tabs>
   );
