@@ -10,6 +10,9 @@ import { redirect } from "next/navigation";
 // Utils
 import { setupApiClient } from "@/utils/fetchs/api";
 
+// Componenetes
+import LayoutSellers from "@/components/pagesTemplates/sellers";
+
 export default async function SellersPage() {
   const cookieStore = cookies();
   const token = (await cookieStore).get("@nextauth.token")?.value;
@@ -27,5 +30,5 @@ export default async function SellersPage() {
 
   const sellers = await api.get("/v1/sellers");
 
-  return <h1>a</h1>;
+  return <LayoutSellers data={sellers.data.returnObject.body} />;
 }

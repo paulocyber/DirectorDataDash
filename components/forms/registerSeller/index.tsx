@@ -1,3 +1,5 @@
+"use client";
+
 // Componentes
 import { Input } from "@/components/ui/input";
 import Container from "./../../ui/container/index";
@@ -206,7 +208,7 @@ export default function RegisterSeller({
           >
             Salvar Vendedor
           </Button>
-          <Link href="/commision">
+          <Link href="/sellers">
             <Button
               className="w-56"
               variant="ghost"

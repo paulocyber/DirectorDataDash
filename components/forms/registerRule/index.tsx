@@ -312,8 +312,7 @@ export default function RegisterRule({
           <Button
             type="submit"
             isLoading={loading}
-            className="w-56"
-            color="primary"
+            className="w-56 bg-gradient-to-b from-orange-400 to-orange-600 text-white"
             startContent={
               !loading && <FiSave className="text-gray-200 text-lg" />
             }
