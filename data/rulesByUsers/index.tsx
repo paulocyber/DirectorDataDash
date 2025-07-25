@@ -52,6 +52,13 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       icon: <FaTable className="w-5 h-5" />,
       color: "from-orange-400 to-orange-600",
     },
+    {
+      id: 5,
+      href: "/sellers",
+      label: "Lista de vendedores",
+      icon: <FaTable className="w-5 h-5" />,
+      color: "from-orange-400 to-orange-600",
+    },
   ];
 
   const salesSection = [
@@ -157,12 +164,10 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
     },
   ];
 
-  const filteredSellersSection = sellersSection.filter((item) => {
-    if (role.toLowerCase() === "financeiro" && item.id === 4) {
-      return false; // remove comissão para financeiro
-    }
-    return true;
-  });
+  const filteredSellersSection = sellersSection.filter(
+    (item) =>
+      !(role.toLowerCase() === "financeiro" && (item.id === 4 || item.id === 5))
+  );
 
   const settingsMenu: MenuSection[] = [
     {

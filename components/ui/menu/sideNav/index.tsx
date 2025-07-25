@@ -125,12 +125,12 @@ export default function SideNav({
                 />
               </button>
               <ul
-                className={`pl-3 space-y-1 overflow-hidden transition-[max-height] duration-300 ${isOpen ? "max-h-60" : "max-h-0"}`}
+                className={`pl-3 space-y-1 overflow-auto transition-[max-height] duration-300 ${isOpen ? "max-h-60" : "max-h-0"}`}
               >
                 {section.items.map(({ id, href, label, icon }) => {
                   const active = pathname === href;
                   return (
-                    <li key={id}>
+                    <li key={id} className="p-2">
                       <Link href={href}>
                         <div
                           className={`flex items-center px-4 py-2 rounded-lg transition
