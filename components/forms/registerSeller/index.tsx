@@ -27,20 +27,35 @@ import { AuthContext } from "@/providers/auth";
 
 // Tipagem
 import { TypeFilterProps } from "@/types/filters/selecting";
+import { ItemsSellers } from "@/types/sellers";
 interface RegisterSellerProps {
   employeesData: TypeFilterProps[];
   sellersData: TypeFilterProps[];
+  commissionSalespeopleData?: ItemsSellers;
 }
 
 export default function RegisterSeller({
   employeesData,
   sellersData,
+  commissionSalespeopleData,
 }: RegisterSellerProps) {
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [cpf, setCpf] = useState("");
+  const [id, setId] = useState(
+    commissionSalespeopleData
+      ? commissionSalespeopleData.user.id.toString()
+      : ""
+  );
+  const [name, setName] = useState(
+    commissionSalespeopleData ? commissionSalespeopleData.name : ""
+  );
+  const [email, setEmail] = useState(
+    commissionSalespeopleData ? commissionSalespeopleData.email : ""
+  );
+  const [phone, setPhone] = useState(
+    commissionSalespeopleData ? commissionSalespeopleData.phone : ""
+  );
+  const [cpf, setCpf] = useState(
+    commissionSalespeopleData ? commissionSalespeopleData.cpf : ""
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const { token } = useContext(AuthContext);
@@ -57,18 +72,34 @@ export default function RegisterSeller({
     setLoading(true);
 
     try {
-      await api.post("/v1/sellers", {
-        name: name,
-        email: email,
-        phone: phone,
-        cpf: cpf,
-        externalId: sellerCode[0].ID_PSS,
-        userId: id,
-      });
+      if (commissionSalespeopleData) {
+        const payload = {
+          name,
+          email,
+          phone,
+          cpf,
+          externalId: sellerCode[0].ID_PSS,
+        };
+
+        await api.patch(`/v1/sellers/${id}`, payload);
+      } else {
+        await api.post("/v1/sellers", {
+          name: name,
+          email: email,
+          phone: phone,
+          cpf: cpf,
+          externalId: sellerCode[0].ID_PSS,
+          userId: id,
+        });
+      }
 
       addToast({
-        title: "Vendedor cadastrado com sucesso!",
-        description: "O vendedor foi registrado na regra de comissão.",
+        title: commissionSalespeopleData
+          ? "Vendedor atualizado com sucesso!"
+          : "Vendedor cadastrado com sucesso!",
+        description: commissionSalespeopleData
+          ? "Dados alterados com sucesso"
+          : "O vendedor foi registrado na regra de comissão.",
         color: "success",
         icon: <FaCheck />,
       });
@@ -95,7 +126,9 @@ export default function RegisterSeller({
   return (
     <Container>
       <div className="p-4">
-        <h2 className="text-2xl font-bold text-gray-900">Cadastrar Vendedor</h2>
+        <h2 className="text-2xl font-bold text-gray-900">
+          {commissionSalespeopleData ? "Cadastrar Vendedor" : "Editar cadastro"}
+        </h2>
         <p className="text-gray-600 mt-1">
           Primeiro cadastre o vendedor na regra de comissão. Só depois isso
           estará pronto, aí sim você pode criar uma regra específica para esse
@@ -206,7 +239,7 @@ export default function RegisterSeller({
               !loading && <FiSave className="text-gray-200 text-lg" />
             }
           >
-            Salvar Vendedor
+            {commissionSalespeopleData ? "Editar Vendedor" : "Salvar Vendedor"}
           </Button>
           <Link href="/sellers">
             <Button
