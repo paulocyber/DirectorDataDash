@@ -1,22 +1,28 @@
-// Componentes
-import RegisterComission from "@/components/pagesTemplates/comission/register";
+// Next
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 // Dados
 import { redirectMap } from "@/data/rulesByUsers";
 
 // Utils
 import { setupApiClient } from "@/utils/fetchs/api";
-import { formOfPaymentsQueries } from "@/utils/querys/paymentMethod";
 import { PeopleQueries } from "@/utils/querys/peoples";
+import { formOfPaymentsQueries } from "@/utils/querys/paymentMethod";
 
-// Next
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+// Componentes
+import NotFoundUI from "@/components/ui/notfound";
+import RegisterRule from "@/components/forms/registerRule";
 
-export default async function RegisterPage() {
+export default async function EditComissionPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const cookieStore = cookies();
   const token = (await cookieStore).get("@nextauth.token")?.value;
   const role = (await cookieStore).get("@nextauth.role")?.value || "";
+  const { id } = await params;
 
   if (
     role !== "admin" &&
@@ -27,6 +33,10 @@ export default async function RegisterPage() {
   }
 
   const api = setupApiClient(token);
+
+  const commission = await api.get(`/v1/commission-rules/${id}`);
+
+  if (!commission) return <NotFoundUI hrfe="/commision" />;
 
   const formOfPayments = formOfPaymentsQueries();
   const people = PeopleQueries();
@@ -39,12 +49,13 @@ export default async function RegisterPage() {
     ]);
 
   return (
-    <RegisterComission
+    <RegisterRule
       paymentMethodData={paymentMethodResponse.data.returnObject.body}
       peopleData={peopleResponse.data.returnObject.body}
       commissionRegisteredSellersData={
         commissionRegisteredSellers.data.returnObject.body
       }
+      commissionRule={commission.data.returnObject.body}
     />
   );
 }

@@ -8,7 +8,7 @@ import { AuthContext } from "@/providers/auth";
 import Container from "@/components/ui/container";
 import ToolBar from "@/components/ui/toolBar";
 import Table from "@/components/ui/tables";
-import { renderCell } from "@/components/renderCell/comissions";
+import { RenderCell } from "@/components/renderCell/comissions";
 
 // Dados
 import collumns from "@/data/columns/comission/columns.json";
@@ -62,8 +62,21 @@ export default function LayoutComission({ data }: LayoutComissionProps) {
       <Table
         data={commissionsRules}
         columns={collumns}
-        renderCell={renderCell}
         loading={loading}
+        renderCell={(item, columnUid) => (
+          <RenderCell
+            item={item}
+            columnKey={columnUid}
+            onEdit={(id) => {
+              loader.start();
+              redirect(`/commision/edit/${id}`);
+            }}
+            onDelete={async (id: string) => {
+              await api.delete(`/v1/commission-rules/${id}`);
+              handleRefresh();
+            }}
+          />
+        )}
       />
     </Container>
   );

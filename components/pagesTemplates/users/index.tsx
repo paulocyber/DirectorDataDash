@@ -31,7 +31,6 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { Input } from "@/components/ui/input";
-import { IoEyeOutline } from "react-icons/io5";
 import { FaEye, FaEyeSlash, FaShieldAlt, FaUser } from "react-icons/fa";
 
 // Tipagem

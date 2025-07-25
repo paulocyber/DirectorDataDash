@@ -202,7 +202,7 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       allowedRoles: ["rh"],
     },
     {
-      title: "T.I",
+      title: "Segurança",
       icon: <FaClipboardList className="w-5 h-5 text-gray-900" />,
       items: tiSection,
       allowedRoles: ["admin"],

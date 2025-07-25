@@ -1,5 +1,8 @@
+"use client";
+
 // React
 import { useContext, useState } from "react";
+import { AuthContext } from "@/providers/auth";
 
 // Componentes
 import Container from "@/components/ui/container";
@@ -9,61 +12,72 @@ import { Input } from "@/components/ui/input";
 import {
   addToast,
   Autocomplete,
+  AutocompleteItem,
   Button,
   Divider,
   Select,
   SelectItem,
 } from "@heroui/react";
 import { AiOutlinePercentage } from "react-icons/ai";
-import {
-  FaCheck,
-  FaMoneyBill,
-  FaOrcid,
-  FaRegUser,
-  FaUser,
-} from "react-icons/fa";
+import { FaCheck, FaMoneyBill, FaOrcid, FaRegUser } from "react-icons/fa";
 import { FiSave } from "react-icons/fi";
 import { IoArrowBack } from "react-icons/io5";
+import { TiWarning } from "react-icons/ti";
+import { setupApiClient } from "@/utils/fetchs/api";
 
 // Next
 import Link from "next/link";
 
-// Utils
-import { convertMaskPercent } from "@/utils/mask/formatPercent";
-
 // Tipagem
 import { TypeFilterProps } from "@/types/filters/selecting";
-import { TiWarning } from "react-icons/ti";
-import { AuthContext } from "@/providers/auth";
-import { setupApiClient } from "@/utils/fetchs/api";
+import { ItemsComissionData } from "@/types/comission";
+import { useRouter } from "next/navigation";
 interface RegisterRuleProps {
   commissionRegisteredSellersData: TypeFilterProps[];
   paymentMethodData: TypeFilterProps[];
   peopleData: TypeFilterProps[];
-  sellersData: TypeFilterProps[];
+  commissionRule?: ItemsComissionData;
 }
 
 export default function RegisterRule({
   commissionRegisteredSellersData,
   paymentMethodData,
   peopleData,
-  sellersData,
+  commissionRule,
 }: RegisterRuleProps) {
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [idPaymentMethod, setIdPaymentMethod] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [commissionPercentage, setCommissionPercentage] = useState("");
-  const [valuePerSale, setValuePerSale] = useState("");
-  const [saleValue, setSaleValue] = useState("");
-  const [idClient, setIdClient] = useState("");
-  const [client, setClient] = useState("");
+  const [id, setId] = useState(commissionRule ? commissionRule.seller.id : "");
+  const [name, setName] = useState(
+    commissionRule ? commissionRule.seller.name : ""
+  );
+  const [idPaymentMethod, setIdPaymentMethod] = useState(
+    commissionRule ? commissionRule.paymentMethodExternalId : ""
+  );
+  const [paymentMethod, setPaymentMethod] = useState(
+    commissionRule ? commissionRule.paymentMethod : ""
+  );
+  const [commissionPercentage, setCommissionPercentage] = useState(
+    commissionRule?.commissionPercentage
+      ? commissionRule.commissionPercentage
+      : ""
+  );
+  const [valuePerSale, setValuePerSale] = useState(
+    commissionRule ? commissionRule.valuePerSale : ""
+  );
+  const [saleValue, setSaleValue] = useState(
+    commissionRule ? commissionRule.saleValue : ""
+  );
+  const [idClient, setIdClient] = useState(
+    commissionRule ? commissionRule.clientExternalId : ""
+  );
+  const [client, setClient] = useState(
+    commissionRule ? commissionRule.client : ""
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const { token } = useContext(AuthContext);
 
   const api = setupApiClient(token);
-
+  const router = useRouter();
   const clientCode = peopleData.filter((people) =>
     client
       ? String(client).toLowerCase() === people.APELIDO_PSS?.toLocaleLowerCase()
@@ -77,51 +91,70 @@ export default function RegisterRule({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     setLoading(true);
 
     try {
-      console.log("ID: ", id);
-      // await api.post("/v1/commission-rules", {
-      //   paymentMethodExternalId: paymentCode[0].ID_FRM,
-      //   paymentMethod,
-      //   commissionPercentage,
-      //   valuePerSale,
-      //   saleValue,
-      //   client: client ? client : "",
-      //   clientExternalId: clientCode?.[0]?.ID_PSS ?? "",
-      //   seller_id: id,
-      // });
+      const payload = {
+        paymentMethodExternalId: paymentMethod ? paymentCode[0].ID_FRM : "",
+        paymentMethod: paymentMethod ? paymentCode[0].DESCRICAO_FRM : "",
+        commissionPercentage,
+        valuePerSale: valuePerSale ? valuePerSale : 0,
+        saleValue: saleValue ? saleValue : 0,
+        client: client ? client : "",
+        clientExternalId: clientCode?.[0]?.ID_PSS
+          ? clientCode?.[0]?.ID_PSS
+          : "",
+        sellerId: id,
+      };
+
+      if (commissionRule) {
+        await api.patch(`/v1/commission-rules/${commissionRule.id}`, payload);
+      } else {
+        await api.post("/v1/commission-rules", payload);
+      }
 
       addToast({
-        title: "Vendedor cadastrado com sucesso!",
-        description: "O vendedor foi registrado na regra de comissão.",
+        title: commissionRule ? "Comissão atualizada" : "Comissão cadastrada",
+        description: commissionRule
+          ? "Dados alterados com sucesso."
+          : "Regra de comissão criada com sucesso.",
         color: "success",
         icon: <FaCheck />,
       });
 
       setId("");
       setName("");
+      setIdPaymentMethod("");
+      setPaymentMethod("");
+      setCommissionPercentage("");
+      setValuePerSale("");
+      setSaleValue("");
+      setIdClient("");
+      setClient("");
+
+      router.push("/commision");
     } catch (err) {
-      console.log("Error: ", err);
+      console.error("Erro ao salvar regra de comissão:", err);
 
       addToast({
-        title: "Erro ao cadastrar regra",
+        title: "Erro ao salvar regra",
         description:
-          "Não foi possível registrar o regra. Verifique os dados e tente novamente.",
+          "Não foi possível salvar a regra de comissão. Verifique os dados e tente novamente.",
         color: "danger",
         icon: <TiWarning />,
       });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   return (
     <Container>
       <div className="p-4">
         <h2 className="text-2xl font-bold text-gray-900">
-          Cadastrar Regra de Comissão
+          {commissionRule
+            ? "Editar Regra de Comissão"
+            : "Cadastrar Regra de Comissão"}
         </h2>
         <p className="text-gray-600 mt-1">
           Configure as condições e taxas para cálculo de comissões
@@ -146,20 +179,24 @@ export default function RegisterRule({
             }}
           >
             {commissionRegisteredSellersData.map((seller) => (
-              <SelectItem key={seller.id}>{seller.name}</SelectItem>
+              <SelectItem key={String(seller.id)} textValue={name}>
+                {seller.name}
+              </SelectItem>
             ))}
           </Select>
-          <Select
+          <Autocomplete
             labelPlacement="outside"
+            suppressContentEditableWarning={false}
+            suppressHydrationWarning={false}
             className="w-full"
             label="Selecione Metodo de pagamento"
             placeholder="Selecione Metodo de pagamento"
-            isRequired
             startContent={<FaMoneyBill className="text-gray-400 text-ls" />}
             variant="bordered"
-            selectedKeys={new Set(idPaymentMethod ? [idPaymentMethod] : [])}
-            onSelectionChange={(keys: string | Set<React.Key>) => {
-              const id = Array.from(keys)[0] as string;
+            selectedKey={idPaymentMethod || null}
+            onSelectionChange={(key: React.Key | null) => {
+              if (key === null) setIdPaymentMethod("");
+              const id = String(key);
               const name = paymentMethodData.find(
                 (paymentMethod) => String(paymentMethod.ID_FRM) === id
               );
@@ -168,21 +205,20 @@ export default function RegisterRule({
               setPaymentMethod(name?.DESCRICAO_FRM ?? "");
             }}
           >
-            {paymentMethodData.map((paymentMethod) => (
-              <SelectItem key={paymentMethod.ID_FRM}>
-                {paymentMethod.DESCRICAO_FRM}
-              </SelectItem>
+            {paymentMethodData.map((payment) => (
+              <AutocompleteItem key={payment.ID_FRM} textValue={paymentMethod}>
+                {payment.DESCRICAO_FRM}
+              </AutocompleteItem>
             ))}
-          </Select>
-
+          </Autocomplete>
           <Input
             label="Porcentagem da Comissão"
             labelPlacement="outside"
             variant="bordered"
-            name="commissionPercentage"
             isRequired
+            name="commissionPercentage"
             placeholder="Ex: 1%"
-            value={commissionPercentage}
+            value={commissionPercentage.toString()}
             onChange={(e) => {
               setCommissionPercentage(e.target.value);
             }}
@@ -193,15 +229,13 @@ export default function RegisterRule({
               <AiOutlinePercentage className="text-gray-400 text-ls" />
             }
           />
-
           <Input
             label="Valor por venda"
             labelPlacement="outside"
             variant="bordered"
             name="valuePerSale"
-            isRequired
             placeholder="Ex: 1%"
-            value={valuePerSale}
+            value={valuePerSale.toString()}
             onChange={(e) => setValuePerSale(e.target.value)}
             classNames={{
               input: "",
@@ -210,15 +244,13 @@ export default function RegisterRule({
               <AiOutlinePercentage className="text-gray-400 text-ls" />
             }
           />
-
           <Input
             label="Valor de venda"
             labelPlacement="outside"
             variant="bordered"
             name="valuePerSale"
-            isRequired
             placeholder="Ex: 1%"
-            value={saleValue}
+            value={saleValue.toString()}
             onChange={(e) => setSaleValue(e.target.value)}
             classNames={{
               input: "",
@@ -227,9 +259,10 @@ export default function RegisterRule({
               <AiOutlinePercentage className="text-gray-400 text-ls" />
             }
           />
-
           <Autocomplete
             labelPlacement="outside"
+            suppressContentEditableWarning={false}
+            suppressHydrationWarning={false}
             className="w-full"
             label="Cliente"
             placeholder="Ex: clienteX"
@@ -237,7 +270,7 @@ export default function RegisterRule({
             variant="bordered"
             selectedKey={idClient || null}
             onSelectionChange={(key: React.Key | null) => {
-              if (key === null) return;
+              if (key === null) setIdClient("");
               const id = String(key);
               const person = peopleData.find((p) => String(p.ID_PSS) === id);
               setClient(person?.APELIDO_PSS ?? "");
@@ -245,7 +278,12 @@ export default function RegisterRule({
             }}
           >
             {peopleData.map((people) => (
-              <SelectItem key={people.ID_PSS}>{people.APELIDO_PSS}</SelectItem>
+              <AutocompleteItem
+                key={people.ID_PSS}
+                textValue={client.toString() ? client : "lista"}
+              >
+                {people.APELIDO_PSS}
+              </AutocompleteItem>
             ))}
           </Autocomplete>
         </div>
@@ -280,7 +318,7 @@ export default function RegisterRule({
               !loading && <FiSave className="text-gray-200 text-lg" />
             }
           >
-            Salvar Vendedor
+            {commissionRule ? "Editar regra" : "Salvar regra"}
           </Button>
           <Link href="/commision">
             <Button
