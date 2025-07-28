@@ -20,6 +20,7 @@ import { setupApiClient } from "@/utils/fetchs/api";
 
 // Next
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // React
 import { useContext, useState } from "react";
@@ -61,6 +62,7 @@ export default function RegisterSeller({
   const { token } = useContext(AuthContext);
 
   const api = setupApiClient(token);
+  const router = useRouter();
 
   const sellerCode = employeesData.filter(
     (employee) =>
@@ -78,10 +80,12 @@ export default function RegisterSeller({
           email,
           phone,
           cpf,
-          externalId: sellerCode[0].ID_PSS,
+          externalId: `${sellerCode[0].ID_PSS}`,
         };
 
-        await api.patch(`/v1/sellers/${id}`, payload);
+        await api.patch(`/v1/sellers/${commissionSalespeopleData.id}`, payload);
+
+        router.push("/sellers");
       } else {
         await api.post("/v1/sellers", {
           name: name,
