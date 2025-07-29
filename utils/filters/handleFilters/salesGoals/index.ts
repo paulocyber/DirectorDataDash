@@ -19,6 +19,7 @@ interface SalesGoalsProps {
   companys: string[];
   tables: string[];
   seller?: string;
+  role?: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setSelectTheCompany?: (value: string[]) => void;
   setSelectTables?: (value: string[]) => void;
@@ -100,6 +101,7 @@ export async function handleDateFilter({
 export async function handleCleanFilter({
   token,
   seller,
+  role,
   setSelectTables,
   setValueComission,
   setSelectTheCompany,
@@ -129,7 +131,7 @@ export async function handleCleanFilter({
     dateEnd: today,
     token,
     companys: ["1", "2", "3", "4"],
-    tables: ["1", "2", "3"],
+    tables: role === "lider de vendas" ? ["2"] : ["1", "2", "3"],
     sellers: seller,
     year,
     month,

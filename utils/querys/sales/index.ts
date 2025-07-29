@@ -59,7 +59,7 @@ export const SalesQueries = ({
   let topSales = `select  fnc.id_pss,  fnc.apelido_pss AS vendedor,  SUM(sdi.valor_liquido_sdi) AS valor_liquido,  SUM(ale.preco_custo_ale * sdi.qtde_sdi) AS valor_custo,  SUM(sdi.valor_liquido_sdi) - 
   SUM(ale.preco_custo_ale * sdi.qtde_sdi) AS valor_lucro FROM saidas_itens sdi INNER JOIN  produtos prd ON prd.id_prd = sdi.id_prd INNER JOIN  saidas sds ON sds.id_sds = sdi.id_sds INNER JOIN almoxarifados_estoque 
   ale ON ale.id_prd = sdi.id_prd AND ale.id_alm = sdi.id_alm INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc) INNER JOIN empresas emp ON emp.id_emp = sds.id_emp LEFT JOIN 
-  fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' WHERE  sds.status_sds = '2' AND EXISTS ( SELECT 1  FROM metas_vendas_itens mti  WHERE mti.ID_FNC = fnc.id_pss ) AND 
+  fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' WHERE  sds.status_sds = '2' and sdi.id_tbl IN (${formattedTables}) AND EXISTS ( SELECT 1  FROM metas_vendas_itens mti  WHERE mti.ID_FNC = fnc.id_pss ) AND 
   sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' AND sds.id_emp IN (${formattedCompanys}) AND sds.tipo_sds = '4' ${id && id.length > 0 ? `AND FNC.ID_PSS IN ('${id}')` : ""} 
   GROUP BY  fnc.id_pss, fnc.apelido_pss ORDER BY  valor_liquido DESC`;
 

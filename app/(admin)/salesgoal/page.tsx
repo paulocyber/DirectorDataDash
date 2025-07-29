@@ -36,6 +36,7 @@ export default async function SalesGoalPage() {
     role !== "rh" &&
     role !== "diretoria" &&
     role !== "financeiro" &&
+    role !== "lider de vendas" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {
     return redirect(redirectMap[role]);
@@ -46,7 +47,7 @@ export default async function SalesGoalPage() {
   const { year, month, today } = getCurrentDateDetails();
   const { sales, topSales, profitsFromSale } = SalesQueries({
     dateInit: `${year}/${month}/01`,
-    tables: ["1", "2"],
+    tables: role === "lider de vendas" ? ["2"] : ["1", "2"],
     dateEnd: today,
     companys: ["1", "2", "3", "4"],
     year,

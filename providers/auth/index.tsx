@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/sales");
       } else if (["Fiscal"].includes(role)) {
         router.push("/taxbilling");
-      } else if (["rh"].includes(role)) {
+      } else if (["rh", "lider de vendas"].includes(role)) {
         router.push("/salesgoal");
       } else if (["estoque"].includes(role)) {
         router.push("/salesbybrand");

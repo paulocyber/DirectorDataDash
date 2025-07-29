@@ -110,7 +110,7 @@ export function LayoutSalesGoals({
     end: parseDate(new Date(today).toISOString().split("T")[0]),
   });
 
-  const { token } = useContext(AuthContext);
+  const { token, role } = useContext(AuthContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const routerDrawerSettings = DrawerSettingsJson({
@@ -184,14 +184,16 @@ export function LayoutSalesGoals({
         <ToolBar
           title={`Metas de ${getMonthName(date.start.month)}`}
           dateRange={date}
-          handleFilters={customerBuyMore.length > 0 ? undefined : onOpen}
+          handleFilters={
+            customerBuyMore.length > 0 || role ? undefined : onOpen
+          }
           handleRefreshClick={() =>
             handleRefresh({
               id: customerBuyMore ? undefined : selectSellers,
               token,
               date,
               companys: selectTheCompany,
-              tables: selectTables,
+              tables: role === "lider de vendas" ? ["2"] : selectTables,
               seller: customerBuyMore ? selectSellers : undefined,
               setSalesProgress,
               setProfitSales:
@@ -207,7 +209,7 @@ export function LayoutSalesGoals({
               token,
               date: newDate,
               companys: selectTheCompany,
-              tables: selectTables,
+              tables: role === "lider de vendas" ? ["2"] : selectTables,
               seller: customerBuyMore ? selectSellers : undefined,
               setSalesProgress,
               setProfitSales:
@@ -225,6 +227,7 @@ export function LayoutSalesGoals({
               companys: selectTheCompany,
               tables: selectTables,
               seller: customerBuyMore ? selectSellers : undefined,
+              role,
               setSalesProgress,
               setTopSellers: topSellers.length > 0 ? setTopSellers : undefined,
               setSelectTables,
@@ -238,7 +241,7 @@ export function LayoutSalesGoals({
             })
           }
           handleExportToPdf={
-            customerBuyMore.length > 0 ? undefined : () => generatePdf()
+            customerBuyMore.length > 0 || role ? undefined : () => generatePdf()
           }
         />
         <div className="w-full flex-col px-4">
@@ -281,7 +284,7 @@ export function LayoutSalesGoals({
                   ),
                 label:
                   topSellers.length > 0
-                    ? `Tabela ${selectTables}`
+                    ? `Tabela ${role === "lider de vendas" ? 2 : selectTables}`
                     : `Comissão: ${formatCurrency(valueCommission ? valueCommission : 0)}`,
                 highlight: false,
               },

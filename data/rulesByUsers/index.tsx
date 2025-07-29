@@ -164,17 +164,29 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
     },
   ];
 
-  const filteredSellersSection = sellersSection.filter(
-    (item) =>
-      !(role.toLowerCase() === "financeiro" && (item.id === 4 || item.id === 5))
-  );
+  const filteredSellersSection = sellersSection.filter((item) => {
+    const roleLower = role.toLowerCase();
+    if (
+      (roleLower === "financeiro" && (item.id === 4 || item.id === 5)) ||
+      (roleLower === "lider de vendas" && [1, 2, 4, 5].includes(item.id))
+    ) {
+      return false;
+    }
+    return true;
+  });
 
   const settingsMenu: MenuSection[] = [
     {
       title: "Vendas",
       icon: <FaClipboardList className="w-5 h-5 text-gray-900" />,
       items: filteredSellersSection,
-      allowedRoles: ["diretoria", "financeiro", "tecnologia", "admin"],
+      allowedRoles: [
+        "diretoria",
+        "financeiro",
+        "tecnologia",
+        "admin",
+        "lider de vendas",
+      ],
     },
     {
       title: "Vendedores",
@@ -231,4 +243,5 @@ export const redirectMap: Record<string, string> = {
   financeiro: "/davs",
   tecnologia: "/davs",
   admin: "/davs",
+  "lider de vendas": "/salesgoal",
 };
