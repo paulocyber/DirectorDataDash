@@ -22,9 +22,11 @@ export type DavProductItemData = {
   CODIGO_PRD: string;
   ID_SDS: string;
   DESCRICAO_PRD: string;
+  PRECO_CUSTO_SDI: string;
   REFERENCIA_PRD: string;
   QTDE_SDI: string;
   VALOR_BRUTO_SDI: string;
+  PRECO_SDI: string;
   VALOR_DESCONTO_SDI: string;
   VALOR_ACRESCIMO_SDI: string;
   VALOR_LIQUIDO_SDI: string;
@@ -33,4 +35,4 @@ export type DavProductItemData = {
   DESCRICAO_ALM: string;
   ITEM_PROMOCAO_SDI: string;
   QTDE_DISPONIVEL_SDI: string;
-}
+};

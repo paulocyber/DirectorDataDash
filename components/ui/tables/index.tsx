@@ -59,7 +59,7 @@ export default function Table<T>({
   }
 
   return (
-    <main className="flex flex-col w-full pb-8">
+    <main className="flex flex-col w-full pb-4">
       <div className="relative px-4 lg:overflow-y-auto overflow-auto max-h-[520px] h-full">
         <TableUi
           id="content"
