@@ -1,3 +1,5 @@
+"use client";
+
 // Componentes
 import Container from "@/components/ui/container";
 import InfoCard from "@/components/ui/InfoCard";
@@ -19,6 +21,7 @@ import { formatCurrency } from "@/utils/mask/money";
 
 // Tipagem
 import { DavProductItemData, ItemsDavData } from "@/types/davs";
+import { Badge } from "@heroui/react";
 interface LayoutDetailDavProps {
   davDetailData: ItemsDavData[];
   productsData: DavProductItemData[];
@@ -53,6 +56,16 @@ export default function LayoutDetailDav({
     const precoCusto = Number(item.PRECO_CUSTO_SDI.replace(",", "."));
     return acc + (valorLiquido - qtde * precoCusto);
   }, 0);
+
+  const totalValorVenda = productsData.reduce((acc, item) => {
+    const valorLiquido = Number(item.VALOR_LIQUIDO_SDI.replace(",", "."));
+    return acc + valorLiquido;
+  }, 0);
+
+  const percentLucro =
+    totalValorVenda > 0
+      ? Number(((totalLucro / totalValorVenda) * 100).toFixed(2))
+      : 0;
 
   return (
     <>
@@ -142,11 +155,32 @@ export default function LayoutDetailDav({
               loading={false}
             />
           </section>
-          <div className="flex justify-end items-baseline pb-1">
-            <span className="font-semibold mr-2">Total lucro:</span>
-            <span className="font-extrabold text-emerald-600 mr-2">
-              {formatCurrency(totalLucro)}
+          <div className="flex justify-end items-center gap-4 py-2 mr-5 ">
+            <span className="text-sm font-semibold text-gray-700">
+              Total lucro:
             </span>
+            <div className="relative inline-flex items-center">
+              <Badge
+                content={`${percentLucro.toFixed(0)}%`}
+                color={
+                  percentLucro > 0
+                    ? "success"
+                    : percentLucro === 0
+                      ? "default"
+                      : "danger"
+                }
+                placement="top-right"
+                size="sm"
+                classNames={{
+                  badge:
+                    "rounded-full top-[-10%] text-white text-xs font-semibold shadow",
+                }}
+              >
+                <span className="text-xl font-extrabold text-emerald-600">
+                  {formatCurrency(totalLucro)}
+                </span>
+              </Badge>
+            </div>
           </div>
         </Container>
       </section>
