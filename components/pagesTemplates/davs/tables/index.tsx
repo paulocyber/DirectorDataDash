@@ -36,6 +36,7 @@ import { AuthContext } from "@/providers/auth";
 // Atom
 import { MethodsOfPayments } from "@/atom/filters/davs";
 import { refreshAtom } from "@/atom/isActivateRefresh";
+import { sellers } from "@/atom/filters/sellers";
 
 // tipagem
 import { parseDate } from "@internationalized/date";
@@ -60,6 +61,7 @@ export default function LayoutDavTable({
   const [loading, setLoading] = useState<boolean>(false);
   const [selectingMethodsPayment, setSelectingMethodsPayment] =
     useAtom(MethodsOfPayments);
+  const [selectSellers, setSelectSellers] = useAtom(sellers);
   const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom);
   const [date, setDate] = useState<RangeValue<DateValue>>({
     start: parseDate(new Date(today).toISOString().split("T")[0]),

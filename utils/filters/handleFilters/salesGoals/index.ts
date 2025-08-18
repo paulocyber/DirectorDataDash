@@ -132,7 +132,7 @@ export async function handleCleanFilter({
     token,
     companys: ["1", "2", "3", "4"],
     tables: role === "lider de vendas" ? ["2"] : ["1", "2", "3"],
-    sellers: seller,
+    sellers: [],
     year,
     month,
     setSalesProgress,

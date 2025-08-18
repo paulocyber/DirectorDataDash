@@ -12,6 +12,7 @@ import { companiesQueries } from "@/utils/querys/companies";
 import { CostCentersQueries } from "@/utils/querys/costCenters";
 import { PeopleQueries } from "@/utils/querys/peoples";
 import { suppliersQueries } from "@/utils/querys/suppliers";
+import { employeesQueries } from "@/utils/querys/employees";
 
 // Componentes
 import Layout from "@/components/ui/layout";
@@ -53,6 +54,7 @@ export default async function AdminRouter({
   const peoples = PeopleQueries();
   const companies = companiesQueries();
   const costCenters = CostCentersQueries();
+  const sellers = employeesQueries();
 
   const [
     paymentMethodData,
@@ -60,12 +62,14 @@ export default async function AdminRouter({
     costCentersResponse,
     peoplesResponse,
     suppliersResponse,
+    sellersResponse,
   ] = await Promise.all([
     api.post("/v1/find-db-query", { query: formOfPayments }),
     api.post("/v1/find-db-query", { query: companies }),
     api.post("/v1/find-db-query", { query: costCenters }),
     api.post("/v1/find-db-query", { query: peoples }),
     api.post("/v1/find-db-query", { query: suppliers }),
+    api.post("/v1/find-db-query", { query: sellers }),
   ]);
 
   return (
@@ -82,6 +86,7 @@ export default async function AdminRouter({
         costCentersData={costCentersResponse.data.returnObject.body}
         peoplesData={peoplesResponse.data.returnObject.body}
         suppliersData={suppliersResponse.data.returnObject.body}
+        sellersData={sellersResponse.data.returnObject.body}
       >
         {children}
       </Layout>

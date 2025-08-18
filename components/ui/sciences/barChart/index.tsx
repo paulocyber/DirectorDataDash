@@ -32,6 +32,9 @@ interface BarChartProps<T extends BarChartData> {
   dataKeyXAxis?: string;
   displayCartesianGrid?: boolean;
   palette: string[];
+  showDataKeyLabel?: boolean;
+  labelDataKey?: string;
+  labelOffset?: number;
 }
 
 export default function BarChart<T extends BarChartData>({
@@ -44,7 +47,19 @@ export default function BarChart<T extends BarChartData>({
   dataKeyXAxis,
   displayCartesianGrid,
   palette,
+  showDataKeyLabel = false,
+  labelDataKey,
+  labelOffset,
 }: BarChartProps<T>) {
+  const formatLabel = (label: React.ReactNode) => {
+    const value = typeof label === "number" ? label : Number(label) || 0;
+    const formattedValue = formatCurrency(value);
+    const maxLength = 15;
+    return formattedValue.length > maxLength
+      ? `${formattedValue.substring(0, maxLength)}...`
+      : formattedValue;
+  };
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChartComponents
@@ -80,20 +95,24 @@ export default function BarChart<T extends BarChartData>({
               fill={item.color || palette[index % palette.length]}
             />
           ))}
+
           {LabelListProps && (
             <LabelList
               position="top"
-              fill="#4b5563"
-              formatter={(label: React.ReactNode) => {
-                const value =
-                  typeof label === "number" ? label : Number(label) || 0;
-                const formattedValue = formatCurrency(value);
-                const maxLength = 15;
-                return formattedValue.length > maxLength
-                  ? `${formattedValue.substring(0, maxLength)}...`
-                  : formattedValue;
-              }}
+              fill="#1F2937"
+              formatter={formatLabel}
               className="font-bold text-[11px] lg:flex hidden"
+              offset={labelOffset}
+            />
+          )}
+
+          {showDataKeyLabel && (
+            <LabelList
+              dataKey={labelDataKey ?? dataKey}
+              position="top"
+              offset={labelOffset}
+              formatter={formatLabel}
+              className="font-bold text-gray-800 text-[11px] lg:flex hidden"
             />
           )}
         </Bar>

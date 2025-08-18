@@ -57,7 +57,7 @@ export default async function TableDavPage({
     api.post("/v1/find-db-query", { query: davFinished }),
     api.post("/v1/find-db-query", { query: paymentMethodQueries }),
   ]);
-
+  console.log("Query: ", davFinished);
   return (
     <LayoutDavTable
       davsData={davResponse.data.returnObject.body}

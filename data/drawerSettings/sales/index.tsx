@@ -4,6 +4,7 @@ import Filters from "@/components/ui/filters";
 
 // Dados
 import SectionsBillsToPay from "@/data/sectionsFilters/billsToPay";
+import SectionsDavs from "@/data/sectionsFilters/davs";
 
 // Dados
 import SectionsSales from "@/data/sectionsFilters/sales";
@@ -11,6 +12,7 @@ import SectionsSales from "@/data/sectionsFilters/sales";
 // tipagem
 import { DrawerSettingsItems } from "@/types/drawerSettings";
 import { TypeFilterProps } from "@/types/filters/selecting";
+
 interface DrawerSettingsProps {
   // Dados
   companiesData?: TypeFilterProps[];
@@ -18,9 +20,11 @@ interface DrawerSettingsProps {
   costCentersData?: TypeFilterProps[];
   peoplesData?: TypeFilterProps[];
   suppliersData?: TypeFilterProps[];
+  sellersData?: TypeFilterProps[];
   // Seleção de filtro
   selectingMethodsPayment?: string[];
   selectSuppliers?: string[];
+  selectSellers?: string[];
   selectTables?: string[];
   selectCostCenters?: string[];
   selectStatus?: string[];
@@ -33,6 +37,7 @@ interface DrawerSettingsProps {
   setSelectStatus?: (value: string[]) => void;
   setSelectPeoples?: (value: string[]) => void;
   setSelectSuppliers?: (value: string[]) => void;
+  setSelectSellers?: (value: string[]) => void;
 }
 
 export default function DrawerSettingsJson({
@@ -42,6 +47,7 @@ export default function DrawerSettingsJson({
   paymentMethodData = [],
   peoplesData = [],
   suppliersData = [],
+  sellersData = [],
   // Seleção de filtro
   selectingMethodsPayment = [],
   selectTables = [],
@@ -50,6 +56,7 @@ export default function DrawerSettingsJson({
   selectTheCompany = [],
   selectPeoples = [],
   selectSuppliers = [],
+  selectSellers = [],
   setSelectingMethodsPayment = () => {},
   setSelectCostCenters = () => {},
   setSelectTheCompany = () => {},
@@ -57,6 +64,7 @@ export default function DrawerSettingsJson({
   setSelectStatus = () => {},
   setSelectPeoples = () => {},
   setSelectSuppliers = () => {},
+  setSelectSellers = () => {},
 }: DrawerSettingsProps) {
   const sectionsSales = SectionsSales({
     companiesData,
@@ -74,19 +82,22 @@ export default function DrawerSettingsJson({
     setSelectStatus,
   });
 
+  const sectionsDavs = SectionsDavs({
+    paymentMethodData,
+    sellersData,
+    selectingMethodsPayment,
+    selectSellers,
+    setSelectingMethodsPayment,
+    setSelectSellers,
+  });
+
   const drawerSettingsMap: Record<string, DrawerSettingsItems> = {
     "/davs/table": {
-      Component: Filters,
-      props: {
-        title: "Formas de Pagamentos",
-        data: paymentMethodData,
-        idKey: "ID_FRM",
-        labelKey: "DESCRICAO_FRM",
-        valueKey: "DESCRICAO_FRM",
-        value: selectingMethodsPayment,
-        setValue: setSelectingMethodsPayment,
+      Component: Accordion,
+      props: { sections: sectionsDavs },
+      clear: () => {
+        setSelectingMethodsPayment([]);
       },
-      clear: () => setSelectingMethodsPayment([]),
     },
     "/salesgoal": {
       Component: Accordion,

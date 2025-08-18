@@ -187,9 +187,9 @@ export default function LayoutBillsToPay({
                   dataKey="value"
                   palette={vibrantPalette}
                   displayToolTip={true}
-                  // ToolTipComponent={(props) => (
-                  //   <Tooltip {...props} dataKey="groupedDescription" />
-                  // )}
+                  ToolTipComponent={(props) => (
+                    <Tooltip {...props} dataKey="groupedDescription" />
+                  )}
                 />
               </GraphicContainer>
             </Container>

@@ -26,6 +26,7 @@ import { costCenters } from "@/atom/filters/constCenters";
 import { statusAtom } from "@/atom/filters/status";
 import { Peoples } from "@/atom/filters/peoples";
 import { suppliers } from "@/atom/filters/suppliers";
+import { sellers } from "@/atom/filters/sellers";
 
 // Tipagem
 import { TypeFilterProps } from "@/types/filters/selecting";
@@ -37,6 +38,7 @@ interface LayoutProps {
   costCentersData?: TypeFilterProps[];
   peoplesData?: TypeFilterProps[];
   suppliersData?: TypeFilterProps[];
+  sellersData?: TypeFilterProps[];
 }
 
 export default function Layout({
@@ -47,6 +49,7 @@ export default function Layout({
   costCentersData,
   peoplesData,
   suppliersData,
+  sellersData,
 }: LayoutProps) {
   const [isOpen, setIsopen] = useState<boolean>(false);
   const [selectingMethodsPayment, setSelectingMethodsPayment] =
@@ -57,6 +60,7 @@ export default function Layout({
   const [selectTables, setSelectTables] = useAtom(Tables);
   const [selectPeoples, setSelectPeoples] = useAtom(Peoples);
   const [selectSuppliers, setSelectSuppliers] = useAtom(suppliers);
+  const [selectSellers, setSelectSellers] = useAtom(sellers);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const router = usePathname();
@@ -88,6 +92,7 @@ export default function Layout({
     paymentMethodData,
     peoplesData,
     suppliersData,
+    sellersData,
     // Filtro de seleção
     selectingMethodsPayment,
     selectTables,
@@ -96,6 +101,7 @@ export default function Layout({
     selectTheCompany,
     selectPeoples,
     selectSuppliers,
+    selectSellers,
     setSelectingMethodsPayment,
     setSelectStatus,
     setSelectCostCenters,
@@ -103,6 +109,7 @@ export default function Layout({
     setSelectTables,
     setSelectPeoples,
     setSelectSuppliers,
+    setSelectSellers,
   });
 
   const drawerConfig = drawerSettings[router];

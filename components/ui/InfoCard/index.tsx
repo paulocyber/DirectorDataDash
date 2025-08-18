@@ -43,7 +43,7 @@ export default function InfoCard({ data }: { data: Info[] }) {
   return (
     <div className="w-full mx-auto">
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 ${data.length > 3 ? "2xl:grid-cols-4" : "2xl:grid-cols-3"} gap-6`}
+        className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 ${data.length >= 3 ? "2xl:grid-cols-4" : data.length === 2 ? "2xl:grid-cols-2" : "2xl:grid-cols-3"} gap-6`}
       >
         {data.map((info, idx) => (
           <div

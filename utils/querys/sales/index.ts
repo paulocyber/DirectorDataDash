@@ -38,7 +38,8 @@ export const SalesQueries = ({
        })`
       : "";
 
-  let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS VALOR_LIQUIDO , sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_custo,
+  let sales = `select fnc.apelido_pss AS vendedor, SUM(sdi.valor_liquido_sdi) AS 
+  VALOR_LIQUIDO , sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_custo,
   SUM(sdi.valor_liquido_sdi) - sum(ale.preco_custo_ale * sdi.qtde_sdi) as valor_lucro
       FROM saidas_itens sdi 
       INNER JOIN produtos prd ON prd.id_prd = sdi.id_prd 
@@ -47,10 +48,12 @@ export const SalesQueries = ({
       INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, sds.id_fnc)  
       INNER JOIN empresas emp ON emp.id_emp = sds.id_emp 
       LEFT JOIN fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' 
-      WHERE sds.status_sds = '2'  
-      AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' 
+      WHERE
+      sds.tipo_sds IN ('4', '5', '9')
+      AND sds.status_sds IN ('2') 
+      AND sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND 
+      '${dateEnd} 23:59:59' 
       AND sds.id_emp IN (${formattedCompanys}) 
-      AND sds.tipo_sds = '4'  
       AND sdi.id_tbl IN (${formattedTables}) 
       ${formattedSellers} 
       GROUP BY fnc.apelido_pss`;

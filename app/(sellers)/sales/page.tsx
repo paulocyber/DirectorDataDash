@@ -72,6 +72,7 @@ export default async function SellerPage() {
     commissionPerSellerResponse.data.returnObject.body,
     (item: any) => item.COMISSAO
   );
+
   const salesProgression = [
     {
       name: "Vendas",
@@ -91,6 +92,7 @@ export default async function SellerPage() {
           : 0,
     },
   ];
+
   const customerBuyMore = convertFieldsToNumber<ItemsCustomerBuyMore>(
     topClientsPlusBuyResponse.data.returnObject.body,
     ["VALOR_LIQUIDO"]
