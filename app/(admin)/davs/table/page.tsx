@@ -14,6 +14,9 @@ import { setupApiClient } from "@/utils/fetchs/api";
 import getCurrentDateDetails from "@/utils/getDate";
 import { davsQueries } from "@/utils/querys/dav";
 import { formOfPaymentsQueries } from "@/utils/querys/paymentMethod";
+import { PeopleQueries } from "@/utils/querys/peoples";
+import { companiesQueries } from "@/utils/querys/companies";
+import { employeesQueries } from "@/utils/querys/employees";
 
 export const metadata: Metadata = {
   title: "Relatório das Dav's",
@@ -52,18 +55,33 @@ export default async function TableDavPage({
     formsOfPayments: paymentMethod,
   });
   const paymentMethodQueries = formOfPaymentsQueries();
+  const peoples = PeopleQueries();
+  const companies = companiesQueries();
+  const sellers = employeesQueries();
 
-  const [davResponse, paymentMethodResponse] = await Promise.all([
+  const [
+    davResponse,
+    paymentMethodResponse,
+    peoplesResponse,
+    companiesResponse,
+    sellersResponse,
+  ] = await Promise.all([
     api.post("/v1/find-db-query", { query: davFinished }),
     api.post("/v1/find-db-query", { query: paymentMethodQueries }),
+    api.post("/v1/find-db-query", { query: peoples }),
+    api.post("/v1/find-db-query", { query: companies }),
+    api.post("/v1/find-db-query", { query: sellers }),
   ]);
 
   return (
     <LayoutDavTable
       davsData={davResponse.data.returnObject.body}
+      today={today}
       serachParams={paymentMethod}
       paymentMethodData={paymentMethodResponse.data.returnObject.body}
-      today={today}
+      companiesData={companiesResponse.data.returnObject.body}
+      peoplesData={peoplesResponse.data.returnObject.body}
+      sellersData={sellersResponse.data.returnObject.body}
     />
   );
 }

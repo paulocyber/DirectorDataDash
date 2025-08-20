@@ -83,12 +83,20 @@ export default function DrawerSettingsJson({
   });
 
   const sectionsDavs = SectionsDavs({
+    //  Dados
     paymentMethodData,
     sellersData,
+    peoplesData,
+    companiesData,
+    // Seleção hook
     selectingMethodsPayment,
     selectSellers,
+    selectTheCompany,
+    selectPeoples,
     setSelectingMethodsPayment,
+    setSelectTheCompany,
     setSelectSellers,
+    setSelectPeoples,
   });
 
   const drawerSettingsMap: Record<string, DrawerSettingsItems> = {

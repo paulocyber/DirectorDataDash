@@ -10,6 +10,9 @@ import { ItemsSalesPerMonth } from "@/types/sales";
 interface DavsProps {
   date?: RangeValue<DateValue> | null;
   formsOfPayments?: string[];
+  idSellers?: string[];
+  selectTheCompany?: string[];
+  selectPeoples?: string[];
   token: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setDavs: (value: ItemsDavData[]) => void;
@@ -17,6 +20,9 @@ interface DavsProps {
     data: { FORMA_PGMT: string; value: number }[]
   ) => void;
   setSalesPerMonth?: (value: ItemsSalesPerMonth[]) => void;
+  setIdSellers?: (value: string[]) => void;
+  setSelectTheCompany?: (value: string[]) => void;
+  setSelectPeoples?: (value: string[]) => void;
   setLoading: (value: boolean) => void;
 }
 
@@ -24,6 +30,9 @@ export async function handleRefresh({
   date,
   token,
   formsOfPayments,
+  idSellers,
+  selectTheCompany,
+  selectPeoples,
   setDavs,
   setSalesByPaymentMethod,
   setSalesPerMonth,
@@ -36,6 +45,9 @@ export async function handleRefresh({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
     formsOfPayments,
+    idSellers,
+    companys: selectTheCompany,
+    peoples: selectPeoples,
     setDavs,
     setSalesByPaymentMethod,
     setSalesPerMonth,
@@ -47,6 +59,9 @@ export async function handleDateFilter({
   date,
   token,
   formsOfPayments,
+  idSellers,
+  selectTheCompany,
+  selectPeoples,
   setDate,
   setDavs,
   setSalesByPaymentMethod,
@@ -62,6 +77,9 @@ export async function handleDateFilter({
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
     token,
     formsOfPayments,
+    idSellers,
+    companys: selectTheCompany,
+    peoples: selectPeoples,
     setDavs,
     setSalesByPaymentMethod,
     setSalesPerMonth,
@@ -75,12 +93,19 @@ export async function handleCleanFilter({
   setDavs,
   setSalesByPaymentMethod,
   setSalesPerMonth,
+  setIdSellers,
+  setSelectTheCompany,
+  setSelectPeoples,
   setLoading,
 }: DavsProps) {
-  if (!setDate) return;
+  if (!setDate || !setIdSellers || !setSelectTheCompany || !setSelectPeoples)
+    return;
 
   const { today } = getCurrentDateDetails();
 
+  setIdSellers([]);
+  setSelectTheCompany([]);
+  setSelectPeoples([]);
   setDate({
     start: parseDate(new Date(today).toISOString().split("T")[0]),
     end: parseDate(new Date(today).toISOString().split("T")[0]),

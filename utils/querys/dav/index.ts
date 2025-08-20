@@ -3,10 +3,12 @@ import { QueryProps } from "@/types/query";
 
 export const davsQueries = ({
   id,
+  companys,
   dateInit,
   dateEnd,
   formsOfPayments,
   idSellers,
+  peoples,
 }: QueryProps) => {
   const formsOfPaymentsFilter =
     formsOfPayments && formsOfPayments?.length > 0
@@ -16,6 +18,16 @@ export const davsQueries = ({
   const idSellersFilter =
     idSellers && idSellers.length > 0
       ? idSellers.map((seller) => `'${seller}'`).join(", ")
+      : "";
+
+  const idCompaniesFilter =
+    companys && companys.length > 0
+      ? companys.map((company) => `'${company}'`).join(", ")
+      : "";
+
+  const idPeoplesFilter =
+    peoples && peoples.length > 0
+      ? peoples.map((people) => `'${people}'`).join(", ")
       : "";
 
   let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS
@@ -34,8 +46,25 @@ export const davsQueries = ({
     formsOfPayments && formsOfPayments?.length > 0
       ? `and frm.descricao_frm in (${formsOfPaymentsFilter})`
       : ""
-  } GROUP BY sds.id_sds,emp.sigla_emp,sds.datahora_sds,sds.datahora_finalizacao_sds,
-  pss.apelido_pss, pss.nome_pss,fnc.apelido_pss,sds.id_alm,alm.descricao_alm,sds.tipo_venda_sds,sds.status_sds ORDER BY sds.datahora_sds,sds.id_sds`;
+  } ${
+    idSellersFilter && idSellersFilter.length > 0
+      ? ` and fnc.id_pss in (${idSellersFilter})`
+      : ""
+  }
+  ${
+    idCompaniesFilter && idCompaniesFilter.length > 0
+      ? `and emp.id_emp in 
+    (${idCompaniesFilter})`
+      : ""
+  } ${
+    idPeoplesFilter && idPeoplesFilter.length > 0
+      ? `and pss.ID_PSS in (${idPeoplesFilter})`
+      : ""
+  }
+  GROUP BY sds.id_sds,emp.sigla_emp,emp.id_emp,pss.apelido_pss,fnc.id_fnc,sds.datahora_sds,
+  sds.datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss,fnc.apelido_pss,
+  sds.id_alm,alm.descricao_alm, sds.tipo_venda_sds,sds.status_sds ORDER BY 
+  sds.datahora_sds,sds.id_sds`;
 
   let topVendorsByPaymentType = `select  fnc.apelido_pss AS vendedor, COUNT(sds.id_sds) AS total_vendas, SUM(sds.valor_liquido_sds) AS valor_total_vendas FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss 
   INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON frm.id_frm = ftr.id_frm 
@@ -60,8 +89,12 @@ export const davsQueries = ({
   (4, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 13, 12) and sds.id_sds = ${id} order by sds.datahora_sds,
   sds.id_sds`;
 
-  let obtainProductsContainedInDav = `select iif(prv.referencia_prv is null, prd.codigo_prd, prv.codigo_prv) as codigo_prd, sdi.id_sds, prd.descricao_prd, prd.referencia_prd, sdi.qtde_sdi,  sdi.valor_bruto_sdi, sdi.valor_desconto_sdi, 
-  sdi.valor_acrescimo_sdi, sdi.valor_liquido_sdi, sdi.PRECO_SDI, sdi.perc_desconto_sdi, sdi.status_sdi, alm.descricao_alm, sdi.item_promocao_sdi, sdi.qtde_disponivel_sdi, sdi.PRECO_CUSTO_SDI from saidas_itens sdi inner join produtos prd on 
+  let obtainProductsContainedInDav = `select iif(prv.referencia_prv is null, 
+  prd.codigo_prd, prv.codigo_prv) as codigo_prd, sdi.id_sds, prd.descricao_prd, 
+  prd.referencia_prd, sdi.qtde_sdi,  sdi.valor_bruto_sdi, sdi.valor_desconto_sdi, 
+  sdi.valor_acrescimo_sdi, sdi.valor_liquido_sdi, sdi.PRECO_SDI, sdi.perc_desconto_sdi,
+  sdi.status_sdi, alm.descricao_alm, sdi.item_promocao_sdi, sdi.qtde_disponivel_sdi, 
+  sdi.PRECO_CUSTO_SDI from saidas_itens sdi inner join produtos prd on 
   prd.id_prd = sdi.id_prd inner join empresas emp on emp.id_emp = sdi.id_emp inner join almoxarifados alm on alm.id_alm = sdi.id_alm left join v_funcionarios fnc on fnc.id_pss = sdi.id_pss left join cores crs on 
   crs.id_crs = prd.id_crs left join produtos_variacoes prv on (prv.id_prd = sdi.id_prd and prv.codigo_prv = sdi.codigo_prv and prv.id_prv = sdi.id_prv and sdi.id_gri = prv.id_gri) left join ambientes amb on 
   amb.id_amb = sdi.id_amb left join tabelas_precos tbp on tbp.id_tbp = sdi.id_tbp left join tipos_separacao tsp on tsp.id_tsp = sdi.id_tsp where sdi.id_sds = ${id} and prd.tipo_prd in('R', 'S', 'P') 

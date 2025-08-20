@@ -15,6 +15,9 @@ interface FetchDavsProps {
   dateInit: string;
   dateEnd: string;
   formsOfPayments?: string[];
+  idSellers?: string[];
+  companys?: string[];
+  peoples?: string[];
   setDavs: (value: ItemsDavData[]) => void;
   setSalesByPaymentMethod?: (
     data: { FORMA_PGMT: string; value: number }[]
@@ -27,6 +30,9 @@ export async function fetchDavs({
   token,
   dateInit,
   dateEnd,
+  idSellers,
+  companys,
+  peoples,
   formsOfPayments,
   setDavs,
   setSalesByPaymentMethod,
@@ -41,6 +47,9 @@ export async function fetchDavs({
     dateInit,
     dateEnd,
     formsOfPayments,
+    idSellers,
+    companys,
+    peoples,
   });
 
   const { salesPerMonth } = SalesQueries({

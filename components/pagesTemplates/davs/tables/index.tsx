@@ -37,15 +37,20 @@ import { AuthContext } from "@/providers/auth";
 import { MethodsOfPayments } from "@/atom/filters/davs";
 import { refreshAtom } from "@/atom/isActivateRefresh";
 import { sellers } from "@/atom/filters/sellers";
+import { Companies } from "@/atom/filters/company";
 
 // tipagem
 import { parseDate } from "@internationalized/date";
 import { ItemsDavData } from "@/types/davs";
 import DrawerSettingsJson from "@/data/drawerSettings/sales";
 import { TypeFilterProps } from "@/types/filters/selecting";
+import { Peoples } from "@/atom/filters/peoples";
 interface LayoutDavTableProps {
   davsData: ItemsDavData[];
   paymentMethodData: TypeFilterProps[];
+  companiesData?: TypeFilterProps[];
+  peoplesData?: TypeFilterProps[];
+  sellersData?: TypeFilterProps[];
   serachParams?: string[];
   today: string;
 }
@@ -54,6 +59,9 @@ export default function LayoutDavTable({
   davsData,
   serachParams,
   paymentMethodData,
+  companiesData,
+  peoplesData,
+  sellersData,
   today,
 }: LayoutDavTableProps) {
   const [open, setOpen] = useState<boolean>(false);
@@ -62,6 +70,8 @@ export default function LayoutDavTable({
   const [selectingMethodsPayment, setSelectingMethodsPayment] =
     useAtom(MethodsOfPayments);
   const [selectSellers, setSelectSellers] = useAtom(sellers);
+  const [selectTheCompany, setSelectTheCompany] = useAtom(Companies);
+  const [selectPeoples, setSelectPeoples] = useAtom(Peoples);
   const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom);
   const [date, setDate] = useState<RangeValue<DateValue>>({
     start: parseDate(new Date(today).toISOString().split("T")[0]),
@@ -72,8 +82,17 @@ export default function LayoutDavTable({
   const loader = useTopLoader();
   const routerDrawerSettings = DrawerSettingsJson({
     paymentMethodData,
+    sellersData,
+    companiesData,
+    peoplesData,
     selectingMethodsPayment,
+    selectSellers,
+    selectTheCompany,
+    selectPeoples,
     setSelectingMethodsPayment,
+    setSelectTheCompany,
+    setSelectPeoples,
+    setSelectSellers,
   });
   const currentPath = usePathname();
   const currentDrawerSettings = routerDrawerSettings[currentPath];
@@ -86,6 +105,9 @@ export default function LayoutDavTable({
         date,
         token,
         formsOfPayments: selectingMethodsPayment,
+        idSellers: selectSellers,
+        selectPeoples,
+        selectTheCompany,
         setDavs,
         setLoading,
       });
@@ -117,6 +139,8 @@ export default function LayoutDavTable({
                 date,
                 token,
                 formsOfPayments: selectingMethodsPayment,
+                idSellers: selectSellers,
+                selectPeoples,
                 setDavs,
                 setLoading,
               })
@@ -125,6 +149,8 @@ export default function LayoutDavTable({
               handleDateFilter({
                 token,
                 formsOfPayments: selectingMethodsPayment,
+                idSellers: selectSellers,
+                selectPeoples,
                 date: newDate,
                 setDate,
                 setDavs,
@@ -138,6 +164,9 @@ export default function LayoutDavTable({
                 setDate,
                 setDavs,
                 setLoading,
+                setSelectTheCompany,
+                setSelectPeoples,
+                setIdSellers: setSelectSellers,
               })
             }
             handleFilters={onOpen}
