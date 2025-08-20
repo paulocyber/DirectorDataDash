@@ -21,6 +21,7 @@ export default async function RegisterPage() {
   if (
     role !== "admin" &&
     role !== "diretoria" &&
+    role !== "rh" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {
     return redirect(redirectMap[role]);

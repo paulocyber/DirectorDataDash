@@ -27,6 +27,7 @@ export default async function EditComissionPage({
   if (
     role !== "admin" &&
     role !== "diretoria" &&
+    role !== "rh" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {
     return redirect(redirectMap[role]);

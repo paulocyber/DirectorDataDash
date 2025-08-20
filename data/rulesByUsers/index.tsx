@@ -169,6 +169,27 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       icon: <AiFillDashboard className="w-5 h-5" />,
       color: "from-blue-600 to-blue-800",
     },
+    {
+      id: 4,
+      href: "/commision/relatory",
+      label: "Relatório de comissão",
+      icon: <AiFillDashboard className="w-5 h-5" />,
+      color: "from-blue-600 to-blue-800",
+    },
+    {
+      id: 5,
+      href: "/commision",
+      label: "Regras de comissão",
+      icon: <FaTable className="w-5 h-5" />,
+      color: "from-orange-400 to-orange-600",
+    },
+    {
+      id: 6,
+      href: "/sellers",
+      label: "Lista de vendedores",
+      icon: <FaTable className="w-5 h-5" />,
+      color: "from-orange-400 to-orange-600",
+    },
   ];
 
   const filteredSellersSection = sellersSection.filter((item) => {

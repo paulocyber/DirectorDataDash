@@ -22,7 +22,7 @@ export default async function CommitteeReport() {
     role !== "admin" &&
     role !== "diretoria" &&
     role !== "financeiro" &&
-    role !== "Fiscal" &&
+    role !== "rh" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {
     return redirect(redirectMap[role]);
