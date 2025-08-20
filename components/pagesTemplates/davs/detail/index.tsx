@@ -109,10 +109,8 @@ export default function LayoutDetailDav({
                           )}
                         />
                         <InfoField
-                          label="Troca"
-                          value={formatCurrency(
-                            Number(item.VALOR_TROCA_SDS.replace(",", "."))
-                          )}
+                          label="Forma de pagamento"
+                          value={item.FORMAPAGAMENTO}
                         />
                         <InfoField
                           label="Saída"

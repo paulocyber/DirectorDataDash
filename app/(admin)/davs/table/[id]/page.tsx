@@ -1,6 +1,7 @@
 // Next
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 // Utils
 import { setupApiClient } from "@/utils/fetchs/api";
@@ -9,8 +10,9 @@ import { davsQueries } from "@/utils/querys/dav";
 // Componentes
 import DataNotFound from "@/components/ui/dataNotFound";
 import LayoutDetailDav from "@/components/pagesTemplates/davs/detail";
+
+// Data
 import { redirectMap } from "@/data/rulesByUsers";
-import { redirect } from "next/navigation";
 
 // MetasDados
 export const metadata: Metadata = {
