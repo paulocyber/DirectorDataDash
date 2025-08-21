@@ -49,7 +49,7 @@ export default async function TableDavPage({
   const api = setupApiClient(token);
 
   const { today } = getCurrentDateDetails();
-  const { davFinished } = davsQueries({
+  const { davFinished, obtainProductsContainedInDav } = davsQueries({
     dateInit: today,
     dateEnd: today,
     formsOfPayments: paymentMethod,
@@ -72,7 +72,7 @@ export default async function TableDavPage({
     api.post("/v1/find-db-query", { query: companies }),
     api.post("/v1/find-db-query", { query: sellers }),
   ]);
-
+  console.log("Query: ", obtainProductsContainedInDav);
   return (
     <LayoutDavTable
       davsData={davResponse.data.returnObject.body}
