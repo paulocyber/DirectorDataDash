@@ -16,6 +16,7 @@ interface DavsProps {
   token: string;
   setDate?: (value: RangeValue<DateValue>) => void;
   setDavs: (value: ItemsDavData[]) => void;
+  setProfit?: (value: string) => void;
   setSalesByPaymentMethod?: (
     data: { FORMA_PGMT: string; value: number }[]
   ) => void;
@@ -35,6 +36,7 @@ export async function handleRefresh({
   selectPeoples,
   setDavs,
   setSalesByPaymentMethod,
+  setProfit,
   setSalesPerMonth,
   setLoading,
 }: DavsProps) {
@@ -49,6 +51,7 @@ export async function handleRefresh({
     companys: selectTheCompany,
     peoples: selectPeoples,
     setDavs,
+    setProfit,
     setSalesByPaymentMethod,
     setSalesPerMonth,
     setLoading,
@@ -64,6 +67,7 @@ export async function handleDateFilter({
   selectPeoples,
   setDate,
   setDavs,
+  setProfit,
   setSalesByPaymentMethod,
   setSalesPerMonth,
   setLoading,
@@ -83,6 +87,7 @@ export async function handleDateFilter({
     setDavs,
     setSalesByPaymentMethod,
     setSalesPerMonth,
+    setProfit,
     setLoading,
   });
 }
@@ -94,6 +99,7 @@ export async function handleCleanFilter({
   setSalesByPaymentMethod,
   setSalesPerMonth,
   setIdSellers,
+  setProfit,
   setSelectTheCompany,
   setSelectPeoples,
   setLoading,
@@ -117,6 +123,7 @@ export async function handleCleanFilter({
     token,
     setDavs,
     setSalesByPaymentMethod,
+    setProfit,
     setSalesPerMonth,
     setLoading,
   });

@@ -49,7 +49,7 @@ export default async function TableDavPage({
   const api = setupApiClient(token);
 
   const { today } = getCurrentDateDetails();
-  const { davFinished, obtainProductsContainedInDav } = davsQueries({
+  const { davFinished, profitOnSales } = davsQueries({
     dateInit: today,
     dateEnd: today,
     formsOfPayments: paymentMethod,
@@ -65,14 +65,16 @@ export default async function TableDavPage({
     peoplesResponse,
     companiesResponse,
     sellersResponse,
+    profitOnSalesResponse,
   ] = await Promise.all([
     api.post("/v1/find-db-query", { query: davFinished }),
     api.post("/v1/find-db-query", { query: paymentMethodQueries }),
     api.post("/v1/find-db-query", { query: peoples }),
     api.post("/v1/find-db-query", { query: companies }),
     api.post("/v1/find-db-query", { query: sellers }),
+    api.post("/v1/find-db-query", { query: profitOnSales }),
   ]);
-  console.log("Query: ", obtainProductsContainedInDav);
+
   return (
     <LayoutDavTable
       davsData={davResponse.data.returnObject.body}
@@ -82,6 +84,9 @@ export default async function TableDavPage({
       companiesData={companiesResponse.data.returnObject.body}
       peoplesData={peoplesResponse.data.returnObject.body}
       sellersData={sellersResponse.data.returnObject.body}
+      profitData={
+        profitOnSalesResponse.data.returnObject.body[0].VALOR_LUCRO_TOTAL
+      }
     />
   );
 }

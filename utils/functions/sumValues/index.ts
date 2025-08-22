@@ -2,13 +2,14 @@ export const sumValuesByKey = <T>(
   data: T[],
   getValue: (item: T) => string | undefined
 ): number => {
-  return data.reduce((total: number, item: T) => {
+  const total = data.reduce((acc: number, item: T) => {
     const value = getValue(item);
-
-    // Verifica se o valor é válido antes de chamar .replace()
-    if (!value) return total;
+    if (!value) return acc;
 
     const numericValue = parseFloat(value.replace(",", "."));
-    return total + (isNaN(numericValue) ? 0 : numericValue);
+    return acc + (isNaN(numericValue) ? 0 : numericValue);
   }, 0);
+
+  // Arredonda para 2 casas decimais e retorna como número
+  return parseFloat(total.toFixed(2));
 };

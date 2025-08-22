@@ -66,6 +66,18 @@ export const davsQueries = ({
   sds.id_alm,alm.descricao_alm, sds.tipo_venda_sds,sds.status_sds ORDER BY 
   sds.datahora_sds,sds.id_sds`;
 
+  let profitOnSales = `select SUM(sdi.valor_liquido_sdi) - SUM(ale.preco_custo_ale * 
+  sdi.qtde_sdi) AS valor_lucro_total FROM saidas_itens sdi INNER JOIN produtos prd ON 
+  prd.id_prd = sdi.id_prd INNER JOIN saidas sds ON sds.id_sds = sdi.id_sds INNER JOIN 
+  almoxarifados_estoque ale ON ale.id_prd = sdi.id_prd AND ale.id_alm = sdi.id_alm 
+  INNER JOIN v_funcionarios_consulta fnc ON fnc.id_pss = COALESCE(sdi.id_pss, 
+  sds.id_fnc) INNER JOIN empresas emp ON emp.id_emp = sds.id_emp LEFT JOIN 
+  fornecedores_produtos frp ON frp.id_prd = prd.id_prd AND frp.nivel_frp = 'P' 
+  WHERE sds.status_sds = '2' AND sdi.id_tbl IN ('1', '2') AND EXISTS ( SELECT 1 
+  FROM metas_vendas_itens mti WHERE mti.ID_FNC = fnc.id_pss) AND 
+  sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' 
+  AND sds.id_emp IN ('1', '2', '3', '4') AND sds.tipo_sds = '4'`;
+
   let topVendorsByPaymentType = `select  fnc.apelido_pss AS vendedor, COUNT(sds.id_sds) AS total_vendas, SUM(sds.valor_liquido_sds) AS valor_total_vendas FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss 
   INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON frm.id_frm = ftr.id_frm 
   WHERE  sds.tipo_sds = '4' AND sds.id_emp IN (1, 2, 3, 4, 5, 100) AND sds.datahora_finalizacao_sds BETWEEN TIMESTAMP '${dateInit} 00:00:00' AND TIMESTAMP '${dateEnd} 23:59:59' AND frm.descricao_frm IN ('PIX/TED', 
@@ -102,6 +114,7 @@ export const davsQueries = ({
 
   return {
     davFinished,
+    profitOnSales,
     davFinalizationDetail,
     obtainProductsContainedInDav,
     topVendorsByPaymentType,

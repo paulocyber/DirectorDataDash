@@ -47,6 +47,7 @@ import { TypeFilterProps } from "@/types/filters/selecting";
 import { Peoples } from "@/atom/filters/peoples";
 interface LayoutDavTableProps {
   davsData: ItemsDavData[];
+  profitData: string;
   paymentMethodData: TypeFilterProps[];
   companiesData?: TypeFilterProps[];
   peoplesData?: TypeFilterProps[];
@@ -57,6 +58,7 @@ interface LayoutDavTableProps {
 
 export default function LayoutDavTable({
   davsData,
+  profitData,
   serachParams,
   paymentMethodData,
   companiesData,
@@ -66,6 +68,7 @@ export default function LayoutDavTable({
 }: LayoutDavTableProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [davs, setDavs] = useState(davsData);
+  const [profit, setProfit] = useState(profitData);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectingMethodsPayment, setSelectingMethodsPayment] =
     useAtom(MethodsOfPayments);
@@ -78,7 +81,7 @@ export default function LayoutDavTable({
     end: parseDate(new Date(today).toISOString().split("T")[0]),
   });
 
-  const infoCard = DavInfoCard({ davs });
+  const infoCard = DavInfoCard({ davs, profit });
   const loader = useTopLoader();
   const routerDrawerSettings = DrawerSettingsJson({
     paymentMethodData,
@@ -109,6 +112,7 @@ export default function LayoutDavTable({
         selectPeoples,
         selectTheCompany,
         setDavs,
+        setProfit,
         setLoading,
       });
       setActiveRefresh(false);
@@ -142,6 +146,7 @@ export default function LayoutDavTable({
                 idSellers: selectSellers,
                 selectPeoples,
                 setDavs,
+                setProfit,
                 setLoading,
               })
             }
@@ -154,6 +159,7 @@ export default function LayoutDavTable({
                 date: newDate,
                 setDate,
                 setDavs,
+                setProfit,
                 setLoading,
               })
             }
@@ -166,6 +172,7 @@ export default function LayoutDavTable({
                 setLoading,
                 setSelectTheCompany,
                 setSelectPeoples,
+                setProfit,
                 setIdSellers: setSelectSellers,
               })
             }

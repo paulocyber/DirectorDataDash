@@ -19,6 +19,7 @@ interface FetchDavsProps {
   companys?: string[];
   peoples?: string[];
   setDavs: (value: ItemsDavData[]) => void;
+  setProfit?: (value: string) => void;
   setSalesByPaymentMethod?: (
     data: { FORMA_PGMT: string; value: number }[]
   ) => void;
@@ -35,6 +36,7 @@ export async function fetchDavs({
   peoples,
   formsOfPayments,
   setDavs,
+  setProfit,
   setSalesByPaymentMethod,
   setSalesPerMonth,
   setLoading,
@@ -43,7 +45,7 @@ export async function fetchDavs({
 
   const { year, today } = getCurrentDateDetails();
 
-  const { davFinished } = davsQueries({
+  const { davFinished, profitOnSales } = davsQueries({
     dateInit,
     dateEnd,
     formsOfPayments,
@@ -58,6 +60,7 @@ export async function fetchDavs({
   });
 
   let davsData: any[] = [];
+  let profitData: any[] = [];
   let salesPerMonthData: any[] = [];
 
   const queries = [
@@ -70,6 +73,11 @@ export async function fetchDavs({
       ctx: token,
       query: salesPerMonth,
       setData: (data) => (salesPerMonthData = data),
+    }),
+    fetchData({
+      ctx: token,
+      query: profitOnSales,
+      setData: (data) => (profitData = data),
     }),
   ];
 
@@ -89,6 +97,7 @@ export async function fetchDavs({
   setDavs(davsData);
   setSalesByPaymentMethod && setSalesByPaymentMethod(paymentMethods);
   setSalesPerMonth && setSalesPerMonth(convertedTopDebitPixSellers);
+  setProfit && setProfit(profitData[0].VALOR_LUCRO_TOTAL);
 
   setLoading(false);
 }

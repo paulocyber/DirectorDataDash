@@ -16,6 +16,8 @@ export type ItemsDavData = {
   VALOR_DESCONTO_SDS: string;
   TIPO_VENDA_SDS: string;
   STATUS_SDS: string;
+  TOTAL_QTDE: string;
+  TOTAL_PRECO_CUSTO: string;
 };
 
 export type DavProductItemData = {

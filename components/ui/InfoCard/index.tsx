@@ -12,12 +12,13 @@ import NumberAnimation from "./../animation/numberAnimation/index";
 
 // Dados
 import RulesByUsers from "@/data/rulesByUsers";
+import { FaArrowUpRightDots } from "react-icons/fa6";
 
 interface Info {
   icon: ReactNode;
   title: string;
   value: string;
-  trend?: string; // opcional, ex: '+55%'
+  percentage?: string;
 }
 
 export default function InfoCard({ data }: { data: Info[] }) {
@@ -57,16 +58,22 @@ export default function InfoCard({ data }: { data: Info[] }) {
                 >
                   {info.title}
                 </p>
-                <div className="mt-1 flex items-baseline space-x-2">
+                <div className="mt-1 flex-col-reverse items-baseline space-x-2">
                   <span
                     className={`text-2xl font-bold truncate max-w-[13rem] ${info.title.toLowerCase() === "valores vencidos" || info.title.toLowerCase() === "notas vencidas" ? "text-red-600 dark:text-red-300" : "text-gray-900 dark:text-white"} `}
                   >
                     <NumberAnimation value={info.value} />
                   </span>
-                  {info.trend && (
-                    <span className="text-sm font-medium text-green-500">
-                      {info.trend}
-                    </span>
+                  {info.percentage && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <div className="flex items-center px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs font-semibold shadow-sm">
+                        <FaArrowUpRightDots className="w-4 h-4 mr-1 animate-pulse" />
+                        {info.percentage}%
+                      </div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        Margem de lucro
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
