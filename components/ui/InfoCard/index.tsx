@@ -64,7 +64,7 @@ export default function InfoCard({ data }: { data: Info[] }) {
                   >
                     <NumberAnimation value={info.value} />
                   </span>
-                  {info.percentage && (
+                  {info.percentage !== "0" && info.percentage && (
                     <div className="mt-2 flex items-center gap-2">
                       <div className="flex items-center px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs font-semibold shadow-sm">
                         <FaArrowUpRightDots className="w-4 h-4 mr-1 animate-pulse" />
