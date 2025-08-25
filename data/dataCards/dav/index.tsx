@@ -27,8 +27,9 @@ export default function DavInfoCard({
   const grossValue = sumValuesByKey(davs, (item) => item.VALOR_BRUTO_SDS);
   const netValue = sumValuesByKey(davs, (item) => item.VALOR_LIQUIDO_SDS);
   const costValue = Number(profit?.replace(",", ".")) || 0;
+  const profitValue = netValue - costValue;
   const profitPercentage =
-    netValue > 0 ? ((costValue / netValue) * 100).toFixed(0) : "0";
+    netValue > 0 ? ((profitValue / netValue) * 100).toFixed(0) : "0";
   let client = "";
 
   davs.forEach((items) => {

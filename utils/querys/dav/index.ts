@@ -30,17 +30,17 @@ export const davsQueries = ({
       ? peoples.map((people) => `'${people}'`).join(", ")
       : "";
 
-  let davFinished = `select   sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS
-  datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss AS cliente, fnc.apelido_pss 
-  AS vendedor, MAX(sds.valor_bruto_sds) AS  valor_bruto_sds, MAX(COALESCE(
-  sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) AS 
-  valor_liquido_sds, LIST(DISTINCT frm.descricao_frm) AS formapagamento FROM saidas sds
-  INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN empresas emp ON 
+  let davFinished = `select sds.id_sds, CAST(sds.datahora_finalizacao_sds AS DATE) AS
+  datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss AS cliente, sds.NOME_CLIENTE_SDS, 
+  fnc.apelido_pss AS vendedor, MAX(sds.valor_bruto_sds) AS  valor_bruto_sds,
+  MAX(COALESCE(sds.valor_troca_sds, 0)) AS valor_troca_sds, MAX(sds.valor_liquido_sds) 
+  AS valor_liquido_sds, LIST(DISTINCT frm.descricao_frm) AS formapagamento FROM saidas 
+  sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss INNER JOIN empresas emp ON 
   emp.id_emp = sds.id_emp INNER JOIN almoxarifados alm ON alm.id_alm = sds.id_alm 
   LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc LEFT JOIN pessoas prf ON  prf.id_pss
   = sds.id_prf INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN 
   formas_pagamentos frm ON frm.id_frm = ftr.id_frm WHERE sds.tipo_sds IN 
-  ('4', '5', '9') AND sds.status_sds IN ('2') AND sds.id_emp IN (1, 2, 3, 4) AND 
+  ('4', '5', '9') AND sds.status_sds IN ('2')  AND 
   sds.datahora_finalizacao_sds BETWEEN TIMESTAMP 
   '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' ${
     formsOfPayments && formsOfPayments?.length > 0
@@ -61,7 +61,7 @@ export const davsQueries = ({
       ? `and pss.ID_PSS in (${idPeoplesFilter})`
       : ""
   }
-  GROUP BY sds.id_sds,emp.sigla_emp,emp.id_emp,pss.apelido_pss,fnc.id_fnc,sds.datahora_sds,
+  GROUP BY sds.id_sds, sds.NOME_CLIENTE_SDS, emp.sigla_emp,emp.id_emp,pss.apelido_pss,fnc.id_fnc,sds.datahora_sds,
   sds.datahora_finalizacao_sds, pss.apelido_pss, pss.nome_pss,fnc.apelido_pss,
   sds.id_alm,alm.descricao_alm, sds.tipo_venda_sds,sds.status_sds ORDER BY 
   sds.datahora_sds,sds.id_sds`;
@@ -76,7 +76,12 @@ export const davsQueries = ({
   WHERE sds.status_sds = '2' AND sdi.id_tbl IN ('1', '2') AND EXISTS ( SELECT 1 
   FROM metas_vendas_itens mti WHERE mti.ID_FNC = fnc.id_pss) AND 
   sds.datahora_finalizacao_sds BETWEEN '${dateInit} 00:00:00' AND '${dateEnd} 23:59:59' 
-  AND sds.id_emp IN ('1', '2', '3', '4') AND sds.tipo_sds = '4'`;
+  ${
+    idCompaniesFilter && idCompaniesFilter.length > 0
+      ? `and emp.id_emp in 
+    (${idCompaniesFilter})`
+      : ""
+  } AND sds.tipo_sds = '4'`;
 
   let topVendorsByPaymentType = `select  fnc.apelido_pss AS vendedor, COUNT(sds.id_sds) AS total_vendas, SUM(sds.valor_liquido_sds) AS valor_total_vendas FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss 
   INNER JOIN saidas_itens sdi ON sdi.id_sds = sds.id_sds LEFT JOIN pessoas fnc ON fnc.id_pss = sds.id_fnc INNER JOIN faturas ftr ON ftr.id_sds = sds.id_sds INNER JOIN formas_pagamentos frm ON frm.id_frm = ftr.id_frm 
