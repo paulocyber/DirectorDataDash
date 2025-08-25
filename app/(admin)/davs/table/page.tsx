@@ -53,6 +53,7 @@ export default async function TableDavPage({
     dateInit: today,
     dateEnd: today,
     formsOfPayments: paymentMethod,
+    companys: ["1", "2", "3", "4"],
   });
   const paymentMethodQueries = formOfPaymentsQueries();
   const peoples = PeopleQueries();
