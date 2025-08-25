@@ -29,7 +29,7 @@ export default function DavInfoCard({
   const costValue = Number(profit?.replace(",", ".")) || 0;
   const profitValue = netValue - costValue;
   const profitPercentage =
-    netValue > 0 ? ((profitValue / netValue) * 100).toFixed(0) : "0";
+    netValue !== undefined ? ((profitValue / netValue) * 100).toFixed(0) : "0";
   let client = "";
 
   davs.forEach((items) => {
@@ -46,7 +46,7 @@ export default function DavInfoCard({
       icon: <MdAttachMoney className="w-5 h-5 text-white" />,
       title: "Total de vendas liquido",
       value: formatCurrency(netValue),
-      percentage: `${profitPercentage}`,
+      percentage: profit !== undefined ? `${profitPercentage}` : undefined,
     },
     {
       icon: detail ? (
