@@ -53,8 +53,7 @@ export async function fetchDavs({
     companys,
     peoples,
   });
-  console.log("Query Lucro: ", profitOnSales);
-  console.log("Query Dav's: ", davFinished);
+
   const { salesPerMonth } = SalesQueries({
     dateInit: `${year}/01/01`,
     dateEnd: today,

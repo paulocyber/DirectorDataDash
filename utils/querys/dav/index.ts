@@ -95,6 +95,10 @@ export const davsQueries = ({
       ? `and sds.id_emp in 
     (${idCompaniesFilter})`
       : ""
+  } ${
+    idPeoplesFilter && idPeoplesFilter.length > 0
+      ? `and pss.ID_PSS in (${idPeoplesFilter})`
+      : ""
   }`;
 
   let topVendorsByPaymentType = `select  fnc.apelido_pss AS vendedor, COUNT(sds.id_sds) AS total_vendas, SUM(sds.valor_liquido_sds) AS valor_total_vendas FROM saidas sds INNER JOIN pessoas pss ON pss.id_pss = sds.id_pss 

@@ -18,6 +18,7 @@ export type ItemsDavData = {
   STATUS_SDS: string;
   TOTAL_QTDE: string;
   TOTAL_PRECO_CUSTO: string;
+  NOME_CLIENTE_SDS: string;
 };
 
 export type DavProductItemData = {

@@ -19,6 +19,7 @@ interface Info {
   title: string;
   value: string;
   percentage?: string;
+  amount?: string;
 }
 
 export default function InfoCard({ data }: { data: Info[] }) {
@@ -64,6 +65,17 @@ export default function InfoCard({ data }: { data: Info[] }) {
                   >
                     <NumberAnimation value={info.value} />
                   </span>
+                  {info.amount !== "0" && info.amount && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <div className="flex items-center px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs font-semibold shadow-sm">
+                        <FaArrowUpRightDots className="w-4 h-4 mr-1 animate-pulse" />
+                        {info.amount}
+                      </div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        Quantidade Atendida
+                      </span>
+                    </div>
+                  )}
                   {info.percentage !== "0" && info.percentage && (
                     <div className="mt-2 flex items-center gap-2">
                       <div className="flex items-center px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 text-xs font-semibold shadow-sm">

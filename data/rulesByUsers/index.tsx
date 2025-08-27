@@ -130,6 +130,13 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       icon: <AiFillDashboard className="w-5 h-5" />,
       color: "from-blue-600 to-blue-800",
     },
+    {
+      id: 2,
+      href: "/coverreport",
+      label: "Relatório das capas",
+      icon: <AiFillDashboard className="w-5 h-5" />,
+      color: "from-orange-400 to-orange-600",
+    },
     // {
     //   id: 2,
     //   href: "/vendas/relatorio",
