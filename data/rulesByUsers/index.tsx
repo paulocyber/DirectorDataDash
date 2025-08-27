@@ -239,13 +239,25 @@ export default function RulesByUsers({ role }: RulesByUsersProps) {
       title: "Estoque",
       icon: <FaClipboardList className="w-5 h-5 text-gray-900" />,
       items: stockSection,
-      allowedRoles: ["diretoria", "financeiro", "tecnologia", "admin"],
+      allowedRoles: [
+        "diretoria",
+        "financeiro",
+        "tecnologia",
+        "admin",
+        "estoque",
+      ],
     },
     {
       title: "Fiscal",
       icon: <FaClipboardList className="w-5 h-5 text-gray-900" />,
       items: taxSection,
-      allowedRoles: ["diretoria", "financeiro", "tecnologia", "admin"],
+      allowedRoles: [
+        "diretoria",
+        "financeiro",
+        "tecnologia",
+        "admin",
+        "fiscal",
+      ],
     },
     {
       title: "RH",
