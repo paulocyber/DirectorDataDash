@@ -56,10 +56,13 @@ export default function LayoutCoverReport({
   const filterForCoverSales = searchFilter({
     data: coverSales,
     search: searchForcoverSales,
+    filterBy: "NOME_CLIENTE_SDS",
   });
   const filterSummaryCoverSales = searchFilter({
     data: salesSummary,
     search: searchSalesSummary,
+    filterBy: "tipo_da_venda",
+    startsWithOnly: true,
   });
 
   return (

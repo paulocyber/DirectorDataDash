@@ -69,6 +69,8 @@ export async function FetchCoverReport({
 
   setLoading(false);
 
-  setCoverSales(sales);
-  setSalesSummary(salesSummary);
+  setCoverSales(
+    sales.sort((a, b) => b.VALOR_LIQUIDO_SDS - a.VALOR_LIQUIDO_SDS)
+  );
+  setSalesSummary(salesSummary.sort((a, b) => b.total - a.total));
 }

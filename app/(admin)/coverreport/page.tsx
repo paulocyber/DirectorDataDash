@@ -75,7 +75,9 @@ export default async function CoverReport() {
   return (
     <LayoutCoverReport
       today={today}
-      coverSalesData={coverSalesData.data.returnObject.body}
+      coverSalesData={coverSalesData.data.returnObject.body.sort(
+        (a: any, b: any) => b.VALOR_LIQUIDO_SDS - a.VALOR_LIQUIDO_SDS
+      )}
       salesSummaryData={salesSummary.sort((a, b) => b.total - a.total)}
     />
   );

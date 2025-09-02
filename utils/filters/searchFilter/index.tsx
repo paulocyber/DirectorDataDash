@@ -2,40 +2,42 @@
 
 // Tipagem
 interface SearchParamsProps<T extends Record<string, any>> {
-    data: T[];
-    search: string;
+  data: T[];
+  search: string;
+  startsWithOnly?: boolean;
 }
 
 export function searchFilter<T extends Record<string, any>>({
-    data,
-    search,
-    filterBy,
+  data,
+  search,
+  filterBy,
+  startsWithOnly,
 }: SearchParamsProps<T> & { filterBy?: keyof T }): T[] {
-    if (!search) return data;
+  if (!search) return data;
 
-    const query = search.toLowerCase();
+  const query = search.toLowerCase().trim();
 
-    return data.filter((item) => {
-        if (filterBy) {
-            const value = item[filterBy];
-            if (typeof value === "string") {
-                return value.toLowerCase().includes(query);
-            }
-        } else {
-            return Object.values(item).some((value) => {
-                if (typeof value === "string") {
-                    return value.toLowerCase().includes(query);
-                }
-                if (typeof value === "object" && value !== null) {
-                    return Object.values(value).some(
-                        (subValue) =>
-                            typeof subValue === "string" &&
-                            subValue.toLowerCase().includes(query)
-                    );
-                }
-                return false;
-            });
+  return data.filter((item) => {
+    const checkValue = (value: any): boolean => {
+      if (typeof value !== "string") return false;
+      const val = value.toLowerCase();
+      return startsWithOnly ? val.startsWith(query) : val.includes(query);
+    };
+
+    if (filterBy) {
+      return checkValue(item[filterBy]);
+    } else {
+      return Object.values(item).some((value) => {
+        if (typeof value === "string") {
+          return checkValue(value);
+        }
+        if (typeof value === "object" && value !== null) {
+          return Object.values(value).some(
+            (sub) => typeof sub === "string" && checkValue(sub)
+          );
         }
         return false;
-    });
+      });
+    }
+  });
 }
