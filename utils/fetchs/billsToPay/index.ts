@@ -40,7 +40,7 @@ export async function fetchBillsToPay({
     dateEnd,
     costsCenters,
   });
-  console.log("Query: ", allBillet);
+
   const { expiredBillet } = billsToPayQueries({
     dateInit: `${year}/01/01`,
     dateEnd: clear ? `${yesterday}` : dateEnd,
