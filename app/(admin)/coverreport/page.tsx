@@ -67,7 +67,7 @@ export default async function CoverReport() {
 
     return {
       tipo_da_venda: saleType,
-      atendido_por: servedBy,
+      atendido_por: item.cover_seller,
       total: item.value,
     };
   });

@@ -109,7 +109,7 @@ export default function ToolBar({
           {handleAdd && (
             <Button
               onClick={handleAdd}
-              className={`hidden md:inline-flex items-center text-white ${routeColor} hover:opacity-90 transition`}
+              className={`hidden md:inline-flex items-center text-white ${routeColor} hover:opacity-90 transition min-w-36`}
             >
               {titleAdd}
             </Button>

@@ -30,6 +30,7 @@ import { type DateValue, parseDate } from "@internationalized/date";
 import { RangeValue } from "@react-types/shared";
 import { ItemsCoverReportData } from "@/types/coverReport";
 import { searchFilter } from "@/utils/filters/searchFilter";
+import { Radio, RadioGroup } from "@heroui/react";
 interface LayoutCoverReportProps {
   coverSalesData: ItemsDavData[];
   salesSummaryData: ItemsCoverReportData[];
@@ -46,6 +47,7 @@ export default function LayoutCoverReport({
   const [loading, setLoading] = useState<boolean>(false);
   const [searchForcoverSales, setSearchForcoverSales] = useState<string>("");
   const [searchSalesSummary, setSearchSalesSummary] = useState<string>("");
+  const [filterCurve, setFilterCurve] = useState<boolean>(false);
   const [date, setDate] = useState<RangeValue<DateValue>>({
     start: parseDate(new Date(today).toISOString().split("T")[0]),
     end: parseDate(new Date(today).toISOString().split("T")[0]),
@@ -61,8 +63,8 @@ export default function LayoutCoverReport({
   const filterSummaryCoverSales = searchFilter({
     data: salesSummary,
     search: searchSalesSummary,
-    filterBy: "tipo_da_venda",
-    startsWithOnly: true,
+    filterBy: "atendido_por",
+    startsWithOnly: filterCurve,
   });
 
   return (
@@ -145,6 +147,8 @@ export default function LayoutCoverReport({
               })
             }
             dateRange={date}
+            handleAdd={() => setFilterCurve(!filterCurve)}
+            titleAdd="Filtrar por curva?"
             search={searchSalesSummary}
             setSearch={setSearchSalesSummary}
           />
