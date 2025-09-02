@@ -29,6 +29,7 @@ import { ItemsDavData } from "@/types/davs";
 import { type DateValue, parseDate } from "@internationalized/date";
 import { RangeValue } from "@react-types/shared";
 import { ItemsCoverReportData } from "@/types/coverReport";
+import { searchFilter } from "@/utils/filters/searchFilter";
 interface LayoutCoverReportProps {
   coverSalesData: ItemsDavData[];
   salesSummaryData: ItemsCoverReportData[];
@@ -43,6 +44,8 @@ export default function LayoutCoverReport({
   const [coverSales, setCoverSales] = useState(coverSalesData);
   const [salesSummary, setSalesSummary] = useState(salesSummaryData);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchForcoverSales, setSearchForcoverSales] = useState<string>("");
+  const [searchSalesSummary, setSearchSalesSummary] = useState<string>("");
   const [date, setDate] = useState<RangeValue<DateValue>>({
     start: parseDate(new Date(today).toISOString().split("T")[0]),
     end: parseDate(new Date(today).toISOString().split("T")[0]),
@@ -50,6 +53,14 @@ export default function LayoutCoverReport({
 
   const { token } = useContext(AuthContext);
   const infoCards = CoverSalesInfoCard({ coverSales });
+  const filterForCoverSales = searchFilter({
+    data: coverSales,
+    search: searchForcoverSales,
+  });
+  const filterSummaryCoverSales = searchFilter({
+    data: salesSummary,
+    search: searchSalesSummary,
+  });
 
   return (
     <>
@@ -88,9 +99,11 @@ export default function LayoutCoverReport({
               })
             }
             dateRange={date}
+            search={searchForcoverSales}
+            setSearch={setSearchForcoverSales}
           />
           <Table
-            data={coverSales}
+            data={filterForCoverSales}
             columns={coverSalesColumns}
             renderCell={coverSalesCell}
             loading={loading}
@@ -98,7 +111,7 @@ export default function LayoutCoverReport({
         </Container>
         <Container>
           <ToolBar
-            title="Relatório de Capas"
+            title="Resumo do relatório de Capas"
             handleRefreshClick={() =>
               handleRefresh({
                 date,
@@ -129,9 +142,11 @@ export default function LayoutCoverReport({
               })
             }
             dateRange={date}
+            search={searchSalesSummary}
+            setSearch={setSearchSalesSummary}
           />
           <Table
-            data={salesSummary}
+            data={filterSummaryCoverSales}
             columns={summaryCoverSalesColumns}
             renderCell={curveCellAandB}
             loading={loading}
