@@ -7,12 +7,14 @@ import { DateValue } from "@heroui/react";
 import { RangeValue } from "@react-types/shared";
 import getCurrentDateDetails from "@/utils/getDate";
 import { parseDate } from "@internationalized/date";
+import { ItemsCoverReportData } from "@/types/coverReport";
 interface CoverReportProps {
   date?: RangeValue<DateValue> | null;
   token: string;
   setLoading: (value: boolean) => void;
   setDate?: (value: RangeValue<DateValue>) => void;
   setCoverSales: (value: ItemsDavData[]) => void;
+  setSalesSummary: (value: ItemsCoverReportData[]) => void;
 }
 
 export async function handleRefresh({
@@ -20,6 +22,7 @@ export async function handleRefresh({
   token,
   setLoading,
   setCoverSales,
+  setSalesSummary,
 }: CoverReportProps) {
   if (!date) return;
 
@@ -29,6 +32,7 @@ export async function handleRefresh({
     token,
     setLoading,
     setCoverSales,
+    setSalesSummary,
   });
 }
 
@@ -38,6 +42,7 @@ export async function handleCleanFilter({
   setLoading,
   setDate,
   setCoverSales,
+  setSalesSummary,
 }: CoverReportProps) {
   if (!date || !setDate) return;
 
@@ -54,6 +59,7 @@ export async function handleCleanFilter({
     token,
     setLoading,
     setCoverSales,
+    setSalesSummary,
   });
 }
 
@@ -63,6 +69,7 @@ export async function handleDateFilter({
   setLoading,
   setDate,
   setCoverSales,
+  setSalesSummary,
 }: CoverReportProps) {
   if (!date || !setDate) return;
 
@@ -74,5 +81,6 @@ export async function handleDateFilter({
     token,
     setLoading,
     setCoverSales,
+    setSalesSummary,
   });
 }

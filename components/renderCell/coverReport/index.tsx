@@ -15,7 +15,7 @@ export const renderCell = (item: ItemsDavData, columnKey: string) => {
     case "indentificacao":
       return (
         <span className="text-gray-600 font-semibold">
-          {item.NOME_CLIENTE_SDS}
+          {item.NOME_CLIENTE_SDS ? item.NOME_CLIENTE_SDS : "-"}
         </span>
       );
     case "vendedor":

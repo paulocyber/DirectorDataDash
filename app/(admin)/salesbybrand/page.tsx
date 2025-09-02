@@ -11,8 +11,6 @@ import { billsToPayQueries } from "@/utils/querys/billsToPay";
 import { groupBySum } from "@/utils/filters/groupBySum";
 import { suppliersQueries } from "@/utils/querys/suppliers";
 
-// Componentes
-
 // Dados
 import { redirectMap } from "@/data/rulesByUsers";
 import LayoutSalesByBrand from "@/components/pagesTemplates/salesByBrand";
