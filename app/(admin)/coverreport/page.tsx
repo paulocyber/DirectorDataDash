@@ -63,7 +63,6 @@ export default async function CoverReport() {
         : seller === ""
           ? null
           : seller;
-    const servedBy = hyphenIndex > -1 ? seller.slice(hyphenIndex + 1) : null;
 
     return {
       tipo_da_venda: saleType,

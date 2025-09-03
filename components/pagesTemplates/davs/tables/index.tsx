@@ -66,7 +66,6 @@ export default function LayoutDavTable({
   sellersData,
   today,
 }: LayoutDavTableProps) {
-  const [open, setOpen] = useState<boolean>(false);
   const [davs, setDavs] = useState(davsData);
   const [profit, setProfit] = useState(profitData);
   const [loading, setLoading] = useState<boolean>(false);

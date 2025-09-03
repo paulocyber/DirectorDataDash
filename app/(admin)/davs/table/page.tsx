@@ -32,7 +32,7 @@ export default async function TableDavPage({
   const token = (await cookieStore).get("@nextauth.token")?.value;
   const role = (await cookieStore).get("@nextauth.role")?.value || "";
   const paymentMethod = Object.keys(await searchParams);
-
+  console.log("Methodo de pagamento: ", paymentMethod);
   if (!token) {
     redirect("/");
   }

@@ -193,7 +193,7 @@ export default function LayoutUsers({ data }: LayoutUsersProps) {
                   onValueChange={setActive}
                 />
               </div>
-              <Input
+              {/* <Input
                 type={showPassoword ? "password" : "text"}
                 label="Nova senha"
                 name="senha"
@@ -210,7 +210,7 @@ export default function LayoutUsers({ data }: LayoutUsersProps) {
                     )}
                   </button>
                 }
-              />
+              /> */}
             </ModalBody>
             <ModalFooter className="flex w-full justify-end gap-3">
               <Button
