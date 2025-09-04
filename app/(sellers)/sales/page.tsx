@@ -85,7 +85,9 @@ export default async function SellerPage() {
     {
       name: "Metas",
       value:
-        goalsResponse.data.returnObject.body.lenght > 0
+        parseNumericString(
+          goalsResponse.data.returnObject.body[0].VALOR_MTA
+        ) !== undefined
           ? parseNumericString(
               goalsResponse.data.returnObject.body[0].VALOR_MTA
             )

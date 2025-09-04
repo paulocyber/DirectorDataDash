@@ -285,7 +285,7 @@ export function LayoutSalesGoals({
                 label:
                   topSellers.length > 0
                     ? `Tabela ${role === "lider de vendas" ? 2 : selectTables}`
-                    : `Comissão: ${formatCurrency(valueCommission ? valueCommission : 0)}`,
+                    : `Bonificação : ${formatCurrency(valueCommission ? valueCommission : 0)}`,
                 highlight: false,
               },
               {
