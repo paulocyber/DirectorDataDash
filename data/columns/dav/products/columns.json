@@ -1,0 +1,12 @@
+[
+  { "name": "Codigo do Produto", "uid": "codigodoproduto" },
+  { "name": "Produto", "uid": "produto" },
+  { "name": "Quantidade Disponivel", "uid": "quantidadedisponivel" },
+  { "name": "Quantidade da Saida", "uid": "quantidadedasaida" },
+  { "name": "Valor Unitário", "uid": "valorunitário" },
+  { "name": "Valor do Desconto", "uid": "valordesconto" },
+  { "name": "Valor Total", "uid": "valorbruto" },
+  { "name": "Total com desconto", "uid": "valorliquido" },
+  { "name": "Valor do custo", "uid": "valordocusto" },
+  { "name": "Lucro", "uid": "valordolucro" }
+]

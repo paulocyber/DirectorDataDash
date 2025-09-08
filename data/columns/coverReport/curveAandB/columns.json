@@ -1,0 +1,5 @@
+[
+  { "name": "Tipo de Venda", "uid": "tipoDeVenda" },
+  { "name": "Atendido por", "uid": "atendidoPor" },
+  { "name": "Total", "uid": "total" }
+]
