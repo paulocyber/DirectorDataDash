@@ -29,5 +29,6 @@ export default async function CommitteeReport() {
 
   const data = await api.get("/v1/commissions");
 
-  return <LayoutCommitteeReport data={data.data.returnObject.body} />;
+  return <h1>Teste</h1>;
+  // return <LayoutCommitteeReport data={data.data.returnObject.body} />;
 }
