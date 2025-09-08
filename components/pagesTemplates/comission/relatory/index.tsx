@@ -35,6 +35,7 @@ import {
   ItemsComissionCalculation1Data,
   ItemsCommissionCalculationData,
 } from "@/types/comission";
+import { InfiniteScroll } from "@/utils/InfiniteScroll";
 interface LayoutCommitteeReportProps {
   data: ItemsComissionCalculation1Data[];
 }
@@ -56,6 +57,7 @@ export default function LayoutCommitteeReport({
   data,
 }: LayoutCommitteeReportProps) {
   const [commissionDetails, setCommisionDetails] = useState(data);
+  const [limit, setLimit] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
 
   const infoCard = ComissionInfoCard({ data: commissionDetails });
@@ -74,6 +76,14 @@ export default function LayoutCommitteeReport({
     setCommisionDetails(data.data.returnObject.body);
     setLoading(false);
   }
+
+  const fetchMore = () => {
+    if (limit < data.length) {
+      setLimit(limit + 10);
+    }
+  };
+
+  const dataLimit = data.slice(0, limit);
 
   return (
     <section className="py-1 text-gray-800">
@@ -221,7 +231,7 @@ export default function LayoutCommitteeReport({
                     </tr>
                   </thead>
                   <tbody>
-                    {commissionDetails.map((item, index) => (
+                    {dataLimit.map((item, index) => (
                       <tr key={index} className="border-t">
                         <td className="py-2">{item.sellerName}</td>
                         <td className="py-2">
@@ -235,6 +245,7 @@ export default function LayoutCommitteeReport({
                   </tbody>
                 </table>
               </div>
+              <InfiniteScroll fetchMore={fetchMore} />
             </main>
           </Container>
         </main>
