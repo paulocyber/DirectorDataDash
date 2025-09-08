@@ -1,8 +1,0 @@
-[
-  { "name": "Número da Dav", "uid": "nDav" },
-  { "name": "Cliente", "uid": "cliente" },
-  { "name": "Indentificação", "uid": "indentificacao" },
-  { "name": "Vendedor", "uid": "vendedor" },
-  { "name": "Valor liquido", "uid": "valorLiquido" },
-  { "name": "Data Finalização", "uid": "dataFinalização" }
-]

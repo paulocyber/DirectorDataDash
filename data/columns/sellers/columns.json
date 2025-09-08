@@ -1,7 +1,0 @@
-[
-  { "name": "id/nome", "uid": "nome" },
-  { "name": "email", "uid": "email" },
-  { "name": "telefone", "uid": "telefone" },
-  { "name": "cpf", "uid": "cpf" },
-  { "name": "ações", "uid": "acoes" }
-]

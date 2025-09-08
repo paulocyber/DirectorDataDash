@@ -1,8 +1,0 @@
-[
-  { "name": "Número da Dav", "uid": "nDav" },
-  { "name": "Data vencimento", "uid": "dataVencimento" },
-  { "name": "ID / Vendedor", "uid": "vendedor" },
-  { "name": "ID / Cliente", "uid": "cliente" },
-  { "name": "Valor restante", "uid": "valorRestante" },
-  { "name": "Valor pago", "uid": "valorPago" }
-]

@@ -1,8 +1,0 @@
-[
-  { "name": "#", "uid": "#" },
-  { "name": "nome", "uid": "nome" },
-  { "name": "regra", "uid": "regra" },
-  { "name": "ativo?", "uid": "ativo" },
-  { "name": "data de criação", "uid": "criado_em" },
-  { "name": "ações", "uid": "acoes" }
-]
