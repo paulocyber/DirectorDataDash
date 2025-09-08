@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useContext, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { AuthContext } from "@/providers/auth";
 
 // Dados
@@ -60,7 +60,11 @@ export default function LayoutCommitteeReport({
   const [limit, setLimit] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const infoCard = ComissionInfoCard({ data: commissionDetails });
+  // const infoCard = ComissionInfoCard({ data: commissionDetails });
+  const infoCard = useMemo(
+    () => ComissionInfoCard({ data: commissionDetails }),
+    [commissionDetails]
+  );
 
   const comissions = transform(commissionDetails);
 
@@ -77,11 +81,11 @@ export default function LayoutCommitteeReport({
     setLoading(false);
   }
 
-  const fetchMore = () => {
+  const fetchMore = useCallback(() => {
     if (limit < data.length) {
-      setLimit(limit + 10);
+      setLimit((prev) => prev + 10);
     }
-  };
+  }, [limit, data.length]);
 
   const dataLimit = data.slice(0, limit);
 

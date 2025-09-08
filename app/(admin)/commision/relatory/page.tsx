@@ -10,7 +10,6 @@ import { redirectMap } from "@/data/rulesByUsers";
 
 // Componentes
 import LayoutCommitteeReport from "@/components/pagesTemplates/comission/relatory";
-import { ItemsCommissionCalculationData } from "@/types/comission";
 
 export default async function CommitteeReport() {
   const cookieStore = cookies();
