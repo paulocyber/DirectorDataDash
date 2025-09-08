@@ -25,6 +25,7 @@ export default async function EditSellersPage({
   if (
     role !== "admin" &&
     role !== "diretoria" &&
+    role !== "rh" &&
     Object.prototype.hasOwnProperty.call(redirectMap, role)
   ) {
     return redirect(redirectMap[role]);
