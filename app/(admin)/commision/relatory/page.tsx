@@ -27,7 +27,12 @@ export default async function CommitteeReport() {
     return redirect(redirectMap[role]);
   }
 
-  // const data = await api.get("/v1/commissions");
+  try {
+    const data = await api.get("/v1/commissions");
+    console.log("Dados", data.data);
+  } catch (err) {
+    console.log(err);
+  }
 
   return <h1>Teste</h1>;
   // return <LayoutCommitteeReport data={data.data.returnObject.body} />;
