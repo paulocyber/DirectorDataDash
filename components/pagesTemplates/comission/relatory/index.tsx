@@ -40,18 +40,18 @@ interface LayoutCommitteeReportProps {
   data: ItemsComissionCalculation1Data[];
 }
 
-function transform(raw: ItemsCommissionCalculationData[]) {
-  return raw.map((r) => ({
-    Vendedor: r.sellerName,
-    totalSale: r.totalSale,
-    totalCommission: r.totalCommission,
-    client: r.commission.client?.value ?? 0,
-    valuePerSale: r.commission.valuePerSale?.value ?? 0,
-    paymentMethod: r.commission.paymentMethod?.value ?? 0,
-    saleValue: r.commission.saleValue?.value ?? 0,
-    defaultCommission: r.commission.default?.value ?? 0,
-  }));
-}
+// function transform(raw: ItemsCommissionCalculationData[]) {
+//   return raw.map((r) => ({
+//     Vendedor: r.sellerName,
+//     totalSale: r.totalSale,
+//     totalCommission: r.totalCommission,
+//     client: r.commission.client?.value ?? 0,
+//     valuePerSale: r.commission.valuePerSale?.value ?? 0,
+//     paymentMethod: r.commission.paymentMethod?.value ?? 0,
+//     saleValue: r.commission.saleValue?.value ?? 0,
+//     defaultCommission: r.commission.default?.value ?? 0,
+//   }));
+// }
 
 export default function LayoutCommitteeReport({
   data,
@@ -66,7 +66,7 @@ export default function LayoutCommitteeReport({
     [commissionDetails]
   );
 
-  const comissions = transform(commissionDetails);
+  // const comissions = transform(commissionDetails);
 
   const { token } = useContext(AuthContext);
 
@@ -81,13 +81,13 @@ export default function LayoutCommitteeReport({
     setLoading(false);
   }
 
-  const fetchMore = useCallback(() => {
-    if (limit < data.length) {
-      setLimit((prev) => prev + 10);
-    }
-  }, [limit, data.length]);
+  // const fetchMore = useCallback(() => {
+  //   if (limit < data.length) {
+  //     setLimit((prev) => prev + 10);
+  //   }
+  // }, [limit, data.length]);
 
-  const dataLimit = data.slice(0, limit);
+  // const dataLimit = data.slice(0, limit);
 
   return (
     <section className="py-1 text-gray-800">
@@ -96,6 +96,13 @@ export default function LayoutCommitteeReport({
       <div className="grid grid-cols-1 gap-4">
         <div className="col-span-1">
           <Container>
+            <ToolBar
+              title="Relatório de comissão"
+              handleRefreshClick={() => handleRefresh()}
+            />
+          </Container>
+        </div>
+        {/* <Container>
             <ToolBar
               title="Relatório de comissão"
               handleRefreshClick={() => handleRefresh()}
@@ -252,7 +259,7 @@ export default function LayoutCommitteeReport({
               <InfiniteScroll fetchMore={fetchMore} />
             </main>
           </Container>
-        </main>
+        </main>*/}
       </div>
     </section>
   );
