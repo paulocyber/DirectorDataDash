@@ -9,7 +9,8 @@ import { setupApiClient } from "@/utils/fetchs/api";
 import { redirectMap } from "@/data/rulesByUsers";
 
 // Componentes
-// import LayoutCommitteeReport from "@/components/pagesTemplates/comission/relatory";
+import LayoutCommitteeReport from "@/components/pagesTemplates/comission/relatory";
+import { ItemsCommissionCalculationData } from "@/types/comission";
 
 export default async function CommitteeReport() {
   const cookieStore = cookies();
@@ -27,13 +28,7 @@ export default async function CommitteeReport() {
     return redirect(redirectMap[role]);
   }
 
-  try {
-    const data = await api.get("/v1/commissions");
-    console.log("Dados", data.data);
-  } catch (err) {
-    console.log(err);
-  }
+  const data = await api.get("/v1/commissions");
 
-  return <h1>Teste</h1>;
-  // return <LayoutCommitteeReport data={data.data.returnObject.body} />;
+  return <LayoutCommitteeReport data={data.data.returnObject.body} />;
 }

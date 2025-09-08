@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "@/providers/auth";
 
 // Dados
@@ -40,18 +40,18 @@ interface LayoutCommitteeReportProps {
   data: ItemsComissionCalculation1Data[];
 }
 
-// function transform(raw: ItemsCommissionCalculationData[]) {
-//   return raw.map((r) => ({
-//     Vendedor: r.sellerName,
-//     totalSale: r.totalSale,
-//     totalCommission: r.totalCommission,
-//     client: r.commission.client?.value ?? 0,
-//     valuePerSale: r.commission.valuePerSale?.value ?? 0,
-//     paymentMethod: r.commission.paymentMethod?.value ?? 0,
-//     saleValue: r.commission.saleValue?.value ?? 0,
-//     defaultCommission: r.commission.default?.value ?? 0,
-//   }));
-// }
+function transform(raw: ItemsCommissionCalculationData[]) {
+  return raw.map((r) => ({
+    Vendedor: r.sellerName,
+    totalSale: r.totalSale,
+    totalCommission: r.totalCommission,
+    client: r.commission.client?.value ?? 0,
+    valuePerSale: r.commission.valuePerSale?.value ?? 0,
+    paymentMethod: r.commission.paymentMethod?.value ?? 0,
+    saleValue: r.commission.saleValue?.value ?? 0,
+    defaultCommission: r.commission.default?.value ?? 0,
+  }));
+}
 
 export default function LayoutCommitteeReport({
   data,
@@ -60,13 +60,9 @@ export default function LayoutCommitteeReport({
   const [limit, setLimit] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // const infoCard = ComissionInfoCard({ data: commissionDetails });
-  const infoCard = useMemo(
-    () => ComissionInfoCard({ data: commissionDetails }),
-    [commissionDetails]
-  );
+  const infoCard = ComissionInfoCard({ data: commissionDetails });
 
-  // const comissions = transform(commissionDetails);
+  const comissions = transform(commissionDetails);
 
   const { token } = useContext(AuthContext);
 
@@ -81,13 +77,11 @@ export default function LayoutCommitteeReport({
     setLoading(false);
   }
 
-  // const fetchMore = useCallback(() => {
-  //   if (limit < data.length) {
-  //     setLimit((prev) => prev + 10);
-  //   }
-  // }, [limit, data.length]);
-
-  // const dataLimit = data.slice(0, limit);
+  const fetchMore = () => {
+    if (limit < data.length) {
+      setLimit(limit + 10);
+    }
+  };
 
   return (
     <section className="py-1 text-gray-800">
@@ -96,13 +90,6 @@ export default function LayoutCommitteeReport({
       <div className="grid grid-cols-1 gap-4">
         <div className="col-span-1">
           <Container>
-            <ToolBar
-              title="Relatório de comissão"
-              handleRefreshClick={() => handleRefresh()}
-            />
-          </Container>
-        </div>
-        {/* <Container>
             <ToolBar
               title="Relatório de comissão"
               handleRefreshClick={() => handleRefresh()}
@@ -242,7 +229,7 @@ export default function LayoutCommitteeReport({
                     </tr>
                   </thead>
                   <tbody>
-                    {dataLimit.map((item, index) => (
+                    {commissionDetails.map((item, index) => (
                       <tr key={index} className="border-t">
                         <td className="py-2">{item.sellerName}</td>
                         <td className="py-2">
@@ -259,7 +246,7 @@ export default function LayoutCommitteeReport({
               <InfiniteScroll fetchMore={fetchMore} />
             </main>
           </Container>
-        </main>*/}
+        </main>
       </div>
     </section>
   );
