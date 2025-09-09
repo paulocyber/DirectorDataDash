@@ -13,6 +13,7 @@ import "@/styles/globals.css";
 import { AuthProvider } from "@/providers/auth";
 import { Providers } from "@/providers/jotai";
 
+export const maxDuration = 30;
 export default function RootLayout({
   children,
 }: {
