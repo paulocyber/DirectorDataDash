@@ -3,7 +3,7 @@ import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 
 // Bibliotecas
-import { ToastProvider } from "@heroui/toast";
+import { ToastProvider } from "@heroui/react";
 import NextTopLoader from "nextjs-toploader";
 
 // Css
@@ -26,8 +26,7 @@ export default function RootLayout({
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable
-        )}
-      >
+        )}>
         <AuthProvider>
           <Providers>
             <ToastProvider placement="top-right" />

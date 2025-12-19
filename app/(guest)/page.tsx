@@ -19,7 +19,7 @@ import { AuthContext } from "@/providers/auth";
 import { IoEyeOutline } from "react-icons/io5";
 import { FiEyeOff } from "react-icons/fi";
 import { Button } from "@heroui/button";
-import { addToast } from "@heroui/toast";
+import { addToast } from "@heroui/react";
 import { TiWarning } from "react-icons/ti";
 import { useTopLoader } from "nextjs-toploader";
 

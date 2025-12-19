@@ -1,13 +1,13 @@
 "use client";
 
 // Biblioteca
-import { DateRangePicker } from "@heroui/date-picker";
 import {
+  DateRangePicker,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@heroui/dropdown";
+} from "@heroui/react";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { IoSync } from "react-icons/io5";
 import { RiFormatClear } from "react-icons/ri";
