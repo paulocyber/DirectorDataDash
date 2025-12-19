@@ -1,9 +1,8 @@
 "use client";
 
 // Biblioteca
-// import { DateRangePicker } from "@heroui/react";
-import { DateRangePicker } from "@heroui/react";
 import {
+  DateRangePicker,
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
