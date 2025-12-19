@@ -42,7 +42,8 @@ import DrawerSettingsJson from "@/data/drawerSettings/sales";
 
 // Tipagem
 import { ItemsdebtAndStock, ItemsSalesAndBuy } from "@/types/sales";
-import { DateValue, RangeValue } from "@heroui/react";
+import { DateValue } from "@heroui/react";
+import { RangeValue } from "@react-types/shared";
 import { refreshAtom } from "@/atom/isActivateRefresh";
 import { TypeFilterProps } from "@/types/filters/selecting";
 interface LayoutSalesByBrandProps {
@@ -51,7 +52,7 @@ interface LayoutSalesByBrandProps {
   suppliersData: TypeFilterProps[];
 }
 
-export default function a({
+export default function LayoutSalesByBrand({
   salesAndBuyData,
   debtAndStockData,
   suppliersData,

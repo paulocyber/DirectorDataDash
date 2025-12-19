@@ -154,7 +154,6 @@ export default function SignUp() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Digite seu nome"
-            autoFocus
           />
 
           <Input
