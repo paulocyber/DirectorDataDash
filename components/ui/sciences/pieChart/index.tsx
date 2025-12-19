@@ -34,7 +34,7 @@ export default function PieChart<T>({
     <ResponsiveContainer width="100%" height="100%">
       <PieChartComponents margin={{ top: 20, right: 80, left: 80, bottom: 20 }}>
         {displayToolTip && <Tooltip content={ToolTipComponent} />}
-        <Pie
+        {/* <Pie
           data={data}
           labelLine={false}
           label={label}
@@ -51,7 +51,7 @@ export default function PieChart<T>({
               }
             />
           ))}
-        </Pie>
+        </Pie> */}
       </PieChartComponents>
     </ResponsiveContainer>
   );

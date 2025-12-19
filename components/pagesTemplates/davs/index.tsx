@@ -59,10 +59,10 @@ export default function LayoutDav({
   const [salesPerMonth, setSalesPerMonth] = useState(salesPerMonthData);
   const [, setMethods] = useAtom(MethodsOfPayments);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(today).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(today).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   const { token } = useContext(AuthContext);
   const infoCard = DavInfoCard({ davs });
@@ -82,10 +82,10 @@ export default function LayoutDav({
         <Container>
           <ToolBar
             title="Relatório dav's"
-            dateRange={date}
+            // dateRange={date}
             handleRefreshClick={() =>
               handleRefresh({
-                date,
+                // date,
                 token,
                 setDavs,
                 setSalesByPaymentMethod,
@@ -93,21 +93,21 @@ export default function LayoutDav({
                 setLoading,
               })
             }
-            handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-              handleDateFilter({
-                token,
-                date: newDate,
-                setDate,
-                setDavs,
-                setSalesByPaymentMethod,
-                setSalesPerMonth,
-                setLoading,
-              })
-            }
+            // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+            //   handleDateFilter({
+            //     token,
+            //     date: newDate,
+            //     // setDate,
+            //     setDavs,
+            //     setSalesByPaymentMethod,
+            //     setSalesPerMonth,
+            //     setLoading,
+            //   })
+            // }
             handleCleanFilter={() =>
               handleCleanFilter({
                 token,
-                setDate,
+                // setDate,
                 setDavs,
                 setSalesByPaymentMethod,
                 setSalesPerMonth,

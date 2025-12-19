@@ -30,8 +30,8 @@ interface BillsToPayPdfProps {
   allBillets: ItemsBillsToPay[];
   billetFilter: ItemsBillsToPay[];
   status: string[];
-  dateStart: string;
-  dateEnd: string;
+  dateStart?: string;
+  dateEnd?: string;
 }
 
 export default function BillsToPayPdf({

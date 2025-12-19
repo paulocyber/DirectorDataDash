@@ -75,10 +75,10 @@ export default function LayoutDavTable({
   const [selectTheCompany, setSelectTheCompany] = useAtom(Companies);
   const [selectPeoples, setSelectPeoples] = useAtom(Peoples);
   const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(today).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(today).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   const infoCard = DavInfoCard({ davs, profit });
   const loader = useTopLoader();
@@ -104,7 +104,7 @@ export default function LayoutDavTable({
   useEffect(() => {
     if (activeRefresh) {
       handleRefresh({
-        date,
+        // date,
         token,
         formsOfPayments: selectingMethodsPayment,
         idSellers: selectSellers,
@@ -139,7 +139,7 @@ export default function LayoutDavTable({
             title="Relatório de DAV'S"
             handleRefreshClick={() =>
               handleRefresh({
-                date,
+                // date,
                 token,
                 formsOfPayments: selectingMethodsPayment,
                 idSellers: selectSellers,
@@ -150,25 +150,25 @@ export default function LayoutDavTable({
                 setLoading,
               })
             }
-            handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-              handleDateFilter({
-                token,
-                formsOfPayments: selectingMethodsPayment,
-                idSellers: selectSellers,
-                selectTheCompany,
-                selectPeoples,
-                date: newDate,
-                setDate,
-                setDavs,
-                setProfit,
-                setLoading,
-              })
-            }
+            // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+            //   handleDateFilter({
+            //     token,
+            //     formsOfPayments: selectingMethodsPayment,
+            //     idSellers: selectSellers,
+            //     selectTheCompany,
+            //     selectPeoples,
+            //     date: newDate,
+            //     setDate,
+            //     setDavs,
+            //     setProfit,
+            //     setLoading,
+            //   })
+            // }
             handleCleanFilter={() =>
               handleCleanFilter({
                 token,
                 formsOfPayments: selectingMethodsPayment,
-                setDate,
+                // setDate,
                 setDavs,
                 setLoading,
                 setSelectTheCompany,
@@ -180,7 +180,7 @@ export default function LayoutDavTable({
             handleFilters={onOpen}
             descriptionHref="Visualizar em Gráfico"
             href="/davs"
-            dateRange={date}
+            // dateRange={date}
           />
           <Table
             data={davs}

@@ -48,10 +48,10 @@ export async function handleCleanFilter({
 
   const { today } = getCurrentDateDetails();
 
-  setDate({
-    start: parseDate(new Date(today).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // setDate({
+  //   start: parseDate(new Date(today).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   await FetchCoverReport({
     dateInit: today,

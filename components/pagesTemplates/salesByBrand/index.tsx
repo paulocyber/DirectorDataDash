@@ -62,7 +62,7 @@ export default function LayoutSalesByBrand({
   const [selectSuppliers, setSelectSuppliers] = useAtom(suppliers);
   const [brands] = useAtom(suppliers);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue> | null>(null);
+  // const [date, setDate] = useState<RangeValue<DateValue> | null>(null);
 
   const { token } = useContext(AuthContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -109,7 +109,7 @@ export default function LayoutSalesByBrand({
               token,
               brands,
               setSelectedPeriod,
-              setDate,
+              // setDate,
               setLoading,
               setDebtAndStock,
               setSalesAndBuy,
@@ -161,19 +161,19 @@ export default function LayoutSalesByBrand({
                     aria-label="Selecionar intervalo de datas"
                     pageBehavior="single"
                     disableAnimation
-                    value={date}
+                    // value={date}
                     size="sm"
-                    onChange={(newDate: RangeValue<DateValue> | null) =>
-                      handleDateFilter({
-                        date: newDate,
-                        token,
-                        brands,
-                        setDate,
-                        setLoading,
-                        setDebtAndStock,
-                        setSalesAndBuy,
-                      })
-                    }
+                    // onChange={(newDate: RangeValue<DateValue> | null) =>
+                    //   handleDateFilter({
+                    //     date: newDate,
+                    //     token,
+                    //     brands,
+                    //     setDate,
+                    //     setLoading,
+                    //     setDebtAndStock,
+                    //     setSalesAndBuy,
+                    //   })
+                    // }
                   />
                 </DropdownItem>
               </DropdownMenu>

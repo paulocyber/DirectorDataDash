@@ -64,10 +64,10 @@ export default function LayoutBillsToReceiveTable({
   const [selectingPeoples, setSelectingPeoples] = useAtom(Peoples);
   const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
-    end: parseDate(new Date(`${today}`).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(`${today}`).toISOString().split("T")[0]),
+  // });
 
   const currentPath = usePathname();
   const { token } = useContext(AuthContext);
@@ -89,7 +89,7 @@ export default function LayoutBillsToReceiveTable({
 
     handleRefresh({
       token,
-      date,
+      // date,
       peoples: [`${ID_PSS}`],
       setLoading,
       setBillsToReceive: setAllBilets,
@@ -110,7 +110,7 @@ export default function LayoutBillsToReceiveTable({
     if (activeRefresh) {
       handleRefresh({
         token,
-        date,
+        // date,
         peoples: selectingPeoples,
         setLoading,
         setBillsToReceive: setAllBilets,
@@ -122,14 +122,14 @@ export default function LayoutBillsToReceiveTable({
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const generatePdf = () => {
-    BillsToReceivePdf({
-      allbilletsData,
-      billetsOpenData,
-      dateInit: `${date.start.day}/${date.start.month}/${date.start.year}`,
-      dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
-    });
-  };
+  // const generatePdf = () => {
+  //   BillsToReceivePdf({
+  //     allbilletsData,
+  //     billetsOpenData,
+  //     dateInit: `${date.start.day}/${date.start.month}/${date.start.year}`,
+  //     dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
+  //   });
+  // };
 
   return (
     <main className="w-full">
@@ -139,11 +139,11 @@ export default function LayoutBillsToReceiveTable({
           title="Contas a receber"
           descriptionHref="Visualizar em Gráfico"
           href="/billstoreceive"
-          handleExportToPdf={generatePdf}
+          // handleExportToPdf={generatePdf}
           handleRefreshClick={() =>
             handleRefresh({
               token,
-              date,
+              // date,
               peoples: selectingPeoples,
               setLoading,
               setBillsToReceive: setAllBilets,
@@ -152,30 +152,30 @@ export default function LayoutBillsToReceiveTable({
           }
           handleCleanFilter={() =>
             handleCleanFilter({
-              date,
+              // date,
               token,
               setPeoples: setSelectingPeoples,
-              setDate,
+              // setDate,
               setLoading,
               setBillsToReceive: setAllBilets,
               setBilletsOpen: setBilletsOpen,
               setDetailDav,
             })
           }
-          handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-            handleDateFilter({
-              date: newDate,
-              token,
-              peoples: selectingPeoples,
-              setDate,
-              setLoading,
-              setBillsToReceive: setAllBilets,
-              setBilletsOpen,
-              setDetailDav,
-            })
-          }
+          // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+          //   handleDateFilter({
+          //     date: newDate,
+          //     token,
+          //     peoples: selectingPeoples,
+          //     setDate,
+          //     setLoading,
+          //     setBillsToReceive: setAllBilets,
+          //     setBilletsOpen,
+          //     setDetailDav,
+          //   })
+          // }
           handleFilters={onOpen}
-          dateRange={date}
+          // dateRange={date}
         />
         <Table
           data={billetsOpen}

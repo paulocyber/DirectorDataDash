@@ -48,10 +48,10 @@ export default function LayoutCoverReport({
   const [searchForcoverSales, setSearchForcoverSales] = useState<string>("");
   const [searchSalesSummary, setSearchSalesSummary] = useState<string>("");
   const [filterCurve, setFilterCurve] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(today).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(today).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   const { token } = useContext(AuthContext);
   const infoCards = CoverSalesInfoCard({ coverSales });
@@ -76,7 +76,7 @@ export default function LayoutCoverReport({
             title="Relatório de Capas"
             handleRefreshClick={() =>
               handleRefresh({
-                date,
+                // date,
                 token,
                 setCoverSales,
                 setSalesSummary,
@@ -85,9 +85,9 @@ export default function LayoutCoverReport({
             }
             handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
               handleDateFilter({
-                date: newDate,
+                // date: newDate,
                 token,
-                setDate,
+                // setDate,
                 setCoverSales,
                 setSalesSummary,
                 setLoading,
@@ -95,15 +95,15 @@ export default function LayoutCoverReport({
             }
             handleCleanFilter={() =>
               handleCleanFilter({
-                date,
+                // date,
                 token,
                 setCoverSales,
                 setSalesSummary,
-                setDate,
+                // setDate,
                 setLoading,
               })
             }
-            dateRange={date}
+            // dateRange={date}
             search={searchForcoverSales}
             setSearch={setSearchForcoverSales}
           />
@@ -119,7 +119,7 @@ export default function LayoutCoverReport({
             title="Resumo do relatório de Capas"
             handleRefreshClick={() =>
               handleRefresh({
-                date,
+                // date,
                 token,
                 setCoverSales,
                 setSalesSummary,
@@ -128,9 +128,9 @@ export default function LayoutCoverReport({
             }
             handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
               handleDateFilter({
-                date: newDate,
+                // date: newDate,
                 token,
-                setDate,
+                // setDate,
                 setCoverSales,
                 setSalesSummary,
                 setLoading,
@@ -138,15 +138,15 @@ export default function LayoutCoverReport({
             }
             handleCleanFilter={() =>
               handleCleanFilter({
-                date,
+                // date,
                 token,
                 setCoverSales,
                 setSalesSummary,
-                setDate,
+                // setDate,
                 setLoading,
               })
             }
-            dateRange={date}
+            // dateRange={date}
             handleAdd={() => setFilterCurve(!filterCurve)}
             titleAdd="Filtrar por curva?"
             search={searchSalesSummary}

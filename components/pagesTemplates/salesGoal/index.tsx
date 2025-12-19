@@ -103,12 +103,12 @@ export function LayoutSalesGoals({
   const [selectTheCompany, setSelectTheCompany] = useAtom(Companies);
   const [activeRefresh, setActiveRefresh] = useAtom(refreshAtom);
   const [selectTables, setSelectTables] = useAtom(Tables);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   const { token, role } = useContext(AuthContext);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -126,7 +126,7 @@ export function LayoutSalesGoals({
     if (activeRefresh) {
       handleRefresh({
         token,
-        date,
+        // date,
         id: selectSellers,
         companys: selectTheCompany,
         tables: selectTables,
@@ -154,7 +154,7 @@ export function LayoutSalesGoals({
     setSelectSellers(id);
     handleRefresh({
       token,
-      date,
+      // date,
       companys: selectTheCompany,
       tables: selectTables,
       id,
@@ -168,22 +168,22 @@ export function LayoutSalesGoals({
 
   const currentDrawerSettings = routerDrawerSettings[currentPath] || {};
 
-  function generatePdf() {
-    SalesPdf({
-      dateInit: `${date.start.day}/${date.start.month}/${date.start.year}`,
-      dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
-      company: GetGroupName(selectTheCompany),
-      salesProgressData: salesProgress,
-      profitSales: profitSales ? profitSales : [],
-    });
-  }
+  // function generatePdf() {
+  //   SalesPdf({
+  //     dateInit: `${date.start.day}/${date.start.month}/${date.start.year}`,
+  //     dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
+  //     company: GetGroupName(selectTheCompany),
+  //     salesProgressData: salesProgress,
+  //     profitSales: profitSales ? profitSales : [],
+  //   });
+  // }
 
   return (
     <>
       <Container>
         <ToolBar
-          title={`Metas de ${getMonthName(date.start.month)}`}
-          dateRange={date}
+          title={`Metas de Dezembro`}
+          // dateRange={date}
           handleFilters={
             customerBuyMore.length > 0 || role ? undefined : onOpen
           }
@@ -191,7 +191,7 @@ export function LayoutSalesGoals({
             handleRefresh({
               id: customerBuyMore ? undefined : selectSellers,
               token,
-              date,
+              // date,
               companys: selectTheCompany,
               tables: role === "lider de vendas" ? ["2"] : selectTables,
               seller: customerBuyMore ? selectSellers : undefined,
@@ -203,23 +203,23 @@ export function LayoutSalesGoals({
               setLoading,
             })
           }
-          handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-            handleDateFilter({
-              id: customerBuyMore ? undefined : selectSellers,
-              token,
-              date: newDate,
-              companys: selectTheCompany,
-              tables: role === "lider de vendas" ? ["2"] : selectTables,
-              seller: customerBuyMore ? selectSellers : undefined,
-              setSalesProgress,
-              setProfitSales:
-                topSellers.length > 0 ? setProfitSales : undefined,
-              setTopSellers: topSellers.length > 0 ? setTopSellers : undefined,
-              setLoading,
-              setDate,
-              setValueComission,
-            })
-          }
+          // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+          //   handleDateFilter({
+          //     id: customerBuyMore ? undefined : selectSellers,
+          //     token,
+          //     date: newDate,
+          //     companys: selectTheCompany,
+          //     tables: role === "lider de vendas" ? ["2"] : selectTables,
+          //     seller: customerBuyMore ? selectSellers : undefined,
+          //     setSalesProgress,
+          //     setProfitSales:
+          //       topSellers.length > 0 ? setProfitSales : undefined,
+          //     setTopSellers: topSellers.length > 0 ? setTopSellers : undefined,
+          //     setLoading,
+          //     setDate,
+          //     setValueComission,
+          //   })
+          // }
           handleCleanFilter={() =>
             handleCleanFilter({
               id: customerBuyMore ? undefined : selectSellers,
@@ -235,14 +235,14 @@ export function LayoutSalesGoals({
               setId: setSelectSellers,
               setProfitSales:
                 topSellers.length > 0 ? setProfitSales : undefined,
-              setDate,
+              // setDate,
               setValueComission,
               setLoading,
             })
           }
-          handleExportToPdf={
-            customerBuyMore.length > 0 || role ? undefined : () => generatePdf()
-          }
+          // handleExportToPdf={
+          //   customerBuyMore.length > 0 || role ? undefined : () => generatePdf()
+          // }
         />
         <div className="w-full flex-col px-4">
           <ProgressBar
@@ -265,10 +265,10 @@ export function LayoutSalesGoals({
 
       <div className="w-full lg:flex ">
         <div className="lg:w-1/5">
-          <Card
+          {/* <Card
             title="Meta"
-            lastDay={getLastDayOfMonth(date.end.year, date.end.month)}
-            month={date.start.month}
+            // lastDay={getLastDayOfMonth(date.end.year, date.end.month)}
+            // month={date.start.month}
             dataInformation={[
               {
                 icon: <FaHotel className="text-sm" />,
@@ -294,7 +294,7 @@ export function LayoutSalesGoals({
                 highlight: false,
               },
             ]}
-          />
+          /> */}
         </div>
 
         <div className="w-full lg:w-4/5">

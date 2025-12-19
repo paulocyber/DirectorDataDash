@@ -19,7 +19,7 @@ import { FiEyeOff } from "react-icons/fi";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { useTopLoader } from "nextjs-toploader";
-import { addToast } from "@heroui/toast";
+import { addToast } from "@heroui/react";
 import { TiWarning } from "react-icons/ti";
 import { FaCheckCircle } from "react-icons/fa";
 

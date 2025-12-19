@@ -67,12 +67,12 @@ export default function LayoutBillsToPayTable({
   const [selectStatus, setSelectStatus] = useAtom(statusAtom);
   const [, setSelectingCostsCenters] = useState<ItemsFilterSelecting[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date().toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ),
+  //   end: parseDate(new Date().toISOString().split("T")[0]),
+  // });
 
   const filterSearch = searchFilter({
     data:
@@ -99,8 +99,8 @@ export default function LayoutBillsToPayTable({
           : selectStatus.includes("Em aberto")
             ? openBillets
             : paidBillets,
-      dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`,
-      dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
+      // dateStart: `${date.start.day}/${date.start.month}/${date.start.year}`,
+      // dateEnd: `${date.end.day}/${date.end.month}/${date.end.year}`,
     });
   };
 
@@ -110,7 +110,7 @@ export default function LayoutBillsToPayTable({
     if (activeRefresh)
       handleRefresh({
         token,
-        date,
+        // date,
         clear: true,
         costsCenters: selectCostCenters,
         setLoading,
@@ -134,7 +134,7 @@ export default function LayoutBillsToPayTable({
             handleRefreshClick={() =>
               handleRefresh({
                 token,
-                date,
+                // date,
                 clear: true,
                 setLoading,
                 setAllBillets,
@@ -143,26 +143,26 @@ export default function LayoutBillsToPayTable({
                 setPaidBillets,
               })
             }
-            handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-              handleDateFilter({
-                token,
-                date: newDate,
-                clear: false,
-                setLoading,
-                setDate,
-                setAllBillets,
-                setOpenBillets,
-                setPaidBillets,
-                setOverdueBillets,
-              })
-            }
+            // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+            //   handleDateFilter({
+            //     token,
+            //     // date: newDate,
+            //     clear: false,
+            //     setLoading,
+            //     // setDate,
+            //     setAllBillets,
+            //     setOpenBillets,
+            //     setPaidBillets,
+            //     setOverdueBillets,
+            //   })
+            // }
             handleCleanFilter={() =>
               handleCleanFilter({
                 token,
-                date,
+                // date,
                 setLoading,
                 setClear,
-                setDate,
+                // setDate,
                 setAllBillets,
                 setOpenBillets,
                 setOverdueBillets,
@@ -172,7 +172,7 @@ export default function LayoutBillsToPayTable({
             }
             descriptionHref="Visualizar em Gráfico"
             href="/billstopay"
-            dateRange={date}
+            // dateRange={date}
             search={search}
             setSearch={setSearch}
           />

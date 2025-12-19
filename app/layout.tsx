@@ -3,7 +3,7 @@ import { fontSans } from "@/config/fonts";
 import clsx from "clsx";
 
 // Bibliotecas
-import { ToastProvider } from "@heroui/toast";
+import { addToast, ToastProvider } from "@heroui/react";
 import NextTopLoader from "nextjs-toploader";
 
 // Css

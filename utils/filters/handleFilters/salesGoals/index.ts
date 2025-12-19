@@ -116,12 +116,12 @@ export async function handleCleanFilter({
 
   const { today, year, month } = getCurrentDateDetails();
 
-  setDate({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // setDate({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
   setSelectTables(["1", "2", "3"]);
   setSelectTheCompany(["1", "2", "3", "4"]);
   setId("");

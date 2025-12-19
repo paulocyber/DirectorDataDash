@@ -66,10 +66,10 @@ export async function handleCleanFilter({
   setPeoples([]);
   setDetailDav(undefined);
 
-  setDate({
-    start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // setDate({
+  //   start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   await fetchBillsToReceive({
     dateInit: `2023/01/01`,

@@ -1,13 +1,14 @@
 "use client";
 
 // Biblioteca
-import { DateRangePicker } from "@heroui/date-picker";
+// import { DateRangePicker } from "@heroui/react";
+import { DateRangePicker } from "@heroui/react";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-} from "@heroui/dropdown";
+} from "@heroui/react";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { IoSync } from "react-icons/io5";
 import { RiFormatClear } from "react-icons/ri";
@@ -64,7 +65,7 @@ export default function ToolBar({
   handleExportToPdf,
 }: ToolBarProps) {
   const [open, setOpen] = useState<boolean>(false);
-
+  const [date, setDate] = useState<RangeValue<DateValue> | null>(null);
   const { role } = useContext(AuthContext);
 
   const rules = useMemo(() => RulesByUsers({ role }), [role]);
@@ -115,16 +116,17 @@ export default function ToolBar({
             </Button>
           )}
 
-          <DateRangePicker
-            aria-label="Selecionar intervalo de datas"
-            pageBehavior="single"
-            className={dateRange ? `lg:flex hidden` : "hidden"}
-            visibleMonths={2}
-            disableAnimation
-            value={dateRange}
-            onChange={handleDateRangePicker}
-            size="sm"
-          />
+          {/* <DateRangePicker
+  pageBehavior="single"
+  disableAnimation
+  value={date}
+  size="sm"
+  onChange={(newDate: RangeValue<DateValue> | null) =>
+    handleDateFilter({
+      setDate()
+    })
+  }
+/> */}
           <Dropdown onClose={() => setOpen(false)}>
             <DropdownTrigger>
               <button
@@ -144,13 +146,13 @@ export default function ToolBar({
                 classNames={{ title: "font-bold text-gray-800" }}
                 className={`lg:hidden ${!dateRange && "hidden"}`}
               >
-                <DateRangePicker
+                {/* <DateRangePicker
                   aria-label="Filtro de data"
                   disableAnimation
                   size="sm"
-                  value={dateRange}
+                  // value={dateRange}
                   onChange={handleDateRangePicker}
-                />
+                /> */}
               </DropdownItem>
 
               <DropdownItem

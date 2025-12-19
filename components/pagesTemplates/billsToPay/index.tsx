@@ -61,12 +61,12 @@ export default function LayoutBillsToPay({
   >([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [, setClear] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date().toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ) as any,
+  //   end: parseDate(new Date().toISOString().split("T")[0]) as any,
+  // });
 
   const infoCard = BilletsInfoCard({
     openBillets,
@@ -110,7 +110,7 @@ export default function LayoutBillsToPay({
             handleRefreshClick={() =>
               handleRefresh({
                 token,
-                date,
+                // date,
                 clear: true,
                 setLoading,
                 setAllBillets,
@@ -119,26 +119,26 @@ export default function LayoutBillsToPay({
                 setOverdueBillets,
               })
             }
-            handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-              handleDateFilter({
-                token,
-                date: newDate,
-                clear: false,
-                setLoading,
-                setDate,
-                setAllBillets,
-                setOpenBillets,
-                setPaidBillets,
-                setOverdueBillets,
-              })
-            }
+            // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+            //   handleDateFilter({
+            //     token,
+            //     date: newDate,
+            //     clear: false,
+            //     setLoading,
+            //     setDate,
+            //     setAllBillets,
+            //     setOpenBillets,
+            //     setPaidBillets,
+            //     setOverdueBillets,
+            //   })
+            // }
             handleCleanFilter={() =>
               handleCleanFilter({
                 token,
-                date,
+                // date,
                 setLoading,
                 setClear,
-                setDate,
+                // setDate,
                 setAllBillets,
                 setOpenBillets,
                 setOverdueBillets,
@@ -148,7 +148,7 @@ export default function LayoutBillsToPay({
             }
             descriptionHref="Visualizar em Tabela"
             href="/billstopay/table"
-            dateRange={date}
+            // dateRange={date}
           />
           <div className="flex p-2 w-full items-center overflow-auto border-t rounded-2xl">
             <DescriptionGraphic

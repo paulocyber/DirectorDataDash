@@ -58,10 +58,10 @@ export default function LayoutBillsToReceive({
   );
   const [overdueClients, setOverdueClients] = useState(topClientsLateData);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
-    end: parseDate(new Date(`${today}`).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(`${today}`).toISOString().split("T")[0]),
+  // });
 
   const infoCard = BilletsInfoCard({ allBilletsData: billsToReceive });
 
@@ -79,7 +79,7 @@ export default function LayoutBillsToReceive({
             href="/billstoreceive/table"
             handleRefreshClick={() =>
               handleRefresh({
-                date,
+                // date,
                 token,
                 setLoading,
                 setBillsToReceive,
@@ -90,25 +90,25 @@ export default function LayoutBillsToReceive({
             handleCleanFilter={() =>
               handleCleanFilter({
                 token,
-                setDate,
+                // setDate,
                 setLoading,
                 setBillsToReceive,
                 setSummaryOfReceivableData,
                 setOverdueClients,
               })
             }
-            handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-              handleDateFilter({
-                date: newDate,
-                token,
-                setDate,
-                setLoading,
-                setBillsToReceive,
-                setSummaryOfReceivableData,
-                setOverdueClients,
-              })
-            }
-            dateRange={date}
+            // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+            //   handleDateFilter({
+            //     date: newDate,
+            //     token,
+            //     setDate,
+            //     setLoading,
+            //     setBillsToReceive,
+            //     setSummaryOfReceivableData,
+            //     setOverdueClients,
+            //   })
+            // }
+            // dateRange={date}
           />
         </Container>
 

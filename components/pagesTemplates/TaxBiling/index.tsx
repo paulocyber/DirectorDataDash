@@ -43,10 +43,10 @@ export default function LayoutTaxBiling({
   const [billingByCompany, setBillingByCompany] =
     useState(billingByCompanyData);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(`${dateInit}`).toISOString().split("T")[0]),
-    end: parseDate(new Date().toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(`${dateInit}`).toISOString().split("T")[0]),
+  //   end: parseDate(new Date().toISOString().split("T")[0]),
+  // });
 
   const infoCard = TaxBillingInfoCard({
     billingByCompanyData: billingByCompany,
@@ -60,28 +60,29 @@ export default function LayoutTaxBiling({
       <Container>
         <ToolBar
           title="Faturamento"
-          handleRefreshClick={() =>
-            handleRefresh({ token, date, setLoading, setBillingByCompany })
+          handleRefreshClick={
+            () => console.log("ativou")
+            // handleRefresh({ token, date, setLoading, setBillingByCompany })
           }
-          handleCleanFilter={() =>
-            handleCleanFilter({
-              token,
-              date,
-              setLoading,
-              setDate,
-              setBillingByCompany,
-            })
-          }
-          handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
-            handleDateFilter({
-              token,
-              date: newDate,
-              setLoading,
-              setDate,
-              setBillingByCompany,
-            })
-          }
-          dateRange={date}
+          // handleCleanFilter={() =>
+          //   handleCleanFilter({
+          //     token,
+          //     // date,
+          //     setLoading,
+          //     // setDate,
+          //     setBillingByCompany,
+          //   })
+          // }
+          // handleDateRangePicker={(newDate: RangeValue<DateValue> | null) =>
+          //   handleDateFilter({
+          //     token,
+          //     date: newDate,
+          //     setLoading,
+          //     setDate,
+          //     setBillingByCompany,
+          //   })
+          // }
+          // dateRange={date}
         />
         <div className="flex p-2 w-full items-center overflow-auto border-t rounded-2xl">
           <DescriptionGraphic

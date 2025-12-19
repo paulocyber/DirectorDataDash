@@ -32,10 +32,10 @@ export default function LayoutLateCustomer({
 }: LayoutLateCustomerProps) {
   const [billetsInOpen, setBilletsInOpen] = useState(billetsInOpenData);
   const [loading, setLoading] = useState<boolean>(false);
-  const [date, setDate] = useState<RangeValue<DateValue>>({
-    start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
-    end: parseDate(new Date(today).toISOString().split("T")[0]),
-  });
+  // const [date, setDate] = useState<RangeValue<DateValue>>({
+  //   start: parseDate(new Date(`2023/01/01`).toISOString().split("T")[0]),
+  //   end: parseDate(new Date(today).toISOString().split("T")[0]),
+  // });
 
   const { token } = useContext(AuthContext);
 
@@ -50,7 +50,7 @@ export default function LayoutLateCustomer({
           handleRefreshClick={() => console.log("Ativou!")}
           handleCleanFilter={() => console.log("Limpou!")}
           handleDateRangePicker={() => console.log("Data")}
-          dateRange={date}
+          // dateRange={date}
         />
         <Table
           data={billetsInOpen}

@@ -62,12 +62,12 @@ export async function handleCleanFilter({
 
   const { today, year, month } = getCurrentDateDetails();
 
-  setDate({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date().toISOString().split("T")[0]),
-  });
+  // setDate({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ),
+  //   end: parseDate(new Date().toISOString().split("T")[0]),
+  // });
 
   await fetchTaxBiling({
     token,

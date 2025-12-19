@@ -30,8 +30,8 @@ export const ExternalPieLabel = (
   const cyNumber = typeof cy === "number" ? cy : 0;
   const outerRadiusNumber = typeof outerRadius === "number" ? outerRadius : 0;
 
-  const sin = Math.sin(-radian * midAngle);
-  const cos = Math.cos(-radian * midAngle);
+  const sin = Math.sin(-radian * 10);
+  const cos = Math.cos(-radian * 10);
   const sx = cxNumber + (outerRadiusNumber + 8) * cos;
   const sy = cyNumber + (outerRadiusNumber + 5) * sin;
   const mx = cxNumber + (outerRadiusNumber + 20) * cos;

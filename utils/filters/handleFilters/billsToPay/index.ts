@@ -34,7 +34,7 @@ export async function handleRefresh({
   setPaidBillets,
 }: BillsToPayProps) {
   if (!date) return;
-  
+
   await fetchBillsToPay({
     dateInit: `${date.start.year}/${date.start.month}/${date.start.day}`,
     dateEnd: `${date.end.year}/${date.end.month}/${date.end.day}`,
@@ -94,12 +94,12 @@ export async function handleCleanFilter({
 
   const { today, year, month } = getCurrentDateDetails();
 
-  setDate({
-    start: parseDate(
-      new Date(`${year}/${month}/01`).toISOString().split("T")[0]
-    ),
-    end: parseDate(new Date().toISOString().split("T")[0]),
-  });
+  // setDate({
+  //   start: parseDate(
+  //     new Date(`${year}/${month}/01`).toISOString().split("T")[0]
+  //   ),
+  //   end: parseDate(new Date().toISOString().split("T")[0]),
+  // });
   setClear(true);
   setCostsCenters([]);
 
