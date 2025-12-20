@@ -3,7 +3,7 @@ import axios from "axios";
 
 export function setupApiClient(ctx?: string) {
   const api = axios.create({
-    baseURL: "https://sistema-suporte-play-uljpe.ondigitalocean.app",
+    baseURL: "https://api.playcell.autotasker.com.br",
   });
 
   api.interceptors.request.use(
