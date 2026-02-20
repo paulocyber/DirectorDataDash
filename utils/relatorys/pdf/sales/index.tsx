@@ -1,8 +1,3 @@
-// BIbliotecas
-import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-import { PageSize } from "pdfmake/interfaces";
-
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { truncateString } from "@/utils/mask/truncateString";
@@ -10,7 +5,7 @@ import { truncateString } from "@/utils/mask/truncateString";
 // Tipagem
 import { ItemsProfitsFromSales, ItemsSalesProgress } from "@/types/sales";
 type CreatePdfItems = {
-  pageSize: PageSize;
+  pageSize: any; // using any since PageSize interface is within pdfmake
   pageMargins: [number, number, number, number];
   header?: any;
   content: any[];
@@ -26,13 +21,15 @@ interface SalesPdfProps {
   profitSales: ItemsProfitsFromSales[];
 }
 
-export default function SalesPdf({
+export default async function SalesPdf({
   dateInit,
   dateEnd,
   company,
   salesProgressData,
   profitSales,
 }: SalesPdfProps) {
+  const pdfMake = (await import("pdfmake/build/pdfmake")).default;
+  const pdfFonts = (await import("pdfmake/build/vfs_fonts")).default;
   pdfMake.vfs = pdfFonts.vfs;
 
   const salesSummary = profitSales.map((sale) => ({
@@ -47,7 +44,7 @@ export default function SalesPdf({
       : "0%",
     BATEU_META:
       parseFloat(sale.VALOR_LIQUIDO.replace(",", ".")) >=
-      parseFloat(sale.META_INDIVIDUAL)
+        parseFloat(sale.META_INDIVIDUAL)
         ? "sim"
         : "não",
   }));

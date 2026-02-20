@@ -1,7 +1,3 @@
-// Bibliotecas
-import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { groupBySum } from "@/utils/filters/groupBySum";
@@ -34,13 +30,15 @@ interface BillsToPayPdfProps {
   dateEnd?: string;
 }
 
-export default function BillsToPayPdf({
+export default async function BillsToPayPdf({
   allBillets,
   billetFilter,
   status,
   dateStart,
   dateEnd,
 }: BillsToPayPdfProps) {
+  const pdfMake = (await import("pdfmake/build/pdfmake")).default;
+  const pdfFonts = (await import("pdfmake/build/vfs_fonts")).default;
   pdfMake.vfs = pdfFonts.vfs;
 
   const openBills = allBillets.filter(

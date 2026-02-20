@@ -1,7 +1,3 @@
-// Bibliotecas
-import pdfMake from "pdfmake/build/pdfmake";
-import * as pdfFonts from "pdfmake/build/vfs_fonts";
-
 // Utils
 import { formatCurrency } from "@/utils/mask/money";
 import { sumValuesByKey } from "@/utils/functions/sumValues";
@@ -44,6 +40,8 @@ export default async function BillsToReceivePdf({
   dateInit,
   dateEnd,
 }: BillsToReceiveProps) {
+  const pdfMake = (await import("pdfmake/build/pdfmake")).default;
+  const pdfFonts = (await import("pdfmake/build/vfs_fonts")).default;
   pdfMake.vfs = pdfFonts.vfs;
   const openBills = allbilletsData.filter(
     (bill) =>
@@ -71,10 +69,10 @@ export default async function BillsToReceivePdf({
 
     return sortedBills.length == 0
       ? sortedBills.filter(
-          (bill) =>
-            parseDate(bill.DATA_RECEBIMENTO_RCI).getTime() ===
-            closestDate.getTime()
-        )
+        (bill) =>
+          parseDate(bill.DATA_RECEBIMENTO_RCI).getTime() ===
+          closestDate.getTime()
+      )
       : bills;
   };
 
