@@ -86,7 +86,7 @@ export default async function TableDavPage({
       peoplesData={peoplesResponse.data.returnObject.body}
       sellersData={sellersResponse.data.returnObject.body}
       profitData={
-        profitOnSalesResponse.data.returnObject.body[0].VALOR_LUCRO_TOTAL
+        profitOnSalesResponse.data.returnObject.body?.[0]?.VALOR_LUCRO_TOTAL || 0
       }
     />
   );
